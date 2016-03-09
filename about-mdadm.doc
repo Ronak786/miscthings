@@ -1,0 +1,25 @@
+raid的分类：（自raid wiki)
+liner  ， raid0 , raid1 , raid456 , raid10
+liner ： 两个盘连接起来： mdadm --create   /dev/md0 --raid-devices=2  --level=linear  /dev/sda5 /dev/sda6
+raid0 : 两个盘依序放数据: mdadm --create /dev/md0 --raid-devices=2 --level=0 /dev/sda5 /dev/sda6
+raid1 : 纯raid1 是两块盘  mdadm  --create /dev/md0 --raid-devices=2 --level=1 /dev/sda5 /dev/sda6
+raid5 : 至少三块 ，会有校验数据 ， mdadm --create /dev/md0 --raid-devices=3 --level5 /dev/sda[567]
+raid10: raid1  再 raid0 ， 
+raid01 ： raid0 再raid1
+
+这里要讲一下raid的rebuild过程，就是再使用前将数据先格式化成已经满足当前raid特性的状态。  （raid1的话就会让两块盘的数据一样） ， 这里要讲的是raid5， 因为校验是分布再不同的盘上的，如果create的时候要所有盘一起rebuild的话，太耗时，影响用户体验的。所以这里就假定前面N-1块盘上的数据都是对的 ，不管是数据还是校验值（其实都是垃圾值） ， 然后专门计算最后一块盘，这样，你就可以立刻使用raid系统，他的rebuild不会影响你的。
+
+
+
+raid 的重组：
+raid其实是个虚拟的设备，所以每次都是开机靠重组来产生的。 重组可以通过配置文件，可以直接assemble 。 配置文件一般用不到，mdadm会直接读取盘上写入的superblock信息来找到每个盘所属的盘阵。  而配置文件可以用来恢复，备份用，防止信息丢失。  ，如果再assemble的时候指定了uuid ， 那么可以在盘符改变的情况下仍然找到raid 。 
+通过 mdadm --assemble --scan  /   mdadm --assemble /dev/sda[xxxx]  (--uuid) 来重组
+通过  mdadm --detail --scan >> /etc/mdadm.conf 来保存
+
+
+raid的superblock 有0.9 1。0 1.1 1.2 几种，默认是1.2  ， superblock 是放在4k的地方的。  而metadata的放置位置，可以是同样的磁盘桑，也可以是external metadata ， 这个是另外一种superblock方式
+
+
+chunksize的影响
+这个是每块盘的最小写入单位，写满了才会继续下一块盘。raid0中是可能对特定文件系统有影响，raid1中对一次的读入有影响。
+对raid5 而言，因为需要读写校验，所以chunk大的话，可以减轻总负荷

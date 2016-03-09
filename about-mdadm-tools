@@ -1,0 +1,31 @@
+mdadm --create /dev/md0 --level=0 --raid-devices=2 /dev/sda5 /dev/sda6 
+
+first  explain the params , then we have all  devs in a dev list , we will open the first as if it is a md , if fail with -1 , then we ensure this md no exist ;
+	it will then call Create  to create the dev , in which , it will set default supertype  which is 1.2 ,then call the true create func to create a /dev/mdXX func , then set array info to set the major minor version of mddev , then  set the superblock of the individual devices , and make a userspace device nod . at last exit
+after parse all options , we have a list of all devices(including the /dev/mdXX ) , then we call open /dev/md to ensure the device not exist .
+
+then set all context  super info defaultly
+
+
+
+
+all begin:
+	after the first mknod with the given /dev/md0 device nam
+e , we call open(in Create->create_mddev->open_dev_excl,we first
+ mknod ,then open it , so the probe will be called in kernel, at this 
+time , super has't written into disks , but we have them in meme
+ory)  at that device , then kobject something happen ,then call 
+probe, which is the registered probe function , md_probe , then 
+the mddev is established(still don't know detail about kobject ,
+ device node , and the open call 's relationship) ,
+
+then in kernel , mddev not exist , so use the mddev_find to crea
+te a new device. do some initialize for queue, list , not set anything
+then set array info  , use 1.2 version number to mddev
+
+collect super data , then write into the specific super place of the disk directly use write_init_super then do the add disk. these all done in a big for loop:
+	first pass , the two disk's superblock will be written
+	second pass , two disks will be added into mddev's member
+
+then we now in kernel , in add_new_disk:
+	allocate a rdev structure ,initialize something,

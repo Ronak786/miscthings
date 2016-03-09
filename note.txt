@@ -1,0 +1,15 @@
+一 安装内核
+	将内核rpm包  直接 rpm -ivh  --force  XXX.rpm 安装即可
+
+二 串口调试
+
+1 需要两台机器 分别是target 和 host 
+2 在target 上的/boot/grub/grub.cfg中需要调试的内核菜单项中linux 这一条目的最后，加上，console=tty0  console=ttyS0,115200n8  ，  这样，就可以将开机启动信息输出在串口上了。    同时，将/etc/sysconfig/i18n文件中的语言设置改成en_US.UTF-8,防止串口输出大量乱码  
+
+3 查看/etc/init/目录，如果同时存在 serial.conf  ttyS0.conf , 删除 后者即可
+
+4 连接串口，即可得到串口输出
+
+
+
+

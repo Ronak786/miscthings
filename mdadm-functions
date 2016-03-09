@@ -1,0 +1,42 @@
+in md.c
+	add_new_disk
+	md_import_devices
+	super_1_load
+	super_1_validate
+	do_md_run
+	register_md_personality
+	md_probe
+	metadata_store
+	
+in raid0.c
+	raid0_run
+	create_strip_zones
+
+suggestions:  if you want to debug some file without -O2 , just add CFLAGS-XXX.o = -O0  at the end of that file's dir's Makefile
+
+list_for_each_entry:  this macro is used to traverse the member of the struct list( the frist is  the head , so the first next is the first member , while the current one is  the head , then it means traversed a loop , so exit)
+
+questions:  in add_new_disks , where to set bdev?
+	    where to set  mddev->major_version
+
+when create:  md_probe->mddev_find(allocate a new mddev struct ,     set dev number , init all list & queues , set active to 1 (in mddev_init) , add to the static all_mddev struct list( the latter added , the  position is former) ,hold active until ioctl -> return to md_alloc ,then allocate queue ,  create a gendisk to represent a whole disk , active the gendisk(open will be called at this time , then return )
+	then mddev is created with no disk members , now it will call ioctl to add disks , 
+
+	the second is set_array_info , just set major minor  patch numbers , ctime and persistent , and exit
+
+
+	then third is  add_new_disks(init rdev ,according super 1.2 (where set?), )->md_import_devices to create a rdev, add into the superblock info) ->then add_new_disk link each other the rdev->same_set to the mddev->disks ,and rdev->mddev to mddev ) then return ;;; other disks are the same(must compare to the first for the mddev->events , updata time ?) at this time , haven't set the mddev->raid_disks to the number , they will be set in run
+ 	eg. raid0:  do_md_run->run_md(first validate superblock,in which will call raid0's run ,which will count the zones in sequence , then return , then over) , after that , do_md_run call bitmap load , (in raid0 will do nothing) , then wake up threads then end , all over)
+
+
+
+call-list:
+	syscall:
+
+disk->major , first_minor  are mddev's dev number
+	disk->minor always is 1
+disk->private_data is mddev && mddev->gendisk is gendisk
+	the gendisk is the representative of the whole device
+
+mddev_find
+	this func can be used multipul times: when mddev created ; when open a disk

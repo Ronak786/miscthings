@@ -1,0 +1,8 @@
+rpm  cross-compile , need cross compiler , also a rpm macro in the /usr/lib/rpm/platform/$(arch)/macro
+
+gdb , use until to continue to specific line ,
+      use finish to coninue to the end of the current function
+      
+how to set hwclock :
+	use hwclock --set --data="XXX XX:XX:XX" to set time 
+	then use hwclock -s to set to the hardware 

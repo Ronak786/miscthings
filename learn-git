@@ -1,0 +1,27 @@
+git add ---- to add new file or modified files
+git commit --- to commit all staged files
+git status ---- see all files'  status  , you can use   git status -s for a short view
+.gitignore   use glob  to match all files need not be commited ,use ! be negative , end with /  to represent a dir, start with / to avoid recursive , a/**/z to search
+	all dirs in a for z
+git commit -a -m ""  will commit without stage  all tracked files
+git rm  \*XX  can remove files  with glob (not to explained by shell , so \ is used) ,  then you should commit to finish the delete , and the file will be removed 
+	in the local dir
+git mv XX YY  can rename  , also should commit after that
+
+
+git log:
+	you can see the git log with:
+	git log --stat  to see detail   
+	git log --shortstat
+	git log --name-only  to see only file names , not modify details
+	git log --since=  --until=  --all-match( used as && , otherwise will be || ) , --grep ( the commit message contains) ,  --author=
+		-Spatter_name(search string of deletion or addition) , 
+		you can also use   like   git  log   --  t\   to see commits with modifes in the t dir , 
+		--graph to see pictures
+		--abbrve-commit to shorten the commit number
+		--decorate=no/full/short to show the refname
+		use --pretty=oneline  xxx  --prefix=format:"xxxxx" to specify your own format
+
+git commit --amend ,  this can re-commit your commition , just overwrite the former one , can run multiple times
+git reset HEAD XX to unstage a file
+git checkout -- XX to unmodify a file 
