@@ -19,3 +19,12 @@ set ssh no passwd for no root users:
 		 IdentityFile ~/.ssh/id_rsa   , 
 	then restart the ssh service,
 	then ok
+
+how to set git for push:
+	first git clone 
+	then remove the remote ,if in the first step you do not use git@XXX ,but the http:// XXX
+	git remote add origin  git@github.com:/XXXXXX
+	git config --global  username useremail
+	git config --global push.default matching or simple
+	git push --set-upstream origin master  to add track
+	ENJOY PUSH!!	
