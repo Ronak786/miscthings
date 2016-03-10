@@ -32,3 +32,9 @@ how to set git for push:
 how to set up git repo in server:
 	in my opition: if you add a user git , you must use the default home path , or the ssh no passwd method 
 		doesn't work , then all the same , enjoy
+
+about hostname and dns
+	if you want to modify dns , modify /etc/resolv.conf  .or /etc/sysconfig/network-scripts/ifcfg-XXX
+	if you want to modify hostname , modify in /etc/sysocnfig/network
+	if you want your net link find yourself with name host , add that name in /etc/hosts , 
+		this file will be searched when you invoke a net communication
