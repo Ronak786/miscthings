@@ -6,3 +6,16 @@ gdb , use until to continue to specific line ,
 how to set hwclock :
 	use hwclock --set --data="XXX XX:XX:XX" to set time 
 	then use hwclock -s to set to the hardware 
+
+set ssh no passwd for no root users:
+	generate and copy keys like nornal
+	change in /etc/ssh/sshd_config(target)  uncomment:
+		 RSAAuthentication yes   
+	       	PubkeyAuthentication yes   
+		  AuthorizedKeysFile  
+		    .ssh/authorized_keys,
+	change in /etc/ssh/ssh_config(host)  uncomment
+		 RSAAuthentication yes  
+		 IdentityFile ~/.ssh/id_rsa   , 
+	then restart the ssh service,
+	then ok
