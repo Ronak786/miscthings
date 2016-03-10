@@ -28,3 +28,7 @@ how to set git for push:
 	git config --global push.default matching or simple
 	git push --set-upstream origin master  to add track
 	ENJOY PUSH!!	
+
+how to set up git repo in server:
+	in my opition: if you add a user git , you must use the default home path , or the ssh no passwd method 
+		doesn't work , then all the same , enjoy
