@@ -17,15 +17,24 @@ time , super has't written into disks , but we have them in meme
 ory)  at that device , then kobject something happen ,then call 
 probe, which is the registered probe function , md_probe , then 
 the mddev is established(still don't know detail about kobject ,
- device node , and the open call 's relationship) ,
+ device node , and the open call 's relationship) , after this 
+leave from ks , devname become /dev/mdXX,  not just /dev/.tmpXX
+,something must happen about udev and sysfs
 
 then in kernel , mddev not exist , so use the mddev_find to crea
 te a new device. do some initialize for queue, list , not set anything
 then set array info  , use 1.2 version number to mddev
 
-collect super data , then write into the specific super place of the disk directly use write_init_super then do the add disk. these all done in a big for loop:
+collect super data ,into array  infos , then write into the specific super place of the disk directly use write_init_super then do the add disk. these all done in a big for loop:
 	first pass , the two disk's superblock will be written
 	second pass , two disks will be added into mddev's member
 
 then we now in kernel , in add_new_disk:
-	allocate a rdev structure ,initialize something,
+	allocate a rdev structure ,initialize something, in bind_rdev_to_array: list_add_rcu to add rdev to mdev , then mdev=rdev->mddev , so they connect to each other
+
+now over  back to us , call run , again in ks , call md_run , then validate superinfo of rdev in the rdev structure , and select the freshest one (use super load) , then use super_validate to set the freshest one to the mddev's structure members , (freshest will be the last in the cmdline for raid0?), then use current mddev to fresh other rdevs with new event counts and set their own roles)
+	the create_stripe_zones:  let's assume , 在当前外循环所处理的rdev之前所有的已经完全正确排序了，所以处理当前设备，每次和自己之前的设备比较，如果到达外设备自己，说明都不一样，所以zone加一，如果没达到自己就找到一样多扇区的了，就直接跳出内循环，因为大小不独有，不用加计数器。，所以最后就是不同层次zong的总数。
+	然后设定每个zone的开始位置，用一个zone数组记录所有zone，按照从小到大，用另一个数组记录各个zone中的dev，在对应dev的role位置放置rdev的指针（似乎随便放）。（第一个zone有全部rdev，所以单独设定，算法是任何一个大于上一轮的sector的就计入这一轮的zone之中（因为至少大于等于这一轮的最小值），然后顺便计算当前最小值（大于上一轮），所有满足条件的rdev指针都放入当前轮的devlist位置中（二维数组，足够大），最后成功构建
+	after all raid0_run , then back to md_run , set all ready state	
+	question here: how does the event update ? seems devsda5 is greater then sda6,no  sda6 is first and greater than 5 ,
+
