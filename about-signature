@@ -1,0 +1,7 @@
+1 use gpg  ,  you need to have:  the iso image ,  the sig file  , the pubkey ( used to encrypt the sig) ,  in the same dir
+	then first gpg --recv-keys  KEY   or gpg --import   file-containing-the-key
+	then gpg --verify  sig file , now will show the mail and name of the man who sig the file and check is correct , 
+		you can verify the guy by searching on the project's maintainer's website
+
+2 use md5 or sha1sum ,    just download the file including md5 or sha5 or you create them.  in the format of     "signature    filename"  per oneline
+	then call  md5sum  -c  filename        or    sha1sum -c filename  , result will show you ok  if everything is right
