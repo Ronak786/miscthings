@@ -1,0 +1,10 @@
+in mdadm , now I will review what mdadm do :
+	parse parms , then set default supertype,use default as name . so
+set to 1.2 version,also find the default super type functions(super1) , then use the geometry 
+function to set default data offset .   all other devices will use the same supertype structures to set their own data
+then create the md disk 
+then fill all supertype structures into  st->sb ,  then refill the infos  array's first place with
+st->sb's content , that is the first device's superblock , then the second
+
+in the raid1 run , first setup the conf structure , all done is fill the conf-mirrors list , if replacement , 
+then mirrored place and original place all have one same rdev , if not , all have none 

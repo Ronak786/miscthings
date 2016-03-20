@@ -1,0 +1,36 @@
+timedatectl set-ntp true    	can open the network time sync , is good
+swap   using file or device do not have performance effect,   ,  using pri=0 will make  priority  not hign
+sysctl  -a  can  show  all sysctl controlled  options
+set hostname   in  /etc/hostname  and  /etc/hosts  and temperarily  use hostname
+
+use lspci -v to show which modules is in use for specific device , then verify that in dmesg
+
+how to get network  status info:
+	ls /sys/class/net
+	ip link
+	iw dev (for wireless)
+
+how to get mac address
+	cat /sys/class/net/(name)/address
+
+
+how to use udev to set your own  net device  name:
+	set in udev rules in /etc/udev/rules.d/10-network.rules  : SUBSYSTEM=="net", ACTION=="add", "ATTR{address}==XXX(mac address), NAME="net0"   to set name to net0
+
+how to  start or stop  net
+	ifup ifdown  
+	ip link  set XXX up/down
+	ip link show dev XX  for status
+
+if not specify the suffix , auto  expand with  .service
+	
+
+systemctl   daemon-reload   enable  disable  start stop  reenable restart mask  unmask ,    
+		reboot poweroff suspend  hibernate  hybrid-sleep  
+		status   list-units   list-unit-files( all files)
+
+systemctl  cat  unit  (to  cat  files)
+	
+systemctl  isolate  XXX.target  to switch to a new target
+
+journalctl  -b   , -u  filename , _PID=XXX
