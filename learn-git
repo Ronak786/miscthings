@@ -25,3 +25,8 @@ git log:
 git commit --amend ,  this can re-commit your commition , just overwrite the former one , can run multiple times
 git reset HEAD XX to unstage a file
 git checkout -- XX to unmodify a file 
+
+how to remove remote branch:
+	git push origin :branch-name
+how to add remote branch
+	git push origin  branch-name
