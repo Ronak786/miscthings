@@ -1,0 +1,4 @@
+how to write udev rules:
+	use  udevadm info  -n  devicename   	to get dev infos ,
+	then write file in /etc/udev/rules.d/  ,  when try to match , use   KERNEL=="xx", ATTR{xx}=="xx" ,ENV{xx}=="xx" , 
+						when try to assign  , use SYMLINK+="xx"
