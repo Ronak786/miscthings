@@ -1,0 +1,1 @@
+the raid5 is based on strips , when setup in run , we will create stripes for work later (use grow_strips ) , then release them , now we have strips prepared for later work( now pending requests will be waked up)
