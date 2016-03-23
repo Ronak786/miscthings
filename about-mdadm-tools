@@ -35,6 +35,7 @@ then we now in kernel , in add_new_disk:
 now over  back to us , call run , again in ks , call md_run , then validate superinfo of rdev in the rdev structure , and select the freshest one (use super load) , then use super_validate to set the freshest one to the mddev's structure members , (freshest will be the last in the cmdline for raid0?), then use current mddev to fresh other rdevs with new event counts and set their own roles)
 	the create_stripe_zones:  let's assume , 在当前外循环所处理的rdev之前所有的已经完全正确排序了，所以处理当前设备，每次和自己之前的设备比较，如果到达外设备自己，说明都不一样，所以zone加一，如果没达到自己就找到一样多扇区的了，就直接跳出内循环，因为大小不独有，不用加计数器。，所以最后就是不同层次zong的总数。
 	然后设定每个zone的开始位置，用一个zone数组记录所有zone，按照从小到大，用另一个数组记录各个zone中的dev，在对应dev的role位置放置rdev的指针（似乎随便放）。（第一个zone有全部rdev，所以单独设定，算法是任何一个大于上一轮的sector的就计入这一轮的zone之中（因为至少大于等于这一轮的最小值），然后顺便计算当前最小值（大于上一轮），所有满足条件的rdev指针都放入当前轮的devlist位置中（二维数组，足够大），最后成功构建
+	then register the queue max size for block request and integrity something
 	after all raid0_run , then back to md_run , set all ready state	
 	question here: how does the event update ? seems devsda5 is greater then sda6,no  sda6 is first and greater than 5 ,
 
@@ -48,6 +49,7 @@ first read , when run ls   , the block subsystem will call generic_make_request 
 md_make_request->per's make request ( the md_make_request is set when md_alloc is called to every
 mddev queue)
 在make_request raid0中 find_zone会根据bio结构体中的sector找到具体的在哪个zone里，以及zone中的偏移扇区数量，然后map_sector会再找到具体的哪个设备rdev以及设备内的扇区偏移，这样就转交给下层设备了
-	raid0_make_request工作流程解释： 首先进入的generic那个函数，会根据上层传下来的bio结构请求，首先构建一个bio list供今后使用，现在是空的，不管。然后直接进入循环，根据md alloc注册的request函数进入其中，然后首先判断是否跨chunk，
+	raid0_make_request工作流程解释： 首先进入的generic那个函数，会根据上层传下来的bio结构请求，首先构建一个bio list供今后使用，现在是空的，不管。然后直接进入循环，根据md alloc注册的request函数进入其中，然后首先判断是否跨chunk，(at most one chunk size ,set in
+raid0_md_run)
 	否的话直接算出dev以及偏移，然后再调用generic，这次由于biolist存在，会直接加入，然后返回raid0，这里由于split==bio，所以直接返回，然后generic中是一个循环，把刚加入的那个请求直接pop，这次用的queue的request函数是默认函数，所以直接送入实际设备的队列，然后返回。generic也返回，结束。
 	是的话（跨chunk），首先split出到当前chunk尾部的那个，和前面一样入队，这次spilit 不等于bio，所以raid0中会继续循环，把剩下的那个bio也入队，然后返回generic之后，循环pop处理两个rdev的请求，结束

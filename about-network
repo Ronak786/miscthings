@@ -1,0 +1,1 @@
+use lspci -v to see ethernet card  and the modules loaded

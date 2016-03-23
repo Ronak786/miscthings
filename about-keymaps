@@ -1,0 +1,4 @@
+use loadkeys to load keymaps ,  just add us  uk as params
+	dumpkeys will show  all key  maps  ,
+
+all keys are in /usr/share/kbd/keymaps/ ,  you can choose them

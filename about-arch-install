@@ -1,3 +1,14 @@
+about package management
+	pkgfile  file_name   ( just like  yum whatprovides )
+	
+
+about boot up 
+	BIOS  POST  , the first cpu instruction at 0xfffffff0  is located into the bios rom by north bridge when cold boot ( warm boot is in memory) ,
+		which will check basic hardware's status and select bootable media also
+	
+
+
+
 timedatectl set-ntp true    	can open the network time sync , is good
 swap   using file or device do not have performance effect,   ,  using pri=0 will make  priority  not hign
 sysctl  -a  can  show  all sysctl controlled  options
@@ -34,3 +45,10 @@ systemctl  cat  unit  (to  cat  files)
 systemctl  isolate  XXX.target  to switch to a new target
 
 journalctl  -b   , -u  filename , _PID=XXX
+
+To regain unique UUIDs of an ext2/3/4 filesystem, use tune2fs /dev/sdXY -U random on every partition.
+
+
+
+about vim
+	conf files in /usr/share/vimXX  can be directorily included  in your vimrc file by  runtime! XXX ( must include subdirs!!)
