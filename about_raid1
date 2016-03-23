@@ -1,3 +1,12 @@
 questions:
 	how raid1 set up mirrors  for all rdevs?
 	in what way raid1 process requests?
+
+
+raid1 make request中，把上头获得的bio的请求：  如果是读，就选择一个盘（会给出最大可读扇区数），然后把读的请求放在一个readbio中，然后
+generic make request下发，如果扇区不够，就再配发readbio，再选择盘，然后再分发（但是不够的时候第一次分发不是走的generic make request 
+而是加入了conf->retry-list ，然后wake 线程来做事，这个具体是怎么干的，里面会再对readbio进行分析，然后分发到generic make request吗？
+
+
+
+
