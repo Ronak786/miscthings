@@ -1,12 +1,76 @@
 use lspci -v to see ethernet card  and the modules loaded
+use ipcalc -nb XX(ip addr)  -s 1  to show the spedified ip's netmask and boradcast
 
-ip link  set XX up/down to operate network
-ip addr add XXX/netmast   broadcast XXX    dev XX
-ip route  add default via XXX
+use macchanger  or ip link  set dev XX  address XXX  to set ethernet
+	also can use in a systemd file   .link in then [Link] , also  in a udev file
 
-when clean
-ip addr flush dev XXX
-ip route flush dev XX 
+when you do each below , you must shut down all other network applications , otherwise they will conflict
+	and when needed , you MUST reboot !!!!
+
+use  ip  utils to set network manually every time:
+
+	ip link  set XX up/down to operate network
+	ip addr add XXX/netmast   broadcast XXX    dev XX
+	ip route  add default via XXX
+
+	when clean
+	ip addr flush dev XXX
+	ip route flush dev XX 
+
+
+
+use systemd-netwokd to set up network
+	enable the systemd-networkd and systemd-resolved.servive  , the first will read your conf file ,
+		and the second will resolve the dns
+	then you make a soft link of /run/systemd/resolv/resolv.conf to /etc/resolv.conf
+	then you can put your conf file in the /etc/systemd/network/ , with  .network as suffix
+	content:
+		[Match]
+		Name=XXX
+		Host=
+		Virtulization=
+
+		[Link]
+		MACAddress=
+		MTUBytes=
+
+		[Network]
+		DHCP=ipv4
+		DNS=( can set multipul)
+		
+		[Address]
+		Address=XXX/xx
+		[Roure]
+		Gateway=XX
+	
+	then you restart the service  or just reboot
+
+use dhcpcd  ( a dhcp client daemon)
+	first pacman -S dhcpcd
+	then you can launch dhcpcd  or  use systemctl start dhcpcd   or systemctl start dhcpcd@interface;  the last is recommmended
+	append  -t 0   to  wait all the time , otherwise will fail if no cable is plugged
+	the conf file is /etc/dhcpcd.conf  ,  and have hook scripts in /usr/lib/dhcpcd/dhcpcd-hooks and /usr/share/dhcpcd/hooks( this place must link a soft link to the prev place)
+		
+	you can also  set a static conf in dhcpcd.conf :   
+		static  XX(name)
+		static ip_address=xxx/xx
+		static router=xxx
+		statid domain_name_servers=xxx(dns)
+	and static as fallback
+
+		profile  XX(name)
+		static ip_address=xxx/xx
+		static router=xxx
+		statid domain_name_servers=xxx(dns)
+	
+		interface  xx
+		fallback   xx(name)   this is used for a fallback ,  if the dhcp not worked
+
+use netctl
+	copy  conf files in /etc/netctl/examples/  into /etc/netctl  and modify  , 
+		we have static  dhcp  ,  wpa  .... a lot con files
+	use netctl start  filename( no path)  to start , 
+		netctl enabel/reenable to  enable startup connection and reload
 
 if you want to do with wireless
 
