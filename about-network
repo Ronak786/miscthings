@@ -1,1 +1,17 @@
 use lspci -v to see ethernet card  and the modules loaded
+
+ip link  set XX up/down to operate network
+ip addr add XXX/netmast   broadcast XXX    dev XX
+ip route  add default via XXX
+
+when clean
+ip addr flush dev XXX
+ip route flush dev XX 
+
+if you want to do with wireless
+
+iwconfig  to see
+iw dev XX scan | less to show all access points
+and ip link set XX up to start up 
+then use wpa_supplicant   to access 
+	the passwd is encrypted by wpa_passwd
