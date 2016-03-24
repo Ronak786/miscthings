@@ -1,0 +1,71 @@
+in raid1 read:
+	first : md_write_start  usd for: flush super block
+		details:if not write -> return
+			if read only -> report bug  , return
+			if ro==2 , it's a flag of restart? , so recover needed , set to 0 ,and flush with thread , 
+				flush sync with  sync_thread
+				
+				in mddev->thread(which is raid1d): 
+					md_check_recovery( set bits and call recovery):check  not need recovery state  , then return
+						if read only , we just add spare disks and finish sync request and return
+						if we change flags , we must set did change so to notify /sys
+						if need update superblock  , update
+				     loop:
+					then flush_pending_writes in conf->pendinglist, which are nornal  writes bios
+						they will be send to disk seperately by make generic request
+					
+					then  do with  r1_bio retrylist , every loop will only extract one  r1bio reqeust 
+						check the request's flag to determineo
+						details:  if is sync , then clear bad blocks or set badblock
+					then return
+			if not ro , just set sync=0 , then set changed flag and call raid1d to sync
+			then notify  sys
+			wait until no changes , then return
+
+	second : copy bio struct into a ribio struct , 
+
+  now analyse read:
+		first we are in read_balance to  select a disk to read from( all are mirrored) 
+			no flags set in this func
+		details:
+		   traverse all rdevs
+			if recovery check point is less than the write origin , then may be overlapped,
+				we will choose the first available one to use
+			if disk is not in well to be read  state or origin is in resync , just skip
+			if we  meet a writemostly disk(which is slow) , we just choose the first one in this type
+				and only if no other type has been picked ,then test bad blocks and 
+				set available num of blocks can be read ,then continue
+			if we encounter normal disks , we test if have bad blocks
+				if first bad before start , then calculate how many bad blocks after start ,
+					we set that as the max  blocks can be read ,then continue
+				if first after start , then calculate their distance,that is the max should be read
+					and if choose first , just choose that disk , else continue
+				if no bad blocks , just assign best good blocks as the whole required size
+			after that , if havn't chosen , then if solid disks , if sequence , just choose that ,
+				else ,if satisfy some condition ,not choose yet , just set choose next idle and continue
+			if pending is 0 , just choose that,
+			compare distance ,and update the best if needed
+		    traverse over here
+		if have no best disk , choose the best nearest one
+		now we have one chosen disk , we test if it is ok to be read , if not , again begin the loop
+		update the rdev's next seq sec or seq start ,return the best disk and the sectors allowed for read
+
+		second we make some test , if rdev not exist , just return end
+		then  make a r1 bio struct  ,  if sectors not enough , we call retry and use raid1d to deal with that,
+			then again begin read from other disks(choose again)
+						if enough , just make generic request
+
+   now analyse write ( read and write are separete)
+		if pending writes are too many , wake up  raid1d to flush writes
+	        traverse all disks (by 2 times disks)
+		details:
+			if have blocked devices, break out and wait for that complete , then make sure 
+				all sync place is synced , then start the loop from the head again
+			if rdev not exist ( if in the first disks numbers(not in mirrors) , mark degrade),skip that disk
+			set write pending
+			if  rdev has unacknownalegded  block or bad , set and wait and then again loop
+			if first bad is before frist , then all must less then the bad region , and not set that rdev in r1bio
+			if first bad is after first , then all must also less than the good
+
+  
+					
