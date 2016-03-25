@@ -1,3 +1,37 @@
+what does raid1d do:
+	after flush pending writes  , then do with retry list
+	it has four  state can do things 
+		if r1bio is sync ,
+			if  write error or made good , handle sync write finished
+			else     sync_request_write
+		if not sync
+			 if error or make good , handle write finish
+			then if  read error , read narror and report error if needed
+			else  just send read request to sub devs
+
+handle_sync_write_finished : ( this will be called by raid1d ,when is in sync and we have made good(can clear bad
+		blocks ) or we have write error
+	used to be called when sync write is finished , 
+	check  if is uptodate : is , then if can clear bad blocks , just clear them
+	check   if  not uptodata and has write error , is ,  just set badblocks , if failed , report error
+
+handle_write_finished : (called by raid1d when not in sync and have made good or write error):
+	loop for every rdev
+		if made good , clear badblocks
+		if have write error ( the result bio not NULL ) , use  narror write to write and mark bad blocks
+			or mark  degrade if needed
+		then end and close write
+	sync over , sub the sync block nums and  
+	use put_buf to: first test fault flag, second  if no pendings , then set recovery needed , call raid1d ,
+			then  :  allow barrier
+
+handle_sync_write:
+	this is used to do sync write , write will be written to all synced disks
+	
+
+		
+	
+
 in raid1 read:
 	first : md_write_start  usd for: flush super block
 		details:if not write -> return
@@ -66,6 +100,14 @@ in raid1 read:
 			if  rdev has unacknownalegded  block or bad , set and wait and then again loop
 			if first bad is before frist , then all must less then the bad region , and not set that rdev in r1bio
 			if first bad is after first , then all must also less than the good
+		loop-end (this loop used to determine how many sectors can be written)
+	
+		then the second loop:
+		detail:
+			for every rdev , make a bio struct and add to the conf->pending list , then call wake up thread
+				use raid1 to flush that to disk
+		end-loop
+		if we have remain sectors not written , allocate another r1bio and go to the beginning place to write again
 
   
 					
