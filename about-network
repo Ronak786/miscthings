@@ -1,3 +1,7 @@
+about-systemd-conf files:
+	use RemainAfterExit=yes will cause the process not to be killed after run( usually systemd will wait 20s for each process to be killed )
+
+
 use lspci -v to see ethernet card  and the modules loaded
 use ipcalc -nb XX(ip addr)  -s 1  to show the spedified ip's netmask and boradcast
 
@@ -71,6 +75,23 @@ use netctl
 		we have static  dhcp  ,  wpa  .... a lot con files
 	use netctl start  filename( no path)  to start , 
 		netctl enabel/reenable to  enable startup connection and reload
+
+
+use  networknamager:
+	first  , enable and start systemd's service : NetworkManager.service  and NetworkManager-dispatcher.service
+	then you can use nmcli or nmtui(ncurses) to configure
+		in nmcli , nmcli con show  or nmcli dev   will show you the devices and connectons
+	disconnect: nmcli dev disconnect eth0
+	connect   : nmcli dev (wifi ) connect name passwork  <password>  iface devname     to connect a wifi
+	info : nmcli  dev wifi      will show all wifi infos around
+		nmcli dev show for all wired to show
+
+	nm's main conf is in /etc/NetworkManager/
+		and it has dispatcher scripts you can put in /etc/NetworkManager/dispatch.d, they will be run at connection and disconnection ( you can pass diff params) , 
+			use this to   conf vpn auto connect and automount remote
+		if you want to concern that network is actually up before sub network connections in systemd paralle situation ,  you should use NetworkManager-wait-online  in addition
+
+	
 
 if you want to do with wireless
 
