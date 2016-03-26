@@ -90,6 +90,7 @@ use  networknamager:
 		and it has dispatcher scripts you can put in /etc/NetworkManager/dispatch.d, they will be run at connection and disconnection ( you can pass diff params) , 
 			use this to   conf vpn auto connect and automount remote
 		if you want to concern that network is actually up before sub network connections in systemd paralle situation ,  you should use NetworkManager-wait-online  in addition
+	the used dhcp is dhclient  , not dhcpcd , can be changed in the conf filet
 
 	
 
