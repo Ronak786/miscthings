@@ -2,3 +2,40 @@ how to write udev rules:
 	use  udevadm info  -n  devicename   	to get dev infos ,
 	then write file in /etc/udev/rules.d/  ,  when try to match , use   KERNEL=="xx", ATTR{xx}=="xx" ,ENV{xx}=="xx" , 
 						when try to assign  , use SYMLINK+="xx"
+	SYMLINKS or name can be make in one subdir of /dev , the dir will be made automatically
+
+when you write rules , use  udevadm info -a -p xxx to get all needed  attributes , but  do not use more than 1 parent's attrs together
+	only one device and one parent one time is available
+
+in udev , all rules will be tried , so ,high number will be done  latter and have the latest priority
+
+
+all disks  are default made links  by udev in /dev/disk/by-id  ,including all partitions
+
+
+udev rules  , NAME is the name you want to change from kernel name KERNEL
+		SYLINK is the symbol link from the NAME or KERNEL
+
+in udev , KERNEL and KERNELS  are different
+	the former is the name of the device ,the latter is the name of the parents of that device or just himself , 
+		others like  ATTRS  SUBSYSTEMS DRIVERS  are the same
+
+we have printf-like  string to be used , see man page for detail ( %k %n %p %% ....)
+we have shell-like  * ? []  can be used to match also
+
+
+we can use PROGRAM="xxx" , SYMLINK+="%c" , to run a external program , and set the result as the symbol link name
+we can use RUN+= to run programs , the difference between this ans above is that
+	PROGRAM is run when device node havn't been created  , and RUN is run when device is created,
+	do not forget udev will terminate ,so  fork is necessary if is a long-term program
+
+we can set ENV{XXX}=XX , then  use that env later in another ruler , so match is more accurate
+
+the OPTION is useful  sometimes , see manpage
+
+
+something  to write :
+	in order to make disk match their  slot , just arrange scsi interfaces and cable lines to the slot , 
+		then use udev rules the KERNELS=host?(number)  to  match , that will work  , I beleive!
+
+
