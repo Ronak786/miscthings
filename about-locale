@@ -1,0 +1,14 @@
+the locale is local  languages displayed
+	first  compiled by locale-gen with conf file as locale.gen in /etc
+	then check by locale -a 
+	then you choose one as default  and set  LANG="XXX" in /etc/locale.conf or just localectl set-locale LANG=XXX
+
+
+differences  among keymaps  font  locale
+	the keymaps  control  the keys input
+	the font  controls  the font type  utf8 bge ...
+	the locale  controls  which  language is displayed , is the most  overalled
+
+
+
+	

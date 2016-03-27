@@ -1,5 +1,24 @@
+how to install arch:
+	insert the arch iso  by usb, and boot
+	set time , make partitions , mount partitions on /mnt and /mnt/*
+	use pacstrap /mnt  base  XX XX to install the root
+	genfstab -p /mnt >> /mnt/etc/fstab to generate fstab
+	arch-chroot /mnt
+	echo > host-name > /etc/hostname
+	ln -s /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime
+	use locale-gen to generate  the locales can be used in the current pc 
+		details:  uncomment locales in /etc/locale.gen, and run locale-gen ,
+			which will compile those  in /usr/share/i18n/locale/ accroding to /etc/locale.gen
+			and put the binary can be used by C library setlocale in /usr/lib/locale/
+		then we set default in /etc/locale.conf
+		we can override in the ~/.conf/locale.conf
+	
+
+	
 about package management
 	pkgfile  file_name   ( just like  yum whatprovides )
+
+	more details see the man pacmah and arch wiki 
 	
 
 about boot up 

@@ -92,6 +92,8 @@ use  networknamager:
 		if you want to concern that network is actually up before sub network connections in systemd paralle situation ,  you should use NetworkManager-wait-online  in addition
 	the used dhcp is dhclient  , not dhcpcd , can be changed in the conf filet
 
+	networkmanager has its own wifi setting and plugin  libs
+
 	
 
 if you want to do with wireless
