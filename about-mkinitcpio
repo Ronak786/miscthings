@@ -1,0 +1,21 @@
+the main mkinitcpio  conf file is /etc/mkinitcpio.conf
+
+in it:
+MODULES: modules loaded before anything else done, so add all modules you needed , suffix ? can shut down errors when no module found
+
+others can also seen in /etc/mkinitcpio.conf
+
+every hook in runtime (/usr/lib/initcpio/hooks) has a build hook in the build directory
+	when mkinitcpio , the build hooks will be run , can add runtime hooks into the image
+	then runtime has three types : pre , run , late ,   and cleanup  when image is to down
+
+
+now analyse some  hooks:
+build hooks;
+base: add busybox and kmod and all their links , add blkid , mount and switch_root(busybox's may not work well)
+	add init and init_function (have functinos init will use)
+	add modprobe option for usb , echi must before uhci and ochi
+
+udev: 
+
+
