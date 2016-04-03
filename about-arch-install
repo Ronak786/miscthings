@@ -71,3 +71,8 @@ To regain unique UUIDs of an ext2/3/4 filesystem, use tune2fs /dev/sdXY -U rando
 
 about vim
 	conf files in /usr/share/vimXX  can be directorily included  in your vimrc file by  runtime! XXX ( must include subdirs!!)
+
+
+
+about systemd 
+	the kernel requirement are  in /usr/share/systemd/README

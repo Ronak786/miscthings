@@ -1,0 +1,5 @@
+install the gnome , and gdm , switch to graphical.target 
+if you want to use plymouth , install from AUR , then ,it will replace gdm with gdm-plymouth(same name)
+
+
+use gsettings to manager gnome settings
