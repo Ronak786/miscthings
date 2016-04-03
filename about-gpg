@@ -44,3 +44,6 @@ available  gpg  sites:
 		this will increase the authority of that public key
 	edit-key:
 		gpg --edit-key XXX (name) to edit some trust level and others of the public key
+
+	specify  users:
+		gpg -u  user-used-to-decrypt   -r  user-used-to-encrypt

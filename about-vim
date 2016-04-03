@@ -35,3 +35,13 @@ use vundle:
 	then  parse the default conf file , then you start a vim
 		enter PluginInstall , wait for done , that's all!!
 	all syntax in vundle is in the default  conf file , can download from  a lot of places
+
+
+control window:
+	:vs  :sp  used to split  vertical or horizon ,   
+	use ctrl-w as a  prefix ,  
+	then:
+		ctrl-w ,switch 
+		j , k , l, h ,switch  up down left right
+		J K L H will change current windown to up down left right 
+		:o (open) :close (close) 

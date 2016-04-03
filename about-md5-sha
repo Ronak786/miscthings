@@ -1,0 +1,14 @@
+md5sum is used to check if the tranferred file is in intergrity
+
+use md5sum XX > file  to generate a md5 file , then tranport that file with the source file
+
+on the other computer , use md5sum -c  md5file  , it  will calculate the md5 code of the file 
+	specified in the md5file , and compare with the md5 code in that md5file ,
+	with --status , it will  no output anything ,and you use echo $? to get result 
+	(can be used in scripts)
+
+
+
+sha1sum sha256sum sha512sum
+	like  md5sum , can be more security  , if used as the password authencation
+	
