@@ -1,0 +1,44 @@
+just some review
+
+cat:
+cat <<here  > file          or    echo "\
+XXX 					XXX " > file  all ok
+here
+
+
+dd: use status=progress to make you can see verbose
+
+redirect:   &>  is used as  > file 2>&1  
+		|& is used short for  ls -yx 2>&1 | grep xXX
+	M > N  , M >& N  : both meas  M is redirected to N , so every thing output to M will not into N
+	M < N  , meas  all want to get input from M will now get the data from N ,ususlly used in exec  3<>file
+	exec  3>&- , used to close  that fd
+
+	note   ls -yx  2>&1  >>file  
+	and    ls -yx  >> file 2>&1  are different , the former  will direct  stderr to the current stdin , and the origin stdin to file , 
+		so , now stderr is in stand output
+
+locate : use updatedb , and maintain a database , but that is not used anymore I think , because can not be up to date
+	and you can simply  find / -print  into a file and use grep to do faster
+
+find : procedure:
+		descend through dirs , match files with your cmdline ; do stuff with them
+		-print is default if no other is specified but you should explicitly write that(recommended)
+	-a  -o	
+		in find , we can use () to unify multiple conditions into one ,eg. find . \( -name '*.mp3' -o -name '*.jpg' \) -name '*.ppt' -print
+			then first two are in or state , and together with the third in the "and" state
+	-path
+		it is said that -path will match dirs and -name will only match  files ( but I don't think so)
+			and  we can use     find . ! -path "*XX*"  to get the inverse ( path including the ./ , so that must be include!!)
+
+	-mtime -newer
+		find . -mtime +30(30  -30)  means 30days ago , 30days exactly , in the recent 30days
+		-newer file , newer than the file's touch time
+	-size  +20  20  -20 , +20c , the c means use bytes , not blocks
+
+	-exec {} \;
+		this used as an action when matching everytime ,applied to one file
+	-exec bash -c 'xXX'  _ {} \; 
+		you exec a bash , the _ is used , so all filenames matched will be $1 as a param of the bash scripts , 
+			which will avoid  shell expand of filename in $0 if  _ is not applied
+	

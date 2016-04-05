@@ -1,0 +1,65 @@
+systemctl:
+	systemctl poweroff / reboot/halt/suspend/hibernate/hybrid-sleep/rescue
+
+	systemd-analyze  blame/  critical-chain  XXX.service
+
+	hostnamectl  set-hostname  xxx
+	localectl    set-locale LANG=xxx/ set-keymap 
+	timedatectl   set-ntp  on  /list-timezones /set-time
+	loginctl list-sessions /list-users /show-user
+
+
+	systmectl --list-units:
+		--all  including  failed ones
+		--all --state=inactive
+		--failed
+		--type=service
+
+	systemctl  status /  is-enabled /is-active / is-failed
+
+	systemctl  start/stop /restart/ kill(kill all child) / reload/ show (show attributes)   XXXunits
+	systemctl  daemon-reload
+	systemctl  show -P XXX   xxx.service  (show specific attr)
+	systemctl  set-property  xxxx   aa=bb   (set attr of service)
+
+	systemctl  list-dependencies (-all)  XX.service(target) can list all dependencies !!)
+
+	systmectl  list-unit-files    list all conf files
+
+once modified :
+	systemctl daemon-reload ; then  systemctl restart XXX.service
+
+	systemctl get-default  / set-default / isolate xx.target
+	
+
+journalctl
+	-k  see kernel  infos only
+	-b -0  / -1 , this boot or last  boot
+	-f  like tail -f
+	-n num  ( last num lines , default 10)
+	--since XXX or  --since="xxx"
+	--until xxxx
+	XXX(process)  or _PID=XX   , see only  that process's journal
+	_UID=
+	-u  specify  unit (can specify multiple)
+	-p  level info
+	--no-pager  not use less
+	-o json-pretty  special output format
+	--disk-usage  show  this journal's disk usage
+	--vacuum-size=XXX  
+	--vacuum-time=XX  set  journal's max size and save time
+
+
+systemd.unit
+	Wants Requires , the former is recommended , when the rely failed, the current service will also run
+	ExecStart=XXX
+	ExecStartPost/Pre/StopPost/Pre=-/usr/bin/exec  , the "-" will stop all errors from turning up
+	EnvironmentFile=  provide environments
+	RemainAfterExit  used to remain the service even if the ExecStart program has stopped , in this way
+		if you want to control other actions , you still can use systemctl actions!!
+	
+	[Install]
+		WantedBy , this controls  systemctl enable 's actions
+	
+
+

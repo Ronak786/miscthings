@@ -1,0 +1,49 @@
+gnugp  will also  install  pinentry  used as an passphrase entry
+
+$GNUPGHOME default to your home dir , is where   .gnupg/ dir placed ,
+	in which are gnupg   conf files
+
+you must use a login  user name when you want to create a gpg , not just su - user ,
+
+
+how to use gpg:
+	1 gpg --full-gen-keys  to generate your own key paris (public and private)
+	2 gpg --armor  --export user-id   --output file.key  to export as  readable  of publickey
+		the private also can be exported by --export-secret-keys
+	3  scp that public to another people
+	4  in the another computer , gpg --import XXX.key
+	5  then  in computer B , write a file , use gpg --encrypt  --armor -r user-id  filename
+	6  send that encrypted file to A , 
+	7  in A , use gpg --decrypt  file.asc    > file  to  recover file info into a new file , 
+	8  that's all
+
+some operations about gpg:
+	use gpg --list-keys  can see all gpg keys , the id after  "2048R" is the key id can be used 
+
+available  gpg  sites:
+	pgp.mit.edu  , you can set in ~/.gnupg/dirmngr.conf , then use gpg --send-keys XX to send
+
+	generate a revoke file , in case of you want to cancel the public key in the keyserver : gpg --gen-revoke  key-id  -o  file
+	export:
+		gpg --export    /  --export-secret-keys
+	encrypt:
+		gpg -e -a(ascii) -r name filename  	
+	decrypt:
+		gpg -d XXX
+	signature:
+		gpg -s ( can be used along with  -a -e -r)
+	
+		gpg -b ( detach sig) 
+		gpg --verify XX.sig  XX  ( verify  signature is right)
+		
+	fingerprint:
+		receive a public key , import , then  gpg --fingerprint XXXX  to get fingerprint
+		then call the author to authenticate that fingerprint ,
+		then you can use your private key to sign that  publickey: gpg --sign-keys XXX
+		others will use  gpg --check-sigs  XX to see your signs , 
+		this will increase the authority of that public key
+	edit-key:
+		gpg --edit-key XXX (name) to edit some trust level and others of the public key
+
+	specify  users:
+		gpg -u  user-used-to-decrypt   -r  user-used-to-encrypt

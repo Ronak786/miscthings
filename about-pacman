@@ -1,0 +1,51 @@
+pacman -S  like dnf install   reinstall  upgrade
+pacman -Rs(the s meas recursive , will remove dependency also)      dnf remove
+	pacman -D --asexplicit  will  mark some package as  explicitly  installed , so will not be removed by -Rs as an only  dependency
+	pacman -S --asdeps (install as dependency)
+
+pacman -Ss     dnf search
+pacman -Syu     dnf upgrade  
+pacman -U     update local packages
+lddd    fix  broken deps
+pacman -Sw      dnf download  (not install)
+pacman -Qdttq  | pacman -Rs -     remove  not needed orphan  dependencies
+
+makepkg -o will download  PKGBUILD's requeired  source but not build(just pre build)
+
+edit /etc/pacman.conf to ignore  specific  package or group's  upgrade
+			Holdpkg also used for  interactive conform before remove pkg
+
+all packages infos are in /var/lib/pacman/local
+
+pacman -Qu  check  whether packages are not up to date
+
+pacman -Sl (repo) list available  packages 
+pacman -Ql   pkg     list files in a pkg
+pacman -Qpl  list from a pkg
+pkgfile  -l  pkg   list files in a pkg in sync repos
+pkgfile -s  file   dnf whatprovides
+pacman -Qo      local  whatprovides
+pacman -Sg see groups
+
+pacman -Sii  XXX  will show  which packages will depend on this  package
+pacfile  XXfilename(pkgfile -s name)   will show  this file belongs to which package
+
+testdb verify  dependencies
+
+pacman -Q  list all installed
+pacman -Qm  list installed but do not in any repos  (eg. in AUR)
+pacman -Qs  search in local repo
+
+/var/log/pacman.log  pacman's log
+pacman -Sc(c)  remove packages no longer installed  from cache , use twice to remove all from cache
+
+the local  cache dir is /var/cache/pacman/pkg , you can copy your own local pkg there
+
+pacman -Sy  will fresh and  update the local datebase
+
+/etc/pacman.d/mirrorlist is mirrorlist
+
+pacman -Qk(k) will check pkgs
+
+pactree  XXX   list the dependency tree
+pactree -r XX  list pkgs who needs the pkg

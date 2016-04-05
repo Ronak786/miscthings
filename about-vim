@@ -1,0 +1,47 @@
+user dirs and files:   ~/.vimrc   ~/.vim/
+global  dirs and files  /etc/vimrc   /usr/share/vim/
+
+
+add  features :    in vimrc  , add  :   runtime! vimrc_example.vim  ( in /usr/share/vim/)
+
+:filetype  plugin  indent on  :   can be split into three  filetype on ,  filetype plugin on  filetype ident on , they are used
+	for diff type of files'  diff settings 
+
+all default  env vars can be seen by  :h $VIM   :h $VIMRUNTIME  :version  
+
+details see the root's vimrc  : comment there
+
+vimdiff , will show you two windows , you can modify , but not merge , use   ctrl+w+w to switch between
+
+jump line  use :  linenumber+gg 
+
+
+
+about to use  cscope :
+	install cscope , and download the default setting: mkdir -p ~/.vim/plugin
+								wget -P ~/.vim/plugin http://cscope.sourceforge.net/cscope_maps.vim
+
+	in the dir including files , find . -type f -print | grep -E '\.(c(pp)?|h)$' > cscope.files
+	then  cscope -bq ,   
+	if you want to have cags in any dirs , set the $CSCOPE_DB  env  to that dir
+
+about to use taglist 
+	just intall , the .vim file will be in the system default place ,you can use with  :TlistToggle 
+		you can also set shortcuts , like in root's vimrc
+
+
+use vundle:
+	 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+	then  parse the default conf file , then you start a vim
+		enter PluginInstall , wait for done , that's all!!
+	all syntax in vundle is in the default  conf file , can download from  a lot of places
+
+
+control window:
+	:vs  :sp  used to split  vertical or horizon ,   
+	use ctrl-w as a  prefix ,  
+	then:
+		ctrl-w ,switch 
+		j , k , l, h ,switch  up down left right
+		J K L H will change current windown to up down left right 
+		:o (open) :close (close) 

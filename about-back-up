@@ -1,0 +1,4 @@
+tar ,   tar -zcvf  XX.tgz   /   --exclude=xxx  --exclude=XXX  --exclude=XX.tgz( not include itself) , (proc sys  tmp are not necessary)
+	use -P to include the absolute  path (default not include)
+rsync  is just like  scp and cp , just use it
+	and can be cooperated with  cron  and systemd.path( used to monitor changes with files and notify  the corrisponding service file to run

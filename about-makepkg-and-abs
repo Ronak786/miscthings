@@ -1,0 +1,11 @@
+first ,install abs 
+second  , run abs 
+third  , copy the source you want to install from  /var/abs/XXX  into your own dir
+fourth:  DO NOT USE  ROOT PERMISSION!!!
+
+fifth, in your own build dir , run  makepkg -s , ( if prompted that you have no key )
+	use  gpg --keyserver hkp://pgp.mit.edu --recv-keys  XXx  to import key( as a no root  user!!!)
+ gpg --keyserver hkp://pgp.mit.edu --recv-keys  
+sixthv  us  pacman -U XXX.pkg.tar.xz to install
+seventh:  use pacman -R XXX  to remove
+then ok gpg --keyserver hkp://pgp.mit.edu --recv-keys  

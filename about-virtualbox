@@ -1,0 +1,8 @@
+virtualbox:
+	you must install the kernel headers to enable the virtualbox modules to be built and insert
+	use dkms you can easily make those modules
+	
+	you can use cmdline apps like VBoxSDL  (only lauch and change settings)
+		use cmdline apps  like  VBox Headless only  create lauch and config  vbs
+		use  qt  for gui
+		use  phpvirtualbox to administrator  on webinterface
