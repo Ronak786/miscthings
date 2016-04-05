@@ -1,3 +1,10 @@
+write before all:
+	in run , wake up thread , will wake up the registered thread : rai1d
+	in raid1d , md_check_recovery will be called
+	in that , md_start_sync called
+	in that , md_do_sync registerred and then be called ( every time in this func)
+
+
 what does raid1d do:
 	after flush pending writes  , then do with retry list
 	it has four  state can do things 
@@ -108,6 +115,7 @@ in raid1 read:
 				use raid1 to flush that to disk
 		end-loop
 		if we have remain sectors not written , allocate another r1bio and go to the beginning place to write again
+	now over
 
   
 					
