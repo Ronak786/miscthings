@@ -1,0 +1,2 @@
+when compile  sw kernel   with cross compiling:  must put in the rpm macros in sw64 and defautl  place, then modify  a place about
+	array  syntax problems in perl 
