@@ -1,0 +1,30 @@
+get source , from git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+	then you can git pull to get the newest everytime
+
+patch:   patch -p1 < ../xxxxx.patch
+
+CONFIG_IKCONFIG_PROC to have /proc/config.gz
+	use zcat to cat and redirect into file
+
+about compile:
+	use make > /dev/null to omit normal output
+	use distcc  and ccache  and make -jn to imporve the efficiency of compile
+
+c libs:
+	use  self contrusted  c libs 
+
+inline funcs:
+	static inline XXX ,  safe  readability than  macros , 
+inline assembly
+	asm volatile(XXX)
+likely and unlikely:
+	help kernel to optimise
+no mem protection
+kernel stack  : 
+	fixed size , not dynamically
+
+sync and protection of race
+
+process  fork  -> clone
+	
+
