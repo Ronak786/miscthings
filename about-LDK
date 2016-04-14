@@ -26,5 +26,28 @@ kernel stack  :
 sync and protection of race
 
 process  fork  -> clone
+
+every process has a process descriptor -- a structure
+	in which we have a struct thread_info  , at fixed place of the descriptor
+	in which we have a pointer of task_struct  ,we will refer to this frequently 
+	the process descriptor is just under the kernel stack of each process
+		and I think should be 8k alligned ( 64bit ， 4k when 32bit)
+
+
+we traverse by  next and prev of struct task_struct or the macro of process iterator
+
+when creating , we use fork and exec when needed , we insist  copy on write , so only  the page table and a process descriptor
+	needed to be created when fork , then all pages read only , before any write happens , that time , we alloc a new page
+
+fork/vfork/_clone -> clone(pass in flags identifies which resoruce to share)  -> do_fork -> copy_process
+	in copy_process :
+		copy the process strcuct , 
+		check not overflow the maxmum size of processes of the usef
+		set condition to uninterruptible
+		set flags internally
+		set flags according to the clone() flags ( which resource to share)
+		return to do_fork with address of new child
+		then choose child to run first
+		alloc pid for child
 	
 
