@@ -51,3 +51,22 @@ fork/vfork/_clone -> clone(pass in flags identifies which resoruce to share)  ->
 		alloc pid for child
 	
 
+
+
+in vfork :
+	we just fork but not copy even page addressed , parent wait child to exec or exit , accept a signal then continue 
+		until that happens ,parent blocked , (differentiate from above by a special flag in clone's flag)
+
+
+
+about threads:
+	threads are just the same as processes , happen to share some resourceses
+	use clone to  set seperate flags
+
+about kernel-threads
+	kernel-threads are processed only run in kernel space , can also be scheduled and preempted
+	use kthread_create or kthread_run
+
+
+
+
