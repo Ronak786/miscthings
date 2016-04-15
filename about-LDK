@@ -15,10 +15,13 @@ c libs:
 
 inline funcs:
 	static inline XXX ,  safe  readability than  macros , 
+
 inline assembly
 	asm volatile(XXX)
+
 likely and unlikely:
 	help kernel to optimise
+
 no mem protection
 kernel stack  : 
 	fixed size , not dynamically
@@ -33,6 +36,11 @@ every process has a process descriptor -- a structure
 	the process descriptor is just under the kernel stack of each process
 		and I think should be 8k alligned ( 64bit ， 4k when 32bit)
 
+about process's status
+	uninterruptible means :
+		in sleep 
+		the sleep can not be interrupted ; then can not be cancelled
+		
 
 we traverse by  next and prev of struct task_struct or the macro of process iterator
 
@@ -68,5 +76,13 @@ about kernel-threads
 	use kthread_create or kthread_run
 
 
+about exit:
+	set flag , release mm and fs statics ,save exit code
+	notify parent , reparent children to group's other thread or the init
+	change to zonbie status , 
+	call schedule ( never return)
+
+about wait
+	detach from task list,notify if orphan , release all resources including thread_info and task list
 
 
