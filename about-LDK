@@ -86,3 +86,9 @@ about wait
 	detach from task list,notify if orphan , release all resources including thread_info and task list
 
 
+about scheduler:
+	we have real-time processes    and    normal processes ,   nornal one has  nice value , real-time has priority
+		(nice value not 等差数列 )
+	CFS  do with proportitions , when you have used little , then next time you require , you may be 
+		sched to run immediately (if same priority) ,
+	
