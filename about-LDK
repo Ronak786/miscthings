@@ -92,3 +92,31 @@ about scheduler:
 	CFS  do with proportitions , when you have used little , then next time you require , you may be 
 		sched to run immediately (if same priority) ,
 	
+
+how CFS works
+	we have a scheduler run  when new process into runable status or blocked or periodically by the system timer , 
+
+	update_curr:
+		this func used to update time of a specific schedule entity( a task struct sometime),
+			and the whole time of that cfs run queue
+	
+	enqueue_entity
+	dequque_entity:
+		used to manipulate red-black tree and the runnable  process queue. when block  exit  start or
+			periodically
+
+	in scheduler():
+		pick next task -> pick next entity (now you get the next process to run)
+
+switch from sleep and runnable:
+	when wait or have lock, you sleep( mark sleep , add into wait queue , delete from rb tree )
+	when  wake up , inverse
+	
+	we have interruptable and uninterruptable sleep , former will wake up when accept a signal
+
+
+	prepare sleep:
+		usually in a loop to avoid indefinite sleep(possibly), and deal with conditions to 
+			wake up in the loop conditon or inner the loop
+		add wait queue->prepare_to_wait -> loop {scheduler  check} -> finish_wait (the dequeue of
+			current process is in schedule() ,in deactivate_task
