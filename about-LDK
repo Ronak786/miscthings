@@ -165,7 +165,30 @@ sched_rr  sched_fifo   sched_normal
 note;
 	nice and priority  use the same  region value but different values
 	we have some funcs used to set and get real-time or nice values of processes(in LDK page 65)
-		we can even set which cpus the process must run on and must not run on
+		we can even set which cpus the process must run on and must not run on 
+		and we can yield cpus when needed (same priority  real-time will one add to the end of array)
+	
 
 
 
+
+
+SYSTEM CALLS
+	user space interactive with kernel through this
+
+	system calls wrapped by C library , which implements most of POSIX ,
+		kernel only provide machanism , not policy
+
+about asmlinkage
+	used to notify that this function will receive its params from stack,not register 
+	 used only in system call definitions , but unify all archs' syscall convertion
+	when  us to kernel space , pushd to stack , then kernel can directly use stack
+
+system call naming
+	abc(user) ->  sys_abc(kernel)
+	
+	every syscall have a number attached to it , can not change ,or other api will fail!!(in arch asm  )
+	linux syscall fast  due to fast context switch and simple syscall implement
+
+trap into kernel
+	to run kernel code , must use exception to trap into kernel , use int $80  to trigger system_call()
