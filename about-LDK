@@ -120,3 +120,24 @@ switch from sleep and runnable:
 			wake up in the loop conditon or inner the loop
 		add wait queue->prepare_to_wait -> loop {scheduler  check} -> finish_wait (the dequeue of
 			current process is in schedule() ,in deactivate_task
+
+	wake up:
+		programs can call wake up themselves , -> try-to-wake-up -> activate_task(will enqueue task)
+		but wake up not means ready to run ,so condition must be checked
+
+	schedule:
+		we set need_sched flag to signify kernel to schedule (  set when wake up or schedule_tick(when need
+			preempt) , and flag will be checked when returning to user space or return from interrupt , 
+			the flag is in per process thread info struct
+
+	preemption:
+		user-space-preemption:
+			occur when return from interrupt context or kernel space , check need_sched is set , then call schedule()
+		kernel-preemption:
+			
+		
+	
+		
+
+here comment:
+	通常在一个函数或者一个循环的开头部分处理结束等特殊情况，然后才是正常的流程情况"
