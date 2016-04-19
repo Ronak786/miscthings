@@ -134,10 +134,38 @@ switch from sleep and runnable:
 		user-space-preemption:
 			occur when return from interrupt context or kernel space , check need_sched is set , then call schedule()
 		kernel-preemption:
-			
+			when return from interrupt handler , before into  kernel space(will check the preempt count)
+			when preemp count == 0 , (during unlock , will call the check)
+			if call schedule
+			if a task in kernel block	
+
+		(even in CFS we have time slice ,but it is  given by schedule , and every time schedule(
+			when above environments ) that vruntime(timeslice) will add , and will choose the 
+			least one to run (use red_black tree))
 		
 	
 		
 
 here comment:
 	通常在一个函数或者一个循环的开头部分处理结束等特殊情况，然后才是正常的流程情况"
+
+
+sched_rr  sched_fifo   sched_normal
+	the latter one is nornal processes , use nice value ( in the same region of the priority value ,so 
+		do not have meanings at the same time)
+	the former two are real time schedulers , fifo  will run every real-time pros one after one ,
+		until one give up the process(no preemption , except when higher priority real-time pro can
+			preempt it)
+		round-robin will run every  same priority real-time pro in a timeslice , but only when same
+			priority, low ones can not preempt high ones( until all high ones over, low ones can
+			run)
+		
+	until all real-time have blocked or exited , normals can run
+
+note;
+	nice and priority  use the same  region value but different values
+	we have some funcs used to set and get real-time or nice values of processes(in LDK page 65)
+		we can even set which cpus the process must run on and must not run on
+
+
+
