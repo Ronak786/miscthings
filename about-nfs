@@ -1,0 +1,8 @@
+first  stop the firewalld
+then  edit /etc/exportfs :
+	mount-dir   ip:netmask(permission(rw , no_root_squash)
+
+then service rpcbind restart
+     service nfs restart
+then you can mount at client 
+	with  mount -t nfs ip:mount-dir   your-mount-dir

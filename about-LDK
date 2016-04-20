@@ -192,3 +192,8 @@ system call naming
 
 trap into kernel
 	to run kernel code , must use exception to trap into kernel , use int $80  to trigger system_call()
+
+system calls 
+	should be defined with explicit destinations 
+	use  SYSTEMD_DEFINE to define
+	the system call declare and are in the arch dirs ,because they are not generic to all archs 
