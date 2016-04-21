@@ -213,5 +213,25 @@ LIST:
 QUEUE:
 	we have enqueue and dequeue	
 	allocated by kfifo_alloc (allocate a queue with specified size)
-		
+	or kfifo_init  DECLARE_KFIFO  INIT_FIFO (staticly) 
+		(all size must be a power of 2)
+	use kfifo_in  kfifo_out  kfifo_out_peek(not remove) to enqueue  dequeue or just peek)
+	there are also  size and used /available  size's func of the queue
+	free with kfifo_free( kfifo_init use your own buffer , so free yourselves)
 	
+
+MAP: (only used to associate a number with pointer , (void*))
+	in kernel is called idr( a structure)
+	idr_init to init
+	to insert a new map relative:
+		idr_pre_get()-> idr_get_new/idr_get_new_above
+	the former will make resize preparetion , the latter will actually make associations and return the id
+		
+	use idr_find to return the ptr  of the UID given	
+	use idr_remove to remove  and  idr_remove_all to remove all in the map array
+	use idr_destroy to destroy the array(but already allocated uid spaces will not free , so call idr_remove_all before this!)
+
+TREE
+	binary tree , binary search tree ,  red-black tree , 
+	then last one used in kernel , always ensure that any node's  longest child no more than double of the shortest
+		child , (why do so, because cheap to realize , 
