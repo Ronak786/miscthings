@@ -197,3 +197,21 @@ system calls
 	should be defined with explicit destinations 
 	use  SYSTEMD_DEFINE to define
 	the system call declare and are in the arch dirs ,because they are not generic to all archs 
+
+
+
+KERNEL_DATA-STRUCTS
+LIST:
+	use generic  list , struct list_head ,  have next and prev two members , 
+	this list is embeded into the true struct to be linked , referred by list_entry 
+		and you can iterate by list for each entry / list_for_each_entry_reverse(every time return
+			the next one,not the current one)
+		but this is not proper for traverse while delete , should use list for each entry safe
+	manipulate by  list add list del  list splice ( add one list into the other one)
+
+
+QUEUE:
+	we have enqueue and dequeue	
+	allocated by kfifo_alloc (allocate a queue with specified size)
+		
+	

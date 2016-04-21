@@ -17,3 +17,16 @@ SAMBA: usd to share linux dirs to  windows
 				writable = yes
 	smbpasswd -a samba
 	then service smb restart
+
+
+iscsi
+	server
+	follow the scst-howto to start server
+	client 
+		first install  iscsi-initiator-utils 
+		then  iscsiadm --mode discovery --type sendtargets --portal 192.168.1.221  to search
+		then   iscsiadm --mode node --targetname targetname --portal    192.168.1.221:3260 --login  to add 
+			(target name is the name the prev instruction outputed)
+		then you can see block devices
+		use  iscsiadm --mode node  -U all to remove disks
+	
