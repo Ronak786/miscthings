@@ -285,6 +285,19 @@ QUESTION:
 		if set , call schedule() , 
 	but it also said interrupt handler can be interrupted by another interrupt,then if return from the second
 	interrupt ,then whether rechedule should happen or not ?
+
+	PROCFS
+		in /proc/interrupts we can see  cpus , received interrtupts ,controllors and using devices
+	
+	disable from process:
+		process can disable interrupt(also disable preemption at the same time) , 
+		also can have lock to prevent other porcesses from accessing same value
+
+		use local_irq_disable local_irq_enable  local_irq_save/restore  to  close or open interrupt
+			the save is better than disable due to its saving of the previous value
+			ensure the restore  ( only disable the current cpu!!)
+		before 2.4 we have cli()  sti() as  global lock , but now deprecated , because not effecient,
+		dirver writers must care of the lock and sync
 	
 	
 	
