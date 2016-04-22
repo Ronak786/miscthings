@@ -298,6 +298,13 @@ QUESTION:
 			ensure the restore  ( only disable the current cpu!!)
 		before 2.4 we have cli()  sti() as  global lock , but now deprecated , because not effecient,
 		dirver writers must care of the lock and sync
+
+	we can disable a specific interrupt line on all process use  disable_irq  ,(is nested with enable_irq),when shared(lines),
+		should not disable (so now pci  devices should not use)
+		
+		the in_irq  in_interrupt return nonzero if in interrupt context , difference is that the latter one 
+			including bottom half portions
+	
 	
 	
 	
