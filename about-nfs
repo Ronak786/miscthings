@@ -30,3 +30,8 @@ iscsi
 		then you can see block devices
 		use  iscsiadm --mode node  -U all to remove disks
 	
+
+	about  automount:
+		in fstab  the mount option is _netdev !!!
+		in /etc//etc/iscsi/initiatorname.iscsi   ,add the target name of the device-target
+		then enable iscsi.service , then ok
