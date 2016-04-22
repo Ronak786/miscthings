@@ -35,3 +35,5 @@ iscsi
 		in fstab  the mount option is _netdev !!!
 		in /etc//etc/iscsi/initiatorname.iscsi   ,add the target name of the device-target
 		then enable iscsi.service , then ok
+	device lookup: iscsiadm -m node --login
+	device forget: iscsiadm -m node -U all
