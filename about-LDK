@@ -235,3 +235,60 @@ TREE
 	binary tree , binary search tree ,  red-black tree , 
 	then last one used in kernel , always ensure that any node's  longest child no more than double of the shortest
 		child , (why do so, because cheap to realize , 
+	rbtree do not implement  insert and find , this will be done by  the developer themselves , because effcient
+
+
+INTERRUPT 
+	interrupt used by hardwares to notify  processor , then it notify kernel , 
+	it run in a interrupt context , can not be blocked , used to respond the hardware then tell it to
+		continue to work
+
+	workflow:
+		network card has data , signify the interrupt controller , 
+		controller check if not masked , signify processor , which check if that pin not disabled
+		signify kernel , kernel run into special address the do_IRQ func ,the interrupt handler registerd
+			by the card copy data from nic buffer to main memory , then return, other work continue
+				all others should be done by nic( process data) will be done latter in the 
+				bottom half of the procession
+
+	details:
+		once processor get signal , it jump to special place corresponding to each interrupt line,
+		now kernel can calculte the line number,  then it save registers and call do_IRQ , which
+		check validaty and call  handler  , then return to original special entry point;
+		which jump to ret_from_intr ,
+		then now interrupt handler is over , it will check whether schedule is needed,
+		if so , schedule , if not , just restore register and return
+			
+	drivers register handler and receive an irq number   using request_irq  ,it can sleep , so
+		should not be used in interrupt context , should register after initialize hardware
+	when free , use free_irq , this will free the unregister the handler , also should specify the
+		unique identifier when the interrupt line is shared(must call from process context)
+	the interrupt handler is intr_handler()
+	
+	note: the interrupt handler need not to be reentrant , when running , the current interrupt line 
+		is disabled on all processors(others may not if IRQF_DISABLED not set )
+	     
+	when share same interrupt line:
+		set share flag , also handler must have ability to distinguish its own device
+		when invoked on a shared line , all handlers on that line will be invoked to try,so
+		distinguish is important	
+
+	interrupt context:
+		cat not sleep , nor  reschedule , block 
+		interrupt my happen when another line's interrupt is being executed
+		interrupt stack 2.4 in interruptted process's context , 2.6 in individule processor's space
+			should not care
+
+	
+QUESTION:
+	the book said when return from interrupt , it will check rechedule is needed(need_sched flag set or not)
+		if set , call schedule() , 
+	but it also said interrupt handler can be interrupted by another interrupt,then if return from the second
+	interrupt ,then whether rechedule should happen or not ?
+	
+	
+	
+
+
+
+	
