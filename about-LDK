@@ -286,7 +286,8 @@ QUESTION:
 	but it also said interrupt handler can be interrupted by another interrupt,then if return from the second
 	interrupt ,then whether rechedule should happen or not ?
 
-	PROCFS
+
+PROCFS
 		in /proc/interrupts we can see  cpus , received interrtupts ,controllors and using devices
 	
 	disable from process:
@@ -305,10 +306,46 @@ QUESTION:
 		the in_irq  in_interrupt return nonzero if in interrupt context , difference is that the latter one 
 			including bottom half portions
 	
-	
-	
-	
+
+BOTTOM HALF	
+	used to process work the interrupt not done ,because have not enough time
+	we now have softirq , tasklets , workqueue three kinds
 
 
-
 	
+	SOFTIRQ: decided when compile , statically 32 ,when interrupt handler returned , it marked which to run , then
+		that will run or be run by the  ksoftirqd daemon or explictly
+		
+		when pending happens ,  do_softirq will get the pending flag and iterate 32 times to check if
+	handler happens ,then do it
+
+	NOTE:  all do_softirqs checked flags are in an order of the enum value in the linux/interrupt.h
+		
+		both kernel timers and tasklets are built on the  softirq , the former two are dynamically , but
+	a little less efficient
+
+	softirq declared enmu priority in include/interrupt.h ,  and bind at runtime by  open_softirq
+	
+	
+	the diff between softirq and tasklet is tasklet can not be run same time on diff processors .
+
+	softirq is raised in handler by raise_sortirq or raise_sortirq_irqoff
+
+
+	TASKLETS:
+		in interrupt handler ,call  tasklet_scheduler() func will  check and set  flag  , then add the tasklet
+			into a link list(acctually two , priotity are diff)
+		then after return , the do_softirq will check flag (the same as softirq) , and run tasklet_action,
+		which will iterate and check(if already run(we have flag) , if disabled),then run, then next ,until list end
+
+		DECLARE_TASKLET   , tasklet_init for statically or dynamically allocate	 , 
+				use tasklet_disable/enable to enable or disable the specific tasklet , 
+				use tasklet_kill to remove(will sleep , so not called from interrupt env)
+	
+	softirq and tasklet both can not sleep , so semiphore not used , but can use lock( not sleep)
+	
+		details: tasklet will mark(by scheduler) only once(even if not have run ,but the second mark comming),	
+			if is running, then reschedule and will run again in the future,
+			will run on the same processor as the flag marked
+			
+		
