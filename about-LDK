@@ -383,3 +383,19 @@ BOTTOM HALF
 			create_workqueue( create all work threads for processor)	
 			then queue_work  queue_delay_work to insert work into a not default queue
 			then flush_workqueue  to flush
+
+
+	ALL THREE SUMMARY:
+		softirq  can  run two same handler same time on two pros , must take care share values,
+		tasklet  can  run two diff handler same time , drivers perferred this safe , 
+		work queue  run in process context , so can block and sleep , other two run in interrupt context
+			work queue's share data also require lock
+
+		when your process share data with tasklet , you must disable interrupt and accquire lock( disable 
+			race and interrupt both)
+		
+
+		use local_bh_disable/enable to do with local processor's softirq and tasklet  ( they are nested)	
+
+
+
