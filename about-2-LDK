@@ -1,0 +1,29 @@
+SYNCHRONIZATION ISSUES
+	lock   scalable clean , must be thought when start design , not after work!!
+
+	ensure unsafe concurrency  and race not happen	, so make critical regions a atomic instruction.
+		so we use lock , we have diff types of locks , diff in behavior when lock can not be held
+		and the lock code itself is atomic assured	
+	user space : pseudo concurrency , multi-pro  , true concurrency
+	kernel space: interrupt  softirq tasklet workqueue ,   preemption ,  smp (sleep in cirtical is not allowed)
+	
+	lock should design beginning ,not afterthought
+	we have  smp-safe preempt-safe  interrupt-safe
+
+	the smp and preemption will add lock code to kernel , if not CONFIG_SMP  CONFIG_PREEMPT , those will 
+		disappear ,  so choose when needed
+
+	MUCH TAKE CARE OF  global data and share data between interrupt, smp , thread , process , func
+
+	
+	DEAD LOCK
+		do not lock twice , 
+		lock in order
+		lock as simple as possible
+		make sure procession will finish,so lock will be released absolutely
+
+	lock is needed by more and more scalibility system
+	locks begin with a big kernel lock , evolving into nowadays fine-grained lock ,
+		but should not be more fine-grained , will add cost to lock overhead
+	start simple and grow in complexity only as needed , simplicity is key
+	
