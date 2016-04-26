@@ -53,6 +53,58 @@ SPIN LOCK
 			and return fail to get
 NOTE:   DECLARE_MUTEX   init_MUTEX used in semapthore
 	DEFINE_MUTEX    mutex_init  used in mutex  !!!
+	ofter mutex  better than semaphore
 
 	mutex   
 		mutex defined for effecient , 
+
+		mutex must be get and release by the same processor , 
+			can only be used in processor context ,
+			more stricter rules  in Page 196
+
+		
+	compeletion :
+		DECLARE_COMPLETION()   init_completion  wait_for_completion  complele() 
+		when called complete() ,any processor waited on the complete var will be signaled up	
+
+	BKL  big kernel lock
+		used only in process  context , 
+		can be auto released while sleep ,
+		will disable preempt
+		use lock_kernel()  unlock_kernel()  kernel_locked()
+		
+		used when early in kernel 2.0to help smp , now should not used in new code
+			mostly used in sync func calls
+
+	seq lock:
+		this can be used in interrupt context,
+		write_seqlock() write_sequnlock() ,  
+		but read in this form
+		do {
+			read_seqbegin(&xxx)  // the lock
+			xxxxx //do some thing simple
+			
+		} while (read_seqretry(&xxx))  //means the number read now diffs from the number in read_seqbegin
+			// so this time's read mixed with write , so must loop reading again
+	
+		this is lightweight , when have a lot readers , few writers ,data simple , 
+			writer never afftec readers' numbers 
+
+
+	kernel preempt:
+		can be disabled enabled by preempt_disable  preempt_enable , also nestable , preempt_enable_nosched()
+
+	barriers: (compiler knows current context's reorder or not , but interrupt happens or not ,don't know)
+		mb()  rmb()(read)  wmb()(write) , memory barrier used to set barrier meaning that (load/store/all)
+			operations before the barrier will be done before those instructions after the barrier
+		smp_rmb  smp_mb smp_wmb  smp_read_barrier_depends() , barrier()(prevent compiler from reordering)
+			 these will be memory barriers in smp , and compile barriers in up(uni processor)
+		read_barriers_depend() ( this is faster)
+
+		compiler , processor will  reorder two instructions , so in kernel , barrier is important
+			eg.  a=1 ; a = 3 ; b =a , now b == 1 or b==3 ? 
+
+
+
+TIME MANAGEMENT
+	
