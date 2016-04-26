@@ -27,3 +27,32 @@ SYNCHRONIZATION ISSUES
 		but should not be more fine-grained , will add cost to lock overhead
 	start simple and grow in complexity only as needed , simplicity is key
 	
+ATOMIC
+	we have atomic integer  and atomic bitwise  implementation , 
+	test_bit is atomic implementation , __test_bit() is non atomic
+
+SPIN LOCK
+	spin lock will busy waiting , always should disable interrupt , spin_lock_irqsave/irqrestore , 
+		(note this lock will disable preempt)
+		spin lock can disable interrupt  , bottom half (have some type of funcs)
+ 
+	rw_lock can be acquired(spin lock implement),  
+		read can be just acquired in interrupt , but write must disable interrupt
+		kernel prefer  read  than write!!
+	
+		note:  also have rw_semaphore  ,this diffs that can sleep
+			and both use uninterruptible  versions' read & write,
+			have a downgrade_write to down write into read
+
+	semaphore  can sleep , but have much more overhead ,so short  duration should use spin lock
+		 only used in processor context (sleep ) ,can not acquire when having spin lock,
+		 , also not  disable preemtption
+
+		we use  down_interruptible  down()  up()  down_trylock sema_init(), to control
+			the interrupt means when wait for lock to acquire , can accept signal
+			and return fail to get
+NOTE:   DECLARE_MUTEX   init_MUTEX used in semapthore
+	DEFINE_MUTEX    mutex_init  used in mutex  !!!
+
+	mutex   
+		mutex defined for effecient , 

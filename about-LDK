@@ -311,6 +311,8 @@ BOTTOM HALF
 	used to process work the interrupt not done ,because have not enough time
 	we now have softirq , tasklets , workqueue three kinds
 
+NOTE:  bottom halves will not preempt themselves on the same processor , but will do  on different ones
+	
 
 	
 	SOFTIRQ: decided when compile , statically 32 ,when interrupt handler returned , it marked which to run , then
