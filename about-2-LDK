@@ -106,5 +106,26 @@ NOTE:   DECLARE_MUTEX   init_MUTEX used in semapthore
 
 
 
-TIME MANAGEMENT
+TIME MANAGEME
+	the time between two interrupt handlers is the tick , which is 1/(tick_rate) , kernel use this to measure time	
+	when interrupt issues , update system time , boot time , dynamic timers' count ,balance scheduler's queue , update
+	processor statistic and  resources
+
+	kernel notion of time is  from the  system timer ,which update periodically by the interrupt , with frequency of
+		HZ ,which is defined by CONFIG_HZ(usually 100 ~ 1000)
+	with resolution grow up , accuracy  grow high
 	
+	the poll select() will waste less resource waiting
+	the scheduler will be more balanced ,(if hz is small , tick time is high , then schedule lantency is big)
+
+	TICKLESS 
+		a tick one will interrupt every tick, but tickless one will only issue interrup when need some work to do,
+			when totally idle , will not tick any more!! saving power and system overhead,
+			but will add some expense between userspace and kernel space
+
+	 	a jiffy is a tick , between two interrupts' time
+		 	it is type unsigned long
+
+		jiffies define  32bit and 64bit diff , but occupy same memory , 32bit is low bit of 64bit,
+			in 32bit, we have special func to access 64bit jiffies64 , but 32bit is enough ,
+			in 64bit , we will always access  64bit jiffies== jiffies64
