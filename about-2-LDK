@@ -129,3 +129,19 @@ TIME MANAGEME
 		jiffies define  32bit and 64bit diff , but occupy same memory , 32bit is low bit of 64bit,
 			in 32bit, we have special func to access 64bit jiffies64 , but 32bit is enough ,
 			in 64bit , we will always access  64bit jiffies== jiffies64
+
+
+	system have a rtc ( maintain the wall time, mostly for user to know time of world)
+		also have some system timerses ,the main is system timers
+		every tick ,the system timer will trigger the time interrupt  handler , 
+
+		detail : interrupt handler
+			update jiffies , update wall time , update process time statistics ,
+			update schedule issues , monitor whether local timers have expired ,
+			set the softirq to do local timer funcs in bottom halves
+
+		we can use init_timer , add_timer , mod_timer to init , add or modify the added timer ,del_timer_sync to 
+			delete timer and wait for the already running handler to stop
+
+	we also have no system timer  delays. (just processor block for a little time)
+	1 just busy looping the specified jiffies (silly!!)

@@ -130,6 +130,8 @@ switch from sleep and runnable:
 			preempt) , and flag will be checked when returning to user space or return from interrupt , 
 			the flag is in per process thread info struct
 
+		then cond_resched() will check the need_sched flags and scheduler() when needed
+
 	preemption:
 		user-space-preemption:
 			occur when return from interrupt context or kernel space , check need_sched is set , then call schedule()
