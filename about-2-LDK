@@ -188,3 +188,39 @@ MEMORY MANAGEMENT
 				spin lock context , not sleep)
 			remember vfree  kfree can both sleep!!
 		
+	
+	
+SLAB LAYER:
+	in kernel , we use slab to manage the allocation of memory , by groups of struct type , so as to make alloc and memory management 
+		more efficient and less fragments.
+	use struct kmem_cache  to represent a cache( a type of data that will be allocated) , in which we have lots of slabs ,which have 
+		lots of same data structs with physical addr continously.
+		
+		details when alloca: ,first , used kmem_cache_create to create a cache ,
+				then , kmem_cache_alloc , kmem_cache_free to get the space to store structs and free
+				then kmem_cache_destroy at last to free the cache whole.
+	
+	about store vars on kernel stack:
+		the stack is small , often one or two page per process .when one , the interrupt will get a unique page per processor.
+			use alloca instead of stack to allocate big data structs.
+
+	when use high memory with alloca_pages() , we have no virtual addr , so we use kmap , kunmap to map . (will sleep) , or
+		kmap_atomic() ,(will not sleep , so better in interrupt handler)
+	
+
+PER CPU VARS
+	we can set an array , then use get_cpu() (will disable preempt) , put_cpu() (enable preempt) to get the cpu id , the
+	 	store and load the value in the array
+	also we have DECLARE_PER_CPU()  DEFINE_PER_CPU , get_cpu_var() set_cpu_var , per_cpu() ,to get the value , 
+		the setXXX used to enable preempt , not do anything else
+
+	but at runtime , the modules's per cpu vars must be allocated by  alloc_percpu , then free_percpu
+	
+	these per cpu vars can reduce locks and cache flushed and improve performance
+
+CHOOSE:
+	want contiguous physical addrs , use kmalloc or low level interfaces like alloc_pages , 
+	want in interrupt context , use gpf flag  GFP_ATOMIC instead of GFP_KERNEL
+	only want virtual , use vmalloc
+	want high memory , use alloc_pages , then kmap , 
+	want per cpu vars , use those interfaces	
