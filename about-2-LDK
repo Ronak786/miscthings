@@ -123,8 +123,8 @@ TIME MANAGEME
 			when totally idle , will not tick any more!! saving power and system overhead,
 			but will add some expense between userspace and kernel space
 
-	 	a jiffy is a tick , between two interrupts' time
-		 	it is type unsigned long
+	 	a jiffy is a tick , between two interrupts' time  
+		 	it is type unsigned long ,and is volatile , so will not be optimized
 
 		jiffies define  32bit and 64bit diff , but occupy same memory , 32bit is low bit of 64bit,
 			in 32bit, we have special func to access 64bit jiffies64 , but 32bit is enough ,
@@ -145,3 +145,46 @@ TIME MANAGEME
 
 	we also have no system timer  delays. (just processor block for a little time)
 	1 just busy looping the specified jiffies (silly!!)
+		we also can use cond_resched() to instead of busywaiting ,but never use some func that can block or sleep
+	
+
+seconds :  1 second = 1000 milisecond(ms) = 1 000 000 nanosecond (ns)= 1 000 000 000 microsecond(us)
+
+	when we really need smaller than 1 tick's delay , we can use  udelay(micor)  ndelay(nano)  mdelay(mili) ,
+		they busy waiting , so should use with very small duration
+
+	about bogomips , bogomips be calculated when boot , and be used by udelay to calculate how many iterations 
+		should be used
+
+	use schedule_timeout() to sleep a specific time and then waked up by kernel , (so should in process context 
+		and not hold a lock) ( the schedule_timeout will put process sleep for sometime and wake up it / or waked
+			up by interrupt)
+
+
+MEMORY MANAGEMENT
+	32bit and 4kb pages , 64bit has 8kb pages
+
+	struct page :  used to describe physical page(every has one!!),not virtual pages , so according with swaps and mappings , 
+		they will associate with diff virtual pages ,
+		member:  virtual --  virtual address
+			 count  --  page refernce count
+
+	kernel divide memory into some zones , depend on diff archs , we have diff zones containing diff memory areas
+		ZONE_DMA  ZONE_NORMAL ZONE_HIGHMEM
+ 	we use struct zone to represent zones
+	
+	the HIGH MEMORY problem:
+		in old days , when 32bit , when you use more than 4gb memory, kernel can not map them all in 
+			virtual memory , so high memory(a portion in kernel space) be used to dynamically 
+			map them when needed 
+			but in 64bit ,available vm is too much , so high mem no more needed
+
+	when allocate , we use alloc_pages(return page struct) as a base low func , 
+		above , we have alloc_page , __get_free_pages(return logical addr) , __get_free_page , 
+			get_zero_page ,kmalloc(alloc physical&virtual continous addr) , vmalloc(alloc virtual continous addr,
+				but more performance cost , so used only needed) , kfree , vfree
+		on all these funcs , we have flags ,gft_t ,  used to specify which context and mem zone the allocate func use,
+			often used ones are GFP_KERNEL(used in process context and can block) ,GFP_ATOMIC(used in interrupt or
+				spin lock context , not sleep)
+			remember vfree  kfree can both sleep!!
+		

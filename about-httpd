@@ -1,0 +1,2 @@
+when http can not show chinese , 
+modifi /etc/httpd/conf/httpd.conf to make charset GB2312 , then ADDdefaultcharset OFF 
