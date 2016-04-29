@@ -224,3 +224,8 @@ CHOOSE:
 	only want virtual , use vmalloc
 	want high memory , use alloc_pages , then kmap , 
 	want per cpu vars , use those interfaces	
+
+
+VFS:
+	the virtual filesystem used to provide generic interface 
+	all filesystem have  struct super block ,  inode , file , dentry
