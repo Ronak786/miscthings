@@ -229,3 +229,7 @@ CHOOSE:
 VFS:
 	the virtual filesystem used to provide generic interface 
 	all filesystem have  struct super block ,  inode , file , dentry
+
+	struct super_block  do with inode infos and the fs infos and all actions to do with inode
+	struct inode used to do with a signle inode (specific type) ,and those funcs will  do with a single inode and permissions
+	
