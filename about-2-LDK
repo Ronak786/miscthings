@@ -259,3 +259,5 @@ VFS:
 		the former two related to the struct file  and   dentry&superblock that the process related to , the latter one represent
 		the unique view of the file system view , which means each process has its own  filesystemc view ,two process has diff namespace
 		will result in two same pids , but each process will only see the one itself owns
+
+		
