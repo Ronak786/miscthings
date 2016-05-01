@@ -229,3 +229,35 @@ CHOOSE:
 VFS:
 	the virtual filesystem used to provide generic interface 
 	all filesystem have  struct super block ,  inode , file , dentry
+
+	struct super_block  do with inode infos and the fs infos and all actions to do with inode
+	struct inode used to do with a signle inode (specific type) ,and those funcs will  do with a single inode and permissions
+	struct dentry used to represent the path a file lookup will experience , so all files and dirs on the path will be represented by
+		a dnetry ,  usually pre allocated in a slab , 
+		the dentry has three kinds , used , unused , negative , 
+		used: in point to a valid inode and in use
+		unused , point to a valid inode but not in use,cached in case of future use
+		negative , no assocaited with a valid inode , but still can be in use , because program will seek an nonexist file,which will
+			also take a long way to look for then return enoent ,this cache will speed up this return
+		dentry  details:
+			all dentries in a hash table , when resolve a path  first look up in hash table by d_lookup, if no , then resolve from
+			head , then add to cache , because files often be accessed localy .so cache will speeed up the lookup
+
+		this struct is all about path (also file name )
+
+	struct file , related to a process opens that file , this have a struct path -> struct dentry -> struct inode to a real file
+		this struct has operations related to what we will use to a file(oepn close sync flush ...)
+	
+
+	then file_systemc_type struct  represent a kind of struct ( a kind only one) , this used to get put super block and store 
+		list of file system and list of superblocks of that file systemc type
+	
+	when mount , we have a vfsmount struct to represetn that mount point
+
+	
+	from the view of process ,in the process descriptor , we have struct file_struct  ,struct fs_struct , struct mnt_namespace , 
+		the former two related to the struct file  and   dentry&superblock that the process related to , the latter one represent
+		the unique view of the file system view , which means each process has its own  filesystemc view ,two process has diff namespace
+		will result in two same pids , but each process will only see the one itself owns
+
+		
