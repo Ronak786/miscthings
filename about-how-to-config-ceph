@@ -1,0 +1,14 @@
+
+
+just like in blog  http://bbs.ceph.org.cn/question/138
+frist , install ntp  ntpdata ntp-doc to make time the same on all mathines
+stop firewall  selinux
+
+get ceph  rease no arch's  ceph.repo on the official  website 
+install ceph 
+
+all follow the website ,
+	after touch the done file , touch /var/lib/ceph/mon/ceph-mon1/sysvinit to enable sysvinit's start script on systemd, then start
+
+on osds:
+	do like document
