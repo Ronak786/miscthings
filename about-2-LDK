@@ -269,3 +269,24 @@ BLOCK IO LAYER
 	in memory , a buffer represent a block , and is described by a buffer header struct ,   
 		this used to describe the relation between in memory buffer and the corresponding devide sectors on hard disk, but not joined in transmission
 		kernel will directly manage on pages
+
+	but now we use struct bio in place of struct buffer_head
+		bio represent an operation of io , have lots of discontigous pages , each page represent by struct b_io_vec , have bi_vcnt structs , and the current
+			is being handled is the bi_idex th , this is more lightweight , because you only have to maintain one struct for all io operations instead
+			when using buffer_head ,you must split io into lots of structs and maintain their relations , it also maintain a count of reference , when
+			not referred , destroy
+		now buffer head still in use to represent  buffer .
+
+	request queue( diff from work queue ,which used in bottom buffer , when queue in , will do whenever sheduled to and have not empty in queue)
+		a request have multiple bios , as long as they are consecutive blocks on block
+
+	NOTE : a strut bio represent an io , this is contigous on disk ,but not in memory , so they can be scheduled (although not contigous in memory),
+		then a request queue  can have multiple bios , as long as they are contigous in disk(although not in memory contigous)
+
+	IO SCHEDULE
+		used to merge and sort requests that kernel receive so that requests submitted to the hardware will be in an optimized sequence ,and reduce seek time.
+		merge when  two requests have sectors adjacent , sort in order to seek in a direction
+		back merge means new one just add to the tail of the old one , commonly seen than front merge
+
+		the linus elevator most simple , just seek is can merge , then if existing too old (then just  tail the new one at the end) , then if can insert ,
+			then just add to tail.(four tryings)
