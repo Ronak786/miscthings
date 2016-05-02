@@ -358,3 +358,7 @@ UTILITY:
 		page table : (translate job mostly done by hardware , kernel just set those pages)
 			used to convert virtual address to physical addr  by splitting into portions and each portion as an offset in a table
 			,and also have some cache in the TLB table(directly translate into physical pages) , 
+
+PAGE CACHE:
+		often accessed data on disk should be cached , for subsequent access , cache stored in physical pages
+		when write to cache , we have directly write into disk ,fail the cache /   write both to cache and disk /  write to cache ,use process daemon to write into disk
