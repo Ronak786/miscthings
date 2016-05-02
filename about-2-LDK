@@ -289,4 +289,32 @@ BLOCK IO LAYER
 		back merge means new one just add to the tail of the old one , commonly seen than front merge
 
 		the linus elevator most simple , just seek is can merge , then if existing too old (then just  tail the new one at the end) , then if can insert ,
-			then just add to tail.(four tryings)
+			then just add to tail.(four tryings) ( but this will still starve some old requests)
+
+		deadline io:
+			read lantency is important than write lantency , because , when read , apps often have to wait until data com . but when write , just wirte,
+				it is async , not have to assure they have be written into the disk block
+			deadline try to minize starve while keep throughput
+			
+			details:(the linus with a time fifo)
+				when a request come , add into the sorted queue like the linus , then again add into a read queue or wirte qeueu(just a fifo), 
+				because the fifo maintain a time expire , when the head of the fifo expires(must be the head , because fifo) , then do
+				that request instead of the sorted queue(add to dispatch queue , that will be read by the driver) , 
+				and read has less time than write .so perferred to read
+			
+		anticipate io:
+			like deadline , but every time perform a read , will stuck some time(some millisecond) wait if some other read coms , it so ,and adjacnet, then
+			do that,   so this is better for write heavy,but some frequently read operations .can save the seek back and forth time. 
+			it also record per process infos to optimise this method
+
+		cfq io:
+			maintain a queue for each process , sorted and merged , and round robin , every queue get four to process before go to another.
+			works quite fine in most environment , so is default in linux
+		noop io:
+			just merge , not any thing else , intended for flash memory cards ( which have no overhead for seek) 
+
+
+		when startup , use  elevator=as/noop/cfq/noop to override the default 
+		
+
+			
