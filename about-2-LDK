@@ -317,4 +317,44 @@ BLOCK IO LAYER
 		when startup , use  elevator=as/noop/cfq/noop to override the default 
 		
 
+PROCESS ADDRESS SPACE:
+		every process has a virtual address space , in which ,has many mamory areas with respective permissions
+		all memory a process need in it ,including data ,text , bss ,stack , share .so , mapped file , share mem , malloc , represented by a struct mm_struct in process descriptor
+		in struct mm_struct , we have mm_count and mm_users , they are diff , the former count all processes using that mm_struct as one , while the latter count as the real count.
+		but the latter never count other than process , so if nine pros , then  mm_users = 9 ,and mm_count =1 , if another kernel thread count that , then mm_count be 2 (more detail 
+			see ULK).
+	
+		threaded tree: use a rb tree to store memory areas , then overlay a link list on that tree to optimize traverse ,the process address space use this two methods to access specific
+			memory areas
+		all mm_structs linked in mmlist , and the init is init_mm (init's mm_struct)
+
+		if CLONE_VM flag set , then when fork , mm_struct will not created , instead , a point from child will to father and mm_users will add by 1
+
+		when exit , exit_mm will call mmput() to dec the mm_user , which if 0 , ->mmdrop() to dec mm_count ,if 0 ,->call free_mm() to return to mm_cachep in the slab
+
+		kernel threads not use user space address , but do need kernel memory map infos , so the address space of the previous scheduled process will pertain for the
+			kthreads to use(just kernel portions)
+		VMAs vritual mamory areas , the struct describe one of memory areas of mm_struct include , 
+			the memory has its own flags , diff from struct page flags , this describe something kernel can do to that area , like read ,write exec , share ....
+				the flags can even optimise read ahead or disable by a flag
+				each mem areas also as its own operations vm_ops of the struct vm_area_struct)
+		the mm_struct (has vmarea and rb_root)->  vm area -> next /  rb_node
+
+UTILITY: 
+		pmap used to see a process's mapped address , like /proc/pid/maps
+
+		in memory nonwritable or shared areas only keep one copy in mem , so the exact mem occupy is small
+			all zero pages originally mapped to one place , the zero page , but once written into , copy on write .
+
+		some help mapping funcs:
+			find_vma() find_vma_prev()  find_vma_intersection()  ,used to find the vm_area_struct containing the specific address or just bigger than that address ,
+				the prev also return the area before that addr ,the intersection return vma just inside the given start and end addr
+		
 			
+			do_mmap is the func alloc an area of mem for some use , will create a new struct area or merge into an exist one 
+				in user space , implemented via system call mmap2 , which support user space lib call mmap()
+			do_unmap  and unmap() to unmap
+
+		page table : (translate job mostly done by hardware , kernel just set those pages)
+			used to convert virtual address to physical addr  by splitting into portions and each portion as an offset in a table
+			,and also have some cache in the TLB table(directly translate into physical pages) , 
