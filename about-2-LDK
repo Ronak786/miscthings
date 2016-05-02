@@ -261,3 +261,11 @@ VFS:
 		will result in two same pids , but each process will only see the one itself owns
 
 		
+
+BLOCK IO LAYER
+	char devices read sequencially , so almost not need a subsystemd , just read . but block device read randomly as blocks , so optimise important ,
+	a sector is how small a hard device can do with , commonly 512byte .   
+	a block iis how small a software can handle, usually multiple of a sector and not bigger than a pagesize , so 512byte , 1k , 4k is common
+	in memory , a buffer represent a block , and is described by a buffer header struct ,   
+		this used to describe the relation between in memory buffer and the corresponding devide sectors on hard disk, but not joined in transmission
+		kernel will directly manage on pages
