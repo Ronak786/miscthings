@@ -1,0 +1,26 @@
+DEVICE & MODULE
+	we have block device , char device and net device , 
+	modules can be compiled and added into kernel , module_param  module_param_named( diff names in user space and kernel) , modules_param_string(string copied from user directly into kernel),
+		module_param_array store array
+	EXPORT_SYMBOL  EXPORT_SYMBOL_GPL(only the module_license(gpl) can use this func)
+
+	kernel object : used to maintain a device tree to know the relationship of  thhe devices
+		the struct kobject in the struct cdev ...  ,have member struct kset ( some device together in a kset(a group)) , ktype ( same type devices have same operations ) 
+
+	use kobject_init to initialize an object after malloc and zeroed(memset)
+		use kobject_create is simple  to do that automatically
+	use kobject_put kobject_get to release or increase the count of kobject , when zero , free that whole memory automatically
+		internally is represented by kref_init(initialize to one) ,  kref_get  kref_put( manipulate a struct ,but inside is just a value of count)
+	
+	in sysfs ,you have a device and driver heirachy , the whole device topology is in /sys/device , others are just symlinks ,another view.
+	add kobject into sysfs:  kobject_add() , kobject_del() , use kobject_create_and_add t create and add the object
+	
+	attributes: default attrs are in the ktype , in an array .   use the sysfs_ops  struct 's func: show and store to read and write these values
+			use sysfs_create_file() sysfs_create_link() to create a file(attribute of the object) ,or a link to a file , will be handled by ktype's show and store operations
+		when remove sysfs_remove_link  sysfs_remove_file
+	over all , sysfs used to interactive between user space and kernel , in place of ioctl() , should maintain carefully the hierachy , also keep in mind those existed files and 
+		dirs are used by other programs , so do not modify them arbitrarily
+	
+	the kernel event layer:
+		kernel will send event to userspace when hardware contition changed , through kobject_uevent() , 
+		internally , kernel use netlink to send to userspace , so userspace just listen on a socket , the general purpose is use through D_BUS

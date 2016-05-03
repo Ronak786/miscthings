@@ -384,3 +384,6 @@ PAGE CACHE:(kernel maintain  some page based cache for all files , so common wri
 				thrid is a userspace sync
 		
 		laptop mode , this will flush the old pages including all dirty pages , to save hard disk up time and up powers for laptop , but will lose lots of data when crash
+
+
+
