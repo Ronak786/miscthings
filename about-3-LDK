@@ -1,4 +1,4 @@
-DEVICE & MODULE
+DEVICE & MODULE  and SYSFS
 	we have block device , char device and net device , 
 	modules can be compiled and added into kernel , module_param  module_param_named( diff names in user space and kernel) , modules_param_string(string copied from user directly into kernel),
 		module_param_array store array
@@ -24,3 +24,27 @@ DEVICE & MODULE
 	the kernel event layer:
 		kernel will send event to userspace when hardware contition changed , through kobject_uevent() , 
 		internally , kernel use netlink to send to userspace , so userspace just listen on a socket , the general purpose is use through D_BUS
+
+
+
+kernel debug
+	printk can be used in all conttexts , so robust. ,early_printk can be used when printk not ready when early boot
+	debugging use kgdb , open kallsym , this can resolve all func syms , for all syms ,use kallsyms_all,
+		using this , you need not use ksymoops or System.map
+	the BUG() and BUGON()  panic may be used .
+	sysrq
+	when debug , and not need to print too many , use count or printk_rate_limit as a time limit,also can use
+		pid as a selector
+	git provides birany search
+
+portability & hack and mail list: (some good website is in book) 
+/***********************************************************/
+	http://kernel-
+newbies.org/—a website that, of all things, caters to those cutting their teeth on the ker-
+nel.Two other excellent sources of kernel information are http://www.lwn.net/, Linux
+Weekly News, which has a great kernel news section, and http://www.kerneltrap.org/,
+Kernel Trap, which provides insightful commentary on kernel development.
+/***********************************************************/
+	arch dependent are in arch/ , in common programming , should not use typedefs , should stick to kernel programming
+		style ,which is with indent and can be done via scripts/Lindent
+	
