@@ -47,4 +47,5 @@ Kernel Trap, which provides insightful commentary on kernel development.
 /***********************************************************/
 	arch dependent are in arch/ , in common programming , should not use typedefs , should stick to kernel programming
 		style ,which is with indent and can be done via scripts/Lindent
+	SEE detail  kernel style in the document/XXstyle(some like this)
 	
