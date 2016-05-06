@@ -31,10 +31,16 @@ sync and protection of race
 process  fork  -> clone
 
 every process has a process descriptor -- a structure
-	in which we have a struct thread_info  , at fixed place of the descriptor
+	 we have a struct thread_info  , at fixed place just under the stack
 	in which we have a pointer of task_struct  ,we will refer to this frequently 
-	the process descriptor is just under the kernel stack of each process
+	as the process descriptor , 
 		and I think should be 8k alligned ( 64bit ， 4k when 32bit)
+
+note:  struct task_struct in include/linux/sched.h , is general
+	struct thread_info in arch/xx/include/asm/thread_info.h , is arch dependent
+	the pid max is defined in include/linux/threads.h
+
+	the current macro is just used to fine the thread_info after the stack (use the AND method or just minus and add instead)
 
 about process's status
 	uninterruptible means :
