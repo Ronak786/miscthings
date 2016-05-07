@@ -53,16 +53,18 @@ we traverse by  next and prev of struct task_struct or the macro of process iter
 when creating , we use fork and exec when needed , we insist  copy on write , so only  the page table and a process descriptor
 	needed to be created when fork , then all pages read only , before any write happens , that time , we alloc a new page
 
-fork/vfork/_clone -> clone(pass in flags identifies which resoruce to share)  -> do_fork -> copy_process
+fork/vfork/_clone -> sys_clone()(pass in flags identifies which resoruce to share)  -> do_fork -> copy_process
 	in copy_process :
-		copy the process strcuct , 
+		copy the process strcuct , just copy , all are the same
 		check not overflow the maxmum size of processes of the usef
-		set condition to uninterruptible
+		set condition to uninterruptible(running? ,then will not be run by an interrupt)
+		alloc pid for child
 		set flags internally
 		set flags according to the clone() flags ( which resource to share)
+		zero all not needed to be the same values in the struct to initial value  
 		return to do_fork with address of new child
-		then choose child to run first
-		alloc pid for child
+		then choose child to run first(no, just add to cfs  and call schedule , but usually will be run because has the least vruntime in the rbtree)
+		then return 
 	
 
 
@@ -84,12 +86,14 @@ about kernel-threads
 
 about exit:
 	set flag , release mm and fs statics ,save exit code
-	notify parent , reparent children to group's other thread or the init
+	in exit_notify : repaprent children , notify parent we are dead and signal any orphan process groups 
 	change to zonbie status , 
 	call schedule ( never return)
 
 about wait
 	detach from task list,notify if orphan , release all resources including thread_info and task list
+
+	the wait is wait4 in kernel/exit.c ,just a SYSCALL(wait4 ....) -> do_wait ->do_wait_thread->wait_consider_task->wait_task_zombie->release_task
 
 
 about scheduler:
@@ -104,7 +108,9 @@ how CFS works
 
 	update_curr:
 		this func used to update time of a specific schedule entity( a task struct sometime),
-			and the whole time of that cfs run queue
+			and the whole time of that cfs run queue , 
+			called by the system timer at a specific period , or whenever a process is runnable or block->unrunnable
+			so vruntime is an accurate measurement of which pro to run next
 	
 	enqueue_entity
 	dequque_entity:
@@ -132,8 +138,8 @@ switch from sleep and runnable:
 		but wake up not means ready to run ,so condition must be checked
 
 	schedule:
-		we set need_sched flag to signify kernel to schedule (  set when wake up or schedule_tick(when need
-			preempt) , and flag will be checked when returning to user space or return from interrupt , 
+		we set need_sched flag to tell  kernel to schedule (  set when wake up and priority is high  or schedule_tick(when need
+			preempt, in timer interrupt ) , and flag will be checked when returning to user space or return from interrupt , 
 			the flag is in per process thread info struct
 
 		then cond_resched() will check the need_sched flags and scheduler() when needed
@@ -141,6 +147,7 @@ switch from sleep and runnable:
 	preemption:
 		user-space-preemption:
 			occur when return from interrupt context or kernel space , check need_sched is set , then call schedule()
+			from system call
 		kernel-preemption:
 			when return from interrupt handler , before into  kernel space(will check the preempt count)
 			when preemp count == 0 , (during unlock , will call the check)
