@@ -1,0 +1,4 @@
+binutils: use wit-lib-path to instruct the built-out ld to search lib in this path
+	 with-sysroot   :  to tell the building (the make) to search libs in this path
+	target : diff from host to tell the building to create a cross compiler/ld
+	--prefix  : to install all things under this directory

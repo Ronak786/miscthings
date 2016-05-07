@@ -177,6 +177,7 @@ sched_rr  sched_fifo   sched_normal
 		
 	until all real-time have blocked or exited , normals can run
 
+the true scheduer is in schedule() ->context_switch() 
 note;
 	nice and priority  use the same  region value but different values
 	we have some funcs used to set and get real-time or nice values of processes(in LDK page 65)
