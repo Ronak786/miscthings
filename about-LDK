@@ -216,9 +216,21 @@ system calls
 
 
 SYSCALL declare : in arch/x86/kernel/syscall_64.c , both declare and assigned into a  syscall table
-			and syscall numbers in  ar/x86/include/asm/unistd.h
-		the system_call() (which trigger the syscall ,done by glibc when you trigger a syscall) is in ar/x86/kernel/entry_64.S
+			and syscall numbers in  ar/x86/include/asm/unistd.h , must contigous(wrong) , so check your distribution if has defined more than the up steam kernel syscall,
+			then you should manually define them 
+		  then in include/linux/syscall.h , you should declare the declaration of the syscall (not necessary ?)
+		  then in files you want to define , use asmlinkage long XXX  or SYSCALL_DEFINEX to define the syscall
+
+		so we have three places in kernel in 2.6.32.27 to modify , in arch/x86/asm/unistd_64.h , in include/linux/syscall.h , one place to place the define of syscall
+			   one place in user place :  in the c source file , define  __NR_func   number_of_syscall
+			   then use  syscall(__NR_func, .....) to call 
+
+		then in user space , you define the number of the syscall just like in kernel in unistd_64.c , then you can use syscall with syscall() (a system call to call syscall)
+			the 1st arg is the number , then all arguments)
+in kernel:		the system_call() (which trigger the syscall ,done by glibc when you trigger a syscall) is in ar/x86/kernel/entry_64.S
 			it call sys_call_table() with the index to get the true syscall addr
+
+		
 
 
 
