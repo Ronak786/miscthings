@@ -215,6 +215,12 @@ system calls
 	the system call declare and are in the arch dirs ,because they are not generic to all archs 
 
 
+SYSCALL declare : in arch/x86/kernel/syscall_64.c , both declare and assigned into a  syscall table
+			and syscall numbers in  ar/x86/include/asm/unistd.h
+		the system_call() (which trigger the syscall ,done by glibc when you trigger a syscall) is in ar/x86/kernel/entry_64.S
+			it call sys_call_table() with the index to get the true syscall addr
+
+
 
 KERNEL_DATA-STRUCTS
 LIST:

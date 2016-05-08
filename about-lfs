@@ -2,3 +2,30 @@ binutils: use wit-lib-path to instruct the built-out ld to search lib in this pa
 	 with-sysroot   :  to tell the building (the make) to search libs in this path
 	target : diff from host to tell the building to create a cross compiler/ld
 	--prefix  : to install all things under this directory
+
+	bintuils will create a bin , a $target dir , 
+
+gcc: use above flags and others , create bins in bin dir(same with binutils) ,create a libexec for internal usage(elfs are just like in the bin dir)
+	use with-local-prefix  with-native-system-header-dir to include own dirs  own dirs  own dirs  own dirs  own dirs  own dirs  own dirs  own dirs  own dirs  and exclude the system head dir(usr/include and usr/local/include)
+
+kernel-headers : usd by glibc
+glibc : use the pre- compiled gcc and ld ... to compile the glibc and install 
+
+libstdc++ : in gcc , but not compiled when glibc not installed , so now compile
+
+pass 2:
+binutils: use pre compiled tools to compile , now we have a host ld ,as 
+gcc : compiled with pre compiled gcc , binutils( this is now default as ld , so not specified)
+then we install several packages for the last compiled gcc (for the lfs system to use )
+
+at last , we can chroot , the binutils before is the host version , so we continue to make glibc , then gcc , then all others
+
+then the third pass , we build glibc first , this is now the final glibc , compiled from a complete cross compiler , then build binutils and gcc above it( in the /lib place instead
+		of /tools/lib 
+
+
+
+
+
+HOW-TO-MAKE-BOOT-GRUB
+	if you want to make a new one , just mount a device on /boot , then grub2-install /dev/sda , then add kernel imgs , then grub2-mkconfig , then edit /etc/fstab , then  ok

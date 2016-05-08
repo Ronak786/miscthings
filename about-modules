@@ -1,0 +1,6 @@
+how kernel modules loaded when boot:
+	the system bus will export device aliases , and modules will export those too, with glob pattern.
+	then if they match , the module will be load
+
+add in /etc/modprobe.d/xx.conf   the softdep  or the blacklist
+add in /etc/sysconfig/modules/  the modules should be loaded
