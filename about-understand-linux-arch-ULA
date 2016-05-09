@@ -79,8 +79,20 @@ schedule policy:
 	a timeslice , preempted , means when time over , scheduled out 
 	O(1) ,CFS the latter will try to give every process a fair time(or even every schedule entity)
 
-process state:
+process state: <depends on the preempt option on the kernel config>
 		running ,waiting(can run but have no cpu) , sleeping , terminate , zombie(terminated but not reaped by father)
 		schedule will happen only from leave interrupt or from into userspace , 
 		kernel threads also can be preempt 
 		interrupt can always preempt others
+	
+		in task struct ->signal struct -> we have limites (getrlimit setrlimit )used to manipulate
+			process's system resource usage	
+			also in /proc/self/limits
+
+fork exec clone
+	fork then exec , the clone can do like fork but have a finer grained operation
+
+namespace:
+	used for a process to isolate from parent , have a unique overview of the system global resources.
+	can use unshare() to implement , kernel must implement too
+	new namespace will have new pid 0--init process(but is a nornal process in the parent's process view)
