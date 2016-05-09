@@ -64,3 +64,23 @@ kernel data types:
 	4 , user space pointer: use __user identifier
 
 now procceed forward!!
+
+
+
+schedule process:
+	determine time the process can wrong and how to context switch
+
+processes type :
+	hard real time :  not exist in kernel
+	soft real time : will suffice as soon as possible
+	nornal : scheduled by cfs ...
+
+schedule policy:
+	a timeslice , preempted , means when time over , scheduled out 
+	O(1) ,CFS the latter will try to give every process a fair time(or even every schedule entity)
+
+process state:
+		running ,waiting(can run but have no cpu) , sleeping , terminate , zombie(terminated but not reaped by father)
+		schedule will happen only from leave interrupt or from into userspace , 
+		kernel threads also can be preempt 
+		interrupt can always preempt others
