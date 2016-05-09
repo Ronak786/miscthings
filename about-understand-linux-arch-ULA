@@ -32,3 +32,35 @@ memory alloca:
 	page fault and recycle:
 		swap be used to store tmp not used pages , recycle is when memory needed , flush data and recycle
 			pages , just mark as page fault on the virtual page(physical page recycled)
+
+
+system call :
+	user to kernel , defined by posix some
+
+net:
+	socket is a proxy between user space and kernel .
+
+buffer:
+	page cache(cache always in pages .so page cache(
+	buffer cache now is little
+
+list:
+	list_entry(ptr, type , member ) to get the struct type addr which contains the struct list member pointed by ptr
+	list_for_each(tmpvar, &list_head)  will in a for loop return every host struct
+
+kobject:  export to sysfs to manage objects in system(mostly devices models)
+	used to represent device models . each object is contained inside the managed object ,
+		kset:and some object can become a set , the kset pointer point to the root kset of them
+		ktype : a set's common interfaces
+		kreference: the object's reference count
+		list : all object included in a set
+		uevent_ops : funcs about uevent
+		
+
+kernel data types:
+	1 , typedef __u8 __s8 ...
+	2 , cpu_to_le64  le64_to_cpu
+	3 , per cpu type , get_cpu(name,cpu)
+	4 , user space pointer: use __user identifier
+
+now procceed forward!!
