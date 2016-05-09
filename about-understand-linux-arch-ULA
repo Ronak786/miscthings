@@ -1,0 +1,34 @@
+namespace: 
+	in a namespace , other things outside can not interfer with it, used by virtual machine as a container
+	
+memory space:
+	virtual memory in 64bit will not all be used , to just 40~50bit is enough , and save cpu overload ,
+		so have holes in memory pagetable
+
+into kernel method:
+	user space syscall
+	interrupt from hardware
+	kernel threads being run by schedule? ps will show like [XXX/1] means XXX threads run on cpu 1
+
+page and tlb :
+	page have herichy , PGD PMD PTE offset , tlb will be flushed every time page table changed , cpu do it or kernel 
+		do it ----arch diffs
+	
+	kernel will always assume  four level page table , sometimes ignore some level , but it is the kernel portion related
+		to arch do that , the general part assume four
+
+memory mapping:
+	kernel maintain the mapping , others can just access memory , the change will be auto sent to device or file
+
+memory alloca:
+	brother system : 
+		kernel have a lager contigous chunk of memory, when needed a small one , break into half ,
+			if just between half and double half , alloc to him. if not ,continue to break to half,
+			then when recycle , if address is contigous , merge to double.(but if frenquently allocated,
+				can make scattered )
+	slab : 
+		this is defined above the brother system , can cache a chunk of memory to allocate small memories
+			for structures and so on,  using for example: kmalloc kfree 
+	page fault and recycle:
+		swap be used to store tmp not used pages , recycle is when memory needed , flush data and recycle
+			pages , just mark as page fault on the virtual page(physical page recycled)
