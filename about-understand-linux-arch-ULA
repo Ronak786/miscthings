@@ -132,6 +132,7 @@ about task struct:
 	the group leader is the leader thread of the thread group ,getpid() will return this process's pid
 		so the tgid is that pid
 	the children and sibling are two link lists linked to brothers(same parent) and childern
+	a thread_group list  link all thread of one process(group) as together 
 
 
 about fork:
@@ -150,3 +151,38 @@ diff fork  clone:
 	in fork , all other things done by do_fork, which will copy process , then if vfork ,wait
 		for child to complete(use wait_for_complete),if not ,just wake up(added into 
 		schedule queue ,and mostly will be scheduled to run)
+
+
+ERROR  INFOS:
+	in kernel , if one func return pointer as retval , but if error , will not just return a errno value , so use macro  ERR_PTR to map that
+		errno to a pointer value between 0 to 4kiB which will not be used by virtual memory
+
+in do_fork:
+	we copy_process , allocate pid , check vfork or just fork and wait or not
+
+in copy process :
+	check flag combinations , eg . CLONE_NEWNS & CONLE_FS not mean(one to allocate new filesystem , one to share)
+					clone_thread should along with clone_sighand to allow share signal(or not)
+					clone_vm then you can share signal handlers
+	in task_struct->stack , is a thread_info struct unioned with a stack(always two pages)
+		the thread info also linked with task struct , and has preempt count and other arch specific infos(cpu,sigpending ,need_sched),vir_addr_limit ...
+			the thread means arch dependent , not that thread!!!
+	the current macro  devrided from  current_thread_info
+
+	after copy , we set initial vars in struct ,set schedule stats , then according to flags , mark corresponding resources for share
+	the last copy_thread copies arch dependent statistic(the thread_struct in the task_struct)
+
+	then set all id's relationship , sid pgid pid  tid, specially when encounter the CLONE_THREAD
+
+
+SOME CLONE FLAGS:
+	CLONE_CHILD_CLEARTID : when thread destroyed , will put 0 in a user space passed in , then wake up userspace , can be used like pthread_join() ?
+	CLONE_CHILD_SETTID
+	CLONE_PARENT_SETTID
+	
+kernel threads :
+	begin with kernel_thread, register and run a kernel thread
+	but we now more use kthread_create()  kthread_run() , more moden and can select cpu number to run
+
+	kernel threads will use active_mm pointer to point to mm_struct of the former struct , just effectively use , not flush
+		but now mm pointe is NULL , to distinguish. then if the next to run is the same as former , we can just switch and not flush tlb ,good job!!
