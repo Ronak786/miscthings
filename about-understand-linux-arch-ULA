@@ -138,3 +138,15 @@ about fork:
 	when fork ,copy on write , means: all page tables marked readonly ,when one of pros about to write ,
 		exception the kernel  ,kernel check other memory structs see if allow write ,if so ,copy a self copy
 		and allow write on both ?
+
+	when fork , system do the sys_fork , 
+		args: pt_regs is a structure be pushed in by kerenl when interrupt happens , store
+			all register's value ,so system call can get value
+diff fork  clone:
+	if use fork ,flags are fixed , so not use registers to pass params . 
+	if use clone , flags passed from user space , so will use those params from registers 
+		they are pushed into the structure by the kerenl  when interrupt system call
+
+	in fork , all other things done by do_fork, which will copy process , then if vfork ,wait
+		for child to complete(use wait_for_complete),if not ,just wake up(added into 
+		schedule queue ,and mostly will be scheduled to run)
