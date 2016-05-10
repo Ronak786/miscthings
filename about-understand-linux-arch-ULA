@@ -123,10 +123,18 @@ struct pid:
 		some processes to get their place at leader_group->pids[types] (hash list)
 	use attach_pid to attach the ip of type from the struct task to the struct pid
 
-	everytime a new process created in the current namespace , all local pids will be allocated by
+alloca:	everytime a new process created in the current namespace , all local pids will be allocated by
 		alloc_pidmap through alloc_pid to allocate to sevaral namespace
+	new made  upid structure will be scattered into  pid_hash[]
 
 
 about task struct:
 	the group leader is the leader thread of the thread group ,getpid() will return this process's pid
 		so the tgid is that pid
+	the children and sibling are two link lists linked to brothers(same parent) and childern
+
+
+about fork:
+	when fork ,copy on write , means: all page tables marked readonly ,when one of pros about to write ,
+		exception the kernel  ,kernel check other memory structs see if allow write ,if so ,copy a self copy
+		and allow write on both ?
