@@ -92,7 +92,41 @@ process state: <depends on the preempt option on the kernel config>
 fork exec clone
 	fork then exec , the clone can do like fork but have a finer grained operation
 
-namespace:
-	used for a process to isolate from parent , have a unique overview of the system global resources.
+namespace
 	can use unshare() to implement , kernel must implement too
-	new namespace will have new pid 0--init process(but is a nornal process in the parent's process view)
+uts namespace:
+	about the arch and kernel names in diff view , allocate a new structure
+
+pid namespace:
+	used for a process to isolate from parent , have a unique overview of the system global pid resources.
+	new pid namespace will have new pid 0--init process(but is a normal process in the parent's process view)
+
+INFO:
+	in a pid namespace , one task struct(one process) will have many ids in many levels of namespace,
+		so it use a struct pid_link(a struct pid) to represent all these(with level and name space as param)-relative
+		to one process in diff namespaces(only when in threads , one thread exec and replace all threads in 
+			process , then two process(thread) may be have one struct pid
+	but one struct pid also will contain lots of taskstructs,when have the same pgid sid , thread id
+
+	1) now , if you have task struct , id type , name space , you can get upid through pid_link,then struct pid ,
+		then use level to get the upid
+	2)from upid to task_struct:
+		every upid is scattered into a hashlist(the var in struct upid) , use namespace and upid to 
+			find that struct upid in the hashlist , then find struct pid , then find task_struct(
+				usually have only one process in the tasks[TYPEPID]
+		in the find_task_by_pid_ns() , provide namespace and upid , it will search the global
+			pid_hash[] array(in which is an array of scatter lists,use that hash number to choose one
+			list then traverse) to get the struct upid
+
+struct pid:
+	we use struct pid to manage all kinds of ids ,pid pgid ptid  sid , because these ids just make 
+		some processes to get their place at leader_group->pids[types] (hash list)
+	use attach_pid to attach the ip of type from the struct task to the struct pid
+
+	everytime a new process created in the current namespace , all local pids will be allocated by
+		alloc_pidmap through alloc_pid to allocate to sevaral namespace
+
+
+about task struct:
+	the group leader is the leader thread of the thread group ,getpid() will return this process's pid
+		so the tgid is that pid
