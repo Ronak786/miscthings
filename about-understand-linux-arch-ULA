@@ -186,3 +186,37 @@ kernel threads :
 
 	kernel threads will use active_mm pointer to point to mm_struct of the former struct , just effectively use , not flush
 		but now mm pointe is NULL , to distinguish. then if the next to run is the same as former , we can just switch and not flush tlb ,good job!!
+
+
+scheduler:
+	every process may be shceduled by cfs or rt-scheduler, we have static priority(one can be set) and dynamic pri(calculted by kernel from static one)
+
+	all processes are in all cpus's runqueues , every process in just in one cpu's runqueue(one cpu has one runqueue ,defined in kernel/sched.c)
+		in the runqueue , all schedule type have one struct of sched entity for each type of scheduler(rt , fair)
+
+	process has three kinds of priority values: (we have a kind of pro that usually normal ,but be level upped by kernel to the level of read priority , that is represented by prio)
+		prio , normal_prio, static_prio
+		static_prio : is the value got from nice or when task is created  (this value must above 100 ,so is always in the domain of normal priority)
+		normal : if not real time process -> just static , if real time-> 100-1-rt_priority (in kernel , priority smaller , higner )
+		prio: if normal ->static_prio .  if not normal , just not change 
+			when forked , child's static pri is father's,  child's prio is father's normal prio
+
+	LOAD WEIGHT:
+		the load weight is: weighed by nice value , when inc or dec by 1 , the weight value is changed by 10% , all values are 
+			in an array , rt process have twice the value of the highest value of the nornal value 
+			and the runqueue's weight is just the sum of all process in the queue 's weight
+
+two kinds of scheduler:
+	periodic scheduler -> the scheduer function called which tick , so called schedule_tick() , it will update runqueue's clock ,then check if current process(
+		get from runqueue struct) run enough time . then set tid_need_sched flag in thread_info struct .  when return from interrup , kernel will check that
+		flag and schedule() if.    
+	main scheduler-> when a process want to yield to others , then it call schedule() . (all funcs prefix with __sched will call schedule, this tell link to put then
+		in a special seg so dump will not show them ) .   
+			or when return from syscall , kernel will check it , no matter either , it is in process's kernel space , so next time run ,just after that place in the 
+				scheduler() function
+		it will update clock and clear the flag ,then(if signal happen,again wakeup pro, otherwise) dequeue task and record something then choose new task
+			then do the context switch ,then test if need_sched(the new pro's flag) , if so,continue to schedule from head)
+
+	schedule in fork:
+		in fork , we have a sched_fork() to set some schedule-related vars in struct , then set prio of child to normal prio of father , 
+		when in wake_up_new_task , task will be queued
