@@ -261,3 +261,14 @@ CFS:
 				if from sleep wake up , so the vruntime may have been too small ,(so will keeped be 
 					chose to run , so shoud modify it to a value not too old , so choose 
 					the max of the se->vruntime and vruntime-lantency ,(kind of fair?)
+		pick next task fair:
+			see if has process to run , then pick leftmost , dequeue ,save on the cfq_rq->curr ,
+				save exec_time , and start record from now on
+
+		check_preempt_curr(check_preempt_wakeup in cfs):
+			process who call try_to_wake_up , in the wakeup routine , func will check if the newly
+			waked up process can preempt , 
+			the check:
+				new vruntime bigger than current , just return , then do current
+				new smaller than current , and new + granularity < current , then resched
+				otherwise do current?
