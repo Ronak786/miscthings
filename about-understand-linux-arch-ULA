@@ -246,3 +246,18 @@ CFS:
 				means key will expand according to runinig time inc , high priority's pro will
 				increase slowly , if sleeped , after wake , due to min_vruntime increase(mono inc)
 				the key will be smaller than before in spite of the non-changed curr->vruntime
+
+		in cfs , we also has a schedule lantency , in which time ,all process should be run at least once ,
+			that is set as a default value and can be changed by sysclt_sched_latency and sysctl_sched_min_granularity,
+			the physical slice is allocated by this depend on load weight , then virtual one depend on that
+			(why time slice again ???) (this is used as a measurement, as a ideal run time , if real run time 
+				is above that , then need_resched)
+
+		about enqueue:(enqueue_task_fair)
+			two states , not wakeup(is running just before) , wakeup(enqueue from sleep or newly created)
+				if not just wakeup , directly enqueu into the rbtree(vruntime is valid)
+				if newly created(inside in type of wakeup),add a lantency,so will run just after 
+					the current period of all process's run
+				if from sleep wake up , so the vruntime may have been too small ,(so will keeped be 
+					chose to run , so shoud modify it to a value not too old , so choose 
+					the max of the se->vruntime and vruntime-lantency ,(kind of fair?)
