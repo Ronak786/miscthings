@@ -210,6 +210,7 @@ two kinds of scheduler:
 	periodic scheduler -> the scheduer function called which tick , so called schedule_tick() , it will update runqueue's clock ,then check if current process(
 		get from runqueue struct) run enough time . then set tid_need_sched flag in thread_info struct .  when return from interrup , kernel will check that
 		flag and schedule() if.    
+
 	main scheduler-> when a process want to yield to others , then it call schedule() . (all funcs prefix with __sched will call schedule, this tell link to put then
 		in a special seg so dump will not show them ) .   
 			or when return from syscall , kernel will check it , no matter either , it is in process's kernel space , so next time run ,just after that place in the 
@@ -220,3 +221,28 @@ two kinds of scheduler:
 	schedule in fork:
 		in fork , we have a sched_fork() to set some schedule-related vars in struct , then set prio of child to normal prio of father , 
 		when in wake_up_new_task , task will be queued
+
+
+	in context switch:
+		we do the memory switch ,then switch the stack , use switch_mm() switch_to() , 
+			in switch to, we complete the switch , so subsequet codes will be done 
+			the next time this process be scheduled to run
+
+
+
+CFS:
+	above we know priority mapped to fixed load weight in every sched_entity .
+	all time and weight's update is in the update_curr() func,
+	update_curr:
+		update the pro's exec time , 
+		calculte vitural run time of this time ,(if nice is zero , just is a real time (now-exec_start))
+			it will be a fraction of the realtime-delta, nice0_value / nice_now_value(weight)
+			then entity's vruntime added by that ,as the new vruntime.
+			then calculte the min_vruntime  of the cfs_rq runqueue , this should be bigger than 
+				its old value ,and may be bigger than the least value in the tree(because it is
+					compared to that to decide the new value) ,it is one of the current vruntime , 
+					old min_vruntime , tree's least vruntime
+			then the entity's keyvalue is vruntime - min_vruntime:
+				means key will expand according to runinig time inc , high priority's pro will
+				increase slowly , if sleeped , after wake , due to min_vruntime increase(mono inc)
+				the key will be smaller than before in spite of the non-changed curr->vruntime
