@@ -1,0 +1,24 @@
+kernel can be preempted , or not , use a config to control
+
+if not preempt , only interrupt can interrup the process , only process it self can use schedule to yield
+
+preempt:
+	now we support preempt  not only at returninig to userspace from kernel space or interrupt space ,
+		but also in kernel whenever if it is safe: 
+	safe:
+		not in interrupt context ,
+		not have spin type lock(set in thread_info's count )
+	flag: need_resched
+	when to set: every time in kernel
+	when to check:
+		wakeup a process
+		new created a process
+		enable preempt
+		leave from interrupt 
+		leave to userspace
+		change priority
+		when smp load balance
+
+website :
+	http://blog.chinaunix.net/uid-25871104-id-3331241.html   intepretes well
+		
