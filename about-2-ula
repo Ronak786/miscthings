@@ -1,0 +1,15 @@
+memory management
+	in ia32 , memory directly mapped into kernel only less than 1gb , so others are controlled by
+		high memory , and mem  above 4gb can only be controlled by cpu's PAE extension , 
+		and everytime can only control 4gb ,
+	
+	high memory :
+		this problem only happens on 32bit cpus , and only when kernel want to access
+			memory above 896mb, because kernel always map physical page directly 
+			into kernel space and not use the page table model the user space used .
+			so this is not problem  for userspace programs , they always use page
+			tables ,and that pagetable always have values valid
+	numa:
+		distribute computer, multi-cpus have their own mem , but access other cpus mem through
+			qpi channel , will be a little slower.  when core are too many , access to mem
+			from bus can be a bottleneck , so numa maybe better
