@@ -13,3 +13,55 @@ memory management
 		distribute computer, multi-cpus have their own mem , but access other cpus mem through
 			qpi channel , will be a little slower.  when core are too many , access to mem
 			from bus can be a bottleneck , so numa maybe better
+
+	memory struct: generically numa , we have node  ,in which we have mem zones , every zone have specific usages ,likke ZONE_DMA ZONE_HIGHMEM ZONE_NORMAL
+			 in uma , we only have one zone
+
+			we use a struct pglist_data(pg_data_t) to represent a node ,will include all zones and pages that node have (we also
+				have a enum flag to represent to status of node ,especially N_HIGH_MEMORY(high priority)  N_NORMAL_MEMORY
+					(only we have multi nodes)
+			we use a struct zone to reperesent a zone , and the add padding used to imporve the cache effection
+			detail struct zone:
+				first part: page's allocate and recycle decition and mem management
+					    reserved mems , page in cache or not , idle pages's number , brother system
+					   this area used to judge the current state of the memroy system
+				second part: 
+					record page's activity and all pages's state(can be recycled or not)
+					processes's wait table , and all pages numbers start place
+
+				page_min page_high page_low:
+					system will set page_min page_high and page_low  considering the reserved pages (which
+						is set according to how many mem in the system) most times the page_min is the min_free_kbypes
+				pageset:
+					use hot and cold to represent the pages are in cpu cache or not(every cpu has one member in array for every zone)
+					the batch defines a cache can contain pages number
+				struct page:
+					store info about referenct of page ,the address of page ,and if highmem exist--- the high mem addr is mapped to kernel.
+					the page flags implies page's status locked(not accessed by others) ,updated ,lru , highmem , private , active , swap ,compound and so on
+					,all arch independent
+					we also have wait_on_page_writeback  wait_on_page_locked two funcs to wait
+
+	void*  : this is always 64bit in linux kernel , and perferred to use unsigned long instead because more explictly
+	page table : consists of pgd pud pmd pte and page offset , each have an offset ,so each size represented by PAGE_SIZE , PUD_SIZE PMD_SIZE PGDIR_SIZE
+			page tables all implemented by each arch
+			those pgd_t pmd_t pte_t pud_t are just unsigned_long type 
+		
+		we have lots of funcs to  cal the pmd or pud or pte's offset by addr and src_pgd , use those funcs (pmd_offset) , PAGE_ALIGN used to mask into
+		the next aligned addr(to page size)
+	
+		in every type of entry we only use a little of the whole entry ,so others used as extra infos ,
+		 in pte , we will have pte_presetn access dirty read write exec user and so on  flags and funcs to check those flags
+		we use page table create add free ,flags set funcs to control page tables
+
+	Question: I see PG_dirty on struct page ,and pte entry , so which is the true dirty 
+	
+
+	initialization:
+		when bootup , memory setup will happen as soon as mem allocation has been decided after arch dependent code
+		we first use a simple mem model after boot , then mem_init() use the whole mem model(also set per cpu vars and slab and pageset)	
+
+		use build_all_zonelists , we initial all zones in all nodes (in uma we only have one pg_data_list
+			we initial zonelists with zones from all nodes and sorted by their node numbers , add their zones after previous ones 
+				to form a priority when local node's memory not enough
+				
+				

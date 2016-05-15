@@ -19,7 +19,12 @@ how to use gpg:
 
 some operations about gpg:
 	use gpg --list-keys  can see all gpg keys , the id after  "2048R" is the key id can be used 
-
+	edit-key:
+		gpg --edit-key XXX (name) to edit some trust level and others of the public key
+			use this ,input trust , select level and enter save , then will not output WARNING: This key is not certified with a trusted signature!
+	gpg --recv-keys XXX (key-id from author)
+	gpg --import   import the .key file received from others(the pub key you can use to encrypt then send them to others , then others can decrypt)
+	
 available  gpg  sites:
 	pgp.mit.edu  , you can set in ~/.gnupg/dirmngr.conf , then use gpg --send-keys XX to send
 
@@ -42,8 +47,7 @@ available  gpg  sites:
 		then you can use your private key to sign that  publickey: gpg --sign-keys XXX
 		others will use  gpg --check-sigs  XX to see your signs , 
 		this will increase the authority of that public key
-	edit-key:
-		gpg --edit-key XXX (name) to edit some trust level and others of the public key
+	
 
 	specify  users:
 		gpg -u  user-used-to-decrypt   -r  user-used-to-encrypt

@@ -1,0 +1,3 @@
+start systemd-timesyncd , then conf file is /etc/systemd/timesyncd.conf
+	timedatectl set-ntp on is better ,and maintain utc time
+	then timedatectl list-timezones ,timedatectl set-timezone XXX , now link /etc/localtime will change , and your date will change!!

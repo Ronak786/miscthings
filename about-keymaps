@@ -2,3 +2,6 @@ use loadkeys to load keymaps ,  just add us  uk as params
 	dumpkeys will show  all key  maps  ,
 
 all keys are in /usr/share/kbd/keymaps/ ,  you can choose them
+
+
+you can change the default under /usr/share/kbd/keymaps ,or just use loadkeys then input your own set ,or use xmodmap ? 
