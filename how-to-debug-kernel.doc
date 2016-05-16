@@ -1,0 +1,22 @@
+installation:
+	socat , linux-kernel , virtualbox , linux distribution in the VM
+
+host: 
+	build a kernel with kgdb , sysrq  , no rodata , debug info 
+  	setup virtualbox , must install kernel-devel first , for that virtualbox will build a module with that, otherwise will fail
+	configure a serial port on the VM , with host pipe ,
+		(usage:  you can use minicon with  unix#/path/of/pipe as the serial device , then interactive with guest ,   or use "socat /path/of/pipe - "  to output everything that the  guest input into ttyS0 to the stdout )
+	use "socat -d -d /path/of/pipe pty & "  to get a device mapper of that pipe , eg.  /dev/pts/1 	
+
+guest:
+	copy the built kernel into the virtualmachine , reboot with that kernel( remember not use uuid as kernel cmdline param ,because you do not have a udev if you do not use a initramfs )
+
+	add kernel cmdline   console=tty0 console=ttyS0,115200 (optional)   kgdboc=ttyS0,115200  (kgdbwait if you want to debug the boot of the kernel) 
+
+	echo 1  > /proc/sys/kernel/sysrq to enable sysrq 
+	echo g > /proc/sysrq-trigger   to active kgdb , which will froze the guest 
+
+now return to host , gdb ./vmlinux  ( the kernel running in the guest) ,  then target remote /dev/pts/1 ,  
+now linked .   a break on sys_sync is recommend , because this is cheap for you to trigger the kgdb when running, you can set breaks , then running again with continue 
+
+	
