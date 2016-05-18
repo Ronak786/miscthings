@@ -65,3 +65,7 @@ memory management
 				to form a priority when local node's memory not enough
 				
 				
+		detail:
+		 	setup_arch() arch dependent . used to require bios to get memory can be used , 
+			then read the cmdline param to adjust that , 
+			then setup a bootup mem allocate machine
