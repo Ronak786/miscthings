@@ -112,3 +112,16 @@ use /proc/iomem  or System.map to check system memory
 
 		init func and data clear:
 			after boot stage , funcs or datas marked with __init __initdata will be freed
+
+		buddy system : initialize after the bootmem allocator , represented by every zone with a struct free_area(an array of MAX_ORDER members)
+					each member is a free list array( linked by list of every free block's first page) 
+					now in order to max use the mem space not to be too fragment , the freelist of every order will also by split into
+					several migrate types.
+				all nodes and all zones have their own buddy system , and will be checked by the order of zone 
+				in /proc/buddyinfo  /proc/pagetypeinfo you can see pagetype( movable , unmovable, recyclable)
+				when allocate ,mem's will be split into such groups of the same size free list,every type has a fallback type list to use when the specific time
+					has been used up
+
+				this type movable will be disabled if not enough mem exist , when in build_all_zonelists
+				we use a type flag(enum) to mark every memblock , and so buddy systemd know who not to move. and
+				when freee  , then  to add to an exist environment(with that flag)
