@@ -77,3 +77,13 @@ memory management
 				add their zones after previous ones to form a priority when local node's memory not enough
 			
 			
+use /proc/iomem  or System.map to check system memory 
+		
+		kernel mem mapping:
+			the kernel mem mapped to the 4th gb in ia32  and start at 1MB place , 
+			on amd64 , only use 48bit address , so 0x0000 0000 0000 0000 0000 to 0x0000 7fff ffff ffff for use space,
+								0xffff 8000 0000 0000 0000 to 0xffff ffff ffff ffff ffff for kernel
+			space
+
+		detail in SETUP_ARCH():
+			first use arch dependent method
