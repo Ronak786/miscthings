@@ -84,6 +84,7 @@ use /proc/iomem  or System.map to check system memory
 			on amd64 , only use 48bit address , so 0x0000 0000 0000 0000 0000 to 0x0000 7fff ffff ffff for use space,
 								0xffff 8000 0000 0000 0000 to 0xffff ffff ffff ffff ffff for kernel
 			space
+			on 64bit ,after kernelspace mapping , we mapping kernel code and then module addrs
 
 			mapping detail:
 				first directly mapping to 896kb from 5kb , then vmalloc mem , then persistent map(highmem) ,then
@@ -92,7 +93,7 @@ use /proc/iomem  or System.map to check system memory
 		detail in SETUP_ARCH():(diff: in ia32 we first setup bootmem allocator then map physical mem to virtual for kernel,
 					but on amd64 , we first mapp in(init_mem_mapping() ,then activate bootmem in contig_initmem_init , we discuss ia32)
 			first use arch dependent method get memory distribution map(setup memory region)
-			then add all mem areas to  struct pgdat_t, (add_activate_range())
+			then add all mem areas to  struct pgdat_t, (add_activate_range(),use struct max_zone_pfns  and node_activate_region)
 			then setup bootmem  allocator
 			then stup kernel page table and mem maps ,(paging_init(),pagetable_init())
 			then set up the memory list you can see(use free_area_init_nodes()
