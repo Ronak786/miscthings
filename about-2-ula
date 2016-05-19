@@ -96,3 +96,6 @@ use /proc/iomem  or System.map to check system memory
 			then setup bootmem  allocator
 			then stup kernel page table and mem maps ,(paging_init(),pagetable_init())
 			then set up the memory list you can see(use free_area_init_nodes()
+
+			in page_init() (mapping physical to virtual and open page stratety,flush tlb, )
+			then free_area_init_node use zone_pcp_init() to init pageset for cpus
