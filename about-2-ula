@@ -99,4 +99,16 @@ use /proc/iomem  or System.map to check system memory
 			then set up the memory list you can see(use free_area_init_nodes()
 
 			in page_init() (mapping physical to virtual and open page stratety,flush tlb, )
-			then free_area_init_node use zone_pcp_init() to init pageset for cpus
+	******		then free_area_init_node use zone_pcp_init() to init pageset for cpus
+
+		the bootmem:(use setup_mem() in 32 or contig_initmem_init() in 64)
+			use  bootmem_data_t to contain all fragments of physical pages we have ,and maintain a bitmap,
+				every time you want mem , it will allocate ,with first match perferred
+			it first add checked mem into boot_mem_t struct (linked by list),then search those areas can be used.
+			
+			usage: alloc_bootmem , alloc_bootmem_pages	alloc_bootmem_low alloc_bootmem_low_page(used by dma alloc)
+				use free_bootmem to free allocated mem , 
+				use free_all_bootmem_node to pass mem management to brother system
+
+		init func and data clear:
+			after boot stage , funcs or datas marked with __init __initdata will be freed
