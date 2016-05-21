@@ -173,3 +173,18 @@ use /proc/iomem  or System.map to check system memory
 					the allocation from buddy system use __rmqueue() ,it will handle the split of the big page, (the migrate_reserve is the last to try ,but when?)
 				if success allocated , use prep_new_pages() to set correct state of all pages .(eg. for huge page),
 		when __free_pages(), we use will free into cpu cache if only one page , or free into  the buddy system and find buddy to merge 
+
+		mapping virtual:  vmalloc
+			this used to map memory(usually high mem into kernel for use , but not requre continue , so use virtually continuesly but physicly distinct)
+			this will allocate the virtual address just after the kernel persistent mapping 
+			vm memory is managed by vm_struct , every mapped virtual memory in kernel space in vmalloc space is represented by one this struct.
+				contains vm addr , length, physical page struct pointer array 
+				when allocate , vmalloc use get_vm_area to get the vm address range , use alloc_page to alloc enough pages . then map them together
+					use map_vm_area and construct page tables of kernel
+				it will use highmem as possible
+
+			we use vmalloc  vmalloc_32(make sure physical addr 32bit),vmap(use a pre defined struct page array to map), ioremap(this used to map bus io into kernel memory)
+				note that in kernel or userspace , we all use virtual addr , but kernel's mostly persistent mapping , but userspace will use page table ,
+					in kernel the true persistent space just minus the PAGE_OFFSET , but in user space , must translate by pagetable 
+			
+		unmap:  use vfree<==> vmalloc   vunmap<==>vmap ioremap  to free mapping , remove_vm_area->unmap_vm_area->free_pages
