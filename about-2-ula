@@ -150,3 +150,8 @@ use /proc/iomem  or System.map to check system memory
 
 		zone_watermark_ok : used to check if alloc in this zone of specific order is allowed
 				free pages must be above min watermark , and ALSO must have enough big chunk of every order to avoid fragmentation
+				the mark is the zone's pages_min pages_high pages_low set by the least must assured page
+		get_page_from_freelist : 
+			traverse specified zonelist to get the specific zone the allocate in , then check alloc_flags(ALLOC_WMARK_MIN ...) to set the mark
+				then call zone_watermark_ok to check , if success 
+				call buffered_rmqueue() to allocate
