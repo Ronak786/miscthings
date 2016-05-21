@@ -76,6 +76,8 @@ memory management
 			we initial zonelists with zones from all nodes and sorted by their node numbers , 
 				add their zones after previous ones to form a priority when local node's memory not enough
 			
+NOTE:			zonelist struct of each node after 2.6.32: have at most two zonelists , normal only one (arranged by zone types), if config numa,
+				will have two , and the second list used to contain only local zones in order for local allocate specified by GFP_THISNODE
 			
 use /proc/iomem  or System.map to check system memory 
 		
@@ -125,3 +127,26 @@ use /proc/iomem  or System.map to check system memory
 				this type movable will be disabled if not enough mem exist , when in build_all_zonelists
 				we use a type flag(enum) to mark every memblock , and so buddy systemd know who not to move. and
 				when freee  , then  to add to an exist environment(with that flag)
+
+		free_area_init_nodes: used to initialize mem zone and node data struct:
+			this will use arch dependent max_zone_pfn and early_node_map arrays to construct the boundary of all zones and nodes into a generic array
+			then call free_area_init_node for all nodes to construct all pg_data_t struct 
+				in which call use calculate_node_totalpages to  cal all pages on each node, and alloc_node_mem_map to allocate struct page
+				free_area_init_core to init the realsize of every zone,and kernel pages and all pages count
+					then all percpu cache init and every free area list head of buddy system init
+
+
+		buddy system allocate:
+			alloc_pages get_zerod_page __get_free_pages get_dma_pages alloc_page  , the getXXX  return the virutal addr ,and allocXXX return struct page
+			we also can use vmalloc to allocate virtually continue but physically not continued pages ,  kmallo allocate mem less then one page
+
+			when allocate , use gfp(get  free page) flags to specify which type of mem to allocate preferred, use gfp_zone() to get the correct zone to allocate
+				also some combination usually used , GFP_KERNEL(wait|io|fs) , GFP_ATOMIC and so on , in gfp.h 
+			
+			get_free_pages --->(page_address() after return of alloc_pages) , alloc_pages--->alloc_pages_node (this is the base of buddy system alloc)
+			__free_page(page) free_pages(addr) , the latter use virt_to_page(addr) to get struct page ,and then call the former then all to __free_pages
+			
+			the alloc_pages_node will use the specific zonelist the choose the specific zone ,then use buddy system of their own to allocate that order's mem
+
+		zone_watermark_ok : used to check if alloc in this zone of specific order is allowed
+				free pages must be above min watermark , and ALSO must have enough big chunk of every order to avoid fragmentation
