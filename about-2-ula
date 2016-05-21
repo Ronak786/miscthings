@@ -188,3 +188,21 @@ use /proc/iomem  or System.map to check system memory
 					in kernel the true persistent space just minus the PAGE_OFFSET , but in user space , must translate by pagetable 
 			
 		unmap:  use vfree<==> vmalloc   vunmap<==>vmap ioremap  to free mapping , remove_vm_area->unmap_vm_area->free_pages
+
+
+		persistent mapping (map high mem into virtual kernel space , just after vmalloc):
+			we will have LAST_PKMAP  number of pages in this area, the count 1 means mapped but not in tlb, so not yet can be used. so use number is n-1
+			use a struct page_address_map to describe the relationship of struct page and virtual addr 
+				then use a hashtable to map all struct page pointers to their virtual addr . 
+			when you have a struct page , you call page_address(page) , it will check--:
+				if low mem , just return the real addr shift from page_offset
+				if high , hash and traverse then get virtual addr 
+			so in kmap ( which we map high into kernel space , we do:
+				if low ,call pageaddress() , if high , we fist get a lock , then page_address() to get high virutal , 
+					if null, map_new_virtual (in which we choose a free place to get vrit addr ,then combine the page and the addr),and return the new addr
+				the kunmap : if is in highmem , dec the count array to one, (the to zero will be done by flush_all_zero_pkmaps in map_new_virtual, then
+					flush out tlb
+				kmap_atomic:
+					this is used in fix_addr, and has a type as a id, every "type" var of every cpu has one value in that map range , so
+					can be map immediately even have been mapped by others
+				on 64bit, just not do with highmem . so kmap just return page_address(page) , kunmap do nothing
