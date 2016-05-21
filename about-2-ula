@@ -155,3 +155,20 @@ use /proc/iomem  or System.map to check system memory
 			traverse specified zonelist to get the specific zone the allocate in , then check alloc_flags(ALLOC_WMARK_MIN ...) to set the mark
 				then call zone_watermark_ok to check , if success 
 				call buffered_rmqueue() to allocate
+
+		alloc_pages_node:
+			the core of buddy system to alloc page
+			first try zones with only harwall and mark low cpuset , if success , return(use get_page_from_freelist)
+			second , retry with first kswap on all zones on that zonelist then lower the wartermark and try again)
+			third try with  no watermark flag if is allowed(process flag with not allow interrupt) and with pf_memalloc(set by allocator it self)
+				if set no_fail , then spinwait and loop retry again the third
+			fourth is sleep is allowed (GFP_wait is set) , then cond_schedule() allow others to run a little time , then continue ,use try to free page 
+				to recycle some pages ,then again try alloca use get page from free list() , if not set FGP_NORETRY and set GFP_FS , kill a process to get free
+				the got free will be enough and restart from first again.
+				if not that condition, and allocate length not too long(<=8page) or set nofail , retry from the fourth , otherwise return fail.
+
+			if get free page success:
+				in buffered_rmqueue , will check if alloc just one page , if so ,just use per cpu cache pages  in the pcp list (shoud choose right migratetype),
+					if multi pages , allocate from buddy system, (if no enough continous page, return fail, if yes , break big chunk if needed and return )
+					the allocation from buddy system use __rmqueue() ,it will handle the split of the big page, (the migrate_reserve is the last to try ,but when?)
+				if success allocated , use prep_new_pages() to set correct state of all pages .(eg. for huge page),
