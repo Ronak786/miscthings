@@ -172,3 +172,4 @@ use /proc/iomem  or System.map to check system memory
 					if multi pages , allocate from buddy system, (if no enough continous page, return fail, if yes , break big chunk if needed and return )
 					the allocation from buddy system use __rmqueue() ,it will handle the split of the big page, (the migrate_reserve is the last to try ,but when?)
 				if success allocated , use prep_new_pages() to set correct state of all pages .(eg. for huge page),
+		when __free_pages(), we use will free into cpu cache if only one page , or free into  the buddy system and find buddy to merge 
