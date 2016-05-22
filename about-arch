@@ -2,6 +2,8 @@ rsync  :just use rsync -aAXv --numeric-ids --exclude={"dev/*","proc/*","tmp/*","
 
 ftp:  use lftp ,can login , can download
 
+**************************************************************************************************************************************************************************************************
+
 pacman:  (use --needed to avoid reinstall !!!!)
 	install : 			pacman -S 
 	install by search pattern : 	pacman -S $(pacman -Ssq pattern)
@@ -96,3 +98,22 @@ trouble shoot:
 	pacman has live cd's do methods , use some options like -r/--root to specify a mounted root
 	
 
+**************************************************************************************************************************************************************************************************
+
+
+
+repos:
+	we have core , extra , commmunity and other repos
+	must be in order the former will be installed , regardless the level of the latter
+
+
+arch build system:
+	install abs , then run abs ,to get the build system PKGBUILD script of all packages in the repos specified in the abs.conf , the AUR ones should be download manually
+	then make your own dir as a non root user , copy that directory of that package in the /var/abs dir , cd into it 
+	run makepkg -s 
+	trouble:  gpg may fail , should use gpg --recv-key XXX to receive keys , import and trust if needed ,  modify download pages from the official to ustc to speed up , 
+		modify make flags to fully use cpus, change flags and so on...
+	now you can install with pacman -U .... 
+
+	you can also modify the groups in the PKGBUILD , then add in pacman.conf the IgnoreGroup=xxx to ignore the official same name package from overriding the one you manually built and
+		installed into the system
