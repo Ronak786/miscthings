@@ -1,3 +1,62 @@
 rsync  :just use rsync -aAXv --numeric-ids --exclude={"dev/*","proc/*","tmp/*","run/*","mnt/*","media/*","lost+found","home/sora/*","sys/*"}  /  root@host:/path/to/folder   to remote sync
 
 ftp:  use lftp ,can login , can download
+
+pacman:  (use --needed to avoid reinstall !!!!)
+	install : 			pacman -S 
+	install by search pattern : 	pacman -S $(pacman -Ssq pattern)
+	install from specific repo:  	pacman -S repo/XXX
+	install some package of same prefix:  pacman -S aaa-{bbb,ccc-{ddd,eee}}
+
+	group:
+	install some in the group: 	pacman -S groupname;  then  choose  number  1-9 10 ^12(not 12) ^5-8(not 5 to 8)
+	see what a group have:          pacman -Sg  groupname (have no groupinfo , just a group package list)
+
+	remove:
+	remove a single package : 	pacman -R
+	remove also depencies installed along with that(not used by others) : pacman -Rs
+	remove all dependencies and dependent on that packages : 	pacman -Rsc
+	remove  without remove the dependent package (the packmage depend on this removing one) : pacman -Rdd
+	remove also clean conf files( not save as .pacsave) , :  	pacman -Rn
+
+	update: (  the old conf file about to remove will be saved as *.pacsave , and new files overide user modified one will be named *.pacnew
+	update all: pacman -Syu
+	
+	after update : see /var/log/pacman.log to see which conf file saved to .pacsave , which new one be renamed to pacnew ,and deal with that manually
+
+	
+	search:
+	pacman -Qs :  installed names or descriptions( if have more than one string , means AND ,not OR)
+	pacman -S  :  sync database
+	pacman -Ss : search name and description
+	pacman -Ss '^xxx'  search only names
+
+	info
+	pacman -Qi -Si
+	pacman -Qii also list backup files and modify state
+
+	list files , check files:
+	pacman -Ql
+	pacman -Qk
+	
+	list not needed packages,installed as dependencies bedore,(orphans): pacman -Qdt
+	list explictly installed but not as a dependency: pacman -Qet
+
+	files belong to which package:
+	pacman -Qo
+
+
+pactree
+	list packages this package depend on  in a tree:  pactree XXX
+	list packages depend on this package : 		  pactree -r XXX
+
+pkgfile
+	list files in a package in syncdatabase:  pkgfile -l xxx
+	list just like yum whatprovides : 	pkgfile Xxx
+
+pacman conf: in /etc/pacman.conf , we can choose the repo to sync
+pacman database: /var/lib/pacman/local  /var/lib/pacman/sync/{there are sync database's gzip tar ball,in which are those packages' description infos)
+pacman cache packages: /var/cache/pacman/pkg
+	clean cache pacs not currently installed ( removed or updated) : pacman -Sc
+	
+
