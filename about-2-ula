@@ -89,8 +89,11 @@ use /proc/iomem  or System.map to check system memory
 			on 64bit ,after kernelspace mapping , we mapping kernel code and then module addrs
 
 			mapping detail:
-				first directly mapping to 896kb from 5kb , then vmalloc mem , then persistent map(highmem) ,then
+				first directly mapping to 896mb from 5kb , then vmalloc mem , then persistent map(highmem) ,then
 					fixed map(kernel used but not immediately from bootup ,so here but is fixed)
+
+			in 64bit, kernel start at 0xffff 8000 0000 0000, and PAGE_OFFSET from that , fist directly map 2^46,then vmalloc , then vmmen,used by disconfigous mem model,
+				then kernel code data , at last module_vaddr used to map module
 
 		detail in SETUP_ARCH():(diff: in ia32 we first setup bootmem allocator then map physical mem to virtual for kernel,
 					but on amd64 , we first mapp in(init_mem_mapping() ,then activate bootmem in contig_initmem_init , we discuss ia32)
@@ -202,7 +205,14 @@ use /proc/iomem  or System.map to check system memory
 					if null, map_new_virtual (in which we choose a free place to get vrit addr ,then combine the page and the addr),and return the new addr
 				the kunmap : if is in highmem , dec the count array to one, (the to zero will be done by flush_all_zero_pkmaps in map_new_virtual, then
 					flush out tlb
-				kmap_atomic:
-					this is used in fix_addr, and has a type as a id, every "type" var of every cpu has one value in that map range , so
+		kmap_atomic:
+			this is used in fix_addr, and has a type as a id, every "type" var of every cpu has one value in that map range , so
 					can be map immediately even have been mapped by others
 				on 64bit, just not do with highmem . so kmap just return page_address(page) , kunmap do nothing
+			NOTE: we want persistent map and  fix map because kernel can not manage directly map over 896MB, if we can , we just directly map them
+
+
+		SLAB:
+			use slab , we can alloc small mems , also keep more data in cache (if just buddy , the same times addr will always hit only specific cache line)
+			we use slab to realize kmalloc
+			the slab has a memcache struct ,which have three slab list(free used full),then slab struct manage all mem's alloc
