@@ -1,0 +1,3 @@
+rsync  :just use rsync -aAXv --numeric-ids --exclude={"dev/*","proc/*","tmp/*","run/*","mnt/*","media/*","lost+found","home/sora/*","sys/*"}  /  root@host:/path/to/folder   to remote sync
+
+ftp:  use lftp ,can login , can download
