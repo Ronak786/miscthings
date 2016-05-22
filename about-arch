@@ -54,9 +54,45 @@ pkgfile
 	list files in a package in syncdatabase:  pkgfile -l xxx
 	list just like yum whatprovides : 	pkgfile Xxx
 
+paccache : used to delete caches  from last 3 ,  
+	paccache -r
+	paccache -ruk0 clean not installed all caches
+
 pacman conf: in /etc/pacman.conf , we can choose the repo to sync
 pacman database: /var/lib/pacman/local  /var/lib/pacman/sync/{there are sync database's gzip tar ball,in which are those packages' description infos)
 pacman cache packages: /var/cache/pacman/pkg
-	clean cache pacs not currently installed ( removed or updated) : pacman -Sc
+	clean cache pacs not currently installed ( removed or updated) : pacman -Sc , pacman -Scc to clean all cache
+
+
+	only download:
+		pacman -Sw (also dependencies will be download not installed , you can use pacman -Sc to clean those)
+
+	install use user specify path:
+		pacman -U  XXX.pkg.tar.gz
+		pacman -U  file://xxx.pkg.tar.gz  also add into local cache
+		pacman -U  http://XXXXX  remote install
+
+	-p:  
+		with -S -R -U , will just print path , not install
+		with -Q , will query a file , not an entry in the database , just like rpm -qp
+
+
+in pacman : packages distinguished into two types:
+	installed explictly , installed as a dependency
+	pacman -Qe  see former
+	pacman -Qd  see latter
+
+	pacman -S --asdeps to change installing one to a dependency
+	pacman -D --asdeps to change a installed one to dependency   
+		use --asexplicit as the opposite
+
+pacman.conf
+	see man page for detail
+	have colour optins
+	Hooks may be run in /usr/share/libalpm/hooks , and trigger condition see man alpm-hooks,(usually after or before some packages' installation)
+
+trouble shoot:
+	if have trouble with one file in package,  just use pacman -S --force may have effect(may be that file not in state same with that in /var/lib/pacman/local/$(pkgname)/file
+	pacman has live cd's do methods , use some options like -r/--root to specify a mounted root
 	
 
