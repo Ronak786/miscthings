@@ -1,0 +1,25 @@
+first when write driver , we set a pcitable with vendor's id
+then when we compile , we register the table with this driver , 
+so when a device plugined in , pci scanned that vendor id is the same as we provided ,
+so it call the probe func we provide for every device  it detected with the id
+
+the probe func:
+	it will assign a minor id of misc to the specific struct represent that device
+	then map the dev's address into its own field for future use
+
+in userspace 
+	we mknod a misc device with minor id specified, 
+
+in kernel space in that probe func:
+	we register a misc device with the minor set to the userspace specified one,
+	 	and a bunch of fops
+	when we open that device in use space , the misc:minor's fops's open will be called ,
+	that open will get the pnext struct(which contains the mapping addrs, so we now fast!)
+	then in subsequent ioctls , we just get the private_data from the strut file, and 
+		can get the virtual address of that pnext.
+		and we use fastmap(ioctl) to get that struct just directly into userspace's data struct
+	
+	because those are in kernel space(32bit begin with 0xCXXXXXX,)
+		so if userspace want to use that address , it must open /dev/mem
+		to get the whole addrspace of kernel , and let the offset in that   struct as a 
+		offset of mmap , and map it into its own userspace
