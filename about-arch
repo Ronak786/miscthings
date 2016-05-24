@@ -117,3 +117,21 @@ arch build system:
 
 	you can also modify the groups in the PKGBUILD , then add in pacman.conf the IgnoreGroup=xxx to ignore the official same name package from overriding the one you manually built and
 		installed into the system
+
+arch user repo:
+	just download packages from aur website or just the the cgit  , use help on the aur arch wiki
+
+makepkg:
+	makepkg -sri will autoinstall dependency and make and intall and then auto remove those packages just compile needed
+
+X server:
+	used to display and draw
+window manager:
+	used to show windowns and resize and move
+desktop environment:
+	used to integrate a convenient env and icons and other features
+
+xinit, startx :
+	the startx is a sript used to start X window (as a wrap of xinit),
+	copy /etc/X11/xorg/xinitrc into ~/.xinitrc , then modify the last command into exec  startxfce4/openbox-session , then we can use xinit to directly into
+		the window system
