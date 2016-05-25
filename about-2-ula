@@ -216,3 +216,20 @@ use /proc/iomem  or System.map to check system memory
 			use slab , we can alloc small mems , also keep more data in cache (if just buddy , the same times addr will always hit only specific cache line)
 			we use slab to realize kmalloc
 			the slab has a memcache struct ,which have three slab list(free used full),then slab struct manage all mem's alloc
+
+
+process virtual mem:
+	in user space , the memory split into : stack , mem map , heap , fixed text segment
+	when in 32bit , we have a new layout : mem map grow down while heap grow up , and the base of memmap  will be decided by the stack,not fixed .
+		whlie the old layout is fixed place of memmap and grows up
+
+	we use a mm_struct to represent the whole mem usage of a process:
+		the vm_area_struct links all memory areas the task used ,also can be traversed by the rbtree
+		it also describes anonymous mapping and relations of the data in the backup disk(not in memory yet)
+	
+	address_space:
+		this is used to describe a priority tree, it links an opened file's address_space struct to the struct inode of that file to the backup storage disk, another
+			way, the addrss_space struct have a priority tree root node(this tree is shared by allprocesss open the same file),then can traverse to get 
+			all mm_struct , so you can get all task_struct'open file mapping to their backup storage disk's file
+
+			the priority tree based on vm_area_struct, not the whole mm_struct, the whole can have multi priority tree, each represent a file
