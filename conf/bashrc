@@ -1,0 +1,13 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+alias tt='tmux'
+PS1='[\u@\h \W]\$ '
+export EDITOR="vim"
+export SHELL="/bin/bash"
+[ -z "$TMUX" ] && export TERM=linux
