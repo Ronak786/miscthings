@@ -1,0 +1,5 @@
+#!/bin/sh
+
+find . -type f -print | grep -E '\.(c(pp)?|h|S)$' > cscope.files
+cscope -bkq -i cscope.files
+ctags -R 
