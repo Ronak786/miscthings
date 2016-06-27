@@ -5,3 +5,9 @@ all keys are in /usr/share/kbd/keymaps/ ,  you can choose them
 
 
 you can change the default under /usr/share/kbd/keymaps ,or just use loadkeys then input your own set ,or use xmodmap ? 
+ans:  change keymaps ,and load in /etc/vconsole
+
+
+use setxkbmap -option ctrl:swapcaps &    to swap ctrl capslock  on graphical
+
+use xinput to change touchpad condition
