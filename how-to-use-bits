@@ -1,0 +1,6 @@
+xor:  axbxcxdxe   will be one if odd ones ,  be zero if even ones , so can be used to check parity
+have bitmask like  000011110000:
+	1 use a loop to set those bits
+	2 use  mask = ~0; mask << onenums;  ~mask;(now have accuracte ones), then mask << lowzeronums
+						avoid sign extention when right shift
+	3 use minus , mask = (1<< (high+1)) - (1 << low) ;  great!!
