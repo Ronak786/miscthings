@@ -1,0 +1,3 @@
+hexdump -C
+xxd -g1   these two will show in byte in order regardless of the byteorder on your machine
+od -t  this will affected by your machine order
