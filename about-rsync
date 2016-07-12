@@ -1,1 +1,10 @@
 just use rsync -aAXv --numeric-ids --exclude={"dev/*","proc/*","tmp/*","run/*","mnt/*","media/*","lost+found","home/sora/*","sys/*"}  /  root@host:/path/to/folder   to remote sync
+
+the --exclude=  if only one item, do not use {},  if dir/  instead of dir/*, then the whole dir itself will
+	not be included,  
+--delete-excluded will delete on the dest the dir and file specified by --exclude(no matter what), and 
+	will also delete every thing the src not have ,but which is in dest
+
+--delete will delete those in src but not in dest , without this flag , rsync will not do deletion
+
+if rsync src dest  instead of src/ , then the whole src dir will be in the destdir!!!
