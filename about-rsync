@@ -8,3 +8,5 @@ the --exclude=  if only one item, do not use {},  if dir/  instead of dir/*, the
 --delete will delete those in src but not in dest , without this flag , rsync will not do deletion
 
 if rsync src dest  instead of src/ , then the whole src dir will be in the destdir!!!
+
+--include, this must be placed before exclude, then will take effect
