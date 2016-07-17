@@ -1,0 +1,15 @@
+how to create chardev with node in /dev:
+including files: 
+	linux/module.h linux/cdev.h linux/fs.h
+	linux/device.h
+in module_init:
+	alloc_chrdev_region: alloc dev_t number
+	cdev_alloc(cdev_init):alloc do with pointer,
+			init do with static struct
+	(if alloc, shoule manually ->ops = &myops)
+	cdev_add
+	class_create (struct class* ..)
+	device_create(struct device * ...)
+
+	when fail , in turn  restore these operations
+
