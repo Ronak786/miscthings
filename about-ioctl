@@ -1,0 +1,14 @@
+if want to write ioctl:
+first choose a type character,
+then use _IO _IOW _IOR _IOWR to suggest which type
+	of comminucation you want
+	(both in userspace and kernel should
+		be the same)
+write your ioctl func and assign to file operation,
+	use unlocked_ioctl just good
+
+then you can call and do your thing
+
+including file:
+	user: stropts.h , linux/ioctl.h
+	kernel: uapi/asm-generic/ioctl.h
