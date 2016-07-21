@@ -1,0 +1,4 @@
+when start power button, first check power stable , then motherboard will signal cpu
+to run, then cpu reset cs 0xf000, cs base 0xffff0000  ip 0xfff0,until then next jump,cs base will
+be used directly( normally cs decide the cs base , but at boot, the cs base is set manually)
+so reset vector is in 0xfffffff0 , 4gb - 16byte.
