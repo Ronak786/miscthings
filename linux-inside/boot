@@ -7,10 +7,26 @@ but when start , cpu is in real mode , so only 1M is accessible. so,
 	in fact, 0xfffe 0000 -- 0xffff ffff is a map to the rom , then first instruction
 	is in the rom.,and then  jmp, so cs now will not change,
 	will always in bios rom and get instructions to run !!( no!!
-		we will go a far jmp , and under 1MB,0xc8000--0xeffff 
-		we will have bios shadow area, whenever cpu access 0xffff xxxx,
-		they will be redirected to the shadowed place in memory,
+		we will go a far jmp , and under 1MB,0xc8000--0xeffff(accurate is 0xf0000 
+		and we also will have bios shadow area, whenever cpu access 0xffff xxxx,
+		they will be redirected to the shadowed place in memory,(map 0xf0000 to that?)
 	but the shadow will make those place unusable after that , so consume memory)
+
+about memory map:
+	when cpu send out address , the northbirdge decide where to route ,most will to ram ,
+	but also some must be allocated for device and rom , so on 32bit system, you can not 
+	use all 4g ram!!!(use /proc/iomem to lookup)(because device have their own memory)
+
+	all address you send to cpu will be modified to segment type then send to bus
+
+startup cpu:(only one cpu will be chose to run, other will activated by kernel)
+	poweron , cpu exec bios , then read mbr , then load bootloader. bootloader with 2 stage 
+	will use bios's interrupt to copy kernel image to 1M+,
+	but now we are in real mode(can only access 1M) , so intel cpu has a unreal mode to switch from and to 
+	by grub to do the copy job
+
+windows: almost the same , but win's mbr only check partition's boot sector
+	to get the bootloader,and its bootloader it combined with kernel boot code
 
 
 kernel startup sequence:(after bootloader)(only one cpu will be chose to run all this when power on)
