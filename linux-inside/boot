@@ -2,3 +2,26 @@ when start power button, first check power stable , then motherboard will signal
 to run, then cpu reset cs 0xf000, cs base 0xffff0000  ip 0xfff0,until then next jump,cs base will
 be used directly( normally cs decide the cs base , but at boot, the cs base is set manually)
 so reset vector is in 0xfffffff0 , 4gb - 16byte.
+
+but when start , cpu is in real mode , so only 1M is accessible. so,
+	in fact, 0xfffe 0000 -- 0xffff ffff is a map to the rom , then first instruction
+	is in the rom.,and then  jmp, so cs now will not change,
+	will always in bios rom and get instructions to run !!( no!!
+		we will go a far jmp , and under 1MB,0xc8000--0xeffff 
+		we will have bios shadow area, whenever cpu access 0xffff xxxx,
+		they will be redirected to the shadowed place in memory,
+	but the shadow will make those place unusable after that , so consume memory)
+
+
+kernel startup sequence:(after bootloader)(only one cpu will be chose to run all this when power on)
+ bootloader have data write into kernel setup header, then jmp to kernel setup code's first code
+this is under 1M , and seen in boot protocal(for communication with kernel and bootloader)
+in arch/x86/boot/header.S , then arch/x86/boot/main.c(now real mode) , then jmp to protected mode(32bit)
+then arch/x86/boot/decompress/head_64.S(startup_64), decompress kernel to 1M, then jmp to that
+place and in arch/x86/kernel/head_64.S (startup_64), do paging ldt gdt idt setup , then
+arch/x86/kernel/head64.c  -> init/main.c(start_kernel)
+
+start_kernel:
+	here we initialize all things , then rest_init, will fork a thread to do cpu_idle 
+		as a pid 0 process
+	then begin schedule and another part will get the /sbin/init to run and linux startup!!
