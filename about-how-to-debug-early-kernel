@@ -1,0 +1,5 @@
+take x86 as example:
+	first  compile kernel , set debuginfo,
+	second qemu -kernel xxx -s -S 
+	3, gdb , target remote :1234  , set arch i8086 
+	4 , hbreak *0x100000 , now you will in the compressed directory's header.S's firstline: startup_32 !!
