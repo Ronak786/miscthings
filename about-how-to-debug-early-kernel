@@ -4,7 +4,6 @@ problems:
 		kernel with 0x1000000,will signal,
 		when use linux16,everything right, just set arch i386:x86-64:intel
 
-
 take x86 as example:
 	first  compile kernel , set debuginfo,
 	second qemu -kernel xxx -s -S 
@@ -27,3 +26,22 @@ if you use linux xxx in  gurb,
 startup_64: if you want to get here, remember set arch i386:x86-64:intel ,(because this is now 
 	in long mode),break at16M ,and the responsibility of this function is to decompress kernel and jump
 	to the kernel's startup_64
+
+
+
+early kernel boot process:
+in bootloader: use diff protocols to load kernel and fill kernel header struct, then change into kernel
+int boot/header.S , first jmp,then,make ds,es,cs,ss the same as ds ,then setup stack sp,clean bss zone to zero ,
+		now that C environment has set up, we call C func main at the same dir
+int boot/main.c :we copy header's struct into boot_param's hdr filed, then setup heap(help of USE_HEAP flag),
+		init console keyboard, video(in boot/ we have some video*.c files which define some
+			video mode to use,and they will be linked in to a special section)
+		use e820 to get meomry map store in boot_param),verify cpu is able to boot into long mode,
+		(almost all done by bios int function), 
+		at last jmp into protection mode:
+			set disable interrupt, disable nmi, set a20 ,set idt,gdt,
+		then make prepare a 32bit addr offset and cs segment selector ,open pe in cr0,
+			use 0x66,0xea as long jmp and jmp to the  specified place,now in pe-mode.
+		reset all other registers to selectors,fix stack(add segment addr),zero other regs
+			ltr lldt ,then jmp the code_start32(stored in boot_param)
+		now we are in boot/compressed/head_64.S's startup_32 entry!!
