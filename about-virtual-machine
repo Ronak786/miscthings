@@ -1,0 +1,3 @@
+use qemu to boot iso , qemu-system-x86_64 -enable-kvm -cdrom xxx.iso -hda  xx.img(hard disk,got by 
+	qemu-img create or dd )  -m 512M  ( remember this !!! or disk will not found by live cd)
+
