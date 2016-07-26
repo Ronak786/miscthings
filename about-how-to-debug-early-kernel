@@ -1,3 +1,10 @@
+problems:
+	now if use linux instead of linux16, kernel will at 16M instead of 1M,(grub also use 1M place,
+		so this place hit twice when linux16), but use linux, when want to attach decompressed
+		kernel with 0x1000000,will signal,
+		when use linux16,everything right, just set arch i386:x86-64:intel
+
+
 take x86 as example:
 	first  compile kernel , set debuginfo,
 	second qemu -kernel xxx -s -S 
@@ -10,3 +17,13 @@ mbr and bootloader:
 	then mkfs,  mount loop1 , grub-install --root-directory=/mnt --modules="part_msdos, ext2 ,normal"
 		/dev/loop0, then copy vmlinz into boot, and make a grub menu , 
 		then you can qemu -hda xx -s -S to start debug and now you can break at mbr *0x7c00 !!
+
+if you use linux xxx in  gurb,
+	in compressed part , startup_32 can be found by 0x100 0000 place(16M),
+	but if use linux16, then startup_32 will in 0x10 0000(1M),
+	and because CONFIG_PHYSICAL_START is 16M , both will be set to 16M as decompressed kernel start
+		(and if relocatable is set in config, higher place can be set for kernel img)
+
+startup_64: if you want to get here, remember set arch i386:x86-64:intel ,(because this is now 
+	in long mode),break at16M ,and the responsibility of this function is to decompress kernel and jump
+	to the kernel's startup_64
