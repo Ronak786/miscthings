@@ -3,3 +3,10 @@ take x86 as example:
 	second qemu -kernel xxx -s -S 
 	3, gdb , target remote :1234  , set arch i8086 
 	4 , hbreak *0x100000 , now you will in the compressed directory's header.S's firstline: startup_32 !!
+
+mbr and bootloader:
+	use qemu is also available, dd make a img, fdisk to make part, 
+	then losetup /dev/loop0 img, losetup /dev/loop1 img -o (2048*512)'s value, 
+	then mkfs,  mount loop1 , grub-install --root-directory=/mnt --modules="part_msdos, ext2 ,normal"
+		/dev/loop0, then copy vmlinz into boot, and make a grub menu , 
+		then you can qemu -hda xx -s -S to start debug and now you can break at mbr *0x7c00 !!
