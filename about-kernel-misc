@@ -1,0 +1,5 @@
+page table: 
+	with 64bit, we have 46bit can use , in arch/x86/include/asm/page_64_types.h, we
+	can see pgd shift 39, pud 30, pmd 21(2M), pte 12,
+	then kernel virtual addr's first addr is 0xffff ffff 8000 0000, 
+		that is the last of pgd, the last two of pud,then whole of subs.
