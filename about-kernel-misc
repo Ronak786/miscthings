@@ -10,5 +10,10 @@ in kernel/head_64.S:
 	then we set pgd's head place with the true _text~_end as pagetable's ident map,
 	so now we have virtual map from  0xffff ffff 8000 0000 to physical 0x0 at the bottom place 
 		in early page table, and ident map at the table's head place
+	but usual kernel place is 0x ffff 8800 0000 0000 to max
+		user is 0x 0 to 0x00007fff ffff ffff   a little different?
 
 	then we set bottom's 512M map to add the delta value(kernel relocated)
+
+	then identity mapping is used by load page table for virtual memory
+		when changing,in that small interval ,two tables will be used
