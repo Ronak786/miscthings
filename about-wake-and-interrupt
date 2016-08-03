@@ -1,0 +1,4 @@
+set a flag in interrupt , then do something in a kernel thread
+	is a method(also softirq may be better)
+put your source in a seperate file ,that will be better
+use extern will get that var (ugly)

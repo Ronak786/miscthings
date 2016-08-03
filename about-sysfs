@@ -1,0 +1,7 @@
+create dir in sysfs, use kobject_create_and_add , will create a dir under sys(second param is NULL)
+sysfs_create_file , will create an attribute file , with show and store method you provides
+
+if want to create into an exist dir under sys(a subsystem), use the specific method:
+	class_create class_create_file class_create_group ..
+	bus_add_device 
+	register_platform_device register_platform_driver
