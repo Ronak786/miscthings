@@ -1,0 +1,9 @@
+every cpu has 7 extra stacks for different interrupt to use, (be clear)
+	besides the kernel stack for every thread
+	they are stored in tss(in linux only nr_cpus  tss exists)
+the first is interrupt stack irq_stack_union
+also we have debug_stack ....
+when reference, we use  gs(shadow in the msr) as base address of 
+	per_cpu value , then get the tss offset and the cpu number 
+	as the block times.then that is the stack top can be
+	assigned to interrupt's rsp ?(I think so)
