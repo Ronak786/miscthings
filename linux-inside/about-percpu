@@ -1,0 +1,9 @@
+per cpu variables are loaded at __per_cpu_load  address(virtual), physically is __per_cpu_load - page_offset,
+	and the caculated address when linked is based on zero, so variables defined in that section
+	,when you address those vars , you will only get offset from __per_cpu_load, 
+	so the whole address of the true first instance of the var is  __per_cpu_load + symbol_name,
+	and that is defined in the link scripts at first.
+	after gs is set , the offset between every instance of the same per cpu var will be stored
+	there in kernel space and every time trapped in , use SWAPGS instrument then you can get the
+	gs of that cpu , then with offset , you can get the true addr of the var(when gs is set, 
+	the per_cpu_load will not be needed any more?)
