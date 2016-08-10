@@ -5,3 +5,6 @@ if want to create into an exist dir under sys(a subsystem), use the specific met
 	class_create class_create_file class_create_group ..
 	bus_add_device 
 	register_platform_device register_platform_driver
+
+send uevent:  use kobject_uevent_env ,you may add yourselves' environment, 
+		then in user space , use  udev rules to filter and do your work
