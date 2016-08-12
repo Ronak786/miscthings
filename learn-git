@@ -30,3 +30,8 @@ how to remove remote branch:
 	git push origin :branch-name
 how to add remote branch
 	git push origin  branch-name
+
+
+git log  --pretty=oneline filename ;  can see log of a file modified history
+git blame filename can see every line of that file's modify history
+git show   xxxxxxxx(sha1num)  can see a specific commit's modification
