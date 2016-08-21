@@ -13,3 +13,7 @@ local pid and namespace:
 		use container_of , get struct pid, 
 		with type info , get one of the struct task_struct
 		use that struct pid
+
+when alloc_pid in copy_process , we will allocate every local
+	pid for every namespace parent , also add hash (nr, ns)
+	into pid_hash
