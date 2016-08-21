@@ -1,0 +1,4 @@
+in printf , all argument functions will be 
+executed in random sequence, so do not 
+put sequence critical things in that
+(like multiple pop )

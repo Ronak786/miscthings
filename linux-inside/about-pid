@@ -1,0 +1,15 @@
+task_struct has three type of pids for different namespace, 
+	in fact, they are all process ids , you can select type
+	to choose the struct pid, 
+struct pid:
+	this is a struct contains several struct upid which 
+		represent diff ids of the same process(with a global pid)
+		in diff namespace, (all other ids will direct to
+			one process's pid),with level ,you can get
+			your local pid
+
+local pid and namespace:
+	calculate hash number, then you can get struct upid,
+		use container_of , get struct pid, 
+		with type info , get one of the struct task_struct
+		use that struct pid
