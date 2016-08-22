@@ -1,0 +1,22 @@
+priority in kernel reverse from in userspace ,
+	we from 0 to 139, smaller , higher .
+	nice from 100 to 139
+	when a task created , 
+	a normal process: static prio(created decicded) , normal prio(caculate decided) , prio(run time change)
+				are same
+	a real time process: normal prio will be 100 -1 - rt_priority value,prio not changed
+	normal power up to real not changed
+	
+	when fork , new process's prio will be old's normal prio
+
+runqueue:
+	every schedule class's rq in a whole big rq defined by every cpu
+	when enqueue, set weight depends on  priority,vruntime will depend on all these loads
+
+schedule:
+	periodic:  update clock , cpuload, run scheduler specific func to decide whether 
+		scheduler needed , set needed reschedule needed
+	main schedule( the schedule() ) , will check that flag every time return from 
+		syscall or interrupt or ... , if needed , begin reschedule
+		when success , we will change to new process , and continue run,
+		when not needed , just return
