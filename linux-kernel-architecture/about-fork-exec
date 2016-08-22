@@ -1,0 +1,9 @@
+fork will do_fork considering flags passed in, 
+do_fork , main work in copy_process , will dup task struct , allocate new thread_info(kernel stack),
+	set initial values , alloc or share resources,namespaces depending on flags
+	set struct pid  upid relationship, then wait child run first
+
+execve , collect  permission infos (sid ...) free origin resources ,
+	search exe  handler and load infos into mm struct (text data bss segment)
+	set start point(ip , use ret?)  then return,
+	now new process started at the same process context as the old one
