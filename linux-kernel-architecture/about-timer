@@ -1,3 +1,7 @@
+a big question: who set the system send signal in HZ frenquency ? 
+		after change to hrtimer,use hrtimer emulate tick_period,then who
+			wake up the hrtimer periodically, 
+			I just set call back functions,but who called them ?
 low resolustion clock: jiffies , 
 high resolution clock: hept, tsc
 	when startup, we register clocksource(used for time read when needed, eg. gettimeofday)
@@ -19,7 +23,20 @@ high resolution clock: hept, tsc
 	hpet timer register: hpet_enable->(some register config)
 					->register clocksource , set curr_clocksource to best
 				->register clockeventdevie-> tick_check_new_device->(setup handler period)
+					set tick_device(that is cpu specific,so can be directly accessed
 
 timerkeeper:
 	this structure used to keep system time specific  data , like monotonic time, wall time
 		ntp time...
+
+softirq:
+	just a little,  softirq for timer interrupt is initialized in init_timer,just an assignment
+		the truly run function is __run_timers, it will check timer_base(per cpu timer managment),
+			then do decidecd work 
+timer_base: 
+	used for low resolution timer per cpu data
+
+attention:  tick_periodic is used whenever time interrupt happened,is set when register hrtimers clockevent 
+	    __run_timers  is used when softirq is raised up and is set in init_timers
+
+

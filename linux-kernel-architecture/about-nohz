@@ -1,0 +1,6 @@
+have high resolution and low res two type,
+when not change to hrtimer, we have low res,
+
+whatever,when cpu idle, we will switch to tick_nohz_handler instead of tick_periodic(), or high res version
+	even if wake uped from interrupt, will check and if no process run, again 
+	go into notick mode;

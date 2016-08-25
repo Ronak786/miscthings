@@ -1,0 +1,32 @@
+hrtimer :
+	we use red-black tree to manage hrtimer timer
+	use struct hrtimer and a percpu  hrtimer_cpu_base struct to represent percpu data
+	one cpu base has mutil clock type's clock base ,and one hrtimer connect to one clock base,
+		so connect to one cpu base.(cpu_base's expire_next is the closest of all clock type's
+			time
+	in hrtimer , we have a softexpire , in clockbase , we have another expire , this is hard one,
+		hrtimer system can decide to wakeup the timer between these two time point,
+		so can wakeup lots of timers all at once to reduce frequently waking up hrtimer!!
+
+hrtimer_init,   enqueue_hrtimer
+
+	switch into high resolution(change handler to hrtimer_interrupt from period handler)
+		just in  tick_period , in update process stat->run_local_timers->hrtimer_run_queue()
+		before hrtimer can be used , only in tick we can do with all timers,
+		and when it is time(when?) to switch ,after that , in this func ,will just skip
+			the process of do with timers
+		we will check and switch to htrimer interrupt state,
+after switch to high resolution type:
+	now we not use low res  timer any more including tick , so we use 
+		high res to emulate tick, in tick_setup_sched_timer(), we
+		set up a timer will happen at next tick ,and in the function,
+		we do almost the same as in tick_periodic(), then we expand tick
+		one more tick!!, now the timer will happen next tick
+		
+
+
+
+msleep:
+	it is just a schedule timeout, which is just schedule() after set timer_list(low res).
+do_nanosleep, schedule_hrtimerout_range_clock:
+	these use hrtimer, when manually use then , set task state first(TASK_UNINTERRUPTIBLE)
