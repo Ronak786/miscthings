@@ -11,7 +11,15 @@ high resolution clock: hept, tsc
 				not for hardware
 	timer processes:  start_kernel->time_init()(just set a function)
 		    start_kenrel->x86_late_time_init->hpet_time_init->hpet_enable(set hpet clock event device)
-					 ->setup_irq(set handler functions of time interrupt)
+					 ->setup_irq(set handler functions of time interrupt,used
+						as global_clock_event(set when in hpet clockevent register))
+			then we have tick handler(use tick_set_peroidic,
+				(note this is diff from hpet_set_periodic,tick used for timer interrupt
+						the latter used for normal timers)
 	hpet timer register: hpet_enable->(some register config)
 					->register clocksource , set curr_clocksource to best
 				->register clockeventdevie-> tick_check_new_device->(setup handler period)
+
+timerkeeper:
+	this structure used to keep system time specific  data , like monotonic time, wall time
+		ntp time...
