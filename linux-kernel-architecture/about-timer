@@ -1,0 +1,17 @@
+low resolustion clock: jiffies , 
+high resolution clock: hept, tsc
+	when startup, we register clocksource(used for time read when needed, eg. gettimeofday)
+			register  clockeventdevice, used as timer,(this one can emit interrupt)
+	when startup in hpet_time_init(which is x86 default arch dependent operation),
+		we will set timer_interrupt(arch/x86/kernel/time.c 64) as time interrupt.
+			which is just hpet's time handler(set when register clock event in hept)
+			this one will be invoked when timer interrupt happened,
+			then do regular work,add tick and scheduler_tick ....
+			then flag in hpet's mode is just a hint to the kernel,
+				not for hardware
+	timer processes:  start_kernel->time_init()(just set a function)
+		    start_kenrel->x86_late_time_init->hpet_time_init->hpet_enable(set hpet clock event device)
+					 ->setup_irq(set handler functions of time interrupt)
+	hpet timer register: hpet_enable->(some register config)
+					->register clocksource , set curr_clocksource to best
+				->register clockeventdevie-> tick_check_new_device->(setup handler period)
