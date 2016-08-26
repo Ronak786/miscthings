@@ -1,0 +1,8 @@
+when startup
+	in time_init, if hrtimer not available, i8254 will be activated as a truly low res timer.
+		when hrtimer is enabled,first register clocksource,then clockregister,
+			which will first set legacy timer(should be the hz jiffy timer ,in hres hardware),
+			then in every tick periodic check, will check if hres mode now supported(or nohz mode),
+			then if available, switch into hrtimer mode,
+				this mode will emulate low res timer with one shot timer and
+				 set forward a tick when in the current tick interrupt processing
