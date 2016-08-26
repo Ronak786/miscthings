@@ -16,6 +16,10 @@ hrtimer_init,   enqueue_hrtimer
 		and when it is time(when?) to switch ,after that , in this func ,will just skip
 			the process of do with timers
 		we will check and switch to htrimer interrupt state,
+
+note: interrupt handler in setup_irq is just an invoke of clockevent->handler, so if that handler changed,
+		then it will change handling, but hrtimer not use irq0(should it???read spec!!),then the
+		set in setup_default_timer_irq will not happen ??
 after switch to high resolution type:
 	now we not use low res  timer any more including tick , so we use 
 		high res to emulate tick, in tick_setup_sched_timer(), we

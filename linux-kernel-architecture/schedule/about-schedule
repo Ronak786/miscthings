@@ -10,7 +10,8 @@ priority in kernel reverse from in userspace ,
 	when fork , new process's prio will be old's normal prio
 
 runqueue:
-	every schedule class's rq in a whole big rq defined by every cpu
+	every cpu has a rq, every rq contain all types of rq(rt, cfs, dl , idle)
+	cfs schedule the sched_entity (can represent a group(another sub rbtree)
 	when enqueue, set weight depends on  priority,vruntime will depend on all these loads
 
 schedule:
@@ -20,3 +21,12 @@ schedule:
 		syscall or interrupt or ... , if needed , begin reschedule
 		when success , we will change to new process , and continue run,
 		when not needed , just return
+	
+
+schedule point and preempt:
+	almost the same , schedule point is return from interrupt or kernel space to userspace,
+		invoke schedule() cond_schedule()
+	preempt is just adding schedule point, when just exiting from interrupt , in syscall 
+		executing when.  
+
+
