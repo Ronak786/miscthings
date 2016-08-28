@@ -31,3 +31,23 @@ char *getword(FILE *fp, char *buf, int count)
 
                  
 
+
+char * l2s(long num, char *buf, int count)
+{
+	char *ptr = buf + count -1;
+	
+	*ptr-- = '\0';
+	count--;
+	
+	do {
+		*ptr-- = num % 2 + '0';
+	} while ((num/=2) != 0 && --count);
+	printf("count is %d\n", count);
+	return ++ptr;
+}
+
+
+	
+	
+		
+	

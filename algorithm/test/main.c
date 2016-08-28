@@ -1,5 +1,5 @@
-#include "../include/stdinc.h"
-#include "../include/getstring.h"
+#include <stdinc.h>
+#include <getstring.h>
 
 int main(void)
 {
