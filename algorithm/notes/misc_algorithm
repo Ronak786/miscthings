@@ -1,0 +1,6 @@
+floating point can be assigned using 1e-12....  this is 10^-12
+binary search :
+	 attention !! should judge if low is bigger than high, then that means not found
+
+include and dynamic link:
+	the path set in environment is C_INCLUDE_PATH and LD_LIBRARY_PATH  LIBRARY_PATH
