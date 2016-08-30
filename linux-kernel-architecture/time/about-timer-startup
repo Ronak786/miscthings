@@ -1,8 +1,26 @@
 when startup
 	in time_init, if hrtimer not available, i8254 will be activated as a truly low res timer.
 		when hrtimer is enabled,first register clocksource,then clockregister,
-			which will first set legacy timer(should be the hz jiffy timer ,in hres hardware),
+	one:		which will first set legacy timer(should be the hz jiffy timer ,in hres hardware),
 			then in every tick periodic check, will check if hres mode now supported(or nohz mode),
-			then if available, switch into hrtimer mode,
+	two:		then if available, switch into hrtimer mode,
 				this mode will emulate low res timer with one shot timer and
 				 set forward a tick when in the current tick interrupt processing
+
+
+one: timer set according to specific fo hpet, when startup,we check and know we are in periodic mode,
+	in hrtimer_enable  clockevent register->tick_setup_device->tick_device_uses_broadcast->
+				tick_broadcast_start_periodic ,we switch to periodic mode
+				and set tick periodic,(we set htrimer config register so 
+					that interrupt 0 will be this periodic timer.
+					then register handler function in setup_irq(0,.....)
+
+two: hrtimer will swtich into one shot mode in the interrupt handler,every in it will check
+	if support switch and if is , switch,
+	just after the switch function, we set a timer and trigger it(signal after a period),
+	
+	now the interrupt 0's handler is hrtimer_interrupt, which will be invoked when
+	then next earliest timer reached(first time trigger by next_triggerXXX  after set manually,
+	after that, tick timer's trigger is set just in tick_sched_timer(forward)(which do truly timer tick
+		work), then hrtimer_interrupt will continue select the next earliest and
+		tick_program_event,
