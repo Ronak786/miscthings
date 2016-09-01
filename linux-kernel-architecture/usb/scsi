@@ -7,3 +7,11 @@ scsi : a protocal,  usually have a host, sata,usb also use scsi command ,
 
 	in usb probe , scsi will make two threads , one for conf , second for scan
 		the second one will scan the host we just virtualized, then exit
+
+	the scan thread exit quickly , but the control thread will is the entry of
+		all other work of usb storage!!
+
+
+in system , all block device operations are transferred into scsi command by sd_mod /scsi_mod,
+	then under that , if you are a ata device , the libata will be used to 
+	transfer that into ata instruction ? 
