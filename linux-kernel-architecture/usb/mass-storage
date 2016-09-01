@@ -1,0 +1,12 @@
+intruduce usb:
+	a spec, define every device has device, config, interface , endpoint
+	a intf relate to a driver, that's the key point, we deal with intf
+	when register mass module, first read info from interface structure
+	device structure into a private defined struct  us, (all infos are
+	read out by usb core use fixd method by specification)
+	then set endpoint(mass has two bulk ,one config, alternative interrupt)
+
+one config transfer:
+	begin by os, prepare config infos and send to device via usb_submit_urb(),
+	(respect to spece),then wait(sleep,has timeout), then get info. this is 
+	one transfer
