@@ -1,0 +1,9 @@
+scsi : a protocal,  usually have a host, sata,usb also use scsi command ,
+	linux virtualize a scsi host for them
+	use scsi_host_alloc to allocate a virtual scsi host struct 
+		to represent a scsi host card
+	here usb use scsi command , so we use scsi layer to do info transmit
+		a scsihost relate to a scsi_host_template
+
+	in usb probe , scsi will make two threads , one for conf , second for scan
+		the second one will scan the host we just virtualized, then exit
