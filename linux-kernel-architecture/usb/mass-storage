@@ -11,3 +11,10 @@ one config transfer:
 	(respect to spece),then wait(sleep,has timeout), then get info. this is 
 	one transfer
 	we use usb_stor_msg_common  usb_stor_control_msg transfer message host<->host-control<->device
+
+
+during resource get , we start a thread control_thread, which will sleep,
+	until one command is get from user , and wake up(command stored in 
+	a structure stored in us struct, so thread can control)
+
+
