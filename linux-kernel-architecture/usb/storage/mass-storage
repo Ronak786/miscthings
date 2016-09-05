@@ -18,3 +18,47 @@ during resource get , we start a thread control_thread, which will sleep,
 	a structure stored in us struct, so thread can control),then process
 		that scsi command ,(before are some error handling), after
 		that,continue to sleep,wait another request
+
+
+
+
+again from start:
+	register id table, wait connect,
+	probe, we get interface structure and id index of id table
+	in probe:
+		initialize struct us_data, ifll us struct with interface infos,
+			allocate buffer for config and data transfer
+		get device description info into us_data, 
+		according to transport type and protocol and pipe info from interface,
+		set us_data's transport handler , protocol handler, all kinds of pipes
+		get resource like urb , scsi host and make a thread of config to receive request(wait)
+			allocate and init urb
+			get max lun use config transport:(usb_stor_control_msg)
+				set control request us->cr, make it as urb->setup_packet
+					and set all other specification specific infos
+				######	in usb_fill_control_urb, then send with usb_stor_msg_common
+					which will fill all other common infos then submit request,
+					use complete to know done
+			alloc scsi host struct and assign us field, 
+			make a thread for config(do command)
+		add host to scsi, then make a scan use a thread, now we can be known by scsi
+
+
+	after probe, usb will wait for request in the config thread, usb_stor_control_thread
+	when command appear, the queuecommand defined and assigned to host_template... will be
+	called which will awake the completion value of config thread
+
+	config_thread:
+		it will check all abbrent(not normal) state , if not happened, just call proto_handler
+		which is usb_stor_transparent_scsi_command , then usb_stor_Bulk_transport do then main
+		transport job(now we have param  srb(scci command) and us_data,
+		usb_stor_Bulk_transport :
+			bulk transfer use struct bcb, and get return status with struct bcs(spec require),
+			so we fill bcb with infos(like command,flags,...)in srb
+			then call usb_stor_bulk_transfer_buf which fill urb struct with data and
+######			transfer required infos and again use usb_stor_msg_common to submit struct to scsi
+			,the bcb is a head begin mark for bulk transfer, after get return status from bcs,
+			we can truly transfer data, again use usb_stor_bulk_transfer_buf. just passin 
+			the request buffer(or scatter gather list) use usb_stor_bulk_transfer_sg,
+			after transfer , we again transmit a bcb struct to notify end(?), then
+			judge status and return 
