@@ -60,5 +60,19 @@ again from start:
 			,the bcb is a head begin mark for bulk transfer, after get return status from bcs,
 			we can truly transfer data, again use usb_stor_bulk_transfer_buf. just passin 
 			the request buffer(or scatter gather list) use usb_stor_bulk_transfer_sg,
-			after transfer , we again transmit a bcb struct to notify end(?), then
-			judge status and return 
+			after transfer ,
+####			scatter gather transport do not use struct urb ,but use struct usb_sg_request,
+				so here we just use usb_sg_init to initialize a request for sg,
+				usb_sg_wait waiting for transport
+				usb_sg_cancel for canceling(like stop)
+			then transport over
+			we again transmit a bcb struct to notify end(?), then
+			judge status, and return
+
+	about sense data:
+		if transfer has error, some hostcard will transfer sense request to device,to get sense data,
+		some will not, here we virualize a host,and if transfer is 
+		said success, but status too long,   we transfer that manually, 
+		we prepare a template, then return to upper, 
+		the upper judge if no sense, just return, if fail ,do the sense manually(because no 
+			one make a fake sense data for him)
