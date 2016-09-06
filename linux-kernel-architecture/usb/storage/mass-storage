@@ -76,3 +76,11 @@ again from start:
 		we prepare a template, then return to upper, 
 		the upper judge if no sense, just return, if fail ,do the sense manually(because no 
 			one make a fake sense data for him)
+		(sense data is device's state data after transfer, when kernel feels wrong, it will
+			read that data to check why)
+
+	
+	about reset:
+		we have device reset and bus reset , former is lighter , latter is heavier.
+		device reset:
+			use transport's reset func to do config transfer , then reset config endpoint,over
