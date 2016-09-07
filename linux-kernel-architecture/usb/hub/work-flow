@@ -1,0 +1,14 @@
+first usb_hub_init, it will register driver for other inserted hub to use(probe)
+	then make a thread waiting events happen on one of hubs
+	each hub has  a struct usb_hub, they all use one driver
+
+	when first time in usb_event() ,global hub_event_list is empty ,we just break and return.
+	and continue to wait & sleep, until some one call probe and wake up it
+
+	the global list will link all hubs 's list variable, then when one has event,
+		it will be kicked off,  then the part list will be initialized to hold true events!
+
+	
+root hub:
+	its interface struct is get by usb hcd , but all other device or hub belongs to it will
+	get its interface struct from root hub!
