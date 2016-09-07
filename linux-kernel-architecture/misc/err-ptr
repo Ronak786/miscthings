@@ -1,0 +1,2 @@
+errors are represented as numbers in linux. 
+and mapped to one page (max 4096 error flags), use IS_ERR can tell you a pointer is an error flag or not)
