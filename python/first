@@ -1,0 +1,125 @@
+THIS IS ABOUT PYTHON2.X , NOT 3.X!!
+run python:
+	python2  xxx.py,   in xxx.py , begin with   #!/usr/bin/python2 
+	chmod a+x xxx.py, ./xxx.py
+
+help:
+	in python environment, use help(xxx)  to show help info of xxx class
+		use help('xxx') to get help of an instrument
+
+misc:
+	len() return length of string
+	操作符之间还是不要空格的好，不容易语法错误
+
+print: 
+	print 'xxxxx'
+	print 'xxx',var_name (xxx and var_name 之间will auto insert a blank!)
+	print 'xxx'*5  可以连续打印５遍字符串
+	print 'xxx%sx%dxx'%(a,b)
+
+引号:
+	' " can be used as string identifier
+	''' can be used as string identifier(可换行 !!) and can use ' " in it!!
+	\ be used as 转义，and \回车  will make two line as one line!
+	r'xxxxxx\n'  will not reconginze转义，会直接打印
+	u'xxxx' unicode , can recognize all languages
+	place two string abuts eachother, will be connected 
+
+regular exp:
+	should use  r'xxxx' in rexp, or you will have to use lots of '\'
+
+identifier:
+	only use a..zA..Z  0~9 _ (-is not permitted!!)
+
+缩近:
+	it is important,as identifier of block , so do not ident arbitrarily.
+		and use tab or space inherently
+
+运算符:
+	use help('+')  can show all operators and precedence
+
+输入：
+	raw_input('xxxx')  will prompt a string and wait for your input,  
+	int(raw_input('xxx')) will convert the input string as a integer
+
+DO NOT FORGET 冒号！！
+if-elif-else
+	if xxx:
+		xxxxx
+	elif xxx:
+		xxxx
+	else xxx:
+		xxxx
+	print 'Done'
+
+
+while
+	while xxx:
+	else:
+		xxxx
+	the else will not be executed IF the BREAK is used !!!
+
+for
+	for xx in range(a,b): (range will include a but not b,   range(a,b,c) the c is 步长
+	else:
+
+
+break continue
+	break will skip the else in for or while, 
+	continue just start another loop immediately
+
+
+function:
+	define
+		def  xxx():
+			xxxxxx   (要缩进)
+
+	use
+		xxx()
+	params
+		def xxx(a,b)
+	use_param
+		xxx(a,b)
+
+local variable:
+	in func, vars are  automatically be  local vars just effective in func
+	not affect outer vars
+
+global var
+	in func , 
+	global x  to declare a global var,if outer have one same var, they will
+	affect each other !!
+
+default param:
+	def func(a,b=5):
+		xxx
+	use
+		func('zzz')
+		func('xxx',2)  all right
+
+NOTE: default param can only stay at the last of the param list,so func(a=5,b) not permitted!!
+
+func assignment:
+	func(a,b,c)
+	func(c=2,a=1) (if b has defaule value)
+
+func return
+	just use return
+	and when use func, you can get the value of function
+	functions do not have return will return None(nothing ,and print will print None)
+	
+	def func():
+		pass (pass is a blank command block)
+
+docstring:
+	at the beginning of function, you can write a string
+	usually a line , then blank line , then defail descriptino
+
+	'''dsljflsdjflsjf
+
+	sdlfjsldfjsfjslfjs'''
+
+	just like this
+	then you can call your func using , print func.__doc__,then 
+	the docstring will be printed
+	

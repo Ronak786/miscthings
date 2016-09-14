@@ -1,0 +1,36 @@
+module
+
+misc:
+	in python interactive commandline
+	a=4 create a var :a
+	del a    delete var a
+
+use system modules: python will search module in sys.path(system path)
+
+import sys
+	print sys.path,sys.argv
+
+from sys import argv
+	now you can use argv instead of sys.argv
+
+from sys import *
+	now use can directly use any function in system.py
+
+__name__
+	if module itself is running, print __name__ will show __main__
+	but if this .py file is imported by another file ,
+		at that time ,the main block(no function) will execute automatically,
+		then the __name__ in the before py file will print that file's name(not have .py)
+		instead of __main__ !!!
+
+using module:
+	just write functions in one file.py,also you can have vars in it
+	in another file, 
+	import xxx
+	xxx.yyy()
+	xxx.zz(variables, can be printed)
+	
+	
+dir() 
+	this builtin func will show modules's symbols, (should first import)
+	if have no params, show current modules's symbols

@@ -1,0 +1,55 @@
+misc
+	if you not want to change line after one print,
+	just put a COMMA at the end of your print  command !!!
+
+list:  using [] !!
+	declare a list is just  
+		varlist=['xx','yy']
+	append list
+		varlist.append('xxxx')
+	sort a list
+		varlist.sort()
+	show a list member
+		varlist[0]
+	length
+		len(varlist)
+	delete one member
+		del varlist[0]
+	print 
+		print varlist
+	assign
+		aaa=varlist[2]
+
+元组tuple:using () !! (元组不能改动！！)
+	list in tuple , tuple in list , list in list , tuple in tuple all
+	maintain their own apprearance , not merged
+	a=('a','b','c')
+	b=('d','e',a)
+	then a have 3 menbers , b have 3 members too,
+	b[2] is a(the whole), 
+	b[2][0] is 'a', !!!!
+	if tuple have no member , x=()
+	if tuple have only one member x=(2,) , note the comma!!!
+
+using tuple to print
+	print '%s is %d'%(a,b)
+	print '%s'%a  
+	
+	these two both valid, do not need comma
+	
+
+
+字典 {} 
+	declare
+		a={'a':'aa','b':'bb'}
+			then a['a'] == 'aa'	
+	append
+		a['c']='cc'
+	delete
+		del a['d']
+	for using:
+		for c,d in a.items()  用来遍历
+
+序列:
+	1 just like list , you can list[1] list[2], list[2:3] list[2:-1], -1 is last, -2 is last second one
+	2 applied to a string, then list[1] is just a character(：这个方法叫切片）
