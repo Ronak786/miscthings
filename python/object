@@ -1,0 +1,50 @@
+copy and assignment not the same 
+	list=[xxx,xxx]
+	list2=list  it is assignment, they all point to the same place
+	list2=list[:]  ,it is a copy, now they have their own examples
+
+
+string has some attributes,in help('str'):
+	str.starswith(xx) string start with xx then true
+	str.join(xx)  连接string with xx, 例如用　' '.join(xxx)连接一个list
+	if xx in string   , xx 在string  
+
+	string can just use '+' to 连接 ,
+	
+
+class:
+	define
+	class xxx
+		block
+
+	use
+	a=xxx() ,create an object of class xxx named a
+
+	define function in class:
+		def xxx(self), self is the first param MUST in function in a class
+	call a function in class a:
+		a.xxx()   , self do not need to write
+
+class init:
+	def __init__(self,xxx,xxx)  self is needed, this will be called when an instance of class
+		is created, 
+class del 
+	def __del__(self,xxx)  同上
+	
+	init 会在创建对象的时候运用，del使用会在最后退出程序的时候，也可以显式使用del  objname来使用
+	
+class 有自己的属性，用classname.attr引用，　所有对象公用
+对象也有自己的属性，用self.xxx引用
+
+
+继承：
+	class xxx(zzz):
+		def __init__(self,xxx,yyy):
+			zzz.__init__(self,xxx) 使用基类的函数
+			自己的初始化
+注：　list 可以直接放入任何对象作为成员，包括各种类对象（不一定输入同一个类）
+	使用类的方法时，python总是先找对应类中的方法，如果没有，再找基类的方法
+		
+			
+
+

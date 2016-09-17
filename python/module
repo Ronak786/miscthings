@@ -34,3 +34,10 @@ using module:
 dir() 
 	this builtin func will show modules's symbols, (should first import)
 	if have no params, show current modules's symbols
+
+
+module os:
+	dir path system command param related
+	os.system('xx')
+	os.mkdir
+	os.path.exists

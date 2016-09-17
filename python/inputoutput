@@ -1,0 +1,8 @@
+f=file('xxx.txt','w')  'r'  'a' 指定打开文件的模式，没有指定的话默认读
+f.readline() 会从文件里读一行，包括换行符 ,所以打印的时候要用最后的逗号去掉换行符
+f.close()   close file
+
+cPickle 对象存储
+import cPcikle as p
+p.dump(object, file) 存入
+p.load(file) 取出

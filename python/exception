@@ -1,0 +1,13 @@
+try:
+	xxxxx
+except  EOFError(or some error string)
+except: (default error handler)
+
+
+raise:
+	raise有两个参数，一个是异常的名字，一个是对象的名字（这个是可选的，可以不同），逗号分开
+ 	可以自己定义异常，继承自Exception类
+
+try...finally
+	用来在无论如何都有要执行的语句的情况下使用
+

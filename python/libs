@@ -1,0 +1,34 @@
+sys:
+	argv,path, mkdir ...
+os:(os related)
+	os.sep(路径分隔符)
+	os.name os.path.exists()  os.getcwd() os.getenv os.putenv ....
+
+special  functions
+__init__  invoked when initialize a object
+__del__(self)  when delete a object
+__str__(self)  when print a obj
+__lt__(self,other) when use '<' to compare two obj
+__getitem__(self,key)  when use x[key] to index 
+__len__(self) when use len(x) 
+
+
+列表综合
+listone=[2,3,4]
+listtwo=[2*i for i in listone if i>2]
+
+function接收列表或元组
+	def func(xxx, *yy, **zz)
+		yy is a tuple,  
+		zz is a dict
+
+lambda:
+	用来在函数里制造另一个函数返回，不过直接一个参数，以及单个表达式作为函数的内容
+	def func(n):
+		return lambda s: s*n
+
+exec('xxxxxx')  执行语句
+eval('xxx') 
+assert xxxxx
+
+repr 用来获取对象的内容的整个的字符串表示形式
