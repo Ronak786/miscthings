@@ -1,0 +1,13 @@
+the /bin/python is a python interpreter
+
+python2 里面（python3 没有区别）
+system use unicode (定长多国字节码）
+but you use utf-8 (变长，如果ａｓｃｉｉ还是１字节，如果中文，会根据需要多字节，主要用于存在磁盘上
+		到了系统内存中都会转成unicode)
+默认解释器里的是utf-8类型的编码，要切换的话，使用 u'xxxx', 要打印出来的话可以u'xxx'.encode('utf-8')
+									     'xxx'.decode('utf-8')返回unicode模式
+注：　有中文的时候　要在开头第二行　写　#-*- coding: utf-8 -*- 表示编码才能显示中文！！
+
+
+tuple:
+这个只有一个元素的时候要加一个逗号，不然会被认为是带括号的整数表达式
