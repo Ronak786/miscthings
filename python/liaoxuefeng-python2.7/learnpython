@@ -49,6 +49,7 @@ slice切片　[::］第三个参数可选，表示跨度
 
 
 列表生成式  [ x + y for x in range(1,10)  for y in range(11,20) ]
+ 很好的简略方法！！
 
 
 
