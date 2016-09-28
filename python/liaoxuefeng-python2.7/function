@@ -10,3 +10,27 @@ filter(func, list)  会将func作用与list的每一项，如果返回真，留�
 sorted(list, func) 第二项可选，没有的话就是内置排序，不然使用func，返回-1小，否则大
 利用高阶函数可以创造函数作为返回值，返回的函数每次是不一样的，
 	只是要注意如果用到了母函数的循环变量，这个会是循环结束后的值,需要再套一层函数来固定循环变量
+
+
+lambda 匿名函数，这个 lambda x: x*x 只能有一个表达式，冒号后面，返回值就是表达式的值，可以直接作为值赋予对象
+
+decorate装饰器，就是在你调用的函数前后可以执行一些东西，和高阶函数类似
+usage:
+	def log(func):
+		def wrapper(*argv, **kv):
+			return func(*argv, **kv)
+		return wrapper
+
+	@log()
+	def func():
+		pass
+	这样，调用func的时候，实际调用的就是log函数，log本身也可以传参数，这样在log和wrapper之间就多一层函数。
+		那个@log会不断调用内部返回的函数
+
+注意：
+	在装饰器里面调用func.__name__会返回正确的func的名字，但是如果在外部调用的话，会变成wrapper的名字，
+		所以要在def wrapper之前用@functools.wraps(func), (import functools)
+	这样，func的名字就回复成自己的了
+
+偏函数
+	这个在functools里面，functools.partial(func, param) 可以固定某几个param的值，成为一个新函数
