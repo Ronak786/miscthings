@@ -1,0 +1,17 @@
+模块： 一个文件就是一个模块，文件存在目录里，这个目录里要有一个__init__.py文件，
+	这样这个目录可以被python认为是一个包，引用它底下的模块就是多加一层引用即可
+	 用来避免不同包中的名字重复
+模块导入用import，#-*- coding: utf-8 -*- 来指定字符集， 接下来地一个字符串会是整个模块的注释，
+	__author__ 是作者名字，这个都会在help('xxx') 时显示出来
+
+import xx as yy
+try:
+	import xxx
+except  ImportError:
+	import yy   来导入
+
+模块里 __xxx__的变量都是特殊变量， 而其他_开头的变量都是应该模块内部引用的，包括函数，使用模块时不应用他们
+
+__future__ 模块可以引入未来的特性（２中引入３的特性）
+	from __future__ import division(３．０的除法处理方式）
+	from __future__ import unicode_literals(3.0的字符处理方式）

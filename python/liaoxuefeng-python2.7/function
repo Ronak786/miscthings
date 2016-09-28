@@ -34,3 +34,33 @@ usage:
 
 偏函数
 	这个在functools里面，functools.partial(func, param) 可以固定某几个param的值，成为一个新函数
+
+
+
+
+函数内的属性方法：
+
+	__len__() 这个在使用len()的时候会调用，可以自己设计
+	__slots__() 这个用来限制外加属性
+	__str__() print对象的显示
+	__repr__()这个用于开发者看的对象属性　在解释器里直接敲对象名字的返回显示
+
+	__iter__()
+		return self;
+	next(self):	
+		do iteration and every iter return a value
+		until raise StopIteration()
+
+	__getitem__(self,n) 用于使对象可以用索引
+		如果传入的是slice，那么getitem内部也要判断，使用isinstance(n,int) isinstance(n,slice),
+			后者start = n.start, stop = n.stop　这样就获得范围了
+	__setitem__
+	__delitem__
+
+	__getattr__ 在属性不存在的情况下会调用这个方法，有机会防止异常发生
+		在这个里面也可以传参数的，要内部再定义一个wrapper函数，参数*args, **kv,
+		这样就可以获取getattr时传入的属性对应的参数了（一般是找函数属性的时候）
+
+	__call__ 这个在直接obj()调用的时候会被调用
+	
+注意：　使用callable() 来判断对象是否是可调用的（有了＿＿ｃａｌｌ＿＿之后就是可调用的了）

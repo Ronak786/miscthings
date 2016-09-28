@@ -1,0 +1,57 @@
+class xxx(bb):
+	pass
+其中的函数地一个参数是ｓｅｌｆ，
+类的实例可以直接添加内部变量  xxx.name='sldjfds'  ，即使当时定义ｃｌａｓｓ时没这个东西
+	通常用 def __init__(self,...): 来初始化一个类的实例
+	其他定义的内部函数就是封装了
+
+限制：
+	类中的变量 __开头（结尾没有），表示类的私有变量，外部不能访问（需要加额外的前缀才找得到，不推荐）
+	以_开头，不推荐外部访问，但是不禁止
+	其他是公共可访问变量
+
+	父类中__开头的变量也是不能直接在子类中引用的！！注意，父类自己定义吧
+
+继承：
+	子类中可以直接调用父类的，而且子类同名方法覆盖父类（继承默认是object类，最好写一下）
+多重继承：
+	就是多个基类
+	
+多态：
+	意思就是定义一个函数，一父类对象作为函数参数，这是子类对象也可以直接在内部运行
+
+type()函数用于返回一个对象的类型，可以两个对象互相比较
+	也可以使用types模块中的定义类型来比较
+isinstance(xxx, typename)  or isinstance(xxx,(typea,typeb))用来判断
+	对象的类型，更加方便，因为子类同时应该属于父类，后一种可以在多个中判断
+dir() 用于列出对象的所有属性，
+hasattr getattr setattr用于判断，读取，设置对象的属性，即使不存在也可以设置的，
+	getattr还可以增加第三个参数作为默认值
+
+
+类的动态添加变量以及函数
+	from types import MethodType
+	obj.name='aaa'
+	def func(self):
+		pass
+	obj.func = MethodType(func,obj,classtype)
+	如果要方法对所有类的实例其作用,MethodType(func, None, classtype)
+
+__slots__(xxx,xxx)
+	用于限制类可动态添加的成员名字，只有这些是可添加的
+注意：　子类也要定义，这样和父类的一起生效，不然一起不生效！！
+
+
+@property 使用方法：
+	用于类中定义方法，然后外面可以直接当作属性来访问，赋值等（就是方便一点的ｇｅｔ，ｓｅｔ方法）
+	@property
+	def  func(self):
+		return xxx  这个是ｇｅｔ方法
+
+	@func.setter
+	def func(self, value):
+		xxxxxx   这个是ｓｅｔ，还可以在里面做些检测操作
+
+调用　return obj.func,   obj.func = 2 这样就行了
+	
+
