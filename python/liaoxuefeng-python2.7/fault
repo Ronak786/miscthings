@@ -1,0 +1,30 @@
+错误处理，
+try:
+except XXx,e(表示错误内容）:即可
+else:
+finally
+其中ｅｘｃｅｐｔ会捕捉子类的错误，所以如果两个except类型是父子关系，第一个的父亲捕捉所有父子错误类型
+
+使用logging模块可以logging.exception(e)来打印出错堆栈，避免直接被终结
+
+可以自己定义错误类
+class fooerror(StandardError)
+	pass
+raise fooerror('xxxx') 调用会打印你的字符串k
+
+raise 不加参数就是把当前错误向上继续抛出
+
+assert 表达式,'xxxxx' 表示断言，如果不满足就抛出AssertionError然后打印后面的字符串
+	通过python -O xxx.py可以无视所有assert
+
+使用logging
+import logging
+logging.basicConfig(level=logging.INFO)
+这样，后面logging.info()  logging.debug  logging.warning logging.error可以根据前面的设置显示与否，低于就
+	不显示
+
+使用pdb
+python -m pdb xxx.py 和ｇｄｂ一样的调试
+或者
+import pdb
+在需要调试的地方 pdb.set_trace(),运行时自动就进入了

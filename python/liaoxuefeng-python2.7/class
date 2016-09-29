@@ -55,3 +55,12 @@ __slots__(xxx,xxx)
 调用　return obj.func,   obj.func = 2 这样就行了
 	
 
+
+动态创建类：
+	使用type(classname, (继承obj,),dict(字典＝值)) ,一个继承的时候不能少了逗号,
+		这样就动态创建了类
+
+元类　：以后再看
+
+super(class, obj(可用self))  这个的目的是在类里面调用父类的时候不用显示地指定，这样
+	在修改的时候就没哟那么多硬编码要修改了
