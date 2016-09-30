@@ -1,0 +1,43 @@
+fileio:  with是个好方法
+use open(path, 'r') to open for read
+use 
+try:
+	
+finally:
+	to ensure close of file, and catch IOError
+
+or use :  with open(xxx) as f:
+		这个也会自动关闭，如果错误的话
+
+f.read()  读取整个文件
+
+使用open(xxx,'rb') 可以用二进制流打开
+如果非ascii的话，要这样打开，然后f.read().decode('xx')（编码形式）来解码
+	import codecs
+或者　　with codecs.open(xxx,'r','编码形式') as f: 来打开
+
+用'w' 'wb'来执行写入，记住只有ｃｌｏｓｅ之后才会真正写入磁盘
+
+
+
+存取
+try:
+	import cPickle  as pickle
+except ImportError:
+	import pickle
+pickle.dump(xxx, file)
+pickle.load(file)
+pcikle.dumps(xxx) => get a dumped string, that is the data you should dump
+
+
+使用json(标准的配置文件格式)
+import json
+d={xxx:xxx,yy:yyy}
+json.dumps(d)
+json.loads(d) 可以变化ｊｓｏｎ字符串
+
+转class 为json:
+json.dumps(class_instance, default=转换函数) (转换函数ｒｅｔｕｒｎ的是一个字典）
+json.loads(str, object_hook=转换函数）（返回一个ｃｌａｓｓ的实例）
+		如return Student(d['name'],d['age'],d['score'])
+

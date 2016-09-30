@@ -15,3 +15,48 @@ except  ImportError:
 __future__ 模块可以引入未来的特性（２中引入３的特性）
 	from __future__ import division(３．０的除法处理方式）
 	from __future__ import unicode_literals(3.0的字符处理方式）
+
+
+os module:
+os.name
+os.uname()
+os.environ
+os.getenv()
+os.mkdir() os.rmdir()
+os.path.join(xxx,yyy) 用于把两个路径连接起来，这样可移植的方法(win,linux)
+os.path.abspath()   ==  pwd
+os.path.split()  用于拆分路径，后半部分是ｂａｓｅ那一块
+os.path.splitext() 扩展名
+os.rename(a,b)
+os.remove()
+
+os.fork() return pid of child, child return 0
+os.getpid 
+os.getppid
+
+shutil内有copyfile() func
+[x for x in os.listdir('.') if os.path.ext(x).[1] == '.py' and if os.path.isfile(x) ]
+
+
+multiprocessing 里有 Process 函数，
+p = Process(target=func, args=('xxxx',))
+p.start()
+p.join()  这个是可移植的方法用来开进程
+
+
+multiprocessing also have  Pool func (这个是实例化一个函数同时跑多个实例）
+p = Pool()  //you can pass a number 作为可同时运行的进程数量，默认是核心数量）
+p.apply_async(func, args=(xxx,))
+p.stop()
+p.join() ｊｏｉｎ之前要ｓｔｏｐ，表示不能再添加了．ｊｏｉｎ会等待所有进程，
+
+multiprocessing have Queue
+q=Queue()
+q.put('xxxx')
+q.get(True)
+
+
+threading module:
+	t = threading.Thread(target=xxx,name=xxx), 
+	t.start() t.join() , 
+	threading.current_thread().name is the thread's name(main thread is also a thread)	
