@@ -30,6 +30,8 @@ transfer buffer dma:
 	this will normally be used as a map of transfer buffer by host controller,
 	if you pass a NO_MAP flag, then hcd will just use that dma buffer you provided
 
+usb acquire resource:
+
 usb urb:
 	a struct repersent the whole transfer related data, usb use this as a transfer unit
 
@@ -44,3 +46,38 @@ usb_stor_msg_common:
 		(use urb's complete to wake up urb's context)
 	if timeout, will also wake up the complete(otherwise this function not return forever);
 		then unlink the request.
+
+scsi host alloc:
+	define a virtual scsi card, because usb attached to scsi layer in linux
+	scsi_host_alloc, scsi_add_host , scsi_scan_host
+
+kernel_thread  contorl thread:
+	set to nonfreeze, then begin wait/sleep,until a command comes,
+	parent comtinue
+
+kernel_thread scsi_scan:
+	this first wait a little time making sure no one disconnect it,then scai_scan_host,
+	now scsi layer know this virtual scsi host card, then complete a scsi_scan_done;
+		which is used when disconnect is called,(to make sure threads are stopped 
+		when disconnect( synchronize))
+
+usb_stor_control_thread: (main work thread of usb storage):
+	when comnd com, first in queuecommand of scsi_host_template, this will make sure
+	now no other command is exec, and not in disconnect, then wakeup control thread
+
+	in thread, judge command state, if right && if device do not have inquery command,
+		then fake one inquery comnd, 
+	in another branch(main), call proto_handler to do main transfer job
+
+	true transport:
+		us->proto_handler from  get_protocal() -> us->transport from get transport
+		the whole transport divided into three stage: bcw data bsw(command data state)
+		in data transfer ,we may choose use sglist or normal block transfer
+			sglist: sg init , sg wait
+			normal: usb_submit_urb
+		then bsw, get result , return state
+
+	back into transport func:
+		if transport failed, do a sense inquery to get error state
+		then print out send data for debug if error,
+		then return
