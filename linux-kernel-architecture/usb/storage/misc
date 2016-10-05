@@ -1,0 +1,46 @@
+about register driver:
+	fill a struct usb_driver, then register with usb_register, this will register
+		the struct driver in usb_driver, into driver model in usb_bus_type,
+		then scan devices matching id_table, if so , call the probe function
+
+id match:
+	to usb storage: matching is just  interface's class subclass, protocal matching.
+			for unusual devs, have their own match method, use UNUSUAL_DEV macro
+			to set match fields, including in a unusual_dev.h file
+
+usb_interface:
+	one interface fullfills one function, so talk to one driver,
+	in the struct usb_interface, we have a struct device, its parent is the
+	device of the usb_deivce's struct device.
+
+	one interface has several settings, we choose one, it has multiple endpoints
+		with it: struct usb_host_interface
+
+probe function:
+	allocate a struct us_data to store all data related to this storage device and its transport;
+	initialize all locks and sems, 
+	associate us_data with interface struct, allocate control and io transfer buffer;
+	get device info: will get subclass and protocal infos from interface description;
+			get vendor productor serail infos from devcie desc,
+			if not get, will from unusual id tables(manually set by driver designer)
+			these info will be shown in /sys ? or lsusb ? 
+	set us_data's transport && protocal_handler function and set pipes to us's fields
+
+transfer buffer dma:
+	this will normally be used as a map of transfer buffer by host controller,
+	if you pass a NO_MAP flag, then hcd will just use that dma buffer you provided
+
+usb urb:
+	a struct repersent the whole transfer related data, usb use this as a transfer unit
+
+usb_stor_control_msg:
+	used to transfer control msg, pass command,use params to fullfill setup packet struct,
+	then transfer data buf if needed,  (use usb_fill_control_urb,the setup packet adheres spec)
+	sub_stor_msg_common, used to transfer command to system and wait respond
+
+usb_stor_msg_common:
+	fullfill common fields in urb, submit urb, then add a timer, wait complete,
+	the completetion variable will be waked up by scsi's function use ;
+		(use urb's complete to wake up urb's context)
+	if timeout, will also wake up the complete(otherwise this function not return forever);
+		then unlink the request.
