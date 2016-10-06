@@ -1,0 +1,8 @@
+LIBRARY_PATH: used when gcc compiling
+-L: used when compiling
+-Wl,-rpath-link= only useful when link
+
+LD_LIBRARY_PATH: used when running a program
+/etc/ld.conf: used when runinig a program
+-Wl,-rpath= useful both when link and run
+
