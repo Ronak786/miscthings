@@ -81,3 +81,26 @@ usb_stor_control_thread: (main work thread of usb storage):
 		if transport failed, do a sense inquery to get error state
 		then print out send data for debug if error,
 		then return
+
+usb_transport_reset:
+	send info to control to ask a rest, then send reset info to specific bulk pipe
+	bus reset will regain address from usb bus(but only when you have just one interface)
+	command will stop transport and wait
+
+abort time_out  flag:
+	these will be set in command_abort, and checked in control_thread and scsi (timeout) to see if current
+	command not need exec any more, 
+	and abort will be checkout with disconnecting when in transfer
+
+disconnecting:
+	stop transfer ,signal other parts' wait for disconnecting, tell them to stop,
+	then continue releasing threads's and struct's resources
+	all semiphores and mutexes used to sync all process's work sequence
+
+
+locks:
+	scsi_lock: used when us->srb will be changed(eg. srb = NULL), this is a scsi layer lock
+		to prevent other place's change
+	dev_sema: used for control thread to be waken up to work
+	dev_semaphore : used for control thread, release func, reset , disconnect func to sync to each
+		other,eg. when you are running command, you can not rest, disconnect,and back forth
