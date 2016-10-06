@@ -1,0 +1,25 @@
+invoke:
+	hub will scan & discovery usb device and call their registered probe func
+
+hub_init:(main struct: usb_hub)
+	open a thread to wait for event to be added into the event list
+	insert : hub_event_list will be inserted a event_list of a hub when 
+		that hub has event to do, then khub thread waked up to do that 
+		hub
+	
+hub_probe:
+	root hub's probe invoked by host controller, other hub's invoked by 
+	parent hub.
+	in probe ,we judge some error state(class id, endpoint id, interrupt in endpoint only)
+		then alloc struct usb_hub and associate it with interface,device
+		then call hub_configure=>>
+
+hub_configure:
+	allocate some buffer, use usb command to get hub descriptor 
+	use desc's charistic to judge removable/power/current state and TT mode;
+	at last, prepare a urb in hub->urb for below use, fill in all fields;
+	=> in hub power on : power on each port using usb command
+	=>activate hub: submit previously filled urb , add self's hub to global
+		hub_event_list, then wake it, now hub_init's thread begin work==>
+
+hub_events:
