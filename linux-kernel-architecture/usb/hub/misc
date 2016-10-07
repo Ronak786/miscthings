@@ -43,3 +43,44 @@ hub_events:
 		if port change wierd,(may be elec interfere),report as a change
 		if port recover from reset, repower on all ports
 		then according to connect_change flag, call hub_port_connect_change
+
+usb_port_connect_change:
+	first handle from connect to disconnect:
+		disconnect and clear change bit,wait until bounce state to calm down,
+			if not connected, just repower and disable port
+	then handle come to connect stat:
+		according to param set, will try 2 or 4 times(new schem)
+			because diff we must get control port's transport size,
+			we have new method and old method,both must use two times of tries
+		in loop:(we have 8 big functions below)
+		usb_alloc_dev:
+			alloc a usb_device to represent new inserted dev,
+			initialize struct device,attach bus info and control ep info;
+			record upstream port info and power suspend info;
+			then generate device path in /sys/bus/usb/devices
+			interpert: busnum-devpath:conf.intf
+				busnum is unique to one hcd, 
+				devpath attached by . to relate lots of layers
+					if only attached to roothub, no . exists
+	 	usb_set_device_state:
+			set usb_device->state to  specific  power_on state
+			but if this is a roothub, just set to nonattached
+		choose_address:
+			choose address using bitmap of usb_bus's field dev_bitmap,
+			it is a number between 1~127
+		hub_port_init:
+			get new device's desc and reset it
+			first that port's reset,(use a pre decided delay), and
+				get speed feature from port status
+				then use that speed info to decide predicted max packet
+				size of control port
+				then use default(new schem)method to get true maxpacket
+				size, 
+				then set dev port number to device
+				then get device descriptor of new device
+		after port init:
+			check if new dev is a hub, if is ,check  power state,if not
+			self powered and power not enough, just return, it is abandoned
+			check speed for some device,then start find new device probe in
+			usb_new_device
+		usb_new_device:
