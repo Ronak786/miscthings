@@ -1,6 +1,10 @@
 invoke:
 	hub will scan & discovery usb device and call their registered probe func
 
+work thread:
+	init work, schedule_work , init_delayed work, schedule_delayed work
+	used to do some work in a work thread when the work thread is sheduled to work
+
 hub_init:(main struct: usb_hub)
 	open a thread to wait for event to be added into the event list
 	insert : hub_event_list will be inserted a event_list of a hub when 
@@ -14,7 +18,7 @@ hub_probe:
 		then alloc struct usb_hub and associate it with interface,device
 		then call hub_configure=>>
 
-hub_configure:
+hub_configure:(hub has usual dev intf edp desc ,also has its own hub desc,we now get it)
 	allocate some buffer, use usb command to get hub descriptor 
 	use desc's charistic to judge removable/power/current state and TT mode;
 	at last, prepare a urb in hub->urb for below use, fill in all fields;
@@ -23,3 +27,19 @@ hub_configure:
 		hub_event_list, then wake it, now hub_init's thread begin work==>
 
 hub_events:
+	from list, take out specific added in struct hub
+	first get necessary data struct, then get power manger count to prevent
+		auto power suspend, if error,reset 
+	then start to check every down facing port's condition change(true work)
+		we check every port to see if status is changed or not
+		we clear port's feature to ack that feature's occurance	
+		(if portchange has some attr, then it means that attr is over)
+
+		we start check by getting port's status and change bit;
+		if status connect but no child on that port is set in filed,
+			then it is a connect change
+		if port change in connection bit is set, also connect change.
+		if port change from suspend , wake up child
+		if port change wierd,(may be elec interfere),report as a change
+		if port recover from reset, repower on all ports
+		then according to connect_change flag, call hub_port_connect_change
