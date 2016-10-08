@@ -95,7 +95,19 @@ usb_port_connect_change:
 				use comand to get,with two tries,first enough to get desc's size
 				(the first field of usb_host_config struct)
 					second get whole config struct
+					and store an addition pointer in rawdescriptors
 				then parse to host config struct(because get out data not in 
 					that struct format precisely)
+				in parse:(this is called for every configuration found)
+					first get desc filed to store,
+					then get every interface's desc to store
+					each intf will have multiple settings(multiple usb_host_inferface)
+					alloc  intf_cache array(each itme is an interface and its
+						whole setting
+					check for extra intf structures
+					parse all intf structures using usb_parse_interface();
+					at last check if intf is all exist as configure telled
+					
+						
 		hub_power_remaining:
 			used to check power enough or not,just warn if not
