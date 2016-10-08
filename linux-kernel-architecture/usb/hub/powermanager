@@ -48,7 +48,7 @@ suspend sequence:
 		(this one can also be used in resume routine)
 		then suspend the whole device of bunch of interface. 
 		usb_suspend_device:
-			if device has driver, call that driver's suspend func
+			if device has driver, call that driver's suspend func(actually the same as below)
 			if hasn't, do a hub_port_suspend on the upstream port 
 				connecting this device(just  send a suspend feature command)
 		if all success, call a autosuspend to its parent(it he can suspend,do it,
@@ -59,5 +59,44 @@ resume sequence:
 	then if state is suspend, resume father first, then itself, then its interface
 
 
+usb_device_driver's resume and suspend:
+	just  the same as not exist(like that use port suspend part)
+	will call usb_port_suspend(set suspend feature of port)
+		   usb_port_resume(clear suspend feature of port):
+		   	check if is not suspended ,just  done
+			then clear suspend featrue and wait a little time,
+			then again get status and check ,if succeed,again wait a time,
+			then finish_port_resume:
+				just set port status to configured or address
+				then clear wakeup feature(we are waked up now)
+			if get hub port status failed ,tell hub_event to reset port
+			clear busy_bits(which means we are in resume)
+
+usb_resume_both:
+	will resume parent first , then self (using usb_port_resume),
+	but if is roothub, then if hcd is sleptd ,return error,
+	then resume all interfaces:
+		will resume using intf's driver's resume func if exist
+
+hub_suspend, hub_resume:
+	these two will do nothing but call hcd_bus_resume/suspend to deal with roothub's status
+
+
 autosuspend, autoresume:
 	these two will properly deal with suspend && resume sequence
+
+autosuspend_check:
+	this func used to check if suspend work func should be scheduled to work
+	autosuspend_check(activate)=>usb_autosuspend_work=> autosuspend_do_device(depends on what
+		status , call usb_resume_both or usb_suspend_both)
+
+auto_pm:
+	set in usb_autopm_do_device:(this called by four funcs)
+		and in the usb_suspend_both called by this func, will autosuspend_check if this is
+			set, then usb_autopm_do_device will again be called(in two seconds)
+		but if should suspend,that work will be canceled, and *both* func must be 
+		called holding a lock ,so do no worry about recursive call of these func
+
+last_busy:
+	this bit used to record a time meaninig that after a delay of that time,we can try
+		to suspend, this record point it suspend && resume point
