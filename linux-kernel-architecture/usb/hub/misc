@@ -87,27 +87,45 @@ usb_port_connect_change:
 			for those device that can be high speed but still in low speed and
 			hub is high speed hub, do this to info user 
 		now link device struct to hub's array of child
-		usb_new_device:
+		usb_new_device:(one dev=>multi confs=>multi interfaces=>multi setting=>multi ports
 			get new device's config desc(intf and endp's desc as well),then
 			make a devnum,then device_add(this will call that device's probe)
 			usb_get_configuration:
-				allocate buffer for get and store,
+				allocate buffer for get and store all configurations of a dev
 				use comand to get,with two tries,first enough to get desc's size
 				(the first field of usb_host_config struct)
 					second get whole config struct
 					and store an addition pointer in rawdescriptors
 				then parse to host config struct(because get out data not in 
 					that struct format precisely)
-				in parse:(this is called for every configuration found)
-					first get desc filed to store,
-					then get every interface's desc to store
-					each intf will have multiple settings(multiple usb_host_inferface)
-					alloc  intf_cache array(each itme is an interface and its
-						whole setting
-					check for extra intf structures
-					parse all intf structures using usb_parse_interface();
-					at last check if intf is all exist as configure telled
-					
+				in parse:(this is called for every configuration found,all things in 
+						that bigbuffer)
+					if remain buffersize after desc is not enough for interface config
+						just break;
+					then do with every buffer portion beginning with a desc header and
+						check if type is a interface;
+						we use interface's desc's intfnum to count which interface
+						has how many altsettings and record in inum and ialt aray
+						every desc is a altsetting of an interface
+					after get desc, check if some specific interface lost
+					alloc intf_cache  pointer array for every interface(with its all
+						altsettings together)
+					store in extra field the first desc's place and extralen the distance
+						between frist desc and first interface desc
+					in parse interface && altsetting:(every loop will parse one interface
+							and its endpoints' desc or just failed and return)
+						get intf number and check if that altsetting is duplicate or
+						has alreadly been set, if so , skip;if not,copy that intf desc
+						to as a new altsetting desc in intf_cache
+						then skip to next intf or endpoint desc,then allocate place
+						for endp if exist;
+						then parse endponits:
+							every func call will just parse one endpoint, and 
+							also adjust that edp's intr xfer's interval if needed
+					after parse interface,check if we lost some specific altsetting in
+						some interface 
+			after get configuration,decide dev num, then device_add( the main func which will call
+				that device's driver's probe to run the specific device's initialization)
 						
 		hub_power_remaining:
 			used to check power enough or not,just warn if not
