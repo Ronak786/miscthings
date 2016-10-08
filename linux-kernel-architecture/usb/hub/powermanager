@@ -1,0 +1,30 @@
+apm and acpi are two power manager subsystem, we now use acpi
+	device model make power manager more convenient
+
+
+generally have two operations: suspend, resume
+	state: when suspending, do not transport data, dma, interrupt, accept request
+	two power suspend mode:
+	os layer: if os want to sleep, notify device and call their suspend func
+	device layer: if device want to sleep ,just do it
+
+have two type of suspend: STR STD  
+	store to disk
+	store to ram
+	in /sys/power/disk we can echo in "shutdown" or "reboot"
+	after that: echo disk > /sys/power/state (suspend)
+	then your system's state will be stored to disk, if power on again,things are continued as same(resume)
+
+every bus_type will have their own suspend and resume func, which will continue to traverse
+	their subsystem's device driver to call those specific suspend func
+
+take usb as an example:
+	usb_suspend will suspend a device,and in that device's suspend,will suspend a interface
+	and set that suspend state, after all intf, suspend that device
+	if one stop error, resume all as if nothing happened
+
+have several power state:
+	on: after resume, normally run state
+	suspend: low power not work state
+	freeze: not work, used to take snapshot
+	prethaw: just like freeze, but used to fix kexec bug, reset before resume

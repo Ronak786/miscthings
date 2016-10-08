@@ -129,3 +129,29 @@ usb_port_connect_change:
 						
 		hub_power_remaining:
 			used to check power enough or not,just warn if not
+	back to hub_events:
+		change powelitmit record if powerconnect is changed
+		repower_on if overcurrent
+	then one loop over
+
+hub_irq: this is the place where hub be added into eventlist and then above hub_event() will work !!
+	this func is submitted as a complete func of a urb in probe at the end of hub configuration
+	(root hub's configure is done by hcd, others will first in roothub's hub_evnet() then in probe
+		func,then they can be added to hub_event(),then they can work and detect theri own 
+		down facing port's status)
+	in hub_irq, check urb's status ,if some special error ,just return;
+					if other error,and not as many as ten, re submit again
+					others, will accept that request and preapre hub_event();
+			while preparing, get bit status of every port and the whole hub(the bit 0)
+				stored in hub->event_bits[0] to be read by hub_event to decide if
+				status changed(other status change will be decide by send command to
+				hub itself to extract)
+			kick_khubd():
+				this is the last to do ,then hub_event will work!!
+
+
+QUESTION:
+	we say a interface match a driver, but here we insert a device will cause one time
+		connection change, and hub_event will be called one time, so device_add will
+		be called one time, then does it mean only one driver's probe can be called
+		and just called one time????
