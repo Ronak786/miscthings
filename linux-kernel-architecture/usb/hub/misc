@@ -78,9 +78,24 @@ usb_port_connect_change:
 				size, 
 				then set dev port number to device
 				then get device descriptor of new device
-		after port init:
+		after port init:(usb_get_status)
 			check if new dev is a hub, if is ,check  power state,if not
 			self powered and power not enough, just return, it is abandoned
 			check speed for some device,then start find new device probe in
 			usb_new_device
+		check_speed: 
+			for those device that can be high speed but still in low speed and
+			hub is high speed hub, do this to info user 
+		now link device struct to hub's array of child
 		usb_new_device:
+			get new device's config desc(intf and endp's desc as well),then
+			make a devnum,then device_add(this will call that device's probe)
+			usb_get_configuration:
+				allocate buffer for get and store,
+				use comand to get,with two tries,first enough to get desc's size
+				(the first field of usb_host_config struct)
+					second get whole config struct
+				then parse to host config struct(because get out data not in 
+					that struct format precisely)
+		hub_power_remaining:
+			used to check power enough or not,just warn if not
