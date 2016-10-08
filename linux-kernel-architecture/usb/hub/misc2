@@ -1,0 +1,3 @@
+driver of usb:
+	interface has usb_driver
+	device as a whole has usb_device_driver struct
