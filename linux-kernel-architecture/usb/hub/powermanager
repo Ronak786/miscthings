@@ -28,3 +28,36 @@ have several power state:
 	suspend: low power not work state
 	freeze: not work, used to take snapshot
 	prethaw: just like freeze, but used to fix kexec bug, reset before resume
+
+remote_wake_up:
+	this is a feature means eg. if you press key when system suspend,
+		system will wake up,feature can be tested if supported and 
+		can be enable or disabled
+FUNCTIONS:
+
+suspend sequence:
+	from power manager core system, call usb_suspend on a specific device;
+	set auto_pm to 0;means we are not in autosuspend(a work queue explained later);
+	call usb_suspend_both:
+		this func will be called both in autosuspend(interval suspend work)
+		and external suspend(manual suspend).
+		the former one will first check if suspend can be done(child is in using or not);
+			if in work, just return as failed
+		the latter one will enforce suspend interface, but if failed, both will
+		resume previous operations as resume, internal one will again try autosuspend.
+		(this one can also be used in resume routine)
+		then suspend the whole device of bunch of interface. 
+		usb_suspend_device:
+			if device has driver, call that driver's suspend func
+			if hasn't, do a hub_port_suspend on the upstream port 
+				connecting this device(just  send a suspend feature command)
+		if all success, call a autosuspend to its parent(it he can suspend,do it,
+			if can not,just leave it alone, so auto)
+		
+resume sequence:
+	first cancel autosuspend kworker,because we now to resume;
+	then if state is suspend, resume father first, then itself, then its interface
+
+
+autosuspend, autoresume:
+	these two will properly deal with suspend && resume sequence

@@ -1,3 +1,9 @@
 driver of usb:
 	interface has usb_driver
 	device as a whole has usb_device_driver struct
+
+probe:
+	usb_device_driver also has a probe ,when device inserted, first this probe is called,
+		then specific device's probe will be called
+		so /sys/bus/usb/drivers/usb
+			/sys/bus/usb/drivers/usb-storage  both has your device-related file under it.
