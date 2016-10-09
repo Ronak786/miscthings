@@ -1,0 +1,24 @@
+device driver <=> function
+usb core      <=> usb device
+hcd	      <=> usb interface
+
+hcd is os's lowest layer , specific(keyboard, misc...)is the highest layer
+usb core define some core functions that will be used by all others
+
+so drivers only talk to usb_core, hcd only talk to usb core,servie it
+
+hcd_pci:
+	if pci is used, add this file's support, this and hcd.c together as the host controller's
+		public portion,(private portion is uhci ehci xhci....)
+
+__init: this means initcall
+	initcall will be put in special section 
+	and be called in in start_kernel
+subsys_call: 
+	this is a kind of module_init, but has a higher priority,
+	these kinds of initcall used to set the sequence of subsystem and device's initialization sequence
+
+var args:
+	#define func(xxx,...)  func2(xxx,__VA_ARGS__)
+	or define func(xxx, args...)  func2(xxx, ##args) the "##" will prevent a trailing ',' if no args is
+		provided

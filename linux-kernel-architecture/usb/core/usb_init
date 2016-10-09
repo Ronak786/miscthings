@@ -1,0 +1,8 @@
+usb_init:
+	first create a work queue for powermanager(autosuspend)
+	register bus,so we can add device on that bus 
+	register host controller
+	register usb bus as a char device
+	register all usb devices possible as chrdevs
+	register hub, usbfs, 
+	then over

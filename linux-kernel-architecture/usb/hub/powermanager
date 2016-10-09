@@ -82,7 +82,8 @@ hub_suspend, hub_resume:
 	these two will do nothing but call hcd_bus_resume/suspend to deal with roothub's status
 
 
-autosuspend, autoresume:
+autosuspend, autoresume: (autosuspend will be done after system resume or try suspend about 2ms,
+			use autosuspend_check to check)
 	these two will properly deal with suspend && resume sequence
 
 autosuspend_check:
