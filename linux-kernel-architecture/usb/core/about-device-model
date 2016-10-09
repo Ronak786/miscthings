@@ -1,0 +1,26 @@
+system has:
+	bus_type: represent a type of bus: usb scsi pci i2c ....
+	device: represent a kind of device(bus is also a device)
+	device_driver: represent a driver( the way to deal with device)
+
+	struct bus_type will have kset of device and driver
+	struct device has pointer of bus_type and driver
+	struct driver has pointer of bus_type and klist of device(a set  and a lock)
+
+	kset is just a set of kobject(has a tree model)
+	klist is a list and a lock
+
+in usb_bus_type:
+	we use usb_device_match to judge if device match a driver in usb system
+
+usb_major_init:
+	register a major number and a range of 256 number of chardev device
+	but usb major only used when it is a device not using other subsystem,
+	eg, a usb kbd will use input system's major number(a misc device wil use usb major),
+		 mass storage will use block dev's major
+
+descriptor:
+	interface has usb_host_interface=>usb_interface_descriptor
+	endpoint has usb_host_endpoint=>usb_endpoint_descriptor
+
+	both have an abstract of dev to be shown in sysfs

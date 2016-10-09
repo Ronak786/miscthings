@@ -33,6 +33,8 @@ remote_wake_up:
 	this is a feature means eg. if you press key when system suspend,
 		system will wake up,feature can be tested if supported and 
 		can be enable or disabled
+		if enabled, it will send host a signal if it is activated, 
+			so system will wake up
 FUNCTIONS:
 
 suspend sequence:
