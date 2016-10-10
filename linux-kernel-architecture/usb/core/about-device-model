@@ -22,5 +22,12 @@ usb_major_init:
 descriptor:
 	interface has usb_host_interface=>usb_interface_descriptor
 	endpoint has usb_host_endpoint=>usb_endpoint_descriptor
+	configure has usb_host_config
+	device has usb_desc(some kind of that?)
 
 	both have an abstract of dev to be shown in sysfs
+in config desc struct:
+	thereis a interface array and inter_cache array, 
+	inteface array used to store all interface's general struct :usb_interface,and will change if config change
+	inter_cache store allinterface's all altsetting infos, will persisit 
+		all the time the device is on, and can be used in usbfs

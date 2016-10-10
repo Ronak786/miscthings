@@ -1,3 +1,8 @@
+once inset a device, sysfs will have at least two device model:
+	the device itself, device's interface
+	4-0:1.0  means  root hub 4's port0; use conf No.1 and interface No.0
+		roob hub is on bus, every one has a number, its port(or its devpath from that root hub);
+		then conf must choose one for whole device; then one intf for one function(eg.a mass storage)
 usb_init:
 	first create a work queue for powermanager(autosuspend)
 	register bus,so we can add device on that bus 
