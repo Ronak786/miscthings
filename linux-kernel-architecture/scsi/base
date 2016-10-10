@@ -1,0 +1,8 @@
+scsi first has a scsi host bus adapter:
+	this one used as a controller to control all type of buses it supports:
+	every kind of bus can attach a limited number of devices
+	then device has lun(logical unit number)
+layer:
+	hba(scsi host)=>channel(bus)=>device(id)=>lun(lun)
+initiator:
+	this is the scsi host, the one invoking requests

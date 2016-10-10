@@ -11,3 +11,50 @@ usb_init:
 	register all usb devices possible as chrdevs
 	register hub, usbfs, 
 	then over
+
+
+usb_driver:
+	this struct has a dynamic id, this one is ids you can set in run time.
+	in /sys/bus/usb/drivers/...
+	the struct drvwrap, in usb_device_driver or in usb_driver has an additional
+		field besides struct device_driver, that is used to judge if this driver
+		is for device or interface
+usb_device_driver:
+	this structure's probe will accept all usb dev to run its probe,it's a generic driver
+
+
+device life time:
+	once device inserted in, hub_event be wakedup by kick_khubd by hcd's interrupt bulk poll,
+	then detect that is a connect in change, so invoke a usb_alloc_dev to allocate device struct for
+	new dev:
+		alloc struct usb_device;
+		initialize usb_bus_type and usb_device_type
+		organize device busid-type name,
+			if current allocated dev is for a root hub(called from hcd)
+				devpath[0] = '0'(used by child to identify)
+				dev->dev.bus_id[0] = usb"busnum", so in /sys is usb0/usb1/...
+			if current is a dev connect directly to roothub
+				devpath is port num
+				and bus_id is busnum-portnum  like   2-1(bus2's root hub's port 2)
+			if current is a dev not directly connect to roothub
+				devpath is parent's devpath.current_dev's linked upstream port
+				rest is like above
+				
+		set connection to the hub's port and dev's struct
+		then hub set dev's attach status, choose for it and set it in
+		get usb's control edp's maxpacketsize, then 
+		use usb_control_msg to set address of device
+
+			usb_control_msg:
+				set up usb_ctrlrequest struct and add to urb struct and send
+				them to usb core then send to hcd; then wait for complete
+				in transaction:(一个会话)
+					setup:
+						one setup token packet, one data packet(optional),
+						one status from dev
+					data:
+						data0, data1, data0, data1 for error checking
+					status:
+						dev return transport status
+			
+				
