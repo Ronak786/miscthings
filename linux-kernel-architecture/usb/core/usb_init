@@ -23,6 +23,33 @@ usb_device_driver:
 	this structure's probe will accept all usb dev to run its probe,it's a generic driver
 
 
+
+struct urb:
+	kref:
+	in it, we have a kref atomic, this used 
+	to represent if this urb is used by any
+	endpoint(as a count)(if zero,then urb be destroyed)
+	use_count:
+	we also has use_count var, this represent
+	the urb is using by hcd
+	the usb_unlink_urb usb_kill_urb use use_count
+		to judge success or wait
+	kill_urb will call unlink_urb,which will use
+		usb_hcd_unlink_urb to tell hcd want killing
+	reject:
+		in usb_kill_urb we have this set to tell
+		that we are in killing, now do not resubmit
+	pipe:(to specify a specific endpoint to comunicate)
+		direction  	bit 7
+		device address	bit 8-14
+		endpoint	bit 15-18
+		pipe type	bit 30-31
+	transfer flag:
+		short not ok: if some one transfer shorter than maxpacket size, return error
+
+
+
+
 device life time:
 	once device inserted in, hub_event be wakedup by kick_khubd by hcd's interrupt bulk poll,
 	then detect that is a connect in change, so invoke a usb_alloc_dev to allocate device struct for
@@ -56,5 +83,8 @@ device life time:
 						data0, data1, data0, data1 for error checking
 					status:
 						dev return transport status
-			
+
+				in this func, we call usb_internal_control_msg:
+					which will truly alloc,send and wait urb
+								
 				
