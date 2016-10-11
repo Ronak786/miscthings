@@ -1,0 +1,4 @@
+talk a little about hcd related to usb core
+
+struct usb_hcd:
+	first field struct usb_bus: self,  means  a hcd controls a bus

@@ -61,6 +61,13 @@ struct urb:
 				in one urb, this array include one urb's whole times of data,
 	number of packet: number of packets
 
+
+usb control msg
+usb interrrupt msg: just call bulk msg
+usb bulk msg:
+	alloc, depend on attribute to decide to call interrupt or  bulk
+	wait
+
 device life time:
 	once device inserted in, hub_event be wakedup by kick_khubd by hcd's interrupt bulk poll,
 	then detect that is a connect in change, so invoke a usb_alloc_dev to allocate device struct for
