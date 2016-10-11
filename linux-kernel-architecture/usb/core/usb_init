@@ -1,3 +1,8 @@
+usb's state:
+	default means no address attached, and readly for that
+	configured means in a state that has get configure desc
+	address means in a state that have been set an address
+
 once inset a device, sysfs will have at least two device model:
 	the device itself, device's interface
 	4-0:1.0  means  root hub 4's port0; use conf No.1 and interface No.0
@@ -45,10 +50,16 @@ struct urb:
 		endpoint	bit 15-18
 		pipe type	bit 30-31
 	transfer flag:
-		short not ok: if some one transfer shorter than maxpacket size, return error
-
-
-
+		short not ok: if some one transfer(read) shorter than maxpacket size, return error
+		iso asap: used for iso transport to auto start and record start frame in hcd
+		no map(transport,setup): set, so that hcd will consider using dma buffer(allocated by driver)
+		zero packet :  when send out xfer,the last must be a shorter packet, if no, add one
+		no interrupt: not call complete func when xfer succeeded immediately.
+	context:used by complete func
+	complete: the complete func
+	usb_iso_packet_descriptor: used for iso xfer, iso xfer will transport mulple times of data
+				in one urb, this array include one urb's whole times of data,
+	number of packet: number of packets
 
 device life time:
 	once device inserted in, hub_event be wakedup by kick_khubd by hcd's interrupt bulk poll,
@@ -85,6 +96,21 @@ device life time:
 						dev return transport status
 
 				in this func, we call usb_internal_control_msg:
-					which will truly alloc,send and wait urb
+					usb_alloc_urb: just alloc and init the kref to 1
+					usb_fill_*_urb(*: control,int,bulk),fill most special fileds
+					usb_start_wait_urb: used to fill rest fields and send urb and wait
+						usb_submit_urb:
+							check if some field are set or not set
+							check the state of the dev and power
+							usb_maxpacket: used to get maxpacketsize of specific edp
+							if is high speed xfer and iso xfer:
+								every micro fram will transport multi packet,
+								the 11 and 12 bit of maxpkt is number of packets
+								0~10 is max size of every xfer, so multiple 
+								together to get every fram's xfer size
+							then depend on speed and xfer type to decide interval
+								a little diff from spec
+							then submit to hcd
+							
 								
 				
