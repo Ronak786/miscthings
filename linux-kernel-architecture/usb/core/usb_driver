@@ -1,0 +1,28 @@
+usb_generic_driver:(done in usb_new_device's device_add)
+	this is the usb_device_driver that will be called when every usb device is detected.
+	it is registered in usb_register_device_driver:
+		set drvwrap.driver's field: including probe remove .set bus type to usb bus type;
+		this probe will be called first in device layer,  usb_probe_device(struct device *device);
+		(device add will just call a probe func of struct device ,so this)
+		usb_probe_device:
+			use the passed in struce device to get struct usb_device of the usb device;
+			use the struct device to get the mathed driver's usb_device_driver,
+			so we can call usb_device_driver's probe (diff from the above 
+			usb_device_driver's drvwrap.driver's probe,that will be call by device layer,
+				but this is unknown to the device layer,is specific to usb layer)
+			generic_probe:
+				create sysfs files
+				choose conf settings,(default the first whose dev class
+					and intf class meet our desires
+				set configuration:
+					use set conf comand to inform device,we set that conf,
+					then alloc place to store intf structures
+					enable every interface:
+						enable endpoints:
+							just reset every toggle, and set endpoint
+							array of every endpoint
+				set intf's dev type to usb_if_device_type,
+				then use device add to apply to every intf device of that
+				config has, then we will some probes of driver
+				(the struct device of usb_interface is initialized
+				just in the set configuration func)

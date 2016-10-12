@@ -118,6 +118,16 @@ device life time:
 							then depend on speed and xfer type to decide interval
 								a little diff from spec
 							then submit to hcd
+							during submit to hcd, just add queue into endpoint's queue,
+							 	then notify specific hcd controller
+
+						after complete, the complete func passed in by driver will
+							be called
 							
 								
 				
+			after set address, we will call get  configuration to get conf,intf, edp descriptors
+			this func will get every conf desc,
+				for each conf  desc, get every interface desc's altseting desc
+					in every altsetting desc, get every endpoint's desc
+					
