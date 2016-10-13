@@ -1,0 +1,7 @@
+uhci_hcd_init:
+	create a debufs under /sys/kernel/debug/
+	create cache buffer for subsequent request of alloc of struct urb_priv,
+	register the driver into pci bus using pci_register_driver
+		during register, in the id, is the usb id adhereing to pci spec,
+		and a private data of struct hc_driver(this is driver func of uhci)
+

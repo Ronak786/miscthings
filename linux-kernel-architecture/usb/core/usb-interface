@@ -1,0 +1,22 @@
+usb_register:
+	used to register a usb_driver, used by an interface match and probe
+	this func will fill usb_driver's drvwrap's driver's filed with some probe ... func,
+		then add into device model by driver_register
+	once device inserted, the match func usb_device_match will be called to match
+
+usb_devide_match:
+	this func will first be called when a whole dev is inserted,
+		at that time , will match the first if, and invoke generic_probe,
+		then choose conf and call device_add for every intf under that conf,
+	then the second time match id will be called, this time ,the else part 
+		will be selected and call usb_match_id && usb_match_dynamic_id to try matching
+
+usb_match_id:
+	start to match only when idvendor || deviceclass||interfaceclass || driver_info is set
+	then call usb_match_one_id:
+usb_match_one_id:
+	first make sure intf's usb_device is matched :calling usb_match_device(different from above's
+		usb device_match !! that is used to match an interface or whole device)
+		this device_match will test match flag's field and corresponding field if is the same.
+		this is about the device, and match_one_id it self is about interface
+		if all match, then match success, now specific device driver will be called !! hurry!!
