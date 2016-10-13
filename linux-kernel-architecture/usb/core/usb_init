@@ -131,3 +131,14 @@ device life time:
 				for each conf  desc, get every interface desc's altseting desc
 					in every altsetting desc, get every endpoint's desc
 					
+		after get conf, we will get usb string of diff language if specified:(in usb_new_device)
+			use usb_cache_string:
+				this will try a large  buf to get string and again allocate
+					a smaller buffer to actually store that string and return
+					in sub calls:
+						use the language id and string id to get strings,
+						string is unicode, so should converto to iso-8891,
+						then print out, if not adapted to ascii, just
+						print '?' instead
+		after all that ,we will call device add , and will calling that usb's generic_device_probe
+		(see in file usb_driver)
