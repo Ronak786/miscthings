@@ -1,0 +1,87 @@
+interrupt set:
+	pci device attach to io/apic, which will attach to lapic of every cpu core,
+	msi happened when device write to a special place of FSB mem, then a message
+	be sent to io apic, translated into a vector lapci will recognizie, then send
+	to every lapic, lapic recognize if this interrupt is for itself, then accept 
+	and execute=> read itself's core's idt and search specific routine to run
+
+	if use 8259a, just attach to that controller
+
+	interrupts have priority,higher will interrupt lower one also
+
+	request_irq: used to bind user specified irq handler to that irq
+
+
+
+pic:
+	programmable interrupt controller, the oldest one
+	one chip has 8 input pin and one output "int" pin attached to cpu,
+		one data pin send vector to cpu ti inform irq number
+	when one input pin has interrupt:
+		irr's corresponding set to 1 if not masked,
+		high the "int"
+		cpu "inta" to acknowledge, pic set irr bit to 0, isr bit to 1,
+		second "inta", pic send irq vector info, now mask any lower priority interrupts,
+		when done ,send "eoi", isr bit set to 0, 
+			if pic in aeio mode(auto eoi),then when the second inta is received,
+			isr will be cleared auto
+		notify: higher pri 's int will be sent when lower int is executing
+
+	drawbacks:
+		too restrictive, only allow a small bunch of ints
+		
+
+apic:
+	ioapic:
+		connect to dev, lapic included in cpu, they communicate through FSB(old time through apic bus)
+
+		first dev send interrupt to the pin of apic, then that pin's redirect table entry be scaned,
+			this has all infos that interrupt have, then generate a msg and send to cpu or cpus'
+			lapic
+			EOI:clear remote IRR in ioapic
+			xor of INT pin and remote irr: set or clear lapic' s irr
+	lapic:
+		irr: accepted but not sent to cpu:
+		isr: set to one when intr is in service by cpu(question: if pending one intr, then
+			pending another, the second will set isr to 1, isn't it?)
+			
+		in level trigger ,irr will retain until EOI, but in edge trigger, will clear irr when
+			set isr
+		EOI: 0 represent finish of interrupt
+
+
+apic mode:
+	physical:
+		after reset , every lapic get an ID, used to judge if an interrrupt sent here should
+			be handled
+	logical:(supposed in fix mode of delivery mode)
+		logical id of lapic ,and destination  field of ioapic's entry, have several
+			mode, generaly used to match, if match, accept(details in Interrupt in Linux)
+
+		if in lowest priority mode:
+			tpr:
+			interrupt will not send to all cpus that match, but the lowest one
+			what is lowest ? in x86's tpr register,can set to show at least what
+			level interrupt can be handled, but will accept intr lower than that,
+			but only set irr, not handle to cpu
+			ppr:
+			currently process interrupt, should higher than this ,can the pending
+			interrupt be acceptted
+
+		these selection all be done by chip set !!! so chipset is very advanced
+			what priority's interrupt we will handler
+
+
+
+interrupt in linux:
+	irq: old time used in pic on behalf of a pin, but now not, and lower than 16 not
+		then same sequence as before in pic
+		all priority in valued in vector field of rte entry in ioapic and handled in
+			lapic
+	pin: ioapic's pin
+	gsi: glbal system interrupt: numbers of all interrupts, when multiple ioapic, this to
+		identify every intr, irq > 15 are the same as gsi
+	vector: used by cpu as index in idt, can be allocated by OS.
+
+	kernel has struct to represet ioapic:  struct mpc_config_ioapic
+				represent io interrupt entry: struct mpc_config_intsrc
