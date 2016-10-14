@@ -4,4 +4,33 @@ uhci_hcd_init:
 	register the driver into pci bus using pci_register_driver
 		during register, in the id, is the usb id adhereing to pci spec,
 		and a private data of struct hc_driver(this is driver func of uhci)
+then when pci device of hcd is detected in device model
+	that registered probe func will be called=> usb_hcd_pci_probe:
 
+usb_hcd_pci_probe:
+	after enable pci device, create the struct usb_hcd
+	then require io ports according to pci bar desc
+		the require means tell kernel that resource now belongs to me
+	set master on pci bus, so can struggle to do the dma
+	then usb_add_hcd, this will set irq handler func, start hcd by calling
+		its private specific func, create and probe the root hub
+
+usb_create_hcd:
+	create struct, associate struct device in hcd->self.controller
+	usb_bus_init to init hcd->self
+	get hc_driver and set to field
+	init roothub's timer func 
+
+usb_add_hcd:
+	create a buffer for dma if possible, now use usb_buffer_alloc
+		can create a buffer in dma if possible
+		the  dma_mask in struct driver means you can create
+		a dma of some bits address that device can support
+		register usb_bus
+		create struct usb_hcd
+
+usb_register_bus:
+	get a busnum in usb bus bitmap struct and set as current bus's number
+	create a class_device under /sys/class/usb_hcd
+	set class_dev's handler to struct usb_bus, add this bus to usb_bus_list
+	use usb_notify_add_bus to add to notify link ? what use ??
