@@ -47,9 +47,17 @@ usb_add_hcd:
 						the auto reset will not do
 		register a irq handler, using request_irq, use irq_shared as a flag to infrom
 			that irq is shared
+		then start hcd with uhci_start:
+		then record downstream can used power, 
+		then register_root_hub, which set settings of root hub and device add it,
+			so root hub will be  probed, and added to event list
+			
 
 usb_register_bus:
 	get a busnum in usb bus bitmap struct and set as current bus's number
 	create a class_device under /sys/class/usb_hcd
 	set class_dev's handler to struct usb_bus, add this bus to usb_bus_list
 	use usb_notify_add_bus to add to notify link ? what use ??
+
+uhci_start:
+		
