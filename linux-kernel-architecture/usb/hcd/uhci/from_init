@@ -27,7 +27,26 @@ usb_add_hcd:
 		the  dma_mask in struct driver means you can create
 		a dma of some bits address that device can support
 		register usb_bus
-		create struct usb_hcd
+		create struct usb_hcd 
+		create root hub dev and initialize with usb_alloc_dev
+		device_init_wakeup used to set the remote wakeup function of root hub
+		invoke reset of uhci's private func
+		reset : uhci_init:(get port number and check if reset is needed)
+			we get out uhci_hcd struct and record our io port map address;
+			then start from 0x10h we will get port and staus register;
+			we traverse to see how many(at most 7),and record
+			then check_and_reset_hc:
+				in one of three state we should reset:
+					in legacy support register those RW bits are set(those are switchs)
+					in uhci command register run/stop bit is set(run),or not in global
+						suspend mode or not in configure mode
+					except resume interrupt ,others should disable
+
+					if truly need rest ,usb_reset_hc
+					call a reset finish function to manually reset something
+						the auto reset will not do
+		register a irq handler, using request_irq, use irq_shared as a flag to infrom
+			that irq is shared
 
 usb_register_bus:
 	get a busnum in usb bus bitmap struct and set as current bus's number
