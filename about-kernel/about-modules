@@ -4,3 +4,25 @@ how kernel modules loaded when boot:
 
 add in /etc/modprobe.d/xx.conf   the softdep  or the blacklist
 add in /etc/sysconfig/modules/  the modules should be loaded
+
+
+compile modules:
+	MODULE_AUTHOR("") : author name
+	MODULE_LICENSE(""): module license ("GPL") ...
+	MODULE_DESCRIPTION: can input printf like strings, also '\n'
+	MODULE_VERSION()  : version of module
+	MODULE_FIRMWARE() : firmware name,just a string
+
+	module param:
+		module_param(name, type, perm) can use multiple types , see linux/moduleparam.h
+		MODULE_PARM_DESC(name, "description")
+	module param string:
+		module_param_string(outside_name, internal_name, length_of_buffer, perm);
+		use outside name as a name you can assign when insmod,
+		use internal name as a name of kernel char array that module use acctually
+	module param_array:
+		array define must appear first, and allocated already, 
+		one param which is a pointer of number will be filled with number of array numbers
+			accually input by user
+	module XXX named:
+		used in internal to change the name of variable seen by outside and inside
