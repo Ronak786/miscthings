@@ -26,3 +26,12 @@ compile modules:
 			accually input by user
 	module XXX named:
 		used in internal to change the name of variable seen by outside and inside
+
+including files:
+	struct file  && devnumber : fs.h
+	struct cdev		: cdev.h
+	module related	: 	module.h init.h moduleparam.h
+
+
+errors:
+	invalid storage class :  somewhere lost one bracket
