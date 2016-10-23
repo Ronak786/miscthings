@@ -1,0 +1,51 @@
+set nocompatible
+set nu
+set ruler
+syntax on
+filetype on
+filetype plugin on
+set incsearch
+set hlsearch
+if has("cscope")  
+    set csprg=/usr/bin/cscope  
+    set csto=0  
+    set cst  
+    set csverb  
+    set cspc=3  
+    "add any database in current dir  
+"    if filereadable("cscope.out")  
+"	    cs add cscope.out  
+    "else search cscope.out elsewhere  
+ "   else  
+ "     let cscope_file=findfile("cscope.out", ".;")  
+ "     let cscope_pre=matchstr(cscope_file, ".*/")  
+ "     if !empty(cscope_file) && filereadable(cscope_file)  
+"	exe "cs add" cscope_file cscope_pre  
+"      endif        
+"    endif  
+let max = 5
+let dir = './'
+let i = 0
+let break = 0
+while isdirectory(dir) && i < max
+	if filereadable(dir . 'cscope.out') 
+	    execute 'cs add ' . dir . 'cscope.out'
+		let break = 1
+	endif
+	if filereadable(dir . 'tags')
+	    execute 'set tags =' . dir . 'tags'
+		let break = 1
+	endif
+	if break == 1
+	    execute 'lcd ' . dir
+		break
+	endif
+	let dir = dir . '../'
+	let i = i + 1
+endwhile
+
+endif  
+inoremap jj <Esc> 
+
+
+
