@@ -28,6 +28,7 @@ block_device_operations: just generic block ops, not specific rw ops
 queue:
 blk_init_queue: initialize block queue to use standard io schedule method
 		prepare for io sched to do with that queue
-blk_alloc_queue, blk_make_queue_request: alloc a queue ,not using io schedule,for a fake device
 blk_fetch_queue: used when using blk_init_queue, to get the next queue in your own make request func
+blk_alloc_queue, blk_queue_make_request: alloc a queue ,not using io schedule,for a fake device
+					or ram device that can do ramdom search without heavy cost
 

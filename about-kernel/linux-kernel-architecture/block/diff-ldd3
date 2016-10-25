@@ -1,0 +1,2 @@
+struct request has no cur_sector, 
+now we use blk_rq_pos  blk_rq_cur_sectors, and data buffer now is bio_data
