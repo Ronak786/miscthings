@@ -1,0 +1,33 @@
+function: this blkdev can be attached to a originally exist one ,just like
+how to add a block device:
+add a request queue(register one): blk_alloc_queue, blk_make_queue_request
+register a devnum
+fill gendisk struct with operations(ioctl, major, minor...)
+add_disk(gendisk)
+
+in ioctl:
+start by store the raw disk struct by search the given path,
+start a kthread
+
+when request come:
+the request func registered before be called,
+wakeup the thread and passin struct bio,
+redirect to the true devicce(also do remap to true device(not part))
+then make generic request
+
+
+data structs:
+block_device: represent a block device in /dev when opened
+gendisk: represent a whole disk, 
+requeset_queue: included in gendisk ,have a list of struct request
+struct request: bio point to first bio, biotail point to last bio
+struct bio: one continous area of data by request,
+struct bio_vec: included in struct bio, record the mem place and length of that bio request
+block_device_operations: just generic block ops, not specific rw ops
+
+queue:
+blk_init_queue: initialize block queue to use standard io schedule method
+		prepare for io sched to do with that queue
+blk_alloc_queue, blk_make_queue_request: alloc a queue ,not using io schedule,for a fake device
+blk_fetch_queue: used when using blk_init_queue, to get the next queue in your own make request func
+
