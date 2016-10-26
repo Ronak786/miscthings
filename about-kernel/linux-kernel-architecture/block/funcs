@@ -1,0 +1,29 @@
+register_blkdev(int major, char *name)
+unregister_blkdev(int major, char *name)
+
+block_device_operations:  块设备通用函数操作，但是不包括具体读写，那个在requesｔ中处理
+
+struct gendisk 初始化:
+must set:  major , first_minor,  disk_name, fops, queue,capacity(use set_capacity to set);
+	private_date(store private data)
+
+alloc_disk: alloc a gendisk and set minors field
+add_disk: once do this , request will be sent to get partition info, so this must be the
+	last preparation operation
+
+blk_init_queue: 创建的时候加入了一个锁，所以以后运行的request函数的时候是在锁定
+		的原子空间里的，要注意！！
+blk_fetch_request
+blk_dequeue_request
+blk_requeue_request
+blk_cleanup_queue
+blk_fetch_request
+blk_start_queue; blk_stop_queue;blk_queue_max_sectors... 用来设置驱动对与请求队列的一些配置参数
+
+when request done or error, use  __blk_end_request_cur(not __blk_end_request_all !!! this will cause problem);
+	and judge:
+		if (!__blk_end_request_cur(req))
+			req = blk_fetch_request(rq);
+
+
+request:一个请求通常是多个连续的ｂｉｏ的集合，由ｉｏ调度器来产生
