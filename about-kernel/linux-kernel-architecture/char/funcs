@@ -1,0 +1,2 @@
+copy_from/to_user :return how many retains to be transfered next time
+read/write: return how many transferred successfully, diff from above!!
