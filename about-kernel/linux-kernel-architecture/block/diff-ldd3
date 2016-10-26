@@ -1,2 +1,6 @@
 struct request has no cur_sector, 
-now we use blk_rq_pos  blk_rq_cur_sectors, and data buffer now is bio_data
+now we use blk_rq_pos  blk_rq_cur_sectors, and data buffer now is bio_data(when use 3.XX, using 2.6 just as old)
+when end request , use __blk_end_request_all(remember __, this one will not hold a lock, then you will
+	not be dead locked)
+
+when allocate big buffer ,use vmalloc

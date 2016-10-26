@@ -32,3 +32,11 @@ blk_fetch_queue: used when using blk_init_queue, to get the next queue in your o
 blk_alloc_queue, blk_queue_make_request: alloc a queue ,not using io schedule,for a fake device
 					or ram device that can do ramdom search without heavy cost
 
+
+gendisk:
+initialize fill  major, first_minor, disk_name, initialize queue, fill fops, set private data if needed.
+	set  capacity( in init queu ,use blk logical set and capacity set, in alloc queue, use set capacity)
+	in virtual disk(alloc queue),not needen blk_queue_logical_block_size,because not directly talk
+		to device,just set capacity
+	in real disk struct, set logical blk size in queue because that queue will talk to
+	 	ioschedule, also need capacity,because set when hardware init
