@@ -40,3 +40,5 @@ initialize fill  major, first_minor, disk_name, initialize queue, fill fops, set
 		to device,just set capacity
 	in real disk struct, set logical blk size in queue because that queue will talk to
 	 	ioschedule, also need capacity,because set when hardware init
+
+NOTE:set capacity size is ５１２为单位的,be careful to keep allocated size and set capacity size coherent!!!
