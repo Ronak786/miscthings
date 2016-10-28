@@ -1,0 +1,53 @@
+struct semaphore:
+	sema_init(ptr, val);
+	DECLARE_MUTEX  DECLARE_MUTEX_LOCKED
+	init_MUTEX  init_MUTEX_LOCKED
+
+	down down_interruptible down_trylock
+	up
+
+struct rw_semaphore:
+	init_rwsem
+	down_read, down_read_trylock, up_read
+	down_write, down_write_trylock, up_write, downgrade_write
+
+struct completion:
+	DECLARE_COMPLETION
+	init_completion
+	complete() , complete_all()
+	wait_for_completion
+	reinitialize :  INIT_COMPLETION (for reuse after complete_all)
+
+spin_lock_t
+	spin_lock_init
+	spin_unlock
+	spin_lock ; spin_lock_irqsave, spin_lock_irq(forbid local interrupt); spin_lock_bh(for soft interrupt);
+	spin_unlock ..........spin_unlock_irqrestore.
+
+rwlock_t:
+	read_lock .. . ...................................................................
+	write_lock .............. write_trylock
+
+atomit_t :
+	atomic_set, atomic_read ....
+bit set:
+	set_bit  change_bit ...
+seqlock
+	seqlock_t, seqlock_init, 
+	do {
+		seq = read_seqbegin(&lock, int seq);
+		.......
+	} while (read_seqretry(&lock, seq);
+	read_seqbegin_irqsave
+	read_seqretry_irqrestore
+
+	write_sequnlock(irq(irqrestore/bh)
+	write_seqlock_irq(irqsave/bh)
+
+rcu:
+	rcu_read_lock
+	rcu_read_unlock
+	call_rcu( used to set function to be called to free resource when all resource reference is disconnect:
+		this must happend after every core been schduled for once);
+
+	
