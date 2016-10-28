@@ -1,2 +1,11 @@
 copy_from/to_user :return how many retains to be transfered next time
 read/write: return how many transferred successfully, diff from above!!
+
+
+priority:
+access_ok(face to kernel)
+capable(), in linux/capability.h
+
+ioctl: user include <sys/ioctl.h>
+	kernel, test _IOC_DIR & _IOC_READ ...
+		access_ok(....)
