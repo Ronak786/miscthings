@@ -35,3 +35,6 @@ usage, first define your own fasync func, in it, using fasync_helper to initiali
 	now in user program, use fcntl SETOWN to set pid, SETFL to set FASYNC flag,
 	then install the signal function to SIGIO, now over
 
+lseek:
+if you do not want to use this , in open ,you should call nonseekable_open, 
+then assign lseek method to no_llseek
