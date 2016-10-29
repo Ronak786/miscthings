@@ -9,3 +9,29 @@ capable(), in linux/capability.h
 ioctl: user include <sys/ioctl.h>
 	kernel, test _IOC_DIR & _IOC_READ ...
 		access_ok(....)
+
+poll :
+	how does poll work:
+	when select/poll initialize, it will intial a poll table,
+	then call every fd's fops->poll, 
+	in this func, driver should call poll_wait on every wait queue it
+	has, and related to read/write behavior(this will be waked when
+	read/write happened)
+	then return status of current in mask( this will be used at this time 
+	of poll calling, and next time queue waked up, this func will be called
+	again to check and return status, and if true, then all queue's wil
+	be freed )
+
+	when not pass in a poll function in file_operations, whenever write in
+	something, select will return back read and write available
+
+	if have a poll func, that func will work instead
+
+fasync:
+usage, first define your own fasync func, in it, using fasync_helper to initialize 
+	your own fasync queue, then in the func you want to signal that async, 
+	using kil_fasync, and last param is POLL_IN, then ok,
+
+	now in user program, use fcntl SETOWN to set pid, SETFL to set FASYNC flag,
+	then install the signal function to SIGIO, now over
+

@@ -1,3 +1,5 @@
+sleep:
+	do not sleep when hold spin lock, rcu, seq lock !!
 struct semaphore:
 	sema_init(ptr, val);
 	DECLARE_MUTEX  DECLARE_MUTEX_LOCKED
