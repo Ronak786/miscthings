@@ -1,0 +1,7 @@
+wait_event_interruptible_timeout
+schedule_timeout
+mdelay
+msleep
+cpu_relax(not reliable)
+schedule && time_before && time_after
+

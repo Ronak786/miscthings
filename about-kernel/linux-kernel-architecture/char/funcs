@@ -9,6 +9,8 @@ capable(), in linux/capability.h
 ioctl: user include <sys/ioctl.h>
 	kernel, test _IOC_DIR & _IOC_READ ...
 		access_ok(....)
+		_IOC_NRBITS  _IOC_TYPEBITS _IOC_SIZEBITS _IOC_DIRBITS
+		copy_to/from_user  put_user __put_user
 
 poll :
 	how does poll work:
@@ -38,3 +40,23 @@ usage, first define your own fasync func, in it, using fasync_helper to initiali
 lseek:
 if you do not want to use this , in open ,you should call nonseekable_open, 
 then assign lseek method to no_llseek
+
+exclusive access:
+first: use a atomic count,for just one open
+second: use judge for only one user(multi opens): count != 0 && !capable(SYS_DAC_OVERRIDE) && 
+						uid != current_uid(), uid != current_euid(),then not open
+third: when can not open, just wait, (be careful when wait, release spin lock,and wake up should be done
+					after spin_unlock,because wakup it self can sleep)
+fourth: open for every tty,use current->siganl->tty as a key number,and set a list of 
+		struct devs to represetnt all kinds of device)
+
+
+
+proc entry:
+	create_proc_read_entry to register a read entry function,
+	then realize that read func your own
+	delete that entry when closed, remove_proc_entry
+
+	in proc, if set start param to buf, then cat will output continously
+
+NOTE: use dd bs=xxx count=xx < /proc/xx  can control output of some number of bytes

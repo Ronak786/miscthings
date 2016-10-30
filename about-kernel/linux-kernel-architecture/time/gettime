@@ -1,0 +1,14 @@
+using: jiffies variable
+time_before time_after
+get_jiffies_64
+jiffies_to_timeval
+jiffies_to_timespec
+timespec_to_jiffies
+timeval_to_jiffies
+
+more:precise:  rdtscll(val), this is the most accurate one!!
+	also use get_cycles:  a generic wrap of rdtsc in x86
+
+mktime to convert wall time to seconds
+do_gettimeofday get struct timeval
+current_kernel_time to get struct timespec

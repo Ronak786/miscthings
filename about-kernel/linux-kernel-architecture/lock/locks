@@ -53,3 +53,10 @@ rcu:
 		this must happend after every core been schduled for once);
 
 	
+wait_event_interruptible
+prepare_to_wait_exclusive
+wake_up will wake up all non_exclusive process and one exclusive 
+wake_up_nr will wakup  nr exclusive process
+
+NOTE: when use schedule_timeout, remember to set_task_state to TASK_INTERRUPTIBLE !! otherwise
+	this func works just the same as schedule() !!
