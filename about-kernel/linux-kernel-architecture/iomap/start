@@ -1,0 +1,21 @@
+devices has registers and mem(rom)'s that can be read or write by system,
+	in computer, these resource mapped to two kinds: io space and memspace,
+
+io port:
+	these are registers that mapped to io space,(only exist in x86 serials)
+	in linux ,these are just port numbers ,addr range from 0 to 64k
+	access:
+		request_region-> inb outb ... ->relese_region
+	or:
+		request_region->ioport_map->readb ....
+		->ioport_unmap->release_region
+	the latter method just change the io port number into
+		a proper addr in in vritual addr,so can be accessed 
+		by ioread8 iowrite32...
+
+io mem:
+	mapped by hardware, so we have physical addr of these resources,
+	then ioremap->ioread8 iowrite32 ...->iounmap
+
+	in ioreadxxx  ,this func will judge if it is a ioport or iomem 
+	and call specific func to get or set vals

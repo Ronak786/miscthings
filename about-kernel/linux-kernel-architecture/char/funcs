@@ -59,4 +59,19 @@ proc entry:
 
 	in proc, if set start param to buf, then cat will output continously
 
+	in proc ,set start filed to the origin buf place , then cat will output
+		contineously.
+	
+timer:
+	we can set timer in proc, and wait,until specific info is ouput and wake us
+	up, in timer, we can set tiemr again!!
+tasklet:
+	tasklet_init
+	tasklet_schedule / tasklet_hi_schedule
+
+workqueue:
+	use system's or yourselves's, and if delayed ,remenber to initial the
+		delayed work struct for system's schedule !!(no need to set specific
+			number in it)
+
 NOTE: use dd bs=xxx count=xx < /proc/xx  can control output of some number of bytes
