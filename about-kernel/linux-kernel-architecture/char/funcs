@@ -73,5 +73,18 @@ workqueue:
 	use system's or yourselves's, and if delayed ,remenber to initial the
 		delayed work struct for system's schedule !!(no need to set specific
 			number in it)
+not delay:
+	struct work_struct , struct workqueue_struct
+	INIT_WORK, queue_work ... create_workqueue, destroy_workqueue
+	schedule_work(for system work)
+delay:
+	struct delayed_work 
+	INIT_DELAYED_WORK, queue_delayed_work, 
+	schedule_delayed_work
+NOTE: pay attention that the work's func's param is struct work_queue, 
+	and to get privatedata, use container
+	and not that delayed or not delayed, container's param is different!!!
+
+
 
 NOTE: use dd bs=xxx count=xx < /proc/xx  can control output of some number of bytes
