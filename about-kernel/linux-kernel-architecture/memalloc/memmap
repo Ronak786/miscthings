@@ -15,7 +15,13 @@ io port:
 
 io mem:
 	mapped by hardware, so we have physical addr of these resources,
-	then ioremap->ioread8 iowrite32 ...->iounmap
+	then request_mem_region ->ioremap->ioread8 iowrite32 ...->iounmap
+		->release_mem_region
 
 	in ioreadxxx  ,this func will judge if it is a ioport or iomem 
 	and call specific func to get or set vals
+
+ioread_8_rep ,continously read from that address count times
+memset_io
+memcpy_fromio
+memcpy_toio   these three read/write from a range of address of io mem
