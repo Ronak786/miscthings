@@ -1,0 +1,28 @@
+include <linux/mm.h>
+kmalloc kvfree
+kmem_cache_create kmem_cache_destroy kmem_cache_alloc kmem_cache_free
+
+include <linux/mempool.h>
+mempool_create, mempool_destroy, mempool_alloc_slab, mempool_free_slab
+	this used as a wrap of eg. kmem_cache funcs, and make sure
+	at least min number of units are allocated and 
+	will guarantee when can not alloc for new one and at least
+	these can be used
+
+__get_free_page(s)  return unsigned long
+free_page(s)   free above
+
+alloc_page(s)
+__free_page(s)   return and free struct page
+
+vmalloc vfree ioremap(for iomapped mem) iounmap(cost more than others ,because
+			 have to establish page tables extraly)
+	NOTE:this can not be used in atomic env,because vmalloc will sleep!!!
+
+percpu:
+	DEFINE_PER_CPU(type, name)
+	usage:
+		get_cpu_var()(return value is the var it self, can be changed directly) , put_cpu_var(),
+			per_cpu(name, cpuid) to access and show
+	alloc_percpu(type), cpuid=get_cpu(), per_cpu_ptr(name, cpuid)(to get the true can be used
+		address of that var belong to that cpu), put_cpu()
