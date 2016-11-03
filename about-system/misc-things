@@ -35,6 +35,9 @@ how to set up git repo in server:
 
 about hostname and dns
 	if you want to modify dns , modify /etc/resolv.conf  .or /etc/sysconfig/network-scripts/ifcfg-XXX
-	if you want to modify hostname , modify in /etc/sysocnfig/network
+	if you want to modify hostname , modify in /etc/sysocnfig/network /etc/hostname(more priority)
 	if you want your net link find yourself with name host , add that name in /etc/hosts , 
 		this file will be searched when you invoke a net communication
+
+when having problems, remember that firewall and selinux should be closed
+
