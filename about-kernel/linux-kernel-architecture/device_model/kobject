@@ -1,0 +1,29 @@
+kobject kset ktypes are three relavent concepts.
+every device object has a kobject inside it as a count
+kobject_init init this struct and set ref to one
+kobject_add  add ref and add obj to a kset specified
+kobject_del   remove from kset
+kobject_put this will dec a ref,and if 0, call release in kobj->ktypes
+	(we also have a ktype in kset)
+kobject_create_and_add
+kset_create_and_add
+
+kset have its own kobject, a kset is a set of a number of kobjs of same type,
+	but not strictly all objs of that types must be in that set
+
+	so kset's name is its own kobject's name. also use kobject_set_name
+	it use its own ktype ,not kobj's ktype
+
+	use kobject_add to add a obj to set, and parent_dir: will be parent(priority) or kset
+
+kobj_type has some default attrs to all objs belongs to that type,
+	and sysops is the generic show and store method of those attrs
+
+	sysfs_create/remove_file : add/remove that attr file
+	sysfs_create_bin_file: create a attr with binary read/write methods
+
+	sysfs_create/remove_link : link files  show layers in sysfs
+
+	kset_uevent_ops : used to send events to userspace be handled by(hotplug or udev)
+	所有热插拔操作使用的都是所属于的kset的kobj_uevent_ops
+		filter 用于控制哪些类型的事件允许产生，uevent用于真正产生事件
