@@ -1,0 +1,9 @@
+怎样配置ｉｏｚｏｎｅ多客户端：
+iozone -+m xx.conf  xxxxxxx参数
+in conf file:
+	hostname testdir iozone-abs-path
+注意使用hostname, 而且要建ssh 至少单向的连接, 保证互相的ｈｏｓｔｎａｍｅ要互相识别
+	ssh-copy-id无密码登录　　export RSH=ssh in bashrc
+
+hostname:
+	in /etc/hostname /etc/sysconfig/network  /etc/hosts
