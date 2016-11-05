@@ -1,0 +1,18 @@
+use u8 u16 s8 s16 ... to make code protable
+in userspace, use __u8 .... 
+
+use get_order to get size's page order
+cpu_to_le32  ....  in asm/byteorder.h  to change byte order
+
+get_unaligned(ptr)
+put_unaligned(val, ptr) to modify unaligned vals
+
+___attribute__ ((packed))    to set packed attribute to a struct at end of define
+
+IS_ERR  ERR_PTR  PTR_ERR  
+struct list_head
+INIT_LIST_HEAD,  list_add  list_del  list_splice
+list_entry to get list's struct
+list_for_each_entry to get a list's all entry
+list_for_each_safe
+list_for_each_entry_safe  you can safely del the cur member in list

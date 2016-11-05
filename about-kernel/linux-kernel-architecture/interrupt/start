@@ -1,0 +1,30 @@
+request_irq to get irq,
+
+check:
+	/proc/interrupt /proc/irqnumber/ /proc/stat
+
+check what irq is used(for old devs):
+one:
+	mask = probe_irq_on
+	cause your irq
+	irq = probe_irq_off(mask)
+	if (irq <= 0)
+		do again;
+	else success !!
+
+two:
+	install on all irqs that have not been installed
+	cause your irq
+	in irq handler, check which irq, then free_irq others
+
+SA_INTERRUPT: fast interrupt,if this , when doing interrupt,
+	all other interrupts on this cpu will be forbidded
+
+	in interrupt, kernel will normallly acknowleged,then
+	check if handler is installed, if so , call it
+
+disable_irq
+enable_irq  to disable one specific irq ( can be called recursively)
+
+local_irq_save local_irq_disable to disable all irq on local cpu
+local_irq_restore local_irq_enable to enable
