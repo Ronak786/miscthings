@@ -111,3 +111,24 @@ arp  funcs:
 	kernel use releated funcs to check arp  to write in correct ip
 	according arp scan, if not hope this ,reset  netdev's hard_head func
 	to just set your own hard head, skip arp
+
+
+ioctl:
+	we can use SIOCDEVPRIVATE ~ SIOCDEVPRIVATE+ 15 as ioctl number to 
+	realize our own iotcl operations
+
+stats:
+	get_stats func will return netdev's stats
+
+multicase:
+	boradcase to a group of net intfs
+	set_multicast_list func will be called whenever a flag is changed or
+		when hwaddr is changed
+	mc_list is a list of multicast devs
+	if IFF_PROMISC is set , all pkg will be accepted , not only multicast
+
+ethtool
+	mamage net interface
+
+net_pool:
+	act the  hardware  interrupt if intr not available
