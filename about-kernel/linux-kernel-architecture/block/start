@@ -29,8 +29,15 @@ queue:
 blk_init_queue: initialize block queue to use standard io schedule method
 		prepare for io sched to do with that queue
 blk_fetch_queue: used when using blk_init_queue, to get the next queue in your own make request func
+	NOTE: remember the loop condition is fetch request not NULL !!!
 blk_alloc_queue, blk_queue_make_request: alloc a queue ,not using io schedule,for a fake device
 					or ram device that can do ramdom search without heavy cost
+
+in blk_alloc_queue's queue func, depend on blk_rq_pos blk_rq_cur_sectors rq_data_dir to do proper
+			data transfer, in blk_fetch_request, __blk_end_request_cur
+in blk_queue_make_request,(with blk_alloc_queue): use bio_for_each_segment 
+	then for each bio_vec, kmap bv_page and got bv_offset's data and do your transfer
+	then kunmap ,and bio_end_io at last
 
 
 gendisk:
@@ -42,3 +49,7 @@ initialize fill  major, first_minor, disk_name, initialize queue, fill fops, set
 	 	ioschedule, also need capacity,because set when hardware init
 
 NOTE:set capacity size is ５１２为单位的,be careful to keep allocated size and set capacity size coherent!!!
+
+NOTE:blk_rq_map_sg can map a request into a dma scatter list , then passwed to dma_map_sg
+
+

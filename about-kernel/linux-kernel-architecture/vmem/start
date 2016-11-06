@@ -1,0 +1,44 @@
+ls /proc/pid/map to see every process's memmap infos
+strct vm_area_struct every this struct is a vritually continous space for mapping
+	with a specific file and a specific prot flag
+
+struct mm include every vm_area_struct in one process
+
+usage: 
+set cdev's mmap ops to use mmap on that device
+
+what to do in mmap method of device:
+one method:
+	fill vm_ops
+	call remap_pfn_range
+two method
+	fill vm_ops
+	in vm_ops, fill no_page method
+		then when access ,will just cause page fault and  this method 
+		will return the right page you want
+
+NOTE:
+	if mapping device/ file,  vma->vm_pgoff will tell you the physical addr of
+		that file's mem pos, so map that place
+	if mapping memory , you must map your own allocated mem
+	and if using nopage method, you should alloc starting from a page(use get free page)
+	if using remap_pfn_range, if want to do with mem, you set that mem to reserve(not yet know)
+
+get_user_pages: to get pages map for user using direct io
+
+dma:
+1 using kmalloc/ get_free_page
+2 GFP_NOFAIL ,not recommended
+3 virt_to_bus  bus_to_virt  (only simpile kernel  logical addr)
+4 dma_set_mask( set dma addr capility)
+  mapping : 
+  	conherent:  dma_alloc_coherent/ dma_create_pool/ dma_alloc_pool(for small mems)
+	not coherent: dma_map_single/ dma_map_page
+			dma_map_sg(scatter gather)  
+		if want to access dma mapped mem, dma_sync_simgle_for_cpu
+
+  sequence:
+  	disable dma->set direction, addr , len -> enable dma
+
+for those using mother board's dma controller, request_dma->disable_dma->claim_dma_lock->set_dma_mode/set_dma_addr/set_dma_count-> clear_dma_ff->enable_dma
+					
