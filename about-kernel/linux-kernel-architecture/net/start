@@ -1,0 +1,113 @@
+IN NET: all infos (including your private data are allocated at once in alloc_netdev
+	so when cleanup, must clean after unregister and before free struct);
+
+use alloc_netdev to alloc a new netdevice and passing a name (can use %d to
+	allow kernel to choose next available nubmer for that dev)
+	and a seup up func will be called in alloc_netdev to
+		do rest setup
+
+	wrap funcs: alloc_etherdev alloc_fcdev  alloc_fddidev
+
+use register_netdev to register a new dev after alloc
+
+use ether_setup to setup stardard intialize
+then setup other func pointers,
+NOTE: if want to access private data place , use   void *priv = netdev_priv(dev) to get
+								pointer
+
+module unload:
+	unregister_netdev
+	do something to your private data in netdev allocated place
+	free you netdev that allocated using free_netde:
+
+
+struct net_device:
+	name ,state(modified by kernel , not driver), next, init
+	hardware mem info, io base addr, irq, port type(eth or others), dma  channel
+	hard head, tx queue, arp type, dev macaddr, feature flags: up borad loopback...
+		checksum , scatter gather, vlan ... features.
+
+	ops:
+	must: open stop hard_start_xmit  hard_head(build hard head), rebuid_hard_head,
+			tx_timeout, get_stat, set_config
+	optional: 。。。。a lot , when set some field or some flag change
+		some func will be called ,also some field used by user-space  tools
+
+open:
+	when device is ifup, addr is  assigned (this is managed by kernel ,nothing todo
+		with driver, then ifup will set net_device's IFF_UP flag, now
+		open ops will be called
+
+		in open, set some hardware thing, get hwaddress and assign to struct
+		start data queue using netif_start_queue()
+
+stop:
+	netif_stop_queue 
+
+transport:
+	hard_start_xmit:
+		get sk_buff's data and len, record transfer's start jiffies,
+		record sk_buff in netdev's private_data's skbuf, then start
+		hardware transfer func , then return
+
+	full:
+		when transport cause mem used up  full, then should stop  temply,
+		use netif_stop_queue,  or netif_tx_disable, 
+		if available again ,use netif_wakeup_queue
+
+	timeout:
+		watch dog  time set to set the timeout of transport
+		timeout func wil be called if timeout happened
+
+	scatter_gather:
+		when using this, skb->data store first piece of data, len store whole all lenghth
+		then the first data len is len - data_len, others will stored in 
+		a share struct in skb_frag_struct , and 
+		driver should map every page and get dma addr and transfer
+
+receive:
+	 interrupt mode:
+		alloc a skb, assign all needed fields, copy data into it 
+		call netif_rx() to report to uplayer
+		for high performance, we can aloc skbuf ahead, then receive 
+			using those, so decrease copy times
+	what interrupt do:
+		do all this in a spin lock
+		when happened, check status of interrupt dev, judge 
+			interrupted by recv or xmit complete,
+		if recv:
+			get recv struct and call recv func
+		if xmit complete:
+			record stat , free skbuff(dev_free_skb()) dev_free_skb_irq dev_free_skb_any
+
+	non interrupt mode:
+			if lots of data come with high frequency,then should use pool mehod
+			, in interrupt, when recv happened, disable intr for recv and enable 
+			poll,in poll we get every data pkg and use netif_receive_skb() upload
+			them, 
+			after handle all, open intr again
+
+carrier check:
+	used to check if net link is still ok on hardware wire
+	netif_carrier_on/off/ok
+
+	
+
+struct sk_buff:
+	this struct has all related things about this time 's netdata xfer,
+	all head's points,data's pos legnth , share struct infos
+	
+	ops:
+	alloc_skb kfree_skb dev_alloc_skb
+	skb_put extend data from tail and get start pos
+	skb_push put head at header before data(extend whole length)
+	skb_pull  get head out, dec length
+	skb_tailroom skb_headroom : tell idle space from tail/head
+	skb_reserve  reserve space before head
+	skb_headlen get head length
+	kmap_skb_frag  map one sg list's member into dma
+
+arp  funcs:
+	kernel use releated funcs to check arp  to write in correct ip
+	according arp scan, if not hope this ,reset  netdev's hard_head func
+	to just set your own hard head, skip arp
