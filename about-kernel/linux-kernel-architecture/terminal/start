@@ -1,0 +1,20 @@
+work_flow:
+alloc_tty_driver to alloc a driver struct with specific minor devices
+set some fields necessary: name flag, type...
+set tty_operations : open close write set_termios ...
+
+tty_register_driver: if fail , put_tty_driver
+tty_register_device : for every device number belongs to that driver
+
+in tty_driver: 
+	struct termios : match  user space's settermios
+	open: when open, get a tty_struct attached to that device,
+	close : do opposite to open
+	write: get data from tty core subsys and transfer to tty hardware.
+	no read func, driver will pass data to core whenever available.
+
+so three main struct:
+	tty_driver
+	tty_struct
+	tty_operations
+	and other ioctls...  these will be passed to driver
