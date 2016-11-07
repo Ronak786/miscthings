@@ -1,0 +1,8 @@
+in manager, set pipe for host connect ,
+in host , socat pipe-path tcp-listen:port
+in host, telnet 127.0.0.1 port,  now you can attach
+
+vboxmanage  modifyvm 'mycentos6.8' --uart2 0x3e8 4 --uartmode2 server /tmp/aaa 
+	to enable a pipe on server
+
+we can use raw file to store system start infos

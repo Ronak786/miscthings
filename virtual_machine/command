@@ -21,3 +21,8 @@ showvminfo:
 	storageattach --storagectl  can be used to insert a cd into it
 eg.	vboxmanage storageattach mycentos6.8 --storagectl "IDE" --port 1 --device 0 --type dvddrive --medium "/home/sora/iso/Fedora-Live-Workstation-x86_64-23-10.iso"
 	midifyvm --nic1 --bridged --nictype1 virtio  --cableconnected1 on to enable virtio
+
+in manager display, you can choose to have two screen, the in guest os, you choose to extend your screen
+
+
+
