@@ -1,0 +1,23 @@
+use pacman to install virtulbox
+use vboxmanage extpack install ... to install extension package
+use vboxmanage extpack install/uninstall to install extension pkg
+
+setttings can set io apic efi pae ... features
+
+vboxmanage list vms   to show all vms belongs to you !!
+vboxmanage modifyvm  xxxx   can modify lots of params,including boot bios show time, bios show effect
+
+paravirtualize:
+	eg. network adapter, in parav(called "virtio"), guest os know itself is running on
+		a virtual machine, so it and virtualmanager together complete the network
+		communication, the manager itself do not virtualize a complete hardware.
+	after linux 2.5.25 it is supported
+
+	choose virtio in kernel source and compile
+	choose para net card in vm manager setting for that vm machine
+
+showvminfo:
+	vboxmanage showvminfo xx to show all info about that vm,
+	storageattach --storagectl  can be used to insert a cd into it
+eg.	vboxmanage storageattach mycentos6.8 --storagectl "IDE" --port 1 --device 0 --type dvddrive --medium "/home/sora/iso/Fedora-Live-Workstation-x86_64-23-10.iso"
+	midifyvm --nic1 --bridged --nictype1 virtio  --cableconnected1 on to enable virtio
