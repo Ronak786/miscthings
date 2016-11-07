@@ -1,0 +1,3 @@
+lspci -t can list out all devices and their parent,
+[xx-xx] means this bridge connects to what range of bus,then
+after that ,will show device.func   on that bus
