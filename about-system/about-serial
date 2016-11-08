@@ -1,0 +1,6 @@
+virtual box create pipe
+socat -d -d /path-to-pipe  pty & (now you can see a /dev/pts/xx)
+in guest os grub: console=ttyS0,115200  (optional: if can not work, in /etc/init,
+				copy serial.conf to ttyS0.conf and modify its content according to comment)
+minicom set dev to /dev/pts/xx and baud rate,
+now you can connect
