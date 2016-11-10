@@ -1,0 +1,2 @@
+first  install virtuall guest addition iso, if not have, download from download.virtualbox.org/virtualbox
+,install in guest os, then modprobe vboxxf, now sharefolder can be used and set in 
