@@ -1,0 +1,16 @@
+EXPORT_SYMBOL_xxx:
+these macros export symbol  sym,
+	first, put that string into a __kstrtab_sym  char array into __ksymtab_strings section in .ko
+	second, put  a kernel_symbol struct with field{name(above), address} into __ksymtab section
+if EXPORT GPL, the second section will be __ksymtab_gpl
+
+what's in elf header:
+how many sections, their section header's place, every header's entry size,
+	every section's off from start,
+	all strings in elf file acctually stored in .strtab  .shstrtab(for section name),
+	elf header's shstrndx give .shstrtab's index, then every section header's name(also a index)
+		gives the index in that string table 
+
+	eg. all things in __ksymtab section will be linked and put in 
+		__ksymtab section and between variable __start___ksymtab, __stop___ksymtab
+		these  stat stop symbols also declared and used in include/linux/module.h
