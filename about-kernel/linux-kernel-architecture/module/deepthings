@@ -14,3 +14,41 @@ how many sections, their section header's place, every header's entry size,
 	eg. all things in __ksymtab section will be linked and put in 
 		__ksymtab section and between variable __start___ksymtab, __stop___ksymtab
 		these  stat stop symbols also declared and used in include/linux/module.h
+	
+
+struct module: defined in linux/module.h
+	this struct has all thngs' source  of a module,every export symbol, param,
+	every section's position, module depend relation ,ini exit func .....
+
+how to find section string name: (see man elf for more)
+	hdr->shoff find section's offset from start
+	elf hdr->shstrndx give .shstrtab's index, then shhdr->index.offset from start
+		to find shstrtab, then use shhdr[index]->name as an index in that strtab
+		got get a null terminated string
+
+what is in symtab:
+	first in section header of symtab, we can  get index and find strtab's section,
+		and get every symtab's entry size in struct's field
+	then in symtab section, every entry is 0x18 size, and first xx entries
+		rserved for section, others for symbols, the index field means
+		which section this symbol related to
+	
+what is in .modinfo:
+	all MODULE_LICENSE MODULE_AUTHOR ....  are acctually MODULE_INFO(),
+	just   license=xxxx   strings , in this section
+
+relocate:
+	R_X86_64_PC32: is relative relocate, in rela section you will get
+		an offset in the needing relocate section of the symbol,
+		and an info filed (up 32 as index in  symtab, bottom 32 as
+		rela type like R_X86_64_PC32),an addend just need to add to you symbol's value
+		recorded in symtab
+		in this type relocate, the value filled in section place is 
+		valueaddr + addend - sectionfiled's location addr,
+		when executing, accessing that place,reg pc will get next instruction ,
+		we set addend as:  pc + newvar = valueaddr, pc = location + len
+		and we want valueaddr + addend - location = newvar,
+		so addend = valueaddr - location - len - valueaddr + location = -len
+
+	R_X86_32S:
+		this used to ref rodata in text , and use abs addrs, just section addr + offset
