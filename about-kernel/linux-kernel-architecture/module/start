@@ -1,0 +1,142 @@
+what sys_init_module do: (in kernel/module.c):
+
+check if permission available and module disabled in /proc/sys/kernel/modules_disabled
+call load_module(user_buf, len, args)
+	check length smaller than 64M,then copy from user
+	check header to see if \177ELF identify ,type and machine id ,entry size match
+		what kernel wants
+	check if len is larger than all section header's tail, and larger than
+		every section's tail, 
+		and also get symtab's index, strtab's and shstrtab's start pos
+	if module unload is not allowed , wipe out  .exit's alloc flag
+
+	struct module pointer:  the .gnu.linkonce.this_module section
+			assigned to pointer mod
+	find __versions  .modinfo  ..data.percpu  section's index
+
+	use check_modstruct_version to check a special exported module_layout symbol's
+		existence and its checksum if configured
+		(use find_symbol in kernel to find symbol in ksymtab ... 
+		use compiled and got version info from MODULE.symbol and compared with
+		system's got crc
+
+		what check_modstruct_version do:
+			find symbol of module_layout from ksymtabs
+			check_version use corrisponding kcrctab to check
+
+			so is to check checksums of compiled kernel source 
+				and running kernel source
+
+		get and check vermagic in .modinfo(the info index above got)
+		if got staging modinfo, add taint flag
+
+		copy args from user space, 
+		alloc strmap place for core string needed
+		
+		set module state as comming
+
+		percpu:
+			if percpu section has, alloc percpu space and 
+			assign field to mod->percpu
+
+		layout_sections:
+			classify alloc allowed sections into core and init(will be freed after init),
+			and record every section start place of  core/init place in its entsize filed
+				(because this field not used any more)
+				record init size  , core size, init_text size, core text size
+
+		if define  KALLSYMS:
+			add symsection into initsize, strtab section into init-size,
+			add all core symbols's entry at end of core size
+			then add necessary bits long at that end to store strings related to 
+			those syms
+
+		alloc core size and init size use vmalloc and assign to mod->module_init mod->module_core
+
+		copy  every section and modify every section header's pointer and struct module's pointer
+			if that section if allocated allowed
+
+		alloc mod->refptr for percpu manager struct if needed
+
+		if unload is required , initialize list for dependent
+
+		check license if is compatible
+		symplify_symbols used to modify every symbols addr to point to new section place
+			and resolve kerenl symbols, then record into ksymtab's entry addr field
+
+NOTE:in resolve, we will allocate a module_use for every reference outside symbol and its own module,
+		so when module unload, we can see depend issues
+ABOUT CRC:
+		our exported symbols 's crc recorded in kcrctab sections
+		out referenced symbol's crc record in __version section in *.mod.c
+		our target_list link every module_use and its target point to module from which we
+			refer symbols
+		out source_list link to module_use and its source to module who use our exported symbol
+
+
+		get all ksymtab  kcrctab param section and record their entry size and start place 
+			into struct mod
+		if have syms and no crcs , warn force load
+
+		relocation:
+			find every rela section, their info field point to their server section
+				(.rela.text -> .text)
+			then apply relocation:
+				every entry has an offset of relocate symbol from that sec's start,
+				an index in symtab , rela type, and an addend if needed
+
+				if R_X86_64_PC32, relative addressing, so fill in address substractions
+				if not ,usually a abstract address, just fill in , becareful
+				reg pc will prefetch next instruction.
+
+		record ex_table section , copy percpu data,
+
+		add_kallsyms:
+			copy needed core syms at pre allocated symoffset in coresize, modify
+			st_name index
+			then copy needed strings after those sym entries(just needed strings)
+
+		to arch specific finilize( some optimize)
+
+		flush cache?  for arch specific ? 
+
+		record args in mod->args
+		verify export symbol to make sure not already exist in kernel
+		add to global module list
+
+		parse args (modify kernel_param struct's pointer place of that variable)
+		set sysfs entry for module
+
+		free originally allocated kernel module tmp space(now every thing needed
+			are recorded in struct mod)
+
+	back to init_module:
+		blocking_notifier_call_chain to call module_notifier_list's register functions with
+			this modle's action(commining)
+
+		use do_one_initcall to call init func of  module if needed, check preemt and irq
+			and record some runinig time infos
+			if failed init, just free mod and return
+
+			flush all async call
+
+		modify  sym  str pointer to pointer to point to core size filed
+		free init_module region
+
+		now over!!
+
+module_param:
+	this macro use your defined set , get , check func to define a kernel param struct
+	and will be called in parse_args
+
+parse params:
+	use parse_args , in which
+		first find a xxx=bbb string ,bbb can have while_spaces,but needed ""
+		then use args set function to set value
+
+
+
+module_init:
+	this first make a function and return your init func to realize a fucntion type check ,when compile.
+	then define a init_module func as an alise of your init func, so in *.mod.c file we can
+		wrie in normal init_module  name
