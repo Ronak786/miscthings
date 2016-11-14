@@ -1,0 +1,5 @@
+insmod :
+	generally open a file, mmap it ,then call init_module syscall  to trap into kernel
+
+NOTE: if you want to ignore a section , just clear its SHF_ALLOC flag, kernel's find_sec will
+	ignore those sections !!!
