@@ -1,0 +1,58 @@
+struct cdev use  a list to link each other into a hash: struct list_head
+
+cdev_alloc to alloc and init a cdev pointer
+cdev_init to initialize a preallocated cdev struct var, also assign fops
+	two funcs assign diff release func, for dynamic free or not free
+
+what register_chrdev_region do: (just add a region into a struct to keep track)
+	no matter how many minors you register, it every loop only 
+		register as much as one major dev, then call __register_chrdev_region
+		to search in char_device_struct pointer array,
+	char_device_struct:
+		every member in this array is a pointer to a list of structs, each list member
+		represesnt one cdev and its range
+
+		if static register, search list of hash index, see if overlapping,
+			then alloc and insert in ascending order
+		if dynamic register, search from largest number to see if hash list is
+			empty, if is , register that member(so dynamic always be the
+			first and only one in that major(list).
+
+__register_chrdev
+__unregister_chrdev: used to register a cdev and alloc together,return major number
+
+cdev_get:
+	get module ref(if module unload defined)
+	get kobj of that cdev's kobj
+
+cdev_add cdev_del:
+	operate kobj_map structure, this structure has an array of pointer of structure,
+	every time add a major number, allocate a structure and add into that array pointer list,
+	so if stride two major nums, will have two exactly same structure, but add into diff 
+	array index
+
+	cdev_del just delete
+
+how to mknod:
+	sys_mknod call sys_mknodat, then it will use that path's filesystem's dir's inode's operation
+		to mk inode.
+	in init_special_inode, assign inode's fops to def_chr_fops,
+		in which we have an open func: chrdev_open:
+when open:	
+	sys_open ->do_sys_open:
+		alloc fd, record in current->files->fds
+	do_file_open:
+		alloc struct file, 
+	__dentry_open:
+		open inode of the name given, assign inode's fops to struct file
+		then call file->fops->open
+	which is  chrdev_open:
+	in chrdev_open we get inode->i_cdev which we got when mknod,
+	then search in cdev_map and get kobj(from a pre assigned func)
+	use container_of to get cdev, assign fops to struct file*, 
+	call chrdev's open func if it has
+
+when close:
+	get struct file, and call flush
+	if reference will be zero, then call release,
+		now if fasync exist, remove async list, call release func, set fops to null
