@@ -1,0 +1,171 @@
+" this dx's vimrc
+" version : Alpha 0.1
+
+set encoding=utf-8
+"set t_Co=128
+set laststatus=2
+set nu
+set backspace=2
+
+set autoindent
+set smartindent
+set cindent
+
+set ruler
+set showmode
+"set bg=dark
+hi Comment ctermfg=blue
+hi Srting ctermfg=darkred
+hi Type ctermfg=yellow
+hi Number ctermfg=darkblue
+hi Constant ctermfg=blue
+hi Statement ctermfg=darkyellow
+syntax on
+
+"nnoremap <C-l> gt
+"nnoremap <C-h> gT
+map <F3> :tabnew .<CR>
+"map <C-F3> \be
+"set completeopt=preview,menu
+
+colorscheme ron
+
+
+"-----------------------------------------------------------------------------
+"                              P L U G S
+"-----------------------------------------------------------------------------
+" pathogen :
+" ---------------------------
+call pathogen#infect()
+" ---------------------------
+
+" NERDtree :
+" ---------------------------
+let NERDTreeShowHidden=1
+" ---------------------------
+
+" Powerline
+" ---------------------------
+"set guifont=PowerlineSymbols\ for\ Powrline
+"set nocompatible
+"set laststatus=2
+"let g:Powerline_symbols='fancy'
+"let g:Powerline_symbols='unicode'
+" ---------------------------
+
+" lightline
+" ---------------------------
+"let g:lightline = {
+"	\ 'colorscheme': 'wombat',
+"	\ }
+" ---------------------------
+
+set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim/
+set laststatus=2
+set t_Co=256
+
+
+
+"autocmd InsertLeave * se nocul  " 用浅色高亮当前行  
+"autocmd InsertEnter * se cul    " 用浅色高亮当前行  
+"set showcmd         " 输入的命令显示出来，看的清楚些  
+
+"set novisualbell    " 不要闪烁(不明白)  
+"set foldenable      " 允许折叠  
+"set foldmethod=manual   " 手动折叠  
+"set nocompatible  "去掉讨厌的有关vi一致性模式，避免以前版本的一些bug和局限  
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""新文件标题
+"新建.c,.h,.sh,.java文件，自动插入文件头 
+"filetype  on 
+autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java exec ":call SetTitle()" 
+""定义函数SetTitle，自动插入文件头 
+func SetTitle() 
+	"如果文件类型为.sh文件 
+	if &filetype == 'sh' 
+		call setline(1,"\#########################################################################") 
+		call append(line("."), "\# File Name: ".expand("%")) 
+		call append(line(".")+1, "\# Author: davee-x") 
+		call append(line(".")+2, "\# mail: davee.naughty@gmail.com") 
+		call append(line(".")+3, "\# Created Time: ".strftime("%c")) 
+		call append(line(".")+4, "\#########################################################################") 
+		call append(line(".")+5, "\#!/bin/bash") 
+		call append(line(".")+6, "") 
+	else 
+		call setline(1, "/*************************************************************************") 
+		call append(line("."), "	> File Name: ".expand("%")) 
+		call append(line(".")+1, "	> Author: davee-x") 
+		call append(line(".")+2, "	> Mail: davee.naughty@gmail.com ") 
+		call append(line(".")+3, "	> Created Time: ".strftime("%c")) 
+		call append(line(".")+4, " ************************************************************************/") 
+		call append(line(".")+5, "")
+	endif
+	if &filetype == 'cpp'
+		call append(line(".")+6, "#include<iostream>")
+		call append(line(".")+7, "using namespace std;")
+		call append(line(".")+8, "")
+	endif
+	if &filetype == 'c'
+"		call append(line(".")+6, "#include<stdio.h>")
+		call append(line(".")+7, "")
+	endif
+	"	if &filetype == 'java'
+	"		call append(line(".")+6,"public class ".expand("%"))
+	"		call append(line(".")+7,"")
+	"	endif
+	"新建文件后，自动定位到文件末尾
+	autocmd BufNewFile * normal G
+endfunc
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+" 去掉输入错误的提示声音
+set noeb
+" 在处理未保存或只读文件的时候，弹出确认
+set confirm
+" Tab键的宽度
+set tabstop=4
+" 统一缩进为4
+set softtabstop=4
+set shiftwidth=4
+" 不要用空格代替制表符
+set noexpandtab
+" 在行和段开始处使用制表符
+set smarttab
+" 历史记录数
+set history=1000
+"搜索忽略大小写
+set ignorecase
+"搜索逐字符高亮
+"set hlsearch
+"set nohlsearch
+set incsearch
+
+nnoremap <C-n> :noh
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" cscope setting
+
+if has("cscope")
+   set csprg=/usr/bin/cscope              "指定用来执行 cscope 的命令
+   set csto=1                             "先搜索tags标签文件，再搜索cscope数据库
+   set cst                                "使用|:cstag|(:cs find g)，而不是缺省的:tag
+   set nocsverb                           "不显示添加数据库是否成功
+   " add any database in current directory
+   if filereadable("ncscope.out")
+      cs add cscope.out                   "添加cscope数据库
+   endif
+   set csverb                             "显示添加成功与否
+endif
+
+nmap <C-@>s :cs find s <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>g :cs find g <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>c :cs find c <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>t :cs find t <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>e :cs find e <C-R>=expand("<cword>")<CR><CR>
+nmap <C-@>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
+nmap <C-@>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+nmap <C-@>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
