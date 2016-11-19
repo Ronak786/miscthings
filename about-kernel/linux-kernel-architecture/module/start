@@ -61,8 +61,11 @@ call load_module(user_buf, len, args)
 		if unload is required , initialize list for dependent
 
 		check license if is compatible
-		symplify_symbols used to modify every symbols addr to point to new section place
+		simplify_symbols used to modify every symbols addr to point to new section place
 			and resolve kerenl symbols, then record into ksymtab's entry addr field
+	(all normal local symbols will have their relative addrs,in their symtab's index's addr field,
+	when simplify, will be assigned as an absolute addr, and then when relocate, if needed, will
+	be changed to a relative addr and assigned into text/data sections' specific place)
 
 NOTE:in resolve, we will allocate a module_use for every reference outside symbol and its own module,
 		so when module unload, we can see depend issues
