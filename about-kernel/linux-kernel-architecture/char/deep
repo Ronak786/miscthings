@@ -1,8 +1,10 @@
 struct cdev use  a list to link each other into a hash: struct list_head
 
-cdev_alloc to alloc and init a cdev pointer
+cdev_alloc to alloc and init a cdev pointer, init that cdev's associated indoe list,
+	also init kobj and add release fucn in that(when kobj ref == 0 , wil be called)
+
 cdev_init to initialize a preallocated cdev struct var, also assign fops
-	two funcs assign diff release func, for dynamic free or not free
+	 release func, will be called to release relationship to inodes
 
 what register_chrdev_region do: (just add a region into a struct to keep track)
 	no matter how many minors you register, it every loop only 
@@ -28,8 +30,8 @@ cdev_get:
 cdev_add cdev_del:
 	operate kobj_map structure, this structure has an array of pointer of structure,
 	every time add a major number, allocate a structure and add into that array pointer list,
-	so if stride two major nums, will have two exactly same structure, but add into diff 
-	array index
+	if stride two major nums, will have two exactly same structure, but add into diff 
+	array index(because dev major num is diff, but struct probe's filed range are the same)
 
 	cdev_del just delete
 
@@ -47,7 +49,7 @@ when open:
 		open inode of the name given, assign inode's fops to struct file
 		then call file->fops->open
 	which is  chrdev_open:
-	in chrdev_open we get inode->i_cdev which we got when mknod,
+	in chrdev_open we get inode->i_rdev which we assign when mknod,
 	then search in cdev_map and get kobj(from a pre assigned func)
 	use container_of to get cdev, assign fops to struct file*, 
 	call chrdev's open func if it has
@@ -56,3 +58,7 @@ when close:
 	get struct file, and call flush
 	if reference will be zero, then call release,
 		now if fasync exist, remove async list, call release func, set fops to null
+
+
+when system init:
+	chrdev_init:  init the kobj map named: cdev_map, used when cdev add is called
