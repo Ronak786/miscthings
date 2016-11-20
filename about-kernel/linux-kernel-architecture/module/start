@@ -120,6 +120,7 @@ ABOUT CRC:
 		use do_one_initcall to call init func of  module if needed, check preemt and irq
 			and record some runinig time infos
 			if failed init, just free mod and return
+	so if you disable irq in your init func, they will be enabled after that
 
 			flush all async call
 

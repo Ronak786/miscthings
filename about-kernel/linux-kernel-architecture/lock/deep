@@ -1,0 +1,62 @@
+local_irq_disable/enable
+local_irq_save/restore()
+  	these will not count your enable/disable times , just sti and cli and some debug infos record
+
+spin_lock(): this is recommended than above, because preempt
+	will use arch specific method to ensure only one caller will get that lock,
+		others will just keep waiting busy
+	this used when only wait a little time, so sleep waiting are too waste.
+	also if interrupt will access shared data, should use spin lock, and
+	if one process environment code use spin ,and irq will use, 
+		it shoule use spin_lock_irq, so others will be done on other cpus and
+		not have effect on it
+
+	preempt also disabled in spin lock ,because preemp will be check when irq returned,
+		if not disabled ,a higher prio process will be scheduled to run
+
+	spinlock_t  spin_lock_init()  spin_lock   spin_unlock  DEFINE_SPINLOCK
+		spin_trylock  return 0 if failed to lock , not busy waiting
+		spin_lock_irq  spin_lock_bh(disable softirq)
+
+
+	spinlock usually not sleep, access shared data and access only short time;
+		because using spinlock usually in interrupt,
+		and interrupt can not sleep and should not wait too long
+
+rw lock: 
+	used when read a lot but write little
+
+	rwlock_t  rwlock_init write_lock  write_unlock read_lock read_unlock
+
+	if reading, multiple read available, write block
+	if writing, all block, until write unlock,then all compete acquiring key
+
+semaphore:
+	sema_init ,  down  up ,  
+	down_interrupt as example:
+		inside semaphore, the count is protected by a spinlock,
+		first check count, if available, just  dec and return
+		if not , release spinlock, add current task into sema's list, then
+			schedule_timeout, then again acquire lock and check
+			if is wakeuped by a up(then strut sema_wait.up will be 1, then can return)
+			in return,we can check, if 0,acquired, if < 0 ,err or interrupted
+
+	up()  will choose  one task and set up to 1 then wakeup process
+
+rw sem:
+	init_rwsem,  down_read  down_read_trylock  down_write down_write_trylock
+		up_read  up_write
+
+struct mutex:(it is an optimise of semaphore)
+	mutex_init  DEFINE_MUTEX 
+	mutex_lock  mutex_unlock
+
+
+seq lock:
+	read make sure when reading, write not modifying, if being, read again
+	seqlock_t : DEFINE_SEQLOCK  seqlock_init
+	write:
+		write_seqlock  write_sequnlock
+	read:(read should not be called in a seq write, or it will keep retrying)
+		read_seqbegin(get a seqnumber), 
+		read_seqretry(number) != 0, then we should retry
