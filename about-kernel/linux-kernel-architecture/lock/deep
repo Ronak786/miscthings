@@ -1,3 +1,9 @@
+in all : sleep will cost a large time , so if only a small region shared and no need sleep,
+	use spin lock(in intr), other wise , use sem or mutex(if possibiliby high that you will fast release lock),
+	and rcu/seqlock (if you read mostly than write)
+
+
+
 local_irq_disable/enable
 local_irq_save/restore()
   	these will not count your enable/disable times , just sti and cli and some debug infos record
@@ -5,6 +11,7 @@ local_irq_save/restore()
 spin_lock(): this is recommended than above, because preempt
 	will use arch specific method to ensure only one caller will get that lock,
 		others will just keep waiting busy
+
 	this used when only wait a little time, so sleep waiting are too waste.
 	also if interrupt will access shared data, should use spin lock, and
 	if one process environment code use spin ,and irq will use, 
@@ -19,7 +26,7 @@ spin_lock(): this is recommended than above, because preempt
 		spin_lock_irq  spin_lock_bh(disable softirq)
 
 
-	spinlock usually not sleep, access shared data and access only short time;
+	spinlock usually not sleep, access shared data and access only short time, sleep too waste
 		because using spinlock usually in interrupt,
 		and interrupt can not sleep and should not wait too long
 
@@ -60,3 +67,41 @@ seq lock:
 	read:(read should not be called in a seq write, or it will keep retrying)
 		read_seqbegin(get a seqnumber), 
 		read_seqretry(number) != 0, then we should retry
+	
+	useful when  read mostly and write are not frequent: because every write will block each other
+
+rcu:(in read, just close preempt, and DO NOT SLEEP in rcu read,
+	because  rcu write judge it can free old ptr by all cpus scheduled once, so read should not sleep!!)
+
+	rcu_assign_pointer(old, new)  use new ptr to replace old
+
+    read:
+	rcu_read_lock()
+	rcu_reference(ptr)  refer a pointer
+	rcu_read_unlock()
+
+    write:
+    	rcu_assign_pointer(old, new)
+	call_rcu(struct rcu_list xx, func) in this func ,you should implete to free the old pointer)
+
+
+atomic:
+	atomic_t xx = ATOMIC_INIT(num) to initialize an atomic type
+	atomic_read ......
+
+wait queue:
+	DECLARE_WAIT_QUEUE_HEAD
+	init_waitqueue_head()
+
+	DECLARE_WAITQUEUE
+	init_waitqueue_entry
+
+completion:
+	DECLARE_COMPLETION()  INIT_COMPLETION() (this used when a completion struct is used once and want used again)
+	init_completion(addr)
+
+	when wait_for_completion, a wait queue will be declared for current,and add to completion's  wait list 
+		then schedule, and judge if value is changed (so itself is wakedup)
+	
+	complete() will choose one wait queue and wake it up
+	complete_all() will wake up all, so again use INIT_COMPLETION() to use it again!!

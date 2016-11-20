@@ -1,0 +1,10 @@
+arch dependent  intr handle:
+	when extern irq happened, firsrt assembly work to judge
+ 		it is a hardware intr, then call common interrupt,
+		in which will save regs and intr vector in ax, then 
+		call do_IRQ, 
+	do_IRQ:
+		this will get irqnum from ax saved reg struct
+		and call handle_IRQ, 
+		then get irq_desc and call your installed func
+			or __do_IRQ()  for generic acknowlegde
