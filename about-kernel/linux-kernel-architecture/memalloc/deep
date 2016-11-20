@@ -52,3 +52,17 @@ in setup_per_cpu_areas, kernel will allocate enough place to place nr_cpus times
 	to every cpu base
 
 	use per_cpu(this_cpu_offset, cpuid) to get every percpuareas start addr of percpu)(it is a value)
+		or __per_cpu_offset[i]  to get that cpu's offset
+
+	use smp_processor_id() to get current cpu id
+	use get_cpu_var(xx) to disable preempt and eg.  int a, so get   *&a, so you can just use this func
+		to modify that var's value!!
+		remember  put_cpu_var after that!!
+
+	per_cpu_read: get value by get_cpu_var and put_cpu_var immediately, so you just get that value
+
+
+	alloc_percpu:(dynamic)
+		used to alloc a percpu dynamically, use per_cpu_ptr to get your cpu's pointer,
+		if you want to keep modifying that value multiple, use get_cpu, put_cpu()  before and after multi percpu ops
+	
