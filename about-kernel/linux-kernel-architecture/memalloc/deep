@@ -44,3 +44,11 @@ ioremap:
 	just like vmaloc, but make page for io addr, so use ioreadxx  better
 
 next: percpu:
+DECLARE_PER_CPU diffs from define : just a leading "extern"
+DEFINE_PER_CPU  : define a variable in .data.percpu section naming  per_cpu__#name
+
+in setup_per_cpu_areas, kernel will allocate enough place to place nr_cpus times of space to include percpu vars and
+	subsequent dyn and mod allocs. then copy data from __per_cpu_load into pcpu_base_addr(start of percpu) ,and copy
+	to every cpu base
+
+	use per_cpu(this_cpu_offset, cpuid) to get every percpuareas start addr of percpu)(it is a value)
