@@ -1,0 +1,46 @@
+system has zone_type:  dma, dma32 normal highmem( x86_64 do not have high mem)
+	dma32 for devices that can use 32bit addr to do dma
+
+page's size decided by mmu
+
+normally , alloc will execd in zone_normal, if not satisfy, contine in dma region, but never attach high region
+	,except gfp_highuser or gfp_dma set
+
+alloc_pages alloc_page : return struct page,
+		you can choose alloc from high or normal or dma region
+		use page_address() to get virtual address(if it has one)
+
+__free_pages <==> alloc_pages
+
+__get_free_pages:
+	only can get page from normal and dma, and will return virtual address
+
+free_pages <==> __get_free_pages
+
+cache_cache : the original static kmem_cache struct ,used to alloc kmem_cache struct
+malloc_sizes: used by kmalloc to alloc smaller than one page sizes
+
+SLAB will only return normal and dma pages , not high pages( see cache_grow)
+
+ctor func in slab:
+	this will be called when slab fetch mem from buddy system,
+	it will call this func into every obj in those pages
+
+in Document/x86/x86_64/mm.txt  we learn that kernel 0xffff8800 00000000 is start of direct map whole physical mem,
+						    0xffffffff 80000000 begins map kernel text region
+
+
+if you want to use page_to_pfn .. some thing like this , be careful to use include linux/mm.h !!
+
+page_to_pfn linux/mm
+vmalloc     linux/vmalloc
+kmalloc/slabxxx   linux/slab.h
+
+
+vmalloc:
+	use vm_struct to link every vmalloc allocated area together, they all allocated seperately by page_alloc
+	and mostly use highmem
+ioremap:
+	just like vmaloc, but make page for io addr, so use ioreadxx  better
+
+next: percpu:

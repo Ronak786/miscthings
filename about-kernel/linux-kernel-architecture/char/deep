@@ -62,3 +62,14 @@ when close:
 
 when system init:
 	chrdev_init:  init the kobj map named: cdev_map, used when cdev add is called
+
+when  read, write  , readv writev:
+	syscalls will call vfs_xxx to to some check, so in  these funcs, you may not do checks.
+	if read == NULL, will call readv,
+	if readv ==NULL, will call read loop count times
+	if neither happened, just error
+
+
+
+future:
+	generic_file_operations  in fs/read_write.c  need to scan detail
