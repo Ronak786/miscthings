@@ -7,4 +7,44 @@ arch dependent  intr handle:
 		this will get irqnum from ax saved reg struct
 		and call handle_IRQ, 
 		then get irq_desc and call your installed func
-			or __do_IRQ()  for generic acknowlegde
+			or __do_IRQ()  for generic acknowlegde and also call your irq func
+
+irq_hander:
+	use set_irq_handler/ set_irq_chained_handler(shared)  to set first level irq handler,
+
+take handle_edge_irq as example:
+		if no irq func, just ack and return
+		if current is running irq handler, set pending and mask and ack and return
+		ack this irq using chip's action
+		set in process flag
+		check if it is second pending, then clear flag (only happen in handle_irq_event(),only in this will enable irq)
+		run handle_IRQ_event() to do with your irq func
+		check if pending when running above func, if is ,again do interrupt func
+
+	handle_IRQ_event(): action:
+		use request_irq to set second level irq handler,
+		this handle_IRQ_event() will just enable irq if not specific specified to disable,
+		then call every func registered on that irq line and check return value,
+		do with every func and return when everyone is tested to run
+
+		then irq func will return thread_wake for top func to wake up a pre registered thread
+		in request_threaded_irq
+
+request_irq:
+	this func will register your func( or also thread) into that irq line,
+	first will do some check, 
+	if no one had registerd on that line:
+		assign your func, create your thread if needed, set irq type(high low rising falling)
+	if not emtpy:
+		if your requested flag and irq type not consisten with existing one,
+		you can not register
+
+
+soft irq:  array is  softirq_vec[]
+	only called when hardirq is being over, and now we are not in an interrupt(no a resursive one),
+	we call invoke_softirq ,which will frist disable irq, then call _do_softirq to truly do softirq,
+	in _do_softirq:
+		first enable irq, then do all softirqs ,then disable irq, 
+		check pendings(will happen when open irq),if not too many times ,again
+		do irq
+	during all these, we will disable softirq
