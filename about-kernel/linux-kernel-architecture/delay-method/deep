@@ -1,0 +1,61 @@
+install softirq func:
+	in softirq_init, we initialize every cpu's tasklet's list,
+	then assign tasklet function into softirq_vec's specific index 
+
+tasklet run:
+	every tasklet struct has two state: scheduled, running
+	scheduled means it is on one of the per cpu list,
+	runing means it is being execing
+
+funcs:
+
+	use tasklet_init to initialize,
+	use tasklst_schedule to add to cur cpu's cpulist
+	use tasklet_disable to wait until tasklet is done(so when return, will not be exec),then disable it
+	use tasklet_enable to enable tasklet
+	use tasklet_kill to wait until task is done(often use in module's exit func to wait return)
+
+when runing:
+	take all tasks off the list(in protection of irq off,
+	enable irq and do tasklets ,every can not be run one will be again added into list
+	,when done ,check if lists a again filled , then again call softirqs,
+	but will only do a limited times ,and kick off a ksoftirq thread to do rest
+
+	it make sure one task will one be done in one cpu at one time,but diff
+	tasks can be done together on diff cpus.
+
+NOTE: variables should not set in __init functions( because will be freeed after init
+				and should not set as auto vars !!!)
+
+
+workqueue:
+	create work queue / create_singlethreaded_workqueue:
+		these just create a workqueue_struct, then create for each cpu a cpu_workqueue_struct,
+		on every cpu struct, create a work thread and wait until some one wake up it
+(so I think work queue will not run on the cpu waked it, but softirq will do that)
+	
+	DECLARE_WORK for static defined ones
+	PREPARE_WORK INIT_WORK for dynamic ones
+	create_workqueue to create a queue
+	queue_work
+	schedule_work to queue on system work queue
+
+	DECLARE_DELAYED_WORK
+	QUEUE_DELAYED_WORK
+
+work thread:
+	just sleep and wake up and run every work in that queue
+
+destroy_workqueue:
+	will flush per cpu work queue(insert a dumb work whose func is a complete func,then 
+		host will wait for complele)
+	then free structs
+	
+flush_workqueue
+	flush on all cpus
+flush_work
+
+delayed work:
+	just a work and a timer, set timer,then use func to queue work
+
+NOTE: when initialize, only static value is permitted !!  so declare , then init is better then declare+ init a dynmic value

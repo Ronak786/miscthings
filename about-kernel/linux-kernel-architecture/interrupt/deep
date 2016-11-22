@@ -48,3 +48,9 @@ soft irq:  array is  softirq_vec[]
 		check pendings(will happen when open irq),if not too many times ,again
 		do irq
 	during all these, we will disable softirq
+
+irq probe on
+irq probe off:
+	just check every not installed irq,
+	invoke irq, then check if irq waiting flags is cleared,
+	then that is the irq you want, 
