@@ -5,3 +5,35 @@ msleep
 cpu_relax(not reliable)
 schedule && time_before && time_after
 
+
+what wait do:
+	wait_event will check cond, then set process's state, add to wait queue head list,
+	check again ,then schedule() to sleep,
+	after wakedup, (will be run state and remove from list by wake up call back),
+		again prepare into wait queue and check ,if can leave, 
+		call finish_wait to leave
+
+wake up do:
+	in wakup , will call wakeup common, to wakup up all until one exclusive wait queue encountered(
+		except wake_up_all is called)
+		and if actuaaly do wakeup function, will check state, if is the state you want to wakeup
+		(for eg. wakup_interrupt only wakeup interruptible  wait_event)
+	wake_up_locked think you have locked your spinlock , so itself not use lock !!
+
+how to use:
+	DECLARE_WAIT_QUEUE_HEAD()
+	init_waitqueue_head
+	wait_event_interruptible
+	wake_up_interrtible()
+
+or just:
+	DECLARE_WAITUEUE()
+	set_current_statie
+	add_wait_queue
+	schedule()
+	remove_wait_queue
+
+	diffs  DECLARE_WAITQUEUE : set process yourself, default wake func will not dequeue,
+				so you shoule add wait_queue, remove_wait_queue
+		DEFINE_WAIT :set process current, default wake func will dequeue
+			so you should just add_wait_queue

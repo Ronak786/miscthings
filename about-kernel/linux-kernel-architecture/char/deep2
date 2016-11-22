@@ -1,0 +1,12 @@
+ioctl: 
+	kernel  include asm-generic/ioctl.h  you can use all macros
+		to judge , to set , to get
+	user:   include  linux/ioctl  asm-generic/ioctl
+
+copy_from/to_user
+put_user
+get_user
+	used to get set user's buf safely:
+	here safe means:
+		kernel will not leak sensitive info
+		will handle page fault correctly
