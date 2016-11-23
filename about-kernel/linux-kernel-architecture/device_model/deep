@@ -1,0 +1,62 @@
+in sysfs_init_node : 
+	according to your node type : assign diff function
+	dir, attr, bin_attr, link
+
+kobject_init:
+	set kobj's self init value, ktype ops
+
+kobject_add:
+	set parent and add to sysfs
+	if no parent, have kset, set kset's kobj as its parent
+	if neither exist, dir will be ceated under /sys
+
+kobject_init_and_add: 
+	do both
+
+kobject_create(_and_add):
+	dynamic ceate kobj, so ktype_set will be fixed
+
+kobject_del:
+	remove dir entry, leave kset, put ref of parent, 
+	used to cleanup this kobj in a sysfs
+
+kobject_put:
+	used to cleanup a kobj, will call kobject_del in it, so call this 
+
+sysfs_ops,attr:
+	most used methods: in kobj's kobj_type,
+	set store and show method using container of the attr,
+	then get the wrap struct kobj_attribute, then call that
+	store and show method to attr specific methods
+
+sysfs_create_file(s) to create attr( make sure kobj's state_in_sysfs is 1)
+
+when open sys file:
+	save operations and allocated buffer into file->private_date,
+	so subsequent read /write will directly access that buffer and ops
+
+syste_remove_file(s)
+
+kset_register:
+	will call kset_init to init its kobj and list
+	then add that kobj and send a KOBJ_ADD uevent
+	so you should assign your upper kset or parent and uevent ops and kobj's ktype_set
+	before call this !!
+
+kset_init:
+	only init kobj and list, be called by kset_register
+
+kset_create:
+	will assign kobj's ktype_set, uevent, name and parent
+
+kset_create_and_add :(uevent is not necessary ,they just are filter and some addition features);
+	do above both
+
+you can send uevent only:
+	can find a nearest kset and it  has uevent_ops(if not will just return);
+
+in kobject_uevent:
+	add envs , send uevent by usermodhelper:
+		it is just a work queue func, and in which is 
+		a func that will call execve to call the userspace func
+		/sbin/hotplug to run and send it our uevent infos

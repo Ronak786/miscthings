@@ -1,7 +1,7 @@
 wait_event_interruptible_timeout
 schedule_timeout
-mdelay
-msleep
+mdelay(this for small time delay)
+msleep (this is good)
 cpu_relax(not reliable)
 schedule && time_before && time_after
 
@@ -37,3 +37,8 @@ or just:
 				so you shoule add wait_queue, remove_wait_queue
 		DEFINE_WAIT :set process current, default wake func will dequeue
 			so you should just add_wait_queue
+
+timer:
+	init_timer
+	mod_timer
+	add_timer, ok

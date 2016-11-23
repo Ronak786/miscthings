@@ -59,3 +59,6 @@ delayed work:
 	just a work and a timer, set timer,then use func to queue work
 
 NOTE: when initialize, only static value is permitted !!  so declare , then init is better then declare+ init a dynmic value
+
+
+

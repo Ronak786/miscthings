@@ -10,3 +10,43 @@ get_user
 	here safe means:
 		kernel will not leak sensitive info
 		will handle page fault correctly
+
+poll:
+	the poll is just a table and if called syspoll,
+	will be passwd to those fd's specific device,
+	you should implement that fd's poll method,
+	just define a wait queue head, then check your current return mask
+
+	this head will be waked up by your driver's comming data func(I think this head 
+		will not truly sleep,just a head to be used by wakeup to run the func on
+		the defined wait queue on that head, then that func will wakeup the
+		whole poll struct's task struct,then it will again check every fd's 
+		status and return to user as info pending
+
+aio read/write:
+	use struct iov to read and write,often driver specific optimise method than normal rw func
+
+fsync:
+	driver make sure this func will return only if all buffer data are flushed into disk
+
+fasync:
+	you fcntl to set F_SETOWN set your process's pid into that strct file
+	fcntl F_SETFL to set async flag, this will call fd's fasync func,
+		so what you should do is in that func , call fasync_helper()
+		and passin a struct fasync_struct *ptr 's address
+
+		this will add your set pid into that list,
+		(you can add multiple ones)
+
+		then set signal func in your user process use sigaction(),SIGIO
+
+	now when time to signal process, use kill_fasync(&ptr, sig, band), then band is POLL_IN if can read, or POLL_OUT if can write
+	
+llseek:
+	you just set  new pos and check and update that ops in loff_t
+
+	if dev can not seek ,you should nonseekable_open in open, then assign lseek as nolseek
+
+capable:
+	capable xxx, return one ,so you can ,otherwise you can't
+
