@@ -60,3 +60,19 @@ in kobject_uevent:
 		it is just a work queue func, and in which is 
 		a func that will call execve to call the userspace func
 		/sbin/hotplug to run and send it our uevent infos
+
+bus_type:
+	define a bus, has a device kset and driver kset, 
+	it self belongs to a bus_kset(the /sys/bus)
+device
+	have a ptr to drvier 
+driver
+	have a list of devices using it
+
+when device_register
+	driver_register:  will search bus to match
+
+class:
+	used to include a number of devices
+	all in classes are devices links, really ones are in /sys/devices
+

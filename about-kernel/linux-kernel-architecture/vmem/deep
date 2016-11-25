@@ -1,0 +1,58 @@
+bus addr:  device used to communicate with memory to do DMA
+physical : pyhsical memoyr address, (in x86 are the same as bus addr)
+kernel virtual addr:  phy addr + PAGE_OFFSET
+kernel vmalloc: kernel  rebuild page table to map
+user addr:  rebuild page table to map, so no consistent relationship with phy addr
+
+
+
+using mmap to map kernel physical memory into user virtual address:
+
+1,in kernel , allocate the mem you need to access,
+2,in driver, implememnt mmap method,
+	the struct vma_area_struct is passed in with 
+	virtual address you allocated, and the offset in kernel data
+	you want,
+	what you should do in driver mmap method is 
+	map your kernel address into those virtual address,
+	so you can use remap_pfn_range() to do this
+
+	io_remap_pfn_range()  just like this, only except that 
+		this is used to remap device's inside mem's 
+		memory mapped address
+
+DMA:(x86 use hardware make sure cache coherent, so OS do not need 
+	to do extra work, arm not)
+	dma_alloc_coherent: kernel alloc dma address and range for you
+			,also the kernel virtaddr of it, so you can use
+			it safely across the driver life
+
+	dma_single_map: 
+		you passin the virt addr of your buffer that will be used
+		as dma , and you should make sure that buffer is physical
+		continous,  then it will return DMA address( virt addr is 
+		the one you passed in)
+
+	sync_single_for_cpu:
+		used when data pass finished, cpu call this before
+		access mem(flush cacahe usually)
+	sync_single_for_device:
+		used when after copy data into mem, before dma
+
+	dma_map_sg:  scatter/gather:
+		you pass in an array of strcut scatterlist,
+		this func will get every struct page and 
+		turn it into physical addr(also bus addr),
+		and record it in DMA addr field in struct)
+
+		then when start transfer, use that addr
+		(only if device support this)
+
+bounce buffer:
+	a buffer used when device have a buffer not approprate for dma,
+	use this as mid xfer
+
+dma_pool_create/destroy  dma_pool_alloc/free  
+	used to alloc coherent dma address
+	for less than one page size(the above at least one page)
+		
