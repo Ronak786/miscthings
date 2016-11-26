@@ -1,0 +1,162 @@
+rule:
+	you can use  \ to write one line into two lines
+
+
+	wildcard:
+		use * ? to match lots of filenames
+		BUT: 
+			obj = *.o ,then obj is just '*.o'
+			so you should to  obj = $(wildcard *.o)
+			and only will expand when that var is used
+			so every place's expand will be different !!!
+
+	$(obj) : %.o : %.c
+		gcc -c $<  -o %@
+		
+		the .o file filtered from obj, and .c files are those .o file's .c file,
+		$< $@  work with '%', 
+		and every command will be exec with one file from $@ and its .c file from %<
+		NOTE: the $(obj) must be exactly the same as %.o, otherwise should use  $(filter)
+	
+	gcc -MM can output dependency of that c file recursive(exclude stardard files)
+		we can use this to output dependency auto 
+		(modify add .d file auto rebuild)
+		use:	$(CC) -MM $(CPPFLAGS) $< > $@.$$$$; \(output a file postfixed by random)
+			sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+			rm -f $@.$$$$
+
+
+command:
+	@ before command will suppress output
+	make -n will just show command and not exec(THIS IS BEST FOR DEBUG MAKE FILE !!!)
+	make -s will not show any thing
+	make -w will print current dir
+	make -C will auto open -w option
+
+	if two command is to be exec and the second depend on first,
+	should  use ';', !!!
+	target: prerequisites
+		cmd1 ; 
+		cmd2
+
+	make file has explicit , implicit, var, include file, comment(start with #, use \# )
+	the '-' before command will ignore errors
+	or just use make -i (ignore errors)
+	or .IGNORE as target
+
+	make -k will stop current rule if error, but will keep doing other rules
+
+command package:
+	define  command
+	xxxx
+	xxxx
+	ended
+	now these commands can be exec by just type command,
+	and $^ means all prerequisites
+	$@ means all the prerequisites(only the match the first target)
+	$< means the first prerequisites
+
+include: (use - before it to suppress error)
+	in makefile, use include xxx(filename),
+	and you can run make -I dir(where including file located or not if at PWD )
+
+environment:
+	MAKEFILES: 
+		the shell env you set to the make conf files you want to include in
+		to add variables(taget in these files not work!!)
+		use space as separate
+	file search path:
+		VPATH  xxx:bbb  use as a search path when in current path can not find
+		vpath  %.h(or just % to match any thing or %a:%b)   directory
+			use the above comand to search specific pattern files in those dir
+			(if in current dir can not find)
+	SHELL: default is /bin/sh
+	
+	when exec recursive, use  make -C subdir or cd subdir && make ,
+	then will goto that dir and do make 
+
+	export var := a  
+	export will export all vars
+	unexport will suppress all export
+
+	but makeflags and shell will passed into sub anyway, 
+	you can make -C subdir  MAKEFLAGS= to suppress makeflags passed in
+
+functions:
+	use $() to run,
+	$(wildcard *.a) expand  *
+	$(subst aa,bb,name) , in name, replace aa with bb (character replace)
+	$(filter %.o, filelist), extrace .o files from file list
+	$(var:.c=.o) : this will replace $(var)'s .c file's and output their .o file name
+	
+
+about target:
+	target : prerequisites( ; command , this can replace the below tab started command)
+		command
+	target can be multiple, space separated
+
+	a b : c  ( a b all depend on c)
+		generate  $@  (this will expand into a or b every time exec 
+				and will exec two times !!)
+
+about clean:
+	if prerequisites is newer than target , command will be exec
+
+
+	/*
+	clean: (make command will not exec this auto, because have no prerequisites,)
+		if you want to run this label, you should explictly enter "make clean"
+		xxxxx
+	*/ 
+	NO  , IT'S WRONG,
+	if clean is the first tag, make command will do the clean command
+	even no prerequisites is exist!!!
+
+	.PHONY : clean    so clean is not a real target
+		after using this, even file "clean" exist, the clean label
+		will only be used by explicit use "make clean"
+		and have nothing to do with  file "clean"
+
+	use  all : xx xx  xx
+	.PHONY : all   to run multi targets at one time
+
+	because fake target, so xx will always be exec
+
+	.PHONY a b c  
+	a:
+	b: 
+	c:   can also be used 
+
+
+	and it will only exec the first taget 
+
+	in make clean, the rm should be  '-rm'  ,the  '-' will
+		enable your command to not error when some of 
+		target is not present
+
+when exec 'make':
+	find file named: GNUmakefile, makefile  Makeifile
+		(use make -f to specify your file)
+	find first target, if first prerequisites is another's target,
+		only the first target in first rule will be exec
+	find that, check its prerequisites, if newer, generate again,
+	back to first target , gernerate again
+	NOTE: make only care dependency, if after command, prerequisites 
+		still not exist, it will outoup error
+
+variable in make:
+	obj =  xxxxx
+		when reference:  $(obj)
+	and dependency can also together:
+		$(objs) : $(headers)
+		$(one-of-objs) : $(another header)
+
+	variables only will be expand when that dependency is to be used
+
+auto compile .c:
+	if make see a .o file, it will auto add its .c file as dependency,
+	so .c -> .o we only use    a.o : b.h  enough,
+	comand not need(if only cc -c a.c  can generate a.o)
+
+
+
