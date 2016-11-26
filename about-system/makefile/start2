@@ -85,6 +85,9 @@ implicit rules:
 			gcc -c $< -o $@
 			will run for every .o file one time this command
 
+	%.o : %.c will cancel implicit rules for this
+		you can also redefine your own rule to replace this
+
 
 auto var:
 	$@  all targets
@@ -93,3 +96,29 @@ auto var:
 	$?  all prerequisite newer than obj
 	$^ all prerequisite (specific to that target)
 	$+  like $^ but not exlcude duplicated ones
+	$*  if target is %.o , then $* is the portion represented by %
+		if target have no %, but has a postfix makefile recognize,
+		then the value is that no postfix portion
+	$^ $* $< $% will output only one file one time
+	use $(@D) can output the origin output's dir
+	    $(@F)  output the file portion  , just like $(dir xx) $(notdir xx)
+
+	NOTE :these only used in explicit rules , not implicit ones
+
+	% match:
+		NOTE: e%t match src/eat, 
+			AND  in prerequisite, the c%t is /src/cat !!!
+			% match will exclude / and match, then add /portion,
+			  so % only match files, notdirs
+
+	old rules:
+		.c.o:  ==  %o : %.c
+		.c:    ==  % : %.c
+	-R can be used to remove implicit suffix list, so make do not recognize them,
+	.SUFFIX 
+	.SUFFIX  .c .o .h  will remove predefined suffix , then add your own suffix
+
+function lib:
+	lib(aa.o bb.o) : aa.o bb.o
+	make foo.a(bar.o) will compile bar.c and ar into foo.a
+	$% used for libs in make file
