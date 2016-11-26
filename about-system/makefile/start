@@ -32,6 +32,7 @@ command:
 	make -s will not show any thing
 	make -w will print current dir
 	make -C will auto open -w option
+	make -e , system env will cover makefile's env!!!
 
 	if two command is to be exec and the second depend on first,
 	should  use ';', !!!
@@ -61,6 +62,7 @@ include: (use - before it to suppress error)
 	and you can run make -I dir(where including file located or not if at PWD )
 
 environment:
+	if you want to modify system or commandline env, use override xxx += xxxx
 	MAKEFILES: 
 		the shell env you set to the make conf files you want to include in
 		to add variables(taget in these files not work!!)
@@ -71,6 +73,9 @@ environment:
 			use the above comand to search specific pattern files in those dir
 			(if in current dir can not find)
 	SHELL: default is /bin/sh
+	MAKECMDGOALS are goals you specify in commandline
+
+	MAKELEVEL : this is a number of current make's layer in whole make process
 	
 	when exec recursive, use  make -C subdir or cd subdir && make ,
 	then will goto that dir and do make 
@@ -81,14 +86,75 @@ environment:
 
 	but makeflags and shell will passed into sub anyway, 
 	you can make -C subdir  MAKEFLAGS= to suppress makeflags passed in
+	system or command line env will be passed into subdir,
+	but makefile's var only using export can passed
+
+	target-specific envs:
+	target : flag = xx  or target:  override flag = xx (if var is command or system env)
+	target : aa bb cc
+		cc -c $flag  aa bb cc
+	aa :
+		cc aa.o  $flag
+		in this example, the flag will be xx even if system have defined
+		flag as others, and in rules triggerd by this rule, flags also will
+		be xx, and when out of this rule, flag will resume
+
+	pattern specific flags:
+	%.o : flags = -O0
 
 functions:
-	use $() to run,
-	$(wildcard *.a) expand  *
-	$(subst aa,bb,name) , in name, replace aa with bb (character replace)
-	$(filter %.o, filelist), extrace .o files from file list
-	$(var:.c=.o) : this will replace $(var)'s .c file's and output their .o file name
-	
+	strings:
+		use $() to run,
+		$(wildcard *.a) expand  *
+		$(subst aa,bb,name) , in name, replace aa with bb (character replace)
+		$(filter %.o, filelist), extrace .o files from file list
+		$(var:.c=.o) : this will replace $(var)'s .c file's and output their .o file name
+		$(patsubst  %.c,%.o,xxxx xxxx),replace in the third field from first into second,
+			this diff from subst that replace is whole word(space separeted),
+			and usually use % to match multiple, the % in first and in second
+			match the same portion)
+			this do each one unit is a word,so % match a word
+		$(strip xx xx x) return a str without head and tail blank
+		$(findstring find,str) find string from str the pattern find
+			if not found ,return emtpy str ""
+		$(filter pattern,str), return string matched pattern in str,can use %
+		filter_out, the opposite portion of filter
+		$(sort a b c)  sort in word sequence
+		$(word num,a b c) return the nth word
+		$(wordlist from,to,str) return wordlist  from from to to, if not enough,
+				just return exist ones
+		$(words xx xx x) return the nubmer of words
+		$(firstword xx)  == $(word 1,xx xx)
+	dir:
+		$(dir xxx xxx) return dirname  src/foo.c hacks  will return  src/  ./
+		$(notdir xx ) return filename , so above return foo.c hacks
+		$(suffix xx xx) above return  ".c", hacks no suffix so return empty
+		$(basename xx) return src/foo  hacks
+		$(addsuffix  suffix,xxx xx)  add suffix after every word)
+		$(addprefix  prefix,xx xx) add prefix before every word)
+		$(join list1,list2), add every word in list2 into every match place word
+			in list1 to cat into one word
+	$(foreach var,list,text)
+		this will assign every word in var and run text(this will ref var in it)
+		then all word in list done, return a string ,space separeted every loop time
+		result1
+	$(if condition,then,else):
+		condition true(not emtpy string), do then, 
+		if no else, return emtpy str
+ 	$(call expression,parm1,parm2...)
+		in expression, use $(1) $(2) to ref parms
+		eg.  reverse = $(1) $(2)
+		     foo = $(call reverse,a,b)
+		     so foo == "a b"
+	$(origin xxx):
+		return description of how this var come:
+		undefined, environment,default(make file default)
+		file, automatic ,override , command line
+	$(shell xxx)
+		run shell command
+	$(error xxxx)
+	$(warning xxx) output strings ,error will exit, 
+			only these be execed when they take effect
 
 about target:
 	target : prerequisites( ; command , this can replace the below tab started command)
@@ -137,6 +203,7 @@ about clean:
 when exec 'make':
 	find file named: GNUmakefile, makefile  Makeifile
 		(use make -f to specify your file)
+	system environment will be taken into make's process
 	find first target, if first prerequisites is another's target,
 		only the first target in first rule will be exec
 	find that, check its prerequisites, if newer, generate again,
@@ -145,6 +212,7 @@ when exec 'make':
 		still not exist, it will outoup error
 
 variable in make:
+	if you want to use $ in var, use $$
 	obj =  xxxxx
 		when reference:  $(obj)
 	and dependency can also together:
@@ -152,6 +220,38 @@ variable in make:
 		$(one-of-objs) : $(another header)
 
 	variables only will be expand when that dependency is to be used
+
+	var reference: $(var)
+
+	use define xx
+	endef  to define multi line vars
+
+	a = $(b)
+	b = c , this is legal ,a will be c
+
+	a := $(b)
+	b = c , now a is empty, := will expand when at declaring !!!
+		and usually will expand when using
+
+	a :=
+	b := $(a) #xxx, then NOW b is a white space, the "#" comment strict
+			the b's value's length
+		also you can use b:= $a $a , also define a white space
+	dir := /dev  #ssss  , now if use $(dir)/sda, then expand as /dev   /sda!!
+						becareful
+	a ?= b, if a is not defined ,then a is b
+
+	a += b, if before this a := xx, then a+=b  == a:= xxx b
+		if before this a  = xx, then a+=b  == a = xxx b
+
+	var replace:
+		$(var:.o=.c) $(var:%.o=%.c)will replace every space separeted string
+				whose tail is .o into .c
+
+	variables can be connect together and recursively reference $($($(x)))
+	a = b
+	b = c
+	so $($(a)) is c,  $(a)_$(b) is b_c
 
 auto compile .c:
 	if make see a .o file, it will auto add its .c file as dependency,

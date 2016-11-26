@@ -1,0 +1,95 @@
+judgement:
+	ifeq (xxx,yyy)
+	else
+	endif
+
+	ifdef xxx (NOTE: if  aa=   , then  this is a undefined symbol)
+	else
+	endif
+
+	ifndef
+
+	NOTE: these judgement will be calculated when make file is read
+		not when running command!!
+
+run make :
+	return 0 if success
+	return 1 if wrong
+	return 2 if use -q and some file not need to update
+
+	make -f xx -f xx  all files will be connect together and 
+		passwd to make 
+
+goals:
+	targets including '-' or "=" can not be goals,
+	
+.PHONY use this ,use can run yourselves' command when specify this goal
+
+check:
+	-n --just-print --dry-run --recon 
+		not run truly,for debug
+	-t --touch
+		pretend have compiled ,and update file time
+	-q --question:
+		just find target, not run
+	-W  specify a source file or obj file
+		pretend this is compiled ,and print
+		command will run depend on this file is newly compiled
+		usually do with -n
+	-p will print default database ,
+		if want to print not related to current makefile
+		use make -p -f/dev/null
+	-B make force, everytime run	
+	-C xx  read specific dir's makefile, multi -C will make former ones  just dirs
+			connecting together
+	-e  system env override makefile's
+	-I  where other included make files are
+	-o  skip generating this file
+	-p will print database(after read your makefile,so for debug)
+	-q not run tryly, just check
+	-r  no builtin rules
+	-R no builtin vars, cancel your var's effect to builin rules
+	-S  no keep going, usually to stop effect of -k
+	-w  print enter, leave info
+	--warn-undefined-variables
+
+
+implicit rules:
+	do not wirte foo.o : foo.c, make file has its rules, and will use CFLAGS,
+	BUT, implicit rules only apply once for each command, the first  will match
+
+	for c files:
+		.o : .c
+			$(cc) -c $(cppflags) $(cflags) ,so do not need to write this
+	for assembly:
+		.o : .s  
+		.s : .S (use cpp)
+
+	for obj:
+		x : y.o z.o and you have x.c
+		then make will generate x by x y z together
+		use $(cc) $(ldflags) .o $(loadlibs) $(ldlibs)
+
+	.INTERMEDIATE : xx
+		say xx is a mid file(a file used by make's implicit search
+			and will be removed after using)
+	.SECONDARY : yy
+		say yy should not remove after using 
+	.PRECIOUS : %.o
+		say all %.o files shoud not remove after make implicit using them
+
+	in implicit, one target should not use twice
+
+	create implicit ruls:
+		%.o : %.c
+			gcc -c $< -o $@
+			will run for every .o file one time this command
+
+
+auto var:
+	$@  all targets
+	$%  if foo.a(boo.o) $@ is foo.a , $% is boo.o
+	%<  the first prerequisite , one time one file if prerequisite using '%'
+	$?  all prerequisite newer than obj
+	$^ all prerequisite (specific to that target)
+	$+  like $^ but not exlcude duplicated ones
