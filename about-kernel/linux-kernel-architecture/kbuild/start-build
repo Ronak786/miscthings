@@ -1,0 +1,33 @@
+ $(vmlinux-dirs): prepare scripts
+          $(Q)$(MAKE) $(build)=$@
+this line start to find every dir and get scripts/Makefile.build as makefile
+	and begin to build
+
+do not use CFLAGS in subsequent makefiles/kbuildfiles, use EXTRA_CFLAGS
+
+include auto.conf file which has every m or y var definition
+include current dir's kbuikd/makefile
+include scripts/Makefile.lib
+	in Makefile.lib. set lots of vars according to obj-y obj-m xx-objs  xx-y ....
+then do compile 
+ $(multi-used-y) : %.o: $(multi-objs-y) FORCE
+         $(call if_changed,link_multi-y)
+ 
+ $(multi-used-m) : %.o: $(multi-objs-m) FORCE
+         $(call if_changed,link_multi-m)
+         @{ echo $(@:.o=.ko); echo $(link_multi_deps); } > $(MODVERDIR)/$(@F:.o=.mod)
+
+
+then decending into subdirs do make those .o files
+
+NOTE, in every dir ,will create a builtin.o,no matter tryly some file in this dir
+	will be added into kernel, every dir in this file will be dependency as
+		dir/builtin.o, and because that file not created, current dir's
+		builtin.o will not be created yet, and subdir's decending will
+		start as above line said,and will do just as same as this process
+		and will build a builtin.o(if obj-y is set for this dir),
+		then return ,and now this file's builtin.o will be started to
+		link( all these is a list down, start by Makefile specified
+		the vmlinux-dirs)
+		so all files are built and linked, all into one vmlinux
+
