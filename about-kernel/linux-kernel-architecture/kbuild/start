@@ -1,0 +1,134 @@
+first trun off implicit rules and variables assign
+set alphanum sort and number representation
+if V=xx  on command line, set KBUILD_VERBOSE
+if C=xx on command line, set KBUILD_CHECKSRC
+if M= or SUBDIRS or KBUILD_EXTMOD , set KBUILD_EXTMOD
+
+if no set KBUILD_SRC, so in the original makefile
+	CURDIR set by make , is the curdir directory
+	if set O=. set KBUILD_OUTPUT as the output dir
+		call a sub-make  with KBUILD_SRC KBUILD_EXTMOD MAKECMDGOALS
+			and read change to the output dir, read current dir's
+			make file then do subsequence things,and the origin makefile
+			process just exit
+	if no O=, then just do subsequent things
+
+set SUBARCH ,and if ARCH not set on command line, this is the ARCH
+set CROSS_COMPILE if set no command line or in .config
+set SRCARCH as the dir in arch/  according to your ARCH
+set KCONFIG_CONFIG  to .config
+set CONFIG_SHELL
+set HOSTCC  HOSTCXX HOSTCFLAGS HOSTCXXFLAGS
+set KBUILD_BUILTIN :default in builtin
+if make (all _all)  modules  , set KBUILD_MODULES
+				set KBUIKD_BUILTIN
+		so if make / make all, will build all things
+set Q  quite   according to KBUILD_VERBOSE, 
+	the Q before command is a @ usually to suppress output,
+	the quite if is quite_,then only print short info,
+		  if is slient_(if make -s), print nothing
+		  if empty, print every commdnad when exec
+add MAKEFLAGS to include srctree as a dir to find additional makefiles
+include $(srctree)/scripts/Kbuild.include file
+	in this file(lots of defines)
+	filechk,  you define a filechk_yourname  macro/variable,
+		then filechk will run it use < and > to redirect
+		first prerequisite and process output into target.tmp
+		(we are in command env, so can use shell cmd)
+		then use cmp to compare two files, if not same,
+		repalce old ones
+
+	cc_corss_prefix:
+		this called provided lots of cross tool prefix and
+		find the first valid in $PATH ,and return that prefix
+	try_run:
+		run a command and output into currentdir or module's dir
+		as a tmp file, and return some info for true or false status,
+		then remove files compiled
+	some function defined to set flags according to current gcc if support
+		that flag
+	set flags variable as all -Ixx  vars with their  absolute path
+	set cmd function as a function output command and exec it
+	set objectify as absolute path of obj parms
+	if-changed func will judge if newer prerequisite exist or compile
+		command has changed , if so, generate a new command into 
+		.target.cmd file to be sued to compile
+	echo-why will judge why compile is needed
+
+back into Makefile
+	set all compilecommands' name , gcc as ....
+	set LINUXINCLUDE as all include directory you need from arch and srctree
+		and current dir,also includ autoconf.h files(all your .conf vars
+			defined or undef  judege by it)
+
+	set dot-config as 0 if our make target has nothing todo with config files
+	set config-target if has make *config
+	set mix-target if has config-target and has no dot-config same time,
+
+	if mix-target, again call make with each target one time(sequence is important on cmdline)
+	if is config-target, make script/basic dir and outputdir, then
+		make scripts/kconfig to run make *config 
+
+	if normal targets,
+		set target scripts to build scripts/,
+		includ auto.conf file if related to .config
+			(this diff frome autoconf.h and defines whether
+			as module or builtin)
+		read in all Kconfig's dependency
+		set obj dirs  init-y  drivers-y net-y lib-y core-y
+		if auto.conf not new than .config, run silentoldconfig default
+
+		for modules do not run make config ,just include auto.cnof and
+			generated/autoconf.h
+
+		set default all 's dependency as vmlinux prerequisite
+		set KBUILD_CFLAGS to -O2
+NOTE:		include arch specific make file 
+			in this file , will add more dirs to build
+				in core-y core-m drivers-y drivers-m, head-y
+				also add flags depend on arch bit length
+				then bzImage : vmlinux
+					make build=dir bzImage, 
+				this used to wrap your compiled vmlinux
+					in topdir into a zipped file
+					also add some compress info
+		set lots of KBUID_CFLAGS
+		set KBUIKD_IMAGE as the truly compiled img name: vmlinux
+		set MODLIB as the module path  when use make modules_install
+		set mod_strp_cmd as strip command if modules need to be stripped
+			after install
+		vmlinux consist of vmlinux-init(arch heads and init/)
+				vmlinux-main  core lib/ drivers net 
+
+			in rule_xxx(this used to write rules into some .cmd file)
+NOTE: 			in call(cmd,xxx) ,first will echo something that defined
+			using quiet_cmd_xxx, (so the quiet string just used
+			for print)
+			then the truly exec command  cmd_xxx will be written
+			into the dir/.file.cmd  file
+
+		so here we define cmd_linux cmd_sysmap  cmd_vmlinux_version
+
+		vmlinux.o: xxx 
+			this line link those builtin.o together into a 
+			vmlinux.o file, and write this command into
+			.vmlinx.o.cmd, after this we will have a 
+			vmlinux.o(using cmd_vmlinux-modpost)
+			and then modpost this .o file,
+			as  I see, this vmlinux.o only used to by 
+			process by modpost, and vmlinux it self will
+			be relinked again from all dependent files
+			then in vmlinux: xxx xxx 
+				use cmd_vmlinux to link again,this
+				time,use your own link script and
+				get vmlinux  img, 
+			now if your target is default, then the bzImage
+				will be made,that will compress vmlinux
+				and do some reloate ....., all these are
+				arch specific, the general kernel only
+				link the whole image together
+	 $(vmlinux-dirs): prepare scripts
+		  $(Q)$(MAKE) $(build)=$@
+	 this will go into every  xxx-y dirs and use make -f scripts/Makefile.build obj=xxx
+	 	to build recursive those dirs
+
