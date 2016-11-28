@@ -1,0 +1,75 @@
+PRIx64: in include/inttypes.h  means  llx or lx ,these used for printf types
+main of fileio_tgt  devname  devpath
+	parse options
+	set SIGUSR1's handler as sigusr1_handler which will send SCST_USER_DEVICE_CAPACITY_CHANGED ioctl cmd
+		to all vdisk_dev array members
+	if set flush_interval in option:
+		set SIGALRM handler to send SCST_USER_FLUSH_CACHE every interval seconds
+	call start
+
+start:
+	create a scst_user_dev_desc and a pthread_t thread two-way array, for each dev,
+		we have a default of 7 threads
+	for every name path pattern:
+		assign its dev[i] member with options and name as disk name, file_name as path(file's name)
+			set type as TYPE_DISK(in include/linux/scsi/scsi.h)
+		open file, getsize turn into blocks and record
+		calculate dev[i].usn, 
+		open /dev/scst_user get fd as scst_usr_fd field
+
+		create a desc struct:
+			by your dev name, sgv and other options like block size
+			use SCST_USER_REGISTER_DEVICE cmd to send ioctl to scst_user
+			if prealloc_buffer is specified,
+				use SCST_USER_PREALLOC_BUFFER cmd to pass allocated
+				buffer into that dev's open fd of scst_user(so multi devs
+					can separate each other)
+					and if sgv_disable_clustered_pool not set, we will
+					allocate twice for each dev,and set for_clust_pool field
+					to diff them
+
+		use SCST_USER_GET_OPTIONS cmd to get opt from kernel,
+		set parse type , on free cmd type, memory_reuse_type and
+			again SCST_USER_SET_OPTIONS to set opts
+		create 7(default) threads for each dev to run main_loop()
+			with arg as devs[i]
+
+NOTE:from this begin to close:
+	use pthread_join to wait for every thread to join
+	call alarm to flush
+	if set unreg_before_close , unregister devs using SCST_USER_UNREGISTER_DEVICE
+	close scst_uesr fd,
+	NOW END  so the main process is create dev struct and desc and tell kernel
+			and open threads wait for command(main_loop)
+
+
+
+main_loop:
+	open dev_file as vcmd.fd
+	enter into cmd loop:
+		set up a multi.multi_cmd struct for cmd receive and send SCST_USER_REPLY_AND_GET_MULTI cmd
+			with it
+			(if no multi, just setnd SCST_USER_REPLY_AND_GET_CMD using scst_user_get_cmd struct
+		if ioctl reutrn something not usually, judge and reinitialize multi_cmd and send again
+			only if non_blocking is set, will go to poll,and if in poll error, goto poll again
+				and again
+
+		after success get cmd:
+			check if multi has all cmd received,if not ,continue ioctl recving,
+				(but here required recv is 0, so will not doing again)
+			process every command
+			in processing:
+				for every ioctl commands read from kernel, reply into the multi.preply,
+					this will be sent to kernel by the next getcmd ioctl !!
+				for read write:
+					exec_read, exec_write, they are just using normal
+					file operations to read and write
+						in exec,we have lot of commands to research ....
+
+	fill the multi.cmd preply at above functions, the now loop again to get another command and
+		send current cmd's reply status
+
+	SO IN ALL: this loop use get cmd  ioctl to wait and get command and process and return status to
+		kernel and again wait read
+		we have seven threads for each device, all operations to disk will be done through 
+			userspace
