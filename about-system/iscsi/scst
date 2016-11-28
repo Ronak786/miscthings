@@ -1,0 +1,96 @@
+init_scst:
+	init a lot of list_heads,locks
+	add a scst_main_cmd_threads stuct thread into scst_cmd_threads_list to queue command on it,
+		now we can search scst_cmd_threads_list to get this struct	
+
+	scsi command  list table init:
+		set a scst_scsi_op_list and scst_scsi_op_table
+		then latter one include all commands, 
+		when get a command, search opcode,as index in the former, the value
+		is the index of the latter table, you can get scsi command detail infos
+	create kmem cache for lots of structs
+	create mempool for scst_mgmt_cachep,so at least 64 struct can be alloc
+	create mempool for scst_mgmt_stub_cachep at least 1024  and some other mempool 
+
+	in scst_event_init():
+		create a scst_event  class entry, also create a device under /dev/  for it 
+			with scst_event_ops, if def CONFIG_EVENTS_WAIT_TEST, create an attr 
+				event_wait_test under /sys/kernel
+
+	int scst_sysfs_init():
+		creat a thread sysfs_work_thread_fn to work sysfs ops,
+		
+		create a scst_tgt entry under /sys/kernel
+		create entry like target devices sgv handlers device_groups, and creat special mgmt under it
+	in scst_tgt_init()  nothing to do
+
+	set scst_max_dev_cmd_mem  scst_max_cmd_mem  as max mem can be consumed by one cmd and all cmd
+	use this mark as high mark to call 
+	scst_sgv_pooos_init:
+		create a sgv_pool kmemcache, then create a sgv_pool struct for sgv_normal_poll,dma cluster pool
+		in sgv_poll_alloc:
+			alloc a sgv poll from kmemcache, 
+			in sgv_pool_init, create cache for every order from one obj to obj + default number of  plus
+				its entry size
+			add this pool into sgv_pool_list to prevent duplicate alloc
+			create  a sys entry in /sys/kernel/scst-tgt/sgv/ so we have three (dma , cluster, sgv)
+		register shrinker ?(what is this in kernel)
+
+NOTE: why in scst_tgt/device we will have some device entry ?
+	use scsi_register_interface() to register interface with two methods scst_add, scst_remove
+		this call will call class_interface_register which will
+		search the /sys/class/scsi_device class and for every device in it, call your
+		interface's add_dev function, which is scst_add as defined
+
+		scst_add:
+			use scsi_device as parm to call scst_device_register()
+			in it:
+				alloc a scst_device, set name as host channel id lun,
+					initial the struct and add cmd_threads list entry  into scst_cmd_threads_list
+				if CONFIG_SCST_FORWARD_MODE_PASS_THROUGH,
+					load pr files(what ?) using scst_pr_set_file_name()
+NOTE: now to find system scsi dev				
+					add thti scst_device into scst_dev_list,
+				add an entry into devices dir, and into it add an export entry
+					create a scsi_device link in it to the true device entry under /sys/class/scsi_device
+
+NOTE: COMMAND PROCESSING RELATED
+	init a tasklet in each scst_percpu_infos struct member(for per cpu), with a scst_cmd_tasklet(),
+		in which, when run softirq, will be called and fetch cmd from its cmd list and
+		exec that cmd using scst_do_job_active() -> scst_process_active_cmd()
+
+	scst_start_global_threads:
+		scst_add_threads:	
+			what  scst_main_cmd_threads struct used for:
+				first , this struct linkd into a global list, you can create your own cmd structs also ?
+					when module init, cpu nums cmd thread will be created to run scst_cmd_thread(belong to scst_cmd_thread_t)
+					and named scst%d in ps -aux,  then add these to main struct's list to track
+					and str
+					scst_cmd_thread :
+						this use test_cmd_theads() to check if request is on its 
+						list, if is ,wakeup and begin process using scst_process_active_cmd()
+					I think this is for userspace command  processing
+
+		create a scst_init_thread which will check scst_init_cmd_list and run
+			scst_do_job_init(), this func will fetch from init_cmd_list and assign the thread
+				who will finally do job of command(this is attached to the target dev)
+			and do __scst_init_cmd(cmd) and add it into cmd specified thread and wake up that thread
+						
+		create a scst_tm_thread() which check scst_active_mgmt_cmd_list, 
+			and call scst_process_mgmt_cmd() on every scst_mgmt_cmd on it
+		create  a scst_global_mgmt_thread to check global session  scst_sess_init_list,
+			to init or free session
+
+	scst_cm_init():
+		register a scst_tgt_template into scst_template_list
+			create a kobj under target named copy_namager, create files for it
+		register a copy_manager_tgt in that template and in it create a copy_manager_session,
+			create lots of default attrs according to copymanager template scst_cm_tgtt
+		register copy_manager_session in that above target
+		
+	now over scst_init();
+
+scst_user init:
+	
+	
+
