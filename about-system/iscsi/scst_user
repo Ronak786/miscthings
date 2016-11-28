@@ -1,0 +1,18 @@
+init_scst_user:
+	create kmem cache for user cmd and user dev
+	static create a dev_user_devtype for user scst
+	call scst_register_virtual_dev_driver for it:
+		add into scst_virtual_dev_type_list this strcut
+		create a kobj under handlers/ named scst_user
+			create mgmt under that dir and because no add_device function,
+			so use pass through method for this attr: scst_devt_pass_through_mgmt
+				and this will have no use , because it search list which will
+				be used by other modules, not scst_user
+			create default attrs
+	create a scst_user class under /sys/class
+	create a chrdev scst_user with dev_user_fops as its ops
+	create a device scst_user under that class, so under /dev we have a chrdev /dev/scst_user
+	run a scst_usr_cleanupd thread with function dev_user_cleanup_thread()
+		which will check the cleanup_list, do dev_user_process_cleanup() with arg scst_user_dev
+
+	END, so I think the most interesting place in this mod is the /dev/scst_user's ioctl function
