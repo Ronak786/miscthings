@@ -88,3 +88,9 @@ NOTE: according to readme file,iscsi-adm and scst.conf are both obseleted,so sys
 					that scst_user and scst module link their output object !!??
 					guess should be in cmnd_exec_text() to pass connection into kernel
 					
+				MAYBE the truly transfer data  is in kernel from softirq!!
+					user space only used when login in and logout, which use socket to
+						connect, 
+					in login, start_login will check if target exist?(should be added by iscsi-scst.ko)
+						then in finish_login will create a session and use ioctl to 
+						send this session create action into kernel to actually create that
