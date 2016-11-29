@@ -106,9 +106,16 @@ SO IN ALL user space main_loop() register scst_user_dev and have a command wait 
 		IS THIS RELATED to session established? and is session fixed on specific thread once
 		established ? 
 		and where does that command come from ? is this related to iscsi_scstd
-	HINT: every struct scst_user_dev add into a dev_list
-	      every scst_dev_type(inside a scst_user_dev) add into a scst_virtual_dev_type_list,including scst_user.ko's
-	      every scst_device(will be related to scst_dev_type) add into a scst_dev_list,
+	HINT: every struct scst_user_dev add into a dev_list(this have no sysfs entry)
+CONSITION:			only user_dev using ioctl register dev can be added to this list
+
+	      every scst_dev_type(inside a scst_user_dev) add into a scst_virtual_dev_type_list,including scst_user.ko's( this have a entry under handlers)(so register the dev_type)
+ CONSITION:     		only scst_user and scst_vdisk will add into this list
+
+	      every scst_device(will be related to scst_dev_type) add into a scst_dev_list,(this have a entry under devices)(so register the scst_device,together with system device)
+CONSITION:		only system scsi device and scst_user and scst_vdisk can add into this device
+				(is scst_disk.ko a system device???)
+
 	     SO OTHER MODULES will search one of these lists to find the approprate  thread of a device?
 	     SESSION is made by attach session, so this is also an index/tag ? 
 

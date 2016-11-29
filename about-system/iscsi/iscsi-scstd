@@ -1,0 +1,90 @@
+this is a user space service
+
+main:
+	init a pipe init_report_pipe for fork use
+	ignore signal pipe
+
+	kernel_open() to open a device /dev/iscsi-scst-ctl
+		create_and_open_dev() to get fd:
+			driver_major() to search /proc/devices for the dev and get major
+				(this should be created by iscsi-scst.ko)
+			use REGISTER_USERD ioctl to send in version check
+				and get max_data_seg_len && max_queued_cmds from kernel
+				and record in iscsi_init_params global struct
+		init_max_params():
+			init session_keys[] and target_keys[]'s default max value according
+				to the max value got from kernel
+		nl_open() to open a netlink 
+			set src_addr(with own pid), and dest_addr
+			use nl_write() to sendmsg() to kernel with this process's pid
+			using netlink
+	WHAT IS NETLINK, HOW IT WORKS??
+		is the iscst_scst.ko create the NETLINK_ISCSI_SCST socket option??
+
+		kernel_add_attr to add isnserver,enabled,entity_name under targets/iscsi
+			SO iscsi_scst.ko add a iscsi entry under target ??
+NOTE: according to readme file,iscsi-adm and scst.conf are both obseleted,so sysfs interface 
+	instead and scstadmin
+		create a iscsi_adm_request_listen() fd to listen to iscsi-adm program 
+			from unix socket with a name ISCSI_SCST_ADM
+
+		conf_load() to load configs from default /etc/iscsi-scstd.conf file
+			create a buf and read configs into that buf
+			get iSNSServer and iSNSAccessControl from config
+			and call isns_init() to init(but I don't know what is isns,so skip this)
+
+			config_parse_main():
+				use config_gets() to get every command seperated by '\0'or '\n' or ';'
+				how configs use: target xxx xxx (multiple lines)  target ??
+					so the second target label will send the before all data stored in
+						a target into kernel
+					if target to be added
+						use ioctl TARGET_ADD to /dev/iscsi-scst-ctl to add target
+							with sysfs attrs
+						also add this target into userspace targets_list
+
+		call event_loop():
+			create_listen_socket() at servier_port(of every addr the system have? using 
+				getaddrinfo ???
+				create socket of that for every getaddrinfo return member
+				set into poll_array 's member for this (multiple),to be polled
+			create_iser_listen_socket() for iser,
+				I DON'T KNOW ISER, if not have this .ko insmoded,will just return, so skip
+			add ipc and netlink fd into this poll array, set others as -1 and no events
+
+			then enter into a loop:
+				handle_iscsi_events (if not config proc , so must) to handle a netlink
+					affair,(mostly is iscsi_enabled = 0)
+				then start a infinity time poll for ipcfd nlfd poll in sock from server_port:
+					netlink : handle_iscsi_events()
+					sock listen: accept_connection()
+						for every got connection,we will get one fd for that conn
+							alloc_and_init_conn() to set that fd into poll_array's
+							free member,also set incomming[i] as the connection struct,
+							conn_read_pdu() to set conn's info
+							set incoming_cnt++ as a count 
+
+					iscsi_scst-adm: iscsi_adm_request_handle()
+					isns : isns_handle()
+					scn_listen: isns_scn_handle()
+
+					after these first stage acknownledge
+					event_conn:(here we track tcp connection)
+						iostate is set to IOSTATE_READ_BHS by above first stage,
+							read the head, if error, just return and ignore this command
+						now set state to IOSTATE_READ_AHS_DATA
+				remember conn->buffer is conn->req.bhs (a struct PDU)
+						set conn->req.ahs conn->req.data to be buffer
+							to contain ahdata and data(what is ahdata?)
+						now read again , this time go to IOSTATE_READ_AHS_DATA case label,
+						set iostat as IOSTATE_WRITE_BHS(what fuck?!!)
+						now run cmnd_execute():
+							according to conn->req.bhs.opcode to decide the iscsi cmd run
+				TOO COMPLICATED IN EXEC:
+						I just know it will search target_list which we add target using
+						config or sysfs to find the target when get login cmd
+
+				ALMOST OVER  BUT!! I don't find anything here connected to kernel's target
+					that scst_user and scst module link their output object !!??
+					guess should be in cmnd_exec_text() to pass connection into kernel
+					
