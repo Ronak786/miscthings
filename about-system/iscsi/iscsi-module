@@ -1,0 +1,34 @@
+in additional to iscsi userspace, kernel module is most important
+
+iscsi_init:
+	iscsit_reg_transport():
+		register the iscsit_tcp_transport struct
+		check transport_list to see if already added
+	alloc a dummy page
+	memset a scatter struct for scatter gather
+	make the page as the sg's using page
+
+	create a mempool for command abort struct
+	register a chrdev iscsi-scst-ctl with ctr_fops
+
+	event_init():
+		use netlink_kernel_create to create a netlink number of NETLINK_ISCSI_SCST
+	create kmem cache for iscsi's session conn  thread_pool and command
+	iscsi_register_target_template:
+		register a iscsi_template struct(has add_target.. some actions)
+		use scst_tgtt_sysfs_create() to add a kobj under targets entry
+			add mgmt and some other attrs under it
+		add into scst_template_list list
+		set sysops in iscsi_conn_ktype.ops
+	init a thread pool called iscsi_main_thread_pool and add into iscsi_thread_pools_list
+	then for every cpu , create two  threads for read and write,so 8threads:
+	read: istrd:
+		test the mainthread's rd_list not emtpy:
+		scst_do_job_rd:
+			process_read_io:
+	write:istrw:
+		scst_do_job_wr:
+
+	BUT THESE TWO READ WRITE LIST can not be tracked,tooooo long,
+		so I think best way to track transport is tracking how every command
+		I type to make iscst work calling  the module's function
