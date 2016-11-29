@@ -16,3 +16,98 @@ init_scst_user:
 		which will check the cleanup_list, do dev_user_process_cleanup() with arg scst_user_dev
 
 	END, so I think the most interesting place in this mod is the /dev/scst_user's ioctl function
+
+
+/dev/scst_user  ioctl ops:
+SCST_USER_REGISTER_DEVICE:
+	alloc a scst_usr_dev_desc to recv user's struct
+	call dev_user_register_dev with struct file * and desc:
+		use dev_user_check_version to check liscence_str and version_str
+		block type DISK_TYPE,so check block shift to be valid
+		alloca a scst_user_dev struct
+	SO EVERY THEAD OF EVERY DISK HAVE ONE scst_user_dev,so have one cmd thread wait queue head
+	but how to decide which thread and devie to use ?
+		init user's ready-cmd-list and cmd hash
+		add a cmd thread into global scst_cmd_thread_list
+		create a sgv pool(if exist(muli thread will call this),then get it)
+		dev's devtype assign fields of desc from user 
+			and some actions like attach detach attach_tgt detach_tgt exec 
+				on_free_cmd , task_mgmt_fn_received , task_mgmt_fn_done,
+				use __dev_user_set_opt to get ops from user desc
+					and set default options
+		add this scst_user_dev into dev_list
+		call scst_register_virtual_dev_driver with dev_type(have functions in it)
+			which add this dev_type into scst_virtual_dev_type_list
+			we already have a dev_user_devtype in it
+		NOTE: this func will create a entry under handler for your dev
+
+		call scst_register_virtual_device also with this scst_dev_type,
+			to add this a entry under drivers (together with system scsi dev
+				which are added by scsi_add ) into scst_dev_list
+		call scst_assign_dev_handler which will assign handler to dev
+			but do this should first detach tgt, detach dev itself
+			then assign, then attach, attahc tgt
+
+		assign this /dev/scst_user open's fd's private_data as this scst_user_dev and return
+			
+dev_type functions:	
+	attach_tgt: dev_user_attach_tgt:
+		initialize a scst_user_cmd *umd and add into its own scst_user_dev dev's ready_cmd_list
+	detach_tgt: dev_user_detach_tgt:
+		initiaze a ucmd but set detach session  state and add to list
+
+SO THEY ARE JUST ADDING ucmd->ready_cmd_list_entry INTO DEV'S ready_cmd_list COMMAND LIST TO BE PROCESSED ??
+
+	attach: dev_user_attach:
+		attach the scst_dev with the same name's dev in dev_list(assign some fields)
+	detach: dev_user_detach:
+		detatch scst_dev's filed to NULL
+
+	exec: dev_user_exec:
+ALL THESE CMDS AND DO EXEC CMDS IN scst_dev_type are just add int dev's ready_cmd_list 
+	using dev_user_add_to_ready() (using a allocated ucmd struct scst_user_cmd to collect infos,
+then using dev_user_get_next_cmd when ioctl is called and get cmd from that list
+
+
+
+
+
+SCST_USER_REPLY_AND_GET_MULTI:
+	call dev_user_reply_get_multi
+	get reply count and cmd count from user struct
+	if no reply to process ,jump to cmd get process
+	if have reply:
+		get every reply according to count, dev_user_process_reply(),then add reply_done
+		which will be return to user when the next cmd got return
+		dev_user_process_reply:
+			get ucmd(add into a hashlist when alloc that ucmd)
+			process replies : A LOT  HUGE PROCESSING MULTI STATES
+	begin get cmd:
+		dev_user_get_cmd_to_user() for every cmd count member:
+			call dev_user_get_next_cmd:
+				wait until this thread's dev sturct's list is not emtpy using test_cmd_threads()
+				call dev_user_process_scst_commands	
+					to call scst_process_active_cmd to process active cmd(what is this active?)
+				 call __dev_user_get_next_cmd() to get from ready_cmd_list
+
+				 copy cmd to user field(do twice because cmd count is 2 in MACRO)
+				 now can return
+
+FAQ & QUESTIONS:
+SO IN ALL user space main_loop() register scst_user_dev and have a command wait list head on it using ioctl,
+	then call ioctl to wait and get cmd, 
+	when cmd come from:
+		cmd from your dev_type's call method  attach detach  do_exec(this include write/read ...)
+		all these method will alloc a ucmd struct and add into hash for recv find,
+		then add into dev's ready_cmd_list and wakeup that list head, so user's wait process
+		begin to fetch cmd,also every fetch will send prefetched cmd's reply status into kernel.
+
+		but how a cmd knowns that he should call that struct scst_user_dev's method,not other's ?
+		IS THIS RELATED to session established? and is session fixed on specific thread once
+		established ? 
+		and where does that command come from ? is this related to iscsi_scstd
+	HINT: every struct scst_user_dev add into a dev_list
+	      every scst_dev_type(inside a scst_user_dev) add into a scst_virtual_dev_type_list,including scst_user.ko's
+	      every scst_device(will be related to scst_dev_type) add into a scst_dev_list,
+	     SO OTHER MODULES will search one of these lists to find the approprate  thread of a device?
+	     SESSION is made by attach session, so this is also an index/tag ? 
