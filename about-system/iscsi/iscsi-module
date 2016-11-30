@@ -149,5 +149,11 @@ AT THE END OF ENABLE ISCSI DISCOVERY:
 
 EXTRA: in scst_cmd_init_done,we decide where to send command
 			
-		
-		
+IN ALL : add target to add target into kernel's target_list, and user's targets_list
+	add lun with the dev searched from scst_dev_list
+		link a struct into dev's list also target's acg's list
+		now all together, when we find a target, we get acg,get above relationship struct,
+			get dev,get dev's dev_type, do opeartions in dev_type ,can return to user space
+			and operate file as scsi disk
+
+NOW THE PROBLEM IS HOW CAN A COMMAND BE SENT TO THE TARGET
