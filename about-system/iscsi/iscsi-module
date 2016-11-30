@@ -206,8 +206,72 @@ istrd:
 	this thread will lock bottom half, so guess rd_list's add is from bottom half(may wrong!!)
 	after got thing from that list(should be conn we added in hoping to activate)
 	process_read_io:
-		in do_recv will get data
+
+guess: 
+	first use login to create a sessino,
+	then if initiator want to communicate to target, send an add connection  command through add connection,
+		this action will add a iscsi_conn in target which will add a created iscsi_conn into rd_list for istrd thread,
+		this iscsi_conn will make the thread to do kernel socket recv function, because this conn has a 
+		iscsi_date_ready function assigned in sock->sk,so it will be called in softirq,which will receive 
+		a iscsi_conn from initiator, and do real things
+	WHAT IS REAL THINGS:
+		process_read_io:
+			label RX_CMD_START  cmnd = iscsi_conn->read_cmnd
+				opcode: ISCSI_OP_SCSI_CMD: scsi_cmnd_start(scsi_cmnd)
+					scst_rx_cmd:
+						scst_alloc_cmd to alloc a new scst command
+						__scst_rx_cmd to set session lun infos
+						set iscsi_cmd as scst_cmd's priv
+						set scst cmd direction and queue type
+						set iscsi_cmnd's state as ISCSI_CMD_STATE_RX_CMD
+						scst_cmd_init_stage1_done():
+NOW END ISCSI, IN SCST					scst_cmd_init_done:
+								add int sess->sess_cmd_list
+								set cmd state as SCST_CMD_STATE_INIT
+								call scst_init_cmd
+								check scst_init_cmd_list(should emtpy)
+								call __scst_init_cmd:
+									scst_translate_lun:
+										get scst_tgt_dev,scst_device,handler
+									change state to SCST_CMD_STATE_PARSE
+									scst_pre_parse():
+										set command's cbd according to scst_scsi_op_table
+							scst_process_activate_cmd()(SCST_CONTEXT_DIRECT)
+								scst_parse_cmd():
+									call dev_user_parse(set in dev_user_setup_functions)
+										generic_cmd: scst_sbc_generic_parse:
+											(nearly do nothing to normal cmds)
+								now state is SCST_CMD_STATE_DEFAULT:
+								and convert to SCST_CMD_STATE_PREPARE_SPACE
+								go out with res  SCST_CMD_STATE_RES_CONT_SAME,
+							check res and should loop switch again
+										
+								scst_prepare_space:
+									dev_alloc_data_buf:dev_user_alloc_data_buf
+										dev_user_alloc_space
+											this if not no write && loca evn
+												will dev_user_add_to_ready
+											wake up wait queue head of threads
+			HERE THREADS OF SCST_USER:
+				get command ,wait for wait queue head,then be waked up,
+				and get ucmd from list, return to userspace
+				process_cmd():
+					if SCST_USER_EXEC:
+						do_exec:
+				after user repied to kernel
+				kernel:
+					dev_user_process_reply:
+						find the ucmd by hash
+						dev_user_process_reply_alloc:
+						scst_process_active_cmd:
+				
+
+			data return is scst_xmit_reponse:
+				but I don't know how to get this func
+				and at last will be in istwr and send out
+
 istwr:
 	this I guess is used by send command out 
 
 TOO  COMPLICATE!!  I SHOULD READ THE ISCSI RFC ,THEN CAN KNOW , OR READ THE open-iscsi 
+				and should test by add some debug info on the call link road,especially return write
