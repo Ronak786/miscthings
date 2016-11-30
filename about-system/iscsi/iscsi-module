@@ -77,4 +77,36 @@ AFTER INMOD scst_user  scst
 						then add target over
 				HINT:		( here check  iscsi_scst file to see how netlink
 							receive these commands and do what)
+		AFTER USERSPACE get info and do some process, it will send a target command through ioctl
+			into kernel,now we lookup this
+
+		ioctl->add_target func:
+			search in kernle's target_list(NOTE userspace have a targets_list,that is user's maintain)
+			find the pre added user info: uinfo
+			call __add_target(info) to the received kernel info:
+				make sure target not already exist
+				alloc a union add_info_union
+				auto get an emtpy target id
+				call iscsi_target_create() to create:
+					alloc a iscsi_target struct,assign info's fields
+					use scst_register_target() to alloc a scst_tgt field
+						using iscsi_template as default actions
+						search scst_tgt_template's tgt_list,should not exist
+						add tgt into that template's list
+NOTE: HEREH will create tgt which has operatons of the target,(attached into template )					
+						in scst_tgt_sysfs_create():
+							add that target under target iscsi under target entry
+							create session, lun entry and mgmt(scst_luns_mgmt) under lun
+							and other attrs
+							scst_alloc_add_acg() to add scst_acg struct into tgt's acg list
+				iscsi_add_attr() to add attrs from session keys and target keys
+			back now, and complete ucmd->info_completion with err status from __add_target
+
+					set scst_tgt's priv as target,
+					add target into target_list
+			NOW OVER: so add target from sysfs start from user's sysfs echo,then kernel's work
+				and send command to user by netlink,then user do some process ,record
+				into its own list, again using chrdev to send msg into kernel complete 
+				the register( so the sysfs work and kernel user add target operations are
+					sync for each other???)
 
