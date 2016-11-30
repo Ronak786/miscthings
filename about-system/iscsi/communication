@@ -1,0 +1,44 @@
+in iscsi_scstd service:
+accept_connection for port 3260's incomming data
+	conn_read_pdu set iostat as IOSTATE_READ_BHS
+	rwsize as BHS_SIZE
+	buffer as conn->req.bhs( iscsi_hdr )
+
+then in event_conn:
+	if read not complete, just break;
+	get info from head and set ahssize and datasize in conn->req(struct PDU)
+	alloc  a request buffer, assign to conn->req.ahs and conn->req.data contineously and conn->buffer
+		then read again, this time ,read data you want and set conn's req state as IOSTATE_WRITE_BHS 
+		for comming write(when cmd executed is over STATE_EXIT)
+	cmnd_execute():
+	 	for ISCSI_OP_LOGIN_CMD:
+		cmnd_exec_login:
+			request is in conn.req.bhs
+			respond will be in conn.rsp.bhs
+			set respond opcode ISCSI_OP_LOGIN_RSP,set version, tag(for index)
+
+			now state is STATE_FREE
+			change to STATUS_LOGIN , call login_start:
+				get cid and sid
+				use text_key_find to find InitiatorName in req's data field
+				assign name in conn->initiator
+				get SessionType and TargetName
+				set conn->session_type = SESSION_NORMAL; but now session_type var is the value got
+				if session_type is discovery do conn->is_discovery(conn->fd),otherwise should be normal
+					set session_type to session discovery(this is_discovery just ruturn 0)
+
+				for SESSION_NORMAL session type,used to login
+				target_find_by_name to find target,set conn-tid = target->tid
+				copy target's session param to connect's field
+
+			login_finish:
+				create a session using session_create:
+					create a session,link target together
+					add connection into session's list
+					add session into connect'sfield
+					make sure session id not duplicate in one target using session_id_exists
+					call kernel_session_create:
+						copy infos into iscsi_kern_session_info struct
+						call ioctl ADD_SESSION
+			HINT: now see in iscsi_scst.ko to see ioctl
+	

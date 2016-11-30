@@ -157,3 +157,57 @@ IN ALL : add target to add target into kernel's target_list, and user's targets_
 			and operate file as scsi disk
 
 NOW THE PROBLEM IS HOW CAN A COMMAND BE SENT TO THE TARGET
+
+WHEN LOGIN :
+		ioctl->add_session func
+			use iscsi_target struct and info struct to call __add_session:
+				use iscsi_session_alloc() to allocat a iscsi_session and fill
+					target and sid info
+				create and register a scst_session from iscsi_session:
+				scst_register_session:
+					scst_init_session:
+						will add this scst_session into acg's session list
+							also add into target's sessoin list
+						add session under target's session dir
+						add session under taget's sysfs's sysfs_sess_list
+						call scst_sess_alloc_tgt_devs() iterate every scst_acg_dev
+						to see every device under that target and attach session to it
+
+					add to targets session list
+				iscsi_threads_pool_get:
+					we already created two thread when iscsi_init,no special requirement,so
+					just that two thread ever cpu
+					
+
+		AFTER ADD SESSION I still don't know how to transfer data,so I guess there is a connect add,
+		maybe open_iscst src_code need to be scaned, 
+		I guess add connection ioctl does some magic,so look that
+
+		I see under session entry, there is a connection entry named ip,just like kernel kobj's add func,
+		so that's it!!
+
+	add_conn:
+		__add_conn:
+			t->iscsit_conn_alloc : iscsi_conn_alloc:
+				iscsi_init_conn
+				conn_sysfs_add
+				add to session->conn_list
+						
+			check target's session list to makesure not exist already
+			t->iscsi_conn_activate: conn_activate:
+				iscsi_make_conn_rd_active : add conn's rd_list into session's rd_list
+				that is istrd istwr's list ==> the iscsi_thread_pool struct's idlist
+
+		SO NOW SEE THE KEY IS THAT TWO threads!!
+				
+
+
+istrd:
+	this thread will lock bottom half, so guess rd_list's add is from bottom half(may wrong!!)
+	after got thing from that list(should be conn we added in hoping to activate)
+	process_read_io:
+		in do_recv will get data
+istwr:
+	this I guess is used by send command out 
+
+TOO  COMPLICATE!!  I SHOULD READ THE ISCSI RFC ,THEN CAN KNOW , OR READ THE open-iscsi 
