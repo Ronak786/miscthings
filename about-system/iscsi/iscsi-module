@@ -59,7 +59,7 @@ AFTER INMOD scst_user  scst
 				use scst_get_next_lexem() to get first string("add_target")
 				call tgtt->add_target with target_name and subsequent opion strings
 				iscsi_sysfs_add_target:
-					iscsi_sysfs_send_event:
+NETLINK SEND FUNC:			iscsi_sysfs_send_event
 						check iscsi-scst-ctl's open state,should be open,
 						(this is done by userspace iscsi_scstd process,so this should run)
 						create a scst_sysfs_user_info struct (a info loader)
@@ -96,9 +96,14 @@ AFTER INMOD scst_user  scst
 NOTE: HEREH will create tgt which has operatons of the target,(attached into template )					
 						in scst_tgt_sysfs_create():
 							add that target under target iscsi under target entry
+		ENABLE					create enabled atrr:
+								this echo will through kernel,netlink to user
+								and user space set enabled to target, then through
+								ioctl to set kernel's enabled of that target
 							create session, lun entry and mgmt(scst_luns_mgmt) under lun
 							and other attrs
 							scst_alloc_add_acg() to add scst_acg struct into tgt's acg list
+								add into scst_acg_list
 				iscsi_add_attr() to add attrs from session keys and target keys
 			back now, and complete ucmd->info_completion with err status from __add_target
 
@@ -109,4 +114,40 @@ NOTE: HEREH will create tgt which has operatons of the target,(attached into tem
 				into its own list, again using chrdev to send msg into kernel complete 
 				the register( so the sysfs work and kernel user add target operations are
 					sync for each other???)
+			target_list->target->scst_tgt->tgtt(template->operations
+						     ->sysfs attrs
 
+HINT: NEXT  should be lun's operations, under scst_tgt sysfs
+	create luns under specific target/iscsi/target-name/luns/mgmt  scst_luns_mgmt
+	scst_luns_mgmt_store: "add vname lun > mgmt"
+		__scst_acg_mgmt_store with true and scst_luns_mgmt_store_work_fn as param
+		again use scst_sysfs_queue_wait_work() to add into sysfs_work_list and wait
+			(sysfs of scst is done by a work thread)
+		then work will do __scst_acg_mgmt_store():
+			__scst_process_luns_mgmt_store:
+				set action as SCST_LUN_ACTION_ADD
+				get the vname and search scst_dev_list(which have all virtual disk and real disk)
+				use scst_parse_add_repl_param to get lun number and read_only=0/1 flag
+
+				search acg->acg_dev_list to check if that lun already in acg's list
+				scst_acg_add_lun() to add lun:
+					scst_alloc_acg_dev() to associate acg , dev, lun into a scst_acg_dev struct
+					add this scst_acg_dev into acg->acg_dev_list and dev->dev_acg_dev_list
+						seperately
+					do scst_cm_on_add_lun() func:(complicate)(but not match, so not do)
+					scst_acg_dev_sysfs_create() to create a entry under luns,that is 
+					the lun number, then creat a link in device/your-dev/export/export-lun to
+						these lun number entry,
+					in this lun entry,create a device link to that device
+				THAT'S OVER ADDING LUN
+
+AT THE END OF ENABLE ISCSI DISCOVERY:
+	echo enable into iscsi/enabled (this is created when iscsi_scstd service is run)(but destroied by
+		kernel)
+	echo enable into your target's enabled (this is created when you add target)
+				
+
+EXTRA: in scst_cmd_init_done,we decide where to send command
+			
+		
+		
