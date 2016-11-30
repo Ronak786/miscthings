@@ -32,3 +32,49 @@ iscsi_init:
 	BUT THESE TWO READ WRITE LIST can not be tracked,tooooo long,
 		so I think best way to track transport is tracking how every command
 		I type to make iscst work calling  the module's function
+
+
+AFTER INMOD scst_user  scst  
+	we now have three list linking in dev_handler, devices scst_user_dev 
+		when you use fileio_tgt to create a file dev, it will have:
+			a devtype with operations to communicate with ioctl wait recv cmd in register in dev_handler;
+			a scst_dev in devices 
+			a scst_user_dev in dev_list manage dev's from fileio_tgt only(not important)
+	now insmod iscsi_scst.ko,
+		we have a iscsi entry in targets entry,this used to control adding and deleting targets:
+			in it we have a mgmt which is set by scst_tgtt_sysfs_create():
+		when  add_target iqn.2016-05.com.example:storage.iscsi-scst-1
+		call scst_tgtt_mgmt_store:
+			use scst_alloc_sysfs_work() to alloc a work calling scst_tgtt_mgmt_store_work_fn()
+			add this work into sysfs_work_list ; wake up sysfs_work_waitQ
+			create another sysfs_work_thread_fn in addition to scst's sysfs_work_thread_fn
+				to avoid dead lock???(use onetime only as condition,so for every sysfs work
+				we will have one sysfs thread)
+			wait for that created work to be done and return
+		
+		in the work func scst_tgtt_mgmt_store_work_fn():
+			scst_process_tgtt_mgmt_store:
+				scst_check_grab_tgtt_ptr() check scst_tgt_template is in scst_template_list_entry
+				(this is sure because we add it during init of iscsi_scst.ko)
+				use scst_get_next_lexem() to get first string("add_target")
+				call tgtt->add_target with target_name and subsequent opion strings
+				iscsi_sysfs_add_target:
+					iscsi_sysfs_send_event:
+						check iscsi-scst-ctl's open state,should be open,
+						(this is done by userspace iscsi_scstd process,so this should run)
+						create a scst_sysfs_user_info struct (a info loader)
+							check scst_sysfs_user_info_list to find a emtpy cookie as index
+							add into scst_sysfs_user_info_list
+						call event_send with E_ADD_TARGET as cmd code
+						create a iscsi_kern_event struct event
+						fill in desc infos(now no target and param info filled in ,just length)
+							the cookie used to index the info struct and do wait completion
+							 	at subcalls
+						use __event_send():
+							fill in netlink with your data and send with netlink_unicast()
+						also send target name and params in subsequent two calls of __event_send
+						scst_wait_info_completion() to wait for completion using info:
+						then add target over
+				HINT:		( here check  iscsi_scst file to see how netlink
+							receive these commands and do what)
+

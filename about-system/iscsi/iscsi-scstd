@@ -69,7 +69,7 @@ NOTE: according to readme file,iscsi-adm and scst.conf are both obseleted,so sys
 					scn_listen: isns_scn_handle()
 
 					after these first stage acknownledge
-					event_conn:(here we track tcp connection)
+TRACK tcp:					event_conn:(here we track tcp connection)(only do with login and out)
 						iostate is set to IOSTATE_READ_BHS by above first stage,
 							read the head, if error, just return and ignore this command
 						now set state to IOSTATE_READ_AHS_DATA
@@ -94,3 +94,33 @@ NOTE: according to readme file,iscsi-adm and scst.conf are both obseleted,so sys
 					in login, start_login will check if target exist?(should be added by iscsi-scst.ko)
 						then in finish_login will create a session and use ioctl to 
 						send this session create action into kernel to actually create that
+
+
+TRACK netlink:
+	we use handle_iscsi_events to handler netlink read data:
+		use nl_read to read netlink
+		call handle_e_add_target() to handler add target:
+			allocate a buf enough to include "Target xxx xxx" string
+			call config_parse_main(buf, cookie) to parse that command and call into kernel wait complete's
+				cooike(see iscsi_modules for more details(search cookie)):
+				targetname and option seperated by ';'
+				enter into a loop getoption:
+					config_gets() get string seperated by ';' '\0' '\n'
+					config_sep_string() get next string after a ' ' or '='and stop the first string
+					it is "Target" .check target var is not null(so we have a target set before),
+						then add that target,but now we will not enter into this)
+					get targetname stored in p and call target_create:
+						set name and target keys and session keys
+					call add_target() to add:
+						call kernel_target_create()
+							create a iscsi_kern_target_info(comparion to kernel's created
+								user info struct, not the same)
+							count session keys and target_keys's show in sysfs count
+							alloc kern_attrs structs for them
+							ALL this added into info struct
+
+							call ADD_TARGET ioctl with this info struct into iscsi-scst-ctl
+					HINT: 	here we should again into kernel ioctls to look
+						add into target_list
+				
+				
