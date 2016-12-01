@@ -1,0 +1,92 @@
+scst_cmd_threads_list:
+	scst module add in a scst_main_cmd_threads thread manager and add in cpu numbers of threads in it
+		these created threads will check their own thr_active_cmd_list and scst_main_cmd_threads's
+		active_cmd_list, then call scst_process_active_cmd
+	every system's scsi device add in one as a scst_device->dev_cmd_threads
+	every scst_user_dev from user's registered dev in scst_user.ko add one in its dev->udev_cmd_threads
+	
+scst_virtual_dev_type_list:(ops for specific dev)
+	scst_user init will register a dev_user_devtype name is scst_user
+	every user dev by scst_user will register a dev_type,name is disk's name,type is TYPE_DISK
+
+scst_dev_list:(scst_device)
+	scsi device's use scst_add->scst_register_device add into this
+	scst_user's dev use scst_register_virtual_device add into this
+
+transport_list:
+	iscsi_scst.ko init add a iscsit_transport struct iscsi_tcp_transport named iSCST-TCP
+
+scst_template_list:
+	iscsi_scst.ko init add a struct scst_template_list iscsi_template named iscsi in it(also create target in targets/)
+	
+
+iscsi read/write
+iscsi_thread_pools_list:(only create when old thread pool's cpumask not the same as new one)
+	create or get an exist iscsi_main_thread_pool in it ,iscsi_scst.ko init,
+		in it,create two threads for each cpu, istwr, istrd,
+		istrd: get command when comming from internet by iscsi_data_ready
+			and pass to scst to be processed
+		istwr:
+			get command when scst processed command and want to return data
+	this will be used by session's session->sess_thr_pool when creating session(default)
+
+
+sysfs_work_list:(thread: sysfs_work_thread_fn())
+	every sysfs operation will first wrapped into a scst_sysfs_work_item struct and add into this,
+		global sysfs thread(start when insmod scst.ko) will be waked up and handle them
+		every time do this sysfs work ,will add scst_tgt_template's sysfs count
+
+scst_sysfs_user_info_list:
+	every scst sysfs into struct sent to userspace linked here in scst_sysfs_user_add_info()
+		after info done, will delete by scst_sysfs_user_del_info()
+
+iscsi_template->tgt_list: (every iscsi_target <==> scst_target
+	link every created iscsi_target's scst_tgt struct in it
+		scst_tgt->priv  = iscsi_target
+
+
+special:  acg:
+	this struct scst_acg will be added as tgt's default_acg,acg->tgt = your_tgt,
+	this is an important struct when iscsi command searching target's device
+
+target_list:
+	every added target is a iscsi_target, added into this list
+
+
+
+when alloc a lun in scst_acg_add_lun:(scst_acg_dev have scst_device, scst_acg, lun number together)
+					(this is the lun number entry in the lun entry)
+	acg->acg_dev_list:
+		each acg in its scst_tgt will add a scst_acg_dev struct in it(so each member is a lun obj)
+		
+	dev->dev_acg_dev_list:
+		every scst_device will add scst_acg_dev in it
+
+when create session at a target: (one session attached to one lun, so one scst_user_dev)
+	sess->acg->acg_sess_list:
+		link all sessions attached to that acg,equals to tgt,also iscsi_target
+	sess->tgt->sess_list:
+		link all sessoins attached to that tgt
+	sess->tgt->sysfs_sess_list:
+		add session into target's sysfs session list
+	dev->dev_tgt_dev_list:(in scst_alloc_add_tgt_dev())
+			a scst_tgt_dev have scst_device, lun,scst_acg_dev ,session,together
+			one session have one this struct
+			use scst_tgt_dev_sysfs_create() to create a kobj under session as lun0
+		add scst_tgt_dev struct into scst_device's list
+	
+	sess->sess_tgt_dev_list:
+		each member is a list,use lun number as index,add scst_tgt_dev into that list
+
+
+	tgt_dev->active_cmd_threads:
+		this comd thread is the dev's udev_cmd_threads ,and will be waked up by dev_user_add_to_ready()?
+			(there are threads waiting when userspace geting cmd udev_cmd_threads's list and ready_cmd_list)
+
+	target->session_list:
+		link all iscsi_session together, (scst_session is only a member of iscsi_sesion)
+
+
+when add a connection:
+	session->conn_list:
+		save connection on that session

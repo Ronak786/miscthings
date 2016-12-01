@@ -122,3 +122,9 @@ CONSITION:		only system scsi device and scst_user and scst_vdisk can add into th
 	NONONO:  every  user file's disk will have only one scst_user_dev, so only in these list one instance,
 			but will have seven threads to wait on queue to fetch( but only one can be wake up
 				and process thread)
+
+
+
+dev_user_attach_tgt:
+	this func called when create a session, and used to alloc a ucmd 
+	and tell user to find dev's tgt_devs array to store this session

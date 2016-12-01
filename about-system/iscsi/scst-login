@@ -1,0 +1,14 @@
+login : is a very very long process
+	subopcode: ISCSI_OP_LOGIN_CMD=>command_exec_login->login start : SESSION_NORMAL
+		session create into kernel
+
+	add_session->__add_session->create a iscsi_session(link target and sid) -> create a scst_sessoin(link
+											acg and	scst_tgt)
+
+	after add session is add connection:
+	conn_pass_to_kern->...ADD_CONN-> ioctl to kernel
+	get session and target, __add_conn(how it know the session??)
+	set conn's session and target
+	add a kobj using addr under session's obj
+	conn_activate => iscsi_make_conn_rd_active	,then add this conn into istrd list
+		and now iscsi_data_ready() is set in socket, and will get command

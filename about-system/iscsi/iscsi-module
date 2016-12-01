@@ -208,7 +208,7 @@ istrd:
 	process_read_io:
 
 guess: 
-	first use login to create a sessino,
+	first use login to create a session,
 	then if initiator want to communicate to target, send an add connection  command through add connection,
 		this action will add a iscsi_conn in target which will add a created iscsi_conn into rd_list for istrd thread,
 		this iscsi_conn will make the thread to do kernel socket recv function, because this conn has a 

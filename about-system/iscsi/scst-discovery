@@ -1,0 +1,11 @@
+userspace:
+	how this opcode happen ? need back trace!!!
+	iscsi opcode == ISCSI_OP_TEXT_CMD: cmnd_exec_text -> text_scan_text ->  target_list_build() to 
+		build a list of targets that this initiator can attach
+
+
+kernel space:
+	get ioctl ISCSI_INITIATOR_ALLOWED:
+	iscsi_initiator_allowed:, this only check if initiator is allowed to attach this target,
+		so discovery can return this target
+		
