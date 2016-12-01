@@ -1,0 +1,14 @@
+1 ip link set interface up/down to up or down an intf
+2 ip addr add xxx.xxx.xxx.xxx/netmask brd + dev intf-name 
+3 ip route add xxx/xxx dev name
+4 ip route add xxx/xxx  via xxx.xxx dev name
+5 ip route add default  via xxx.xxx dev name
+(a route is xx.xx.xx.xx/netmask)
+
+ip route del  xxx/xxx
+
+ip link show
+ip addr show
+ip route show 
+(use -s to show more thing)
+
