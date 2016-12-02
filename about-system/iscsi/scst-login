@@ -1,14 +1,48 @@
 login : is a very very long process
-	subopcode: ISCSI_OP_LOGIN_CMD=>command_exec_login->login start : SESSION_NORMAL
-		session create into kernel
+	login cmd, get some infos from reading , just like discovery session type is normal
+		so  will create session in kernel, after that,
+		now poll and receive write request,
+		after written, because session_normal, begin create connection into kernel
+			conn_pass_to_kern()
+		after that, just close connection fd(now userspace connection closed)
+		(NOTE in connection, when added in, together with socket, so now kernel
+			can catch data from that sock and userspace can just close that sock
+			because no use now)
+		in connection add:
+			alloc a conn adding into session's list,
+			create a work which is a timeout( Nop-In interval 30): conn_nop_in_delayed_work_fn
+				and schedule that time long,if wakeup but hang time not longer than that,
+				again sleep rest time to fullfill that time long; if longer than that,
+				and no nop cmd in list, send a nop command to initiator
 
-	add_session->__add_session->create a iscsi_session(link target and sid) -> create a scst_sessoin(link
-											acg and	scst_tgt)
+	after adding conn,the conn_activate will add you to the iscsi rd thread list of thread istrd,
+		which is an empty command, and do a read, got -EAGAIN just return;
 
-	after add session is add connection:
-	conn_pass_to_kern->...ADD_CONN-> ioctl to kernel
-	get session and target, __add_conn(how it know the session??)
-	set conn's session and target
-	add a kobj using addr under session's obj
-	conn_activate => iscsi_make_conn_rd_active	,then add this conn into istrd list
-		and now iscsi_data_ready() is set in socket, and will get command
+	but now we have a scsi_data_ready in socket(may be above set nonblocking like options)
+		now this func is called and we will got the struct iscsi_conn we set in sock struct
+		and call the saved old data_ready func to fullfill normal net stack affairs
+	after got scsi_data_ready return, we in process_read_io() and do_recv() get data,
+		change into RX_CMD_START status and call cmnd_rx_start;
+			(original is RX INIT => RX_CMD(-EAGAIN)(then get scsi_data_ready and again from here) => RX_CMD_START
+
+
+call link: process_read_io->cmnd_rx_start->scsi_cmd_start->scst_rx_command->scst_alloc_cmd(add in command's cbd from recv's head)
+NOTE :			(we now have a command head,not comand!!)
+									->__scst_rx_cmd (get lun number)
+							->scst_cmd_init_done->scst_init_cmd->__scst_init_cmd->
+ scst_translate_lun(find scst_tgt_dev struct(using sess's list array and lun as index)
+ 	set cmnd's thread list == tgt's list == scst_dev's work list
+	__scst_init_cmd()=>scst_pre_parse()->scst_get_cdb_info() get command info from scst_scsi_op_list(INQUERY)
+	from scst_cmd_init_done->scst_process_active_cmd()(STATE_PARSE set in ini_cmd):
+
+	scst_parse_cmd->then call scst_prepare_space()->then scst_preprocessing_done()
+							(set request's state as ISCSI_CMD_STATE_AFTER_PREPROC,
+							cmd's state SCST_CMD_STATE_PREPROCESSING_DONE_CALLED,
+							return value as SCST_CMD_STATE_RES_CONT_NEXT,so out
+							and return with state what will not continue in 
+							scst_process_active_cmd)
+	in scsi_cmd_start-> req->conn->transport->iscsit_receive_cmnd_data(req):cmnd_rx_continue:
+	cmnd_rx_end()	
+
+
+

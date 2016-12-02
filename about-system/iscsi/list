@@ -90,3 +90,7 @@ when create session at a target: (one session attached to one lun, so one scst_u
 when add a connection:
 	session->conn_list:
 		save connection on that session
+
+after add session, immediately add a connection,immediately activate a conn:
+conn->cmd_list: in iscsi_cmnd_init:
+	because now we don't we have a command ,we alloc a iscsi_cmnd and add into conn->cmd_list

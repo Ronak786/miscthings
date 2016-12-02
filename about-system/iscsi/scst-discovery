@@ -1,7 +1,17 @@
-userspace:
-	how this opcode happen ? need back trace!!!
-	iscsi opcode == ISCSI_OP_TEXT_CMD: cmnd_exec_text -> text_scan_text ->  target_list_build() to 
-		build a list of targets that this initiator can attach
+user space:(during this period, we will have a connection struct exist along all time until discovery end
+		this struct will save current processing state in state machine)
+	initiator:
+		send a write data, including discovery infos,and some params(don't know what usage)
+		then wait for data to come
+		after getting data, again send ,this time, with SendTargets=All,then again wait,
+		after get data,close socket
+	target: (get poll_in state)receive fd,get data,check data,opcode is login 
+		(get poll_out state)send above data to initiator
+		(get poll_in state)receive data and opcode is text scan
+			target_build_list() to scan target that can be logined in, (call into kernel)
+		(get poll_out state) send target name and addr to initiator, again wait
+		(get poll_hup also others, revent is 25), try read but no data, so change to STATE_DROP,
+			destroy connection, discovery end
 
 
 kernel space:
