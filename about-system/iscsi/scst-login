@@ -62,6 +62,8 @@ NOTE :			(we now have a command head,not comand!!)
 												->scst_post_exec_sn
 												__scst_cmd_put
 
+	got data from done_local from reply from dev_handler then response
+
 
 NOTE: every command will allocate a struct , so can trace this ,another comnd will alloc
 	another struct
