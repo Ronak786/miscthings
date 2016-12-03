@@ -47,8 +47,9 @@ NOTE :			(we now have a command head,not comand!!)
 		get direction and data len to receive and send
 	INQUERY data size is zero,so set RX_END, res ==0 ,add into process_read_io list, again,now goto:
 	cmnd_rx_end()-> iscsi_push_cmnd()->iscsi_cmnd_exec()->iscsi_restart_cmnd()-scst_process_redirect_cmd()
-		(add into cmd's active list, this list I guess is scst_main_cmd_threads, so thread is 
-		scst_cmd_thread)
+		(add into cmd's active list, not ready cmd list, just activate list which processed by
+			dev_user_process_scst_commands() !!!)
+
 	now return, to process_read_io, set in above processing, set state as init bhs, res == 0, so
 		again do_recv, this time as start time,return again, can exit from istrd thread
 		and kernel will wait for another data come to call iscsi_data_ready
@@ -60,7 +61,46 @@ NOTE :			(we now have a command head,not comand!!)
 				scst_exec_check_sn->scst_exec_check_blocking->scst_do_local_exec()
 									  ->scst_do_real_exec->dev_user_exec
 												->scst_post_exec_sn
-												__scst_cmd_put
+											__scst_cmd_put
+/*
+	ANOTHER THREAD:(main_loop)
+	now user thread get
+	get-multi-cmd->getcmd return to userspace,doing, then return reply state:
+*/NO USER DOING NOW !!!
+
+		main_loop'thread's dev_user_reply_get_multi->dev_user_get_cmd_to_user->dev_user_get_next_cmd-> dev_user_process_scst_commands->scst_process_active_cmd()->scst_tgt_pre_exec()->scst_exec_check_sn()-
+		>scst_exec_check_blocking(set cmd->scst_cmd_done = scst_cmd_done_local) ->
+			scst_do_local_exec()
+			->scst_do_real_exec()(add to read_cmd_list,not activate_cmd_list !!)
+			->scst_post_exec_sn()
+			get out of scst_process_active_cmd(not in dev_user_process_scst_commands and then out it)->
+			__dev_user_get_next_cmd(u->state == UCMD_STATE_EXECING,set in dev_user_exec)->
+			scst_check_local_events
+		now user do things,after user done: dev_user_process_reply()->UCMD_STATE_EXECING:dev_user_process_reply_exec()-> dev_user_alloc_sg()->sgv_pool_alloc
+	->scst_set_resp_data_len()
+	->cmd->scst_cmd_done(cmd, SCST_CMD_STATE_DEFAULT, SCST_CONTEXT_DIRECT);==scst_cmd_done_local()->scst_process_redirect_cmd(SCST_CONTEXT_DIRECT,cmnd state SCST_CMD_STATE_PRE_DEV_DONE)->scst_process_active_cmd()->scst_pre_dev_done()
+	->scst_dev_done()(another state machine status)->scst_block_generic_dev_done-scst_check_unblock_dev()
+	(what unblock do???) 
+	return to status machine switch->scst_pre_xmit_response1()->scst_pre_xmit_response2()->scst_xmit_response()->
+		iscsi_xmit_response()->iscsi_tcp_send_data_rsp()->send_data_rsp()->iscsi_alloc_rsp()->iscsi_set_resid()
+		in send_data_rsp->iscsi_cmnds_init_write()->cmd_add_on_write_list)
+				->iscsi_tcp_send_locally()->req_cmnd_pre_release()
+							->iscsi_try_local_processing()->iscsi_send()->
+		iscsi_get_send_cmnd()->cmd_del_from_write_list()
+		->cmnd_tx_start()
+		->iscsi_do_send->write_data->vfs_writev()(iscsi_do_send got return 84 write state TX_END)
+		->cmnd_tx_end()
+		->rsp_cmnd_release->cmnd_put->cmnd_done
+		return to iscsi_tcp_send_locally->cmnd_put->cmnd_done->conn_put()
+									->scst_tgt_cmd_done->scst_process_redirect_cmd
+		SCST_CONTEXT_DIRECT_ATOMIC:scst_process_active_cmd()->(SCST_CMD_STATE_FINISHED:set in scst_tgt_cmd_done) scst_finish_cmd-> __scst_cmd_put->scst_free_cmd->dev_user_on_free_cmd(add to loop thread and the UCMD_STATE_ON_FREEING action will be do by user call into kernel again which will do free(but this should be done by another thread,
+		but the log show they both the same thread,maybe some wrong log happened)
+		
+		after the free call returned(real work done by another thread)->scst_release_space
+		->scst_destroy_cmd()
+		return to comnd_done()->cmnd->conn->transport->iscsit_free_cmd(cmnd):cmnd_free
+		return to scst_xmit_response()=<scst_process_active_cmd=<scst_process_redirect_cmd=<
+			scst_cmd_done_local(which is called by main_loop's kernel space in reply func:cmd->scst_cmd_done(cmd, SCST_CMD_STATE_DEFAULT, SCST_CONTEXT_DIRECT);) now exec finished !!!
 
 	got data from done_local from reply from dev_handler then response
 
