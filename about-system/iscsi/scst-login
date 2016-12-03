@@ -1,3 +1,4 @@
+SHOULD ADD A TRACE_SCSI  tag !!!
 login : is a very very long process
 	login cmd, get some infos from reading , just like discovery session type is normal
 		so  will create session in kernel, after that,
@@ -25,8 +26,9 @@ login : is a very very long process
 		change into RX_CMD_START status and call cmnd_rx_start;
 			(original is RX INIT => RX_CMD(-EAGAIN)(then get scsi_data_ready and again from here) => RX_CMD_START
 
-
+		back into process_read_io, res == 0,so again add into list, now state is start so:
 call link: process_read_io->cmnd_rx_start->scsi_cmd_start->scst_rx_command->scst_alloc_cmd(add in command's cbd from recv's head)
+					(every command start with tag ISCSI_OP_SCSI_CMD)
 NOTE :			(we now have a command head,not comand!!)
 									->__scst_rx_cmd (get lun number)
 							->scst_cmd_init_done->scst_init_cmd->__scst_init_cmd->
@@ -42,7 +44,27 @@ NOTE :			(we now have a command head,not comand!!)
 							and return with state what will not continue in 
 							scst_process_active_cmd)
 	in scsi_cmd_start-> req->conn->transport->iscsit_receive_cmnd_data(req):cmnd_rx_continue:
-	cmnd_rx_end()	
+		get direction and data len to receive and send
+	INQUERY data size is zero,so set RX_END, res ==0 ,add into process_read_io list, again,now goto:
+	cmnd_rx_end()-> iscsi_push_cmnd()->iscsi_cmnd_exec()->iscsi_restart_cmnd()-scst_process_redirect_cmd()
+		(add into cmd's active list, this list I guess is scst_main_cmd_threads, so thread is 
+		scst_cmd_thread)
+	now return, to process_read_io, set in above processing, set state as init bhs, res == 0, so
+		again do_recv, this time as start time,return again, can exit from istrd thread
+		and kernel will wait for another data come to call iscsi_data_ready
+
+	scst_cmd_thread:(got command from above processing)
+		!list_empty(&p_cmd_threads->active_cmd_list):
+			scst_process_active_cmd:
+				scst_tgt_pre_exec->iscsi_pre_exec set cmnd->state SCST_CMD_STATE_EXEC_CHECK_SN
+				scst_exec_check_sn->scst_exec_check_blocking->scst_do_local_exec()
+									  ->scst_do_real_exec->dev_user_exec
+												->scst_post_exec_sn
+												__scst_cmd_put
 
 
+NOTE: every command will allocate a struct , so can trace this ,another comnd will alloc
+	another struct
+
+	set TRACE ALL !!!
 
