@@ -2,3 +2,8 @@ git remote add origin xxxx(addr)
 git push origin b1(:b2) , means push local b1 onto remote as b2 branch, if b1 empty, then remove remote b2
 
 git reset HEAD  HEAD^  HEAD^^ HEAD^^^
+
+git diff (--staged used to compare stage and committed change)
+git commit -v can be used to remind you what change when writing commit comment
+
+git rm,  git rm --cached (to remove only from repo, not from cur dir)
