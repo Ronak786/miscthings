@@ -1,0 +1,96 @@
+c++ have name modifiy,  so if use C in c++, name in C will be changed, and that name now will not match the compiled name in c library,
+	so should use extern "C" { } to declare c variable in c++, and C have no such policy, so in headers , we have ifdef _cplusplus macro,
+	if defined this, a c++ file is compiled ,so will modify name, (g++ will do this maybe)
+
+weak symbol,  if no strong same name symbol, init to zero
+strong symbol, two strong (initialized ) will confilct if same name;
+__attribute__ ((week))
+
+weakref:  no argument, just like weak, have  arg, as a weak link to that target
+__attribute__ ((weekref)),
+
+debug info , gcc -g, use a format named DWARF , see it !!
+	use strip to cash those symbols
+
+compile procedure:
+	/usr/lib/gcc/4.4.7/cc1  main.c -o main.s
+	as main.s -o main.o
+	ld main.o xxx.so  xxx.so  --dynamic-linker=xxxx.so  -e main  -o a.out
+
+	FOR STATIC, should use -static, otherwise will error
+		normally use dynamic link
+
+relocate:
+	data: this often use absolute addr, so just put addr into that
+		place in intruction
+	addr: eg. call xxxx  this call use relative addr searching,
+		in rela entry, we have the addr of this calling place,
+		and we have absolute addr in symbol table,
+		and now IP point to the next addr of instruction,
+		so we use abs_addr - rela_addr + addend(set in place
+		of the instruction call) ,often addend is -4, means
+		the distance should be distance-4, because now ip
+		point to next addr, so current addr's length should 
+		be skiped when relative addr search
+
+relocate struct:
+	offset from section start or virtualaddr
+	info: index in symtab and rela type
+
+common block:(only uninitialed non-static var can be put here)
+	if global var have no initial var, readelf -s 's sym
+		index(belongs to which section) will be COMMON,
+		and if another file has a same name  var,but diff
+		type, then two linked, will occupy max(a,b) space,
+		and no warning /error,  
+		but if you use -fno-common, will warn/error,
+		or if weak sym is bigger than strong one(only
+		strong ones space will be allocated)
+	and at last linked and put into .bss
+
+	COMPILEer do this because global var can not be decided
+		until linker begin to scan all input files
+	
+.gnu.linkonce.name:
+	this like section will be linked once despite multiple
+	appear in each .o file as input files of ld,
+	usually used in c++ link, because class template will
+	generate same instance in every file using it, so ld 
+	should cash those duplicated ones
+
+-fdata-sections -ffunction-sections:
+	will put every func and data in one section,
+	so link will only take those may be used ones
+	and reduce file size(not recommended)
+
+ABI: 
+	this include var func's mem alloc method, 
+		name modify standard, call method
+		...
+
+-fno-builtin:
+	when use printf, if just strings, gcc will use
+	a faster  puts instead of printf,disable this
+	printf,  exit are all builtin functions ,so ifyou
+	want to use your own, use this flag
+
+static library:
+	multiple .o files in one .a file, and one .o file
+	have generally one function, because when linker
+	add functions, it will add a whole .o file, so 
+	if we put lots of file in one .o file, we will
+	have lots of no use functions in a linked exe file
+
+
+link scripts:
+	ENTRY () to set entry
+	example:
+
+	ENTRY(nomain)
+
+	SECTIONS
+	{
+	        . = 0x400000 + SIZEOF_HEADERS;
+		tinytext : { *(.text) *(.data) *(.rodata) }
+		/DISCARD/ : { *(.comment) }
+	}
