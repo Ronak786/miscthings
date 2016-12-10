@@ -1,0 +1,44 @@
+load:
+	occupy load, load a, then load b ,but mem not enough,
+	so occupy a , but a b should not call each other
+
+how to load:
+	allocate mm dir for new vritual addr space,
+	set map method(which mem map to file's which offset) VMA,
+	map is done with a page as a unit, so one segment's map 
+	will cost a page, so program header merge sections 
+	to save  place(same permission)
+		for all data on file
+	set cs ip, 
+
+when page fault:
+	find the vma that page belongs to, get offset filed from 
+		that vma, allocate a physical page, read file in 
+		set mapping relationship
+
+segment and vma:
+	see /proc/self/maps, segment will not exactly match the mapping,
+	1, mapping should align page edge, 
+	2, the last(.bss and later sections) because have not real data,
+		so will use heap to alloc, so last some bytes will not
+		map in the segment mapping, OR just a annonimous  map(
+			no file based map)
+
+segment align:
+	two segment 's cross field will be mapped two times, one for
+	each,  virtual addr  and file offset of that segment % align
+	will be the same value !!(these all done in ld ??)
+
+in process, down from stack
+	we have our prog name ,prarm  ,env
+
+load a exec:
+	execve: syscall->read frist 128 bytes, scan to find 
+		handler(elf, scripts, a.out, java...)
+	elf:
+		find dynamic link info,
+		set mapping vma, set start entry(start entry or
+			dynamic link) as execve's return ip
+		then return, now return will not return to
+		your process, will return into another
+		place ip specified

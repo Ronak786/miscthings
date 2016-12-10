@@ -1,0 +1,11 @@
+gcc -fPIC -shared -o xxx   yyy
+	.so have no address, because address decided by loading
+
+relocate when link:
+	this is what we do previous when use ld
+	after this, in elf exec file,we have all symbol resoluted
+
+relocate when load:
+	old time do this, because can not decide where to load,
+	so not reloate when link, but do it when load
+	(use -shared but not use -fPIC)

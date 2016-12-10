@@ -94,3 +94,36 @@ link scripts:
 		tinytext : { *(.text) *(.data) *(.rodata) }
 		/DISCARD/ : { *(.comment) }
 	}
+
+	assign must end with ;
+	command may not use ;
+	have +-*/ += & | >> ....
+	use /* */ comment
+	use "" to include name if have special chara
+
+	startplace: (high->low)
+		ld -e
+		ENTRY(xxx)
+		_start:
+		.text start place
+		0 place
+	STARTUP(filename) first input file
+	SEARCH_DIR(path)  like -Lxxxx
+	INPUT(xxx,xxx....)  input files
+	INCLUDE XXXX
+	PROVIDE(symbol) define symbols, can be referenced by program
+	SECTIONS
+	{
+		secname : { contents}
+	} (white space is important after secname)
+	secname should be accepted by the obj file's format
+	(a.out only accept .text .data .bss)
+	secname /DISCARD/ : {xxx} will discard these sections
+	
+	contents:  filename(section) xxx xxx xxx
+			file.o(.text)  or just [a-z]*(.text[A-Z])
+
+
+BFD:
+	an interface used by binutils to support multiple object
+	format,gdb ... all use this instead just operate elf files
