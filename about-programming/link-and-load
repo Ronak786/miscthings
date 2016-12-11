@@ -9,7 +9,7 @@ how to load:
 	will cost a page, so program header merge sections 
 	to save  place(same permission)
 		for all data on file
-	set cs ip, 
+	set cs ip, (if dynamic link used ,set its addr and our addr as arg)
 
 when page fault:
 	find the vma that page belongs to, get offset filed from 

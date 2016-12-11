@@ -1,0 +1,99 @@
+use plt table between reference and got:(for funcs, not for var)
+	.got  put global vars addr
+	.got.plt  put outside func's addr(after dynimic link put them here,
+			before,it it an addr in .plt)
+
+		first three entry of .got.plt is  .dynamic addr;  module id;
+						dynamic-link_func's addr
+					(the latter two filled by dynamic linker)
+	.plt  first two command is reference to the second and third entry
+		of .got.plt to module id and dynamic-link's func
+
+	SO exec should know something about all .so it will use when run,
+		so when link use ld, -lxxx is needed even if dynamic resolve 
+		is being used
+
+	.interp this section store the dy-ld this elf use
+		specify: --dynamic-linker=xxxx
+
+	.dynamic 
+		store info about dynamic ,like elf head to a static  elf file
+
+	.dynsym 
+		like symtab, but only have dynamic related symbols(symtab have all)
+
+	relocation in dynamic link:(for data absolute)
+		infos in .dynamic are dynamic global infos,
+		infos in .rel.dyn are vars should be relocated when
+			mapped into exec's addr space
+			when compile .so, those data have absolute value,
+			so now should be another addr,just fill in that addr;
+
+			.rel.plt are function reloate (are policy when resolve
+				symbol using dynamic-linker, how to fill the found
+				addr in .got.plt)
+
+			in .rel.dyn we have another rebase method: add 
+				a base addr plus the offset record in this entry
+
+		IF use -fpic, func will be in .rel.plt,
+		if nouse -fpic, funcs will together with var in .rel.dyn
+
+		so symbols in .rel.dyn will be resolved during load
+		 symbols in .rel.plt will be resolved during running
+
+	
+what in a process's stack after init space and about to run dynamic-linker:
+	from a start addr to stack end
+	start: argc, argv strings ... , 0, env strings...,0,auxiliary vectors,0
+
+	auxiliary vector: this array contain member describe infos
+		dynamic linker use(program hheader addr,start entry...)
+
+
+start dynamic linker:
+	first resolve itselves's symbols and relocate itselves' .got,
+	after that ,it can use funcs and vars in it own
+
+	then it loads all .so according to your exec's .dynamic,
+	and loaded .so's .dynamic, map them into your address space,
+	and add their symbol table into a global symbol table;
+	(if duplicat symbol exist, only the frist will be record);
+	because of this occupy, call in local not using "static" will
+	use .got.plt instead relative addr(because relavtive func will
+	be occupy into another func)
+
+	after import all symbols, now begin to relocate .got .plt entries;
+
+	after that, do .so file's .init codes
+
+about dynamic linker:
+	this is static linked, and pic, so that address relocate is easier
+	it can be run as a program and make  a program as argument
+
+
+runtime link:
+	use dlopen, dlsym dlerror dlclose
+	dlopen open a library, then load into your addr space,
+	accroding to flag, resolve symbols or lazy resolve(depending lib
+		should be load by your own!!)
+	dlsym may return func or var or const symbol(compiler generate)
+
+	dlopen's symbol finding policy: 
+		if open global table, use dynamic linker's occupy policy,
+		if open your own lib, wide priority search
+
+
+.so name:
+	libc.so.6 this is major version, readelf -d xxx can see in 
+		DT_SONAME the name of softlinke with major name,
+		when search, will search through this major link version,
+
+		use ldconfig can change these softlinks to point to 
+		different real versions  libc.so.6.2.3  major, minor, release
+		major are not compatible, minor update but compatible,
+		release fix some bugs
+
+	use -static to link xxx.a,  -Bdynamic(or default) to link xx.so
+
+
