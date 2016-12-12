@@ -1,0 +1,42 @@
+symbol:
+	every symbol in a .so have a version number with it, 
+	we link a .so,and will see puts@GLIBC_2.5.5 ,so 
+	we need puts of versino 2.5.5 at lease, this is a 
+	complishment of DT_SONAME, 
+
+	use --version-scripts xxx  ,then ld will read script
+	and deal it with your .so file(see book)
+
+
+ldconfig will update /etc/ld.so.cache ,this collect infos about 
+	libs/dirs in /etc/ld.so.conf.d, so search will be optimized
+
+	dynamic linker first search DT_NEED ,then 
+	LD_LIBRARY_PATH then ld.so.cache, then /lib /usr/lib
+
+	LD_PRELOAD is before ld.so load any .so,  this used to
+	occupy normal symbols
+
+	LD_DEBUG=files/bindings/libs/versions/reloc/symbols/statics/all/help  ./xxx
+		show  dynamic ld's processing  !!!
+
+generate .so:
+	-fPIC -shared -Wl,-soname,yourname  -Wl,rpath=xxxx
+	soname used by ldconfig to update softlink, rpath will
+	let ld-so to search this first
+
+	-export-dynamic will export all global symbol into .dynsym, so
+	other .so can find it when we import those .so
+
+	ld -s /-S  not include debug symbols
+
+	ldconfig -n  can process only those dirs , useful together will
+	gcc's -L  -lxxx
+
+	__attribute__((constructor(n)))
+	__attribute__((desstructor(n))) ,used to put func into .init and finit
+	to be run when load .so before main is run
+
+	GROUP( /lib/libc.so.6 /lib/libm.so.2)  ,this put  into a file called libfoo.so
+	then the libfoo.so is a so file which treated like a true .so file
+	which have all function of libc and libm

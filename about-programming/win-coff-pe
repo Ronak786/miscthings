@@ -1,0 +1,7 @@
+coff obj type
+pe  execute type
+
+use dumpbin to get info from file
+
+.drectie this section in coff used to inform ld 
+	how to do link

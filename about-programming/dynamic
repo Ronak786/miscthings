@@ -1,0 +1,64 @@
+gcc -fPIC -shared -o xxx   yyy
+	.so have no address, because address decided by loading
+
+relocate when link:
+	this is what we do previous when use ld
+	after this, in elf exec file,we have all symbol resoluted
+
+relocate when load:
+	old time do this, because can not decide where to load,
+	so not reloate when link, but do it when load
+	(use -shared but not use -fPIC)
+
+PIC:(-fPIC better than -fpic , latter faster but have restriction on some
+	platform)
+	in module command jmp: use relative jmp
+	in module data access, because data have no relative
+		address search method in ISA, so here we call
+		a func to get next cmd's addr in a reg, then
+		use that as a relative addr's base
+
+	other module data access,
+		.got,  every entry in this table 
+			have an address of a var in other obj file,
+			this table is in data section , so can be modified,
+			because command should not modify because we 
+			want to share code multi processes;
+			so when load(or run),we find another symbol in another
+			obj, store the address in the got entry,
+			when access, use a not direct access 
+			like *(got entry)  to get that value
+
+	other module func call:
+		.got same as other module data access
+
+PIE :
+	used to compile exe file instead of .so file in pid type code
+
+global vars(not static) in .so:
+	.so can not determini this reference is in .so(multi .o) or outside,
+	so will put reference in .got entry, 
+	when an exec compiled, extern ref will be put as a data in .bss,
+	then once the  exec load and link this .so,
+	the .got entry will be modified to point to the var in exec's .bss,
+	if exec have no this var's ref, will be modified to pointer to
+	local .so's define place of this var, so this is a portable method
+
+SO THE USE OF .got is to avoid code modify(so can share) for .so, just need 
+	to modify .got and this is in data section ,will have a copy for every
+	exec load that .so
+
+pointer in .so:
+	those pointer's data( an address) will be changed,
+	so a relocate entry should be applied when load by an exec ;
+	usually exec use pic method generate code, so code can be used 
+	by other program
+
+
+
+link when load defect:
+	when access data , outside call /data , will use some compute
+	and indirect access, have some performance lost
+
+	and have to resove some symbol when load, so load and exec is 
+	slow(especially global var will slow this)
