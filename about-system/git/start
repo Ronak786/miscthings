@@ -1,3 +1,34 @@
+config :
+	git config (--global/--system) xxxx   see manpage git-config(core.editor user.name user.email ..)
+	git conifg --list to show /  git config param
+help:
+	git help xxx/ git xx --help / man git-xxx
+clone:
+	git clone webaddr  (optional name) (http, user@xxx:xxx  ,git://xxxxx)
+status:
+	-s will show two column, MM  left means staged but not commited, right means modified but not staged
+	 	untracked file is ?? , added new files are _A
+gitignore:
+	* ? glob pattern
+	[abc] [1-9] match any char inside
+	/xxx   only ignore that file,not recursively, so only the file specified(not dir) can be ignored
+	!xx  not ignore that
+	xxx/  ignore a dir
+	xxx/**/xxx  ignore pattern in subdir recursively
+diff:
+	git diff: diff from modified to staged
+	git diff --staged/--cached : diff from staged to committed
+commit:
+	git commit will pop a editor, git commit -v can output more comment info help you to
+		write your commit description
+	git commit -m "xxx" without vim editor
+rm:
+	git rm xxx remove a file from repo and from your work dir
+	git rm --cached only remove from repo
+	rm support *, so use \* to avoid shell extension
+mv:
+	git mv old new,  rename a name
+
 git remote add origin xxxx(addr)
 git push origin b1(:b2) , means push local b1 onto remote as b2 branch, if b1 empty, then remove remote b2
 
