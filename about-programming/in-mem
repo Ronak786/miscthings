@@ -1,0 +1,19 @@
+stack:
+	when load into memory, stack will be set
+	and args and envs will be put at the end of stack,
+	then esp will point to start of stack
+	now glibc's crt1.o will do init in _start entry,
+	call .init functions in crti and end with crtn
+	the crtbeginT and crtend are for c++ init fini functions
+	libgcc libgcc_eh.... are helper functions in gcc for compile
+
+	also io be initialized(open stdin stdout stderr)
+
+	then main will be called , then returned, exit functions registered
+	will be called including .finit funcs, then call exit syscall
+
+heap:
+	this used for mem alloc, usually malloc alloc a region from this
+	then do its own user space alloc, 
+
+

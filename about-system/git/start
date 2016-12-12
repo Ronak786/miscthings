@@ -28,6 +28,23 @@ rm:
 	rm support *, so use \* to avoid shell extension
 mv:
 	git mv old new,  rename a name
+log:
+	git log -p -n  will print all detail infos for n commits(these two option may used not together)
+	git log --stat will print only file modify infos
+	git log --pretty=oneline short full fuller print some degree detail(no file diff infos)
+	git log --pretty=format:"%h - %an, %ar : %s" can also use colors ,see conf/ 's example
+	git log --author  --grep --since --until ....  	
+	git log -Sxxx  can show changes related on that string(used to find changes to that function)
+			diff from --grep as --grep search commit msgs, but this search patch content
+	--all-match : this only useful when multiple --grep is used and you want to match both not either
+			other options not take effect, default is always both
+	last option:  --  dir/   ,the last option to limit range into a dir (used after --)
+
+--amend in commit:
+	git commit --amend will add your stage area content with your last commit to organize a 
+		new commit to replace your old commit msg
+reset:
+	reset stage into unstage: git reset HEAD  <file>
 
 git remote add origin xxxx(addr)
 git push origin b1(:b2) , means push local b1 onto remote as b2 branch, if b1 empty, then remove remote b2
