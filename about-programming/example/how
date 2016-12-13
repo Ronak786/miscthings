@@ -1,0 +1,2 @@
+gcc -c nomain.c -fno-builtin(this to forbid builtin exit and printf)
+ld -T nomain.lds nomain.o -o nomain

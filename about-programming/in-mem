@@ -16,4 +16,10 @@ heap:
 	this used for mem alloc, usually malloc alloc a region from this
 	then do its own user space alloc, 
 
+constructor:
+	this will make a call func to call these ctor funcs in 
+	a obj file, then gather these made funcs into the global
+	.init .finit section's func which defined in crtbegin 
+	andcrtend, as head and tail, 
+
 

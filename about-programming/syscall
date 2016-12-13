@@ -1,0 +1,40 @@
+NOTE : .so have all exported symbols as dynamic symbols, so use objdump -T to check
+
+without kernel help, program want to wait,then will do a loop,
+	but as cpu power up, same loop will cost less time,
+	so old program will run faster as  before using this method
+
+syscall in userspace:
+	generally is  int $0x80, and put number of syscall in eax,
+		args in ebx ecx edx esi edi ebp
+		get return value in eax, get error number in errno
+
+stack change when syscall:
+	hardware do when int 80, push user's ss sp eflags, cs ip,
+	when done , use iret to pop all
+
+when call syscall:
+	in kernel, in trap_init when start kernel will register
+		a function for 80 interrupt, then when called,
+		pushd all regs, use number in eax to search
+		syscall table to get func addr and  call,
+		then restore all regs, then iret
+new syscall:
+	use sysenter, and this is  a asm, we call a wrap syscall function
+	which is mapped into process's space by kernel when process
+	loaded, that func will get arg as int 0x80 and do other's things
+	like it, but more efficient
+		because int is less efficient
+
+asmlinkage:
+	syscall use gcc attribute to forbit param transfer in register,
+	normal funcs will pass in register
+
+
+WINAPI:
+	is a layer between userprogram and syscall,
+	it will call func in a dll which will call syscall,
+	this win api used to mask kernel related difference
+
+	windows also support unix posix calls, turn these calls 
+	into win api funcs
