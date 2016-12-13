@@ -22,6 +22,7 @@ commit:
 	git commit will pop a editor, git commit -v can output more comment info help you to
 		write your commit description
 	git commit -m "xxx" without vim editor
+	git commit -v can be used to remind you what change when writing commit comment
 rm:
 	git rm xxx remove a file from repo and from your work dir
 	git rm --cached only remove from repo
@@ -38,6 +39,7 @@ log:
 			diff from --grep as --grep search commit msgs, but this search patch content
 	--all-match : this only useful when multiple --grep is used and you want to match both not either
 			other options not take effect, default is always both
+	--decorate : use this can see where your HEAD on(on which branch)
 	last option:  --  dir/   ,the last option to limit range into a dir (used after --)
 
 --amend in commit:
@@ -45,13 +47,88 @@ log:
 		new commit to replace your old commit msg
 reset:
 	reset stage into unstage: git reset HEAD  <file>
+	undo changes in work dir: git checkout -- <file>
+	git reset HEAD  HEAD^  HEAD^^ HEAD^^^
 
-git remote add origin xxxx(addr)
-git push origin b1(:b2) , means push local b1 onto remote as b2 branch, if b1 empty, then remove remote b2
+remote:
+	git remote -v show remote addr and alise name
+	git remote add name url
+	git remote show for more info :show remote branches: your pull trackedd branch; your push trach branch
+	git remote rm xxx  to remove
+	git remote rename old new
+	git ls-remote name to show sha value with branch pointer name
+	use fetch, then you will have remote-track branches you can merge or checkout ,but not modify;
+		or use git checkout -b branchname remotebranch(short as
+			git checkout --track remote/branch or even short as
+			git checkout branchname(because remote br name is exactly the name you type))
+		this will auto set the pull and push track between remote and local this branch
+	delete remote:
+		git push origin --delete branchname
+		git push origin :branchname
 
-git reset HEAD  HEAD^  HEAD^^ HEAD^^^
+branch:(HEAD is a pointer point to one of branch labels)
+	create branch:
+		git branch name t(just a label, the same as the label now on like master)
+	switch branch:
+		git checkout name
+		now we can use diff branch to do significant job,just checkout among them
+	create and switch:
+		git checkout -b xxx /-D xxx for branch not yet merged
+	delete:
+		git branch -d  : it just delete a label name
+	scan branch:
+		git branch -v/-vv(show traced branch)  / --merged / --no--merged   
+				show branch that have merged into current branch or not
+	set track upstream(can use git pull):
+		git branch -u origin/name, now you can use @{upstream} or @{u} as a alias of origin/name
 
-git diff (--staged used to compare stage and committed change)
-git commit -v can be used to remind you what change when writing commit comment
+rebase:
+	git checkout br2; git rebase br1:
+		checkout into a br1, git rebase br2, now modification from a original to br1 will be applied to br2;
+			and then checkout to br2, do a merge br1(now is a fast forward), 
+			then your log is a straight line!!
+	on any branch; git rebase --onto br3 br2 br1:
+		checkout br1's patch from ancestor of br1 and br2 and apply these on br3
+	on any branch; git rebase br2 br1:
+		checkout br1's patch from ancestor of br1 and br2 and apply onto br2
+	if confusing log is made , do a git rebase origin/master may help
+		or a git pull --rebase
+	
+merge:
+	git merge to merge another branch into current, if directly, will fast forward
+			if not directly, will create a merge commit and now master is it	
+			if conflict, git status check every file ,or git mergetool to use 
+				util to merge
 
-git rm,  git rm --cached (to remove only from repo, not from cur dir)
+origin:
+	use git clone, remote will default be this, and remote branch will be origin/branch
+		use git clone url xxx -o nnn , then remote name will default be nnn
+fetch:
+	git fetch name (now you have all branch as  name/branch , and you can do merge your own)
+pull:
+	if using git clone, local master branch is set tracked to remote master, so in master branch,
+		we can run git pull to get and merge data from remote branch master,this is branch track
+push:
+	git push remotename  branch(:remote diff name)
+credential.helper cache:
+	is a config you can use to skip passwd for some seconds when push frequently
+tag:
+		git tag -l "pattern"  list tags match pattern, can use glob
+	light weight tag: git tag name (tag current state)
+	annotated tag:	  git tag -a name  -m "commnet"
+		git show tagname  will show your tag and infos
+		git tag name  commit-sha-value to tag one commit
+	tag push is diff from branch push
+		git push origin tagname  to push one tag
+		git push origin --tags  to push all tags
+	checkout tag:
+		first add a tag
+		second: git checkout  -b  branchname  tagname
+
+alias:
+	git config --global alias.xx  your git command eg.  alias.unstage "reset HEAD --"
+				alias.ls "!ls"  call outside commands in git command style
+
+git diff  to compaire work dir with stage area
+	--staged used to compare stage and committed change
+

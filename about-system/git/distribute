@@ -1,0 +1,27 @@
+repo location:
+	local : git clone  path  or file://path
+		the file:// is used if you have other version control info in old dir and 
+			you do not want them in new dir, but is slow
+		when push:
+			git push/pull  your-git-path   is enough
+	smart http:	
+		this can be used like git:// or promtp user passwd, so is common and conveinent
+	ssh 
+		good to priv use
+		but readonly fetch hard to implement
+	git://
+		this usually for read only , when usually together with other protocal
+
+create a repo:
+	git clone --bare xxxx  , we will have a bare repo
+	use scp to copy this repo into a user's permission on a mathine(careful the premissoin of dir 
+			including it)
+	git init --bare --shared will give group write permission
+	then set ssh for a user and allow permissoin for those who can write
+
+	create a user, create .ssh ,chmod to 700, create  authorized_keys file, chmod to 600
+
+	add git-shell in /etc/shell, chsh git  ,type in git-shell
+		now users use git as user login will fail, but git communicate will work fine
+
+NOW END AT BEGINNIG OF CHAPTER 4.5 GIT-DAEMON
