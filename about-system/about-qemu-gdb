@@ -1,0 +1,5 @@
+使用gdb直接运行阶段查看内核信息 ， 首先内核加入debuginfo编译，然后必须要有使用的内核的非压缩image，然后gdb  vmlinux /proc/kcore（即时生成） ，如果要改变信息，gdb中要再次运行core-file  /proc/kcore， 如果要加入模块的信息 ， 首先插入模块，然后gdb  add-symbol-file   (path of the module)  text-addr  -s  data-addr -s bss-addr  , 这些地址从  /sys/module/XXX/sections/.text或.data中获得 ， 
+
+qemu  启动内核调试，  首先编译内核，加入debug信息 ，然后构建根目录（这两部可以直接用一个崭新的系统替代），用busybox即可。 qemu-system-x86_64  -hda rootfs.img -kernel  xxx   -append "root=/dev/sda"  -S 即可 ， gdb 中会有bug 具体网上有解决方法，只要修改remote.c中的代码，然后重新编译即可，具体的使用方法是，加入断点，然后 continue  ，然后打印信息查看。就好了。
+
+
