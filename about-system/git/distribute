@@ -33,7 +33,6 @@ git daemon:
 		omit prefix path, and the last xx/xx is the path where git protocal can
 		access
 	then create a git-daemon-export-ok file in the repo you want to export
-
 smart/dumb http:
 	a little complicate, and diff apache tool config diff, may be learn later
 
