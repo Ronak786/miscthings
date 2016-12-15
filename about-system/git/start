@@ -37,6 +37,11 @@ log:
 	git log --author  --grep --since --until ....  	
 	git log -Sxxx  can show changes related on that string(used to find changes to that function)
 			diff from --grep as --grep search commit msgs, but this search patch content
+	git log --no-merges:
+		show not merge infos, so they are raw patch pushes
+	git log aaa..bbb
+		means show log of commit that changes made  on bbb but not on aaa
+		后面相对于前面改了什么
 	--all-match : this only useful when multiple --grep is used and you want to match both not either
 			other options not take effect, default is always both
 	--decorate : use this can see where your HEAD on(on which branch)
@@ -83,6 +88,7 @@ branch:(HEAD is a pointer point to one of branch labels)
 		git branch -u origin/name, now you can use @{upstream} or @{u} as a alias of origin/name
 
 rebase:
+	-i  interactively, can choose which patch to rebase
 	git checkout br2; git rebase br1:
 		checkout into a br1, git rebase br2, now modification from a original to br1 will be applied to br2;
 			and then checkout to br2, do a merge br1(now is a fast forward), 
@@ -93,12 +99,22 @@ rebase:
 		checkout br1's patch from ancestor of br1 and br2 and apply onto br2
 	if confusing log is made , do a git rebase origin/master may help
 		or a git pull --rebase
+	a rebase then a push,may be rejected, use git push -f if needed
 	
 merge:
 	git merge to merge another branch into current, if directly, will fast forward
 			if not directly, will create a merge commit and now master is it	
 			if conflict, git status check every file ,or git mergetool to use 
 				util to merge
+	--no-commit:
+		try to merge but immediately fail, so next time commit will create a 
+		merge commit info
+	--squash:
+		get another branch's change but not merge, next time commit will create
+		a normal commit, just like we do some modify on local branch
+request-pull:
+	git request-pull repo-you-want-to-push-to  your-priv-repo
+		this used to generate a pull request to be sent to maintain to pull your request
 
 origin:
 	use git clone, remote will default be this, and remote branch will be origin/branch
@@ -121,6 +137,8 @@ tag:
 	tag push is diff from branch push
 		git push origin tagname  to push one tag
 		git push origin --tags  to push all tags
+	push -u 
+		set a upstream track
 	checkout tag:
 		first add a tag
 		second: git checkout  -b  branchname  tagname
@@ -131,4 +149,13 @@ alias:
 
 git diff  to compaire work dir with stage area
 	--staged used to compare stage and committed change
+	--check  scan white space error
 
+add:
+	git add -p can interactively add, ask you to split a file's patch into small patches 
+		and add portion into stage area and portions not
+
+format-patch:
+	used to generate a patch can be used to send to others through email,
+	then you can set your email settings in git config, 
+	details in pro-git: 5.2 contributing to a project
