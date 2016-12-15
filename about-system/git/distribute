@@ -25,3 +25,18 @@ create a repo:
 		now users use git as user login will fail, but git communicate will work fine
 
 NOW END AT BEGINNIG OF CHAPTER 4.5 GIT-DAEMON
+
+git daemon:
+	use "git daemon --user=xx --group=xxx  --reuseaddr --base-path=xx/xx  xx/xx" to 
+		create a git daemon for others to use git protocal to connect in,
+		make sure this user has only read permission to repo, base-path used to
+		omit prefix path, and the last xx/xx is the path where git protocal can
+		access
+	then create a git-daemon-export-ok file in the repo you want to export
+
+smart/dumb http:
+	a little complicate, and diff apache tool config diff, may be learn later
+
+gitweb
+gitlab:
+	has website  we can use to learn how to deploy these
