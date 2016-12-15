@@ -1,0 +1,22 @@
+gdb -tui:
+	open a tui, upper is source code window, use 'l linenumber' can change show,
+		use up, down can select
+	break, tbreak:
+		latter one only take effect frist time
+	until number,  
+		run until the specifed line, or current line(used in loop)
+	finish:
+		run until current frame finish(so cur function finish)
+	step, next:
+		former will check into function
+	watch ( a > 3)
+		set a watch point, when condition is true, will stop
+	frame n , up , down, bt
+		to select frame, up to origin, down to current
+	help 
+		to get help
+	
+	
+
+debuginfo-install  to install glibc debuginfo, then we can
+	set break point into glibc's crti.so crtn.so ....
