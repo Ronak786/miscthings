@@ -18,6 +18,8 @@ gitignore:
 diff:
 	git diff: diff from modified to staged
 	git diff --staged/--cached : diff from staged to committed
+	git diff aaa...bbb , 
+		what is on bbb that not on aaa && bbb's common base
 
 merge-base a b
 	this tell you the best common base of this two branch
