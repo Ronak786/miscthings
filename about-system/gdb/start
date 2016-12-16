@@ -1,28 +1,87 @@
+debuginfo-install  to install glibc debuginfo, then we can
+	set break point into glibc's crti.so crtn.so ....
+
+.gdbinit under project dir, under home dir for global setting
+
+-command=xxx :
+	read command from xxx and run a exec ( the sequence is unknown now ??)
+
 gdb -tui:
 	open a tui, upper is source code window, use 'l linenumber' can change show,
 		use up, down can select
 	break, tbreak:
 		latter one only take effect frist time
-	until number,  
+	until linenumber,func, file:func, file:linenum
 		run until the specifed line, or current line(used in loop)
+		if no number, run until next line is reached, useful in loop
 	finish:
 		run until current frame finish(so cur function finish)
-	step, next:
-		former will check into function
+	step, next number
+		former will check into function(only if that function has debug info)
+		give a number can do that times of instruction
+	continue num:
+		continue and ignore subsequent num-1 times' break point
 	watch ( a > 3)
 		set a watch point, when condition is true, will stop
 	frame n , up , down, bt
 		to select frame, up to origin, down to current
 	help 
 		to get help
+
+help command:
+	check help
+
+info command:
+	get command's current status
+
+BREAK POINT:
 	
-tbreak, watch:(use corresponding   clear to" clean "that bp)
-	break linenum
-	break func
-	break file:func
-	break file:line
-	break +offset  -offset
-	break *address
+	break's status:
+		keep: after encounter break point, keep it
+		dis : after encounter , disable it
+		del : after encounter , delete it
+	tbreak, watch:(use corresponding   clear to" clean "that bp)
+		break linenum
+		break func
+		break file:func
+		break file:line
+		break +offset  -offset
+		break *address
+
+	break condition:
+		break xx if (bool expression)
+			the expression can even be the function you defined or library func
+			but if lib func has not debuginfo, the return value will be explained as int!!
+		cond num bool-expression: (cancel using "cond num")
+			set condition to break num
+
+	break comands set:
+		one set of command will be run when a specific break point is encouterred
+
+		commands  num(br num)
+		silent  
+			( we can use this to suppress output like "breakpoint 1 xxxxx"
+			except our commands' output)
+		printf "sssss%d\n",2
+		xxxx
+		xxx
+		continue  ( we put continue here, so after print out, we will continue automatically)
+		end
+		now all commands will be done when break
+
+	macro(usually be in .gdbinit)
+		define yyyy
+		xxx
+		xxx
+		end
+		when  use yyyy, args passed using white space, and in field we
+			referred them as $arg0, $arg1 .... (at most 10)
+	THE ABOVE TWO, TOGETHER WITH function used as conditions,or param of printf ,can be very powerful !!
+
+	show user:
+		show all user defined  macros
+
+	condition ( < <= == != > >= && ||  & | ^ >> << + - * / %   !xxxxx)
 
 delete breaknum
 	( in .gdbinit should use set confirm off)
@@ -34,17 +93,21 @@ enable:
 enable once xxx 
 	just enable once , and disable
 
-clear  breakline
+NOTE: hw breakpoint, hw watch point, the "hw" is hardware supported breakpoint,
+	and have number limited, but is faster
+
+WATCH POINT:(if var is changed, then break): eg. watch var
+	watch point should be set only when in that var 's effective field,
+		(if auto var, then only in that func can set, and after func finish, point
+		will be removed)
+	watch expression (so will break if that bool becomes true)
+
+
 	
 change concentrate:(then break will choose that file default):
 	list file
 	run into one file
 	break into one file
 
-debuginfo-install  to install glibc debuginfo, then we can
-	set break point into glibc's crti.so crtn.so ....
-
-.gdbinit under project dir, under home dir for global setting
-
--command=xxx :
-	read command from xxx and run a exec ( the sequence is unknown now ??)
+print:
+	p/x $pc,  print register's value
