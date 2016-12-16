@@ -18,6 +18,15 @@ gitignore:
 diff:
 	git diff: diff from modified to staged
 	git diff --staged/--cached : diff from staged to committed
+
+merge-base a b
+	this tell you the best common base of this two branch
+	so you can git diff that commit, and see what your branch do to that common base
+
+	SHORT :
+		git diff aaa...bbb , 
+			what is on bbb that not on aaa && bbb's common base
+	
 commit:
 	git commit will pop a editor, git commit -v can output more comment info help you to
 		write your commit description
@@ -39,9 +48,13 @@ log:
 			diff from --grep as --grep search commit msgs, but this search patch content
 	git log --no-merges:
 		show not merge infos, so they are raw patch pushes
-	git log aaa..bbb
+	git log branchname --not tagname:(both revison name)
+		show log in  aaa but not in bbb
+	git log aaa..bbb (this see man gitrevision)
 		means show log of commit that changes made  on bbb but not on aaa
 		后面相对于前面改了什么
+	git log --not aaa:
+		you are on bbb, so just like aaa..bbb
 	--all-match : this only useful when multiple --grep is used and you want to match both not either
 			other options not take effect, default is always both
 	--decorate : use this can see where your HEAD on(on which branch)
@@ -72,6 +85,7 @@ remote:
 		git push origin :branchname
 
 branch:(HEAD is a pointer point to one of branch labels)
+	git branch repo   yourname(just like git checkout)
 	create branch:
 		git branch name t(just a label, the same as the label now on like master)
 	switch branch:
@@ -112,6 +126,10 @@ merge:
 	--squash:
 		get another branch's change but not merge, next time commit will create
 		a normal commit, just like we do some modify on local branch
+cherry-pick:
+	this used to pick a specific commit from a branch and apply it on your cur branch
+rerere:
+	set rerere.enable to true, this used to dec your work of merge conflict resolve ???
 request-pull:
 	git request-pull repo-you-want-to-push-to  your-priv-repo
 		this used to generate a pull request to be sent to maintain to pull your request
@@ -159,3 +177,24 @@ format-patch:
 	used to generate a patch can be used to send to others through email,
 	then you can set your email settings in git config, 
 	details in pro-git: 5.2 contributing to a project
+
+patch apply:(this will do whole or nothing, not do partial)
+	apply is for git diff , not for git format-patch
+	apply a single patch from others:
+		git apply  path-to-patch(git diff is better than diff because it handles file create/del)
+	apply --check: 
+		just try
+
+am:
+	git am xxx  to apply a format-patch  patch, (some more advanced usage see pro-git 5.3)
+
+sign:
+	used with gpg, see 5.3
+describe:
+	generate a string human readable of tag, version ...
+
+archive:
+	git archive branchname --prefix='dir/' |  gzip > xxxx.tar.gz
+	git archive branchname --prefix='dir/' --format=zip |  xxxx.zip
+
+
