@@ -16,7 +16,35 @@ gdb -tui:
 	help 
 		to get help
 	
+tbreak, watch:(use corresponding   clear to" clean "that bp)
+	break linenum
+	break func
+	break file:func
+	break file:line
+	break +offset  -offset
+	break *address
+
+delete breaknum
+	( in .gdbinit should use set confirm off)
+
+disable :(no arg to disable all)
+	disable breaknum breaknum ...
+enable:
+	enable .. ... .. 
+enable once xxx 
+	just enable once , and disable
+
+clear  breakline
 	
+change concentrate:(then break will choose that file default):
+	list file
+	run into one file
+	break into one file
 
 debuginfo-install  to install glibc debuginfo, then we can
 	set break point into glibc's crti.so crtn.so ....
+
+.gdbinit under project dir, under home dir for global setting
+
+-command=xxx :
+	read command from xxx and run a exec ( the sequence is unknown now ??)
