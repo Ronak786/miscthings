@@ -52,12 +52,13 @@ BREAK POINT:
 		break xx if (bool expression)
 			the expression can even be the function you defined or library func
 			but if lib func has not debuginfo, the return value will be explained as int!!
-		cond num bool-expression: (cancel using "cond num")
+		cond num bool-expression: (cancel using  " cond num")
 			set condition to break num
 
 	break comands set:
 		one set of command will be run when a specific break point is encouterred
-
+		cancel or modify :
+			using  comands num \n  end
 		commands  num(br num)
 		silent  
 			( we can use this to suppress output like "breakpoint 1 xxxxx"
@@ -68,6 +69,8 @@ BREAK POINT:
 		continue  ( we put continue here, so after print out, we will continue automatically)
 		end
 		now all commands will be done when break
+
+		commands can use if (xxxx) else (xxx) end
 
 	macro(usually be in .gdbinit)
 		define yyyy
@@ -88,6 +91,8 @@ delete breaknum
 
 disable :(no arg to disable all)
 	disable breaknum breaknum ...
+	for display
+		disable disp  num (disable display number xxx)
 enable:
 	enable .. ... .. 
 enable once xxx 
@@ -96,18 +101,57 @@ enable once xxx
 NOTE: hw breakpoint, hw watch point, the "hw" is hardware supported breakpoint,
 	and have number limited, but is faster
 
-WATCH POINT:(if var is changed, then break): eg. watch var
+WATCH POINT:(if var is changed, then break): eg. watch expression
+ 	NOTE: only when the  expression value change, may the break point encountered
 	watch point should be set only when in that var 's effective field,
 		(if auto var, then only in that func can set, and after func finish, point
 		will be removed)
 	watch expression (so will break if that bool becomes true)
 
+UTILS:
+	expression:
+		in it  we can use gdb vars, normal vars , strings, constant vars
+			macros(if use gcc -g3), func (int*)xxxx, condition, +-*/....
+		gdb may use the debugging language's feature operator !!!
 
-	
-change concentrate:(then break will choose that file default):
-	list file
-	run into one file
-	break into one file
+	PRINT:
+		p structrure  can print out a structure's member
+		
+	change concentrate:(then break will choose that file default):
+		list file
+		run into one file
+		break into one file
+	info locals:
+		show current frame's local vars
 
-print:
-	p/x $pc,  print register's value
+	display :
+		will display when breaked
+		cancel using undisplay
+	x : show mem's value
+		
+	print: (show vars value)
+		p/x $pc,  print register's value
+		p/x show hex
+		p/x show sting
+		p/c show char
+		p/f show float
+	printf:
+		printf  "xxx",xx,xx
+	call:
+		used to call a function defined in code !!!
+		used  together with commands, printf(just  write that func)
+	print array:
+		int a[25]:
+			then "p a" can print array
+		int *a = malloc(25*int):
+			then "p *a@25" can print all members
+			then "p (int [25])*x also print all members
+VARS
+	set var = xxx
+		used to set some var's value to control work flow !!
+	set $var = xxx
+		set gdb self's value, so can be used(even with ++)
+	set args x x x x (set main's cmd var, but use run xx xx x x also works)
+
+	$1 $2:
+		these are histroy values
