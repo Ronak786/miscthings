@@ -1,0 +1,24 @@
+vim:
+	syntax off/on can be used when you are editing, and some part's color
+		not clear, use % to match bracket pair
+	set list:
+		show nonprintable chars, this useful in makefile
+	set listchars=xxxxx
+		in list mode, show some special chars in your custom style
+	:make
+		set autowrite
+		then :make will call make default
+			this is better than :!make, because this when return,
+			will put you on error line
+		:cc current error
+		:cnext next error
+		:cprevious previous error
+		
+
+compiler:
+	-Wall is important
+errno:
+	call a func, check retvalue, if error, then check errno number, otherwise
+		errno may have no valid value!!
+	perror() 
+	strerror() used to explain errors

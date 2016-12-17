@@ -188,6 +188,7 @@ VARS
 
 	$1 $2:
 		these are histroy values
+	set environment xxx = xxx
 
 MEMORY:
 	page is unit of operation mem management, so if one exec do not
@@ -233,3 +234,24 @@ THREAD:
 		this is a specification allow compiler to optimise program to
 			run on multi thread,(you should specify which part
 				will be run on multi thread)
+
+SPECIAL PROBLEMS:
+	compile error, if suspect lack of ( ), then /* */ some part of func
+		and try (use half method)
+	ld error, 
+		use ldd to find true ld path
+	pkgconfig:
+		some program link libs by using pkgconfig, 
+		and pkgconfig will search its own dir;
+		if pkgconfig in usr/bin,then search /usr/lib64/pkgconfig,
+		you can add search path by PKG_CONFIG_PATH= xxxxxx
+
+	diverge program's ouput with gdb's
+	1 tty /dev/xxx:
+		set debugging program's io's tty as xxxx
+			and we should in that terminal type sleep xxx
+			so ouput into that term will not processed by shell
+	2 use attach
+
+	if terminal is in strage env, type ctrl-j, reset, ctrl-j(this is enter, but 
+		will be used when enter is strange)
