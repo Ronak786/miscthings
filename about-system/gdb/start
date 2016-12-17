@@ -1,3 +1,13 @@
+OTHER UTILS:
+	snprintf, do not write more than size bytes(including tailing '\0' !!)
+	vim:
+		set autowrite (no when using make, will auto write to disk)
+		:make (do the make program)
+		:set makeprg=xxx (change make's function, set makeprg=gcc, so :make means :gcc
+			and you can append your option
+
+DO NOT EXIT FROM GDB when you are debugging, or you will cost lots of no used time
+
 debuginfo-install  to install glibc debuginfo, then we can
 	set break point into glibc's crti.so crtn.so ....
 
@@ -33,6 +43,22 @@ help command:
 
 info command:
 	get command's current status
+
+NOTE: we are in gdb, so every signal passwd from keyboard will be first transport 
+	to gdb, and gdb decide whether to transfer to process
+	but I think process generated signal will just be send to that process
+
+use backtrace to tell your current pos
+	use frame num to switch to diff frame
+use coredump to get your fail image
+gdb exec corefile 
+	then you can see core dump, and also exec "run", can run the program!!
+gdb exec pid
+	you can attach on a runinig proces
+	BUT the second arg will first be check as corefile name, so attach may be better
+
+we can set a var in exec, then do a while loop,
+	now gdb has time to attach in , and modify that var ,the continue
 
 BREAK POINT:
 	
@@ -89,6 +115,7 @@ BREAK POINT:
 delete breaknum
 	( in .gdbinit should use set confirm off)
 
+NOTE:
 disable :(no arg to disable all)
 	disable breaknum breaknum ...
 	for display
@@ -127,6 +154,10 @@ UTILS:
 	display :
 		will display when breaked
 		cancel using undisplay
+	jump linenum:
+		jump to a line
+			will skip some code : warining !!
+	errno: this maybe modified by gdb's calling func or exec's func
 	x : show mem's value
 		
 	print: (show vars value)
@@ -140,6 +171,8 @@ UTILS:
 	call:
 		used to call a function defined in code !!!
 		used  together with commands, printf(just  write that func)
+	p func:
+		in commandline ,we can just use this to call function and get return value
 	print array:
 		int a[25]:
 			then "p a" can print array
@@ -155,3 +188,48 @@ VARS
 
 	$1 $2:
 		these are histroy values
+
+MEMORY:
+	page is unit of operation mem management, so if one exec do not
+		cover a whole page, and you access that rest of non-mapped field
+		will not cause a fault, but it accutally is an error in program , so careful
+		sometimes no fault doesn't mean no error in your program
+		eg. int a[20], but you access a[200], because they both in
+		the same page, so no permission error, just give you a wrong result
+
+	a segment fault usually means you access a var with your wanted permission, 
+		but the page do not have the permission you want; 
+		so int i[3] , i[20] will extend to other page,which do not have write/read
+		permission, so fault
+	signal:
+		this is an info operation will record in process's list, and
+			change process's ip entry to run that function
+	NOTE:	in gdb we should "handle" to change signal's behavior
+		SIGSEGV : have no effectivepermission to virtualpage
+		SIGFPE : calculte error, device by 0
+		SIGBUS : error on bus, means physical address existence or not align  error
+			when addr passwd on bus to memory
+		core dump: corexxxx,(xxx is pid) ,use /proc/sys/kernel/ to contorl naming
+				use ulimit -c to control (kb)
+			sigbus sigabrt will cause core dump
+			use "file  corefile" to see which exec generated this core dump file
+		when debug, you can use signal to stop, then use bt to check current status,
+			then continue/ signal xxx, the latter means continue with
+			a signal send to process
+	use info signal to see all signal's info
+		eg. handle SIGALRM stop print nopass
+
+THREAD:
+	ps axH to see threads instead of ps aux seeing processes only
+	info thread, to get thread list, 
+	thread num to switch to diff thread
+	tips:
+		use diplay /watch of global share vars to check change time
+
+	break num  thread num  if (condition);
+		only break on thread
+
+	openMP :
+		this is a specification allow compiler to optimise program to
+			run on multi thread,(you should specify which part
+				will be run on multi thread)
