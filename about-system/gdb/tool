@@ -22,3 +22,52 @@ errno:
 		errno may have no valid value!!
 	perror() 
 	strerror() used to explain errors
+
+THESE ARE VERY USEFUL !!
+strace
+	-o outputfile,  
+	-ff  -o xxx,  output each thread into one log.pid file
+	-s  string size(default 32 and will truncate more)
+ltrace
+
+splint:
+	used to check code's specification to iso c, useful to find error
+
+memleak:
+	alloc on heap but never free them, then vritual addr space for heap
+	will be smaller, at last, can not allocate mem
+
+	care of double free, malloc retval check
+
+ElectricFence: -lefence
+	a lib you can link with your exec so that
+		malloc or overflow or malloc reference will be catched and core dump
+
+	it has a macro EF_PROCTECT_BELOW this will check underflow, and default will
+		check overflow
+
+MALLOC_CHECK_:
+	this env set to 1: print to stderr when heap has error
+		set to 2: core dump
+
+mcheck: -lmcheck
+	include mcheck.h
+	call mcheck(NULL) at start before any heap op
+	then you will get warning and coredump
+
+mtrace:
+	MALLOC_TRACE set to a file name the log will be put into;
+	mtrace() to start, no end, when program done, 
+	we will be output
+	install glibc-utils , we get a command mtrace,
+	mtrace file, we will get info about leak
+
+	NOTE: when exec not exit normally, mtrace can not get complete info,
+		so you can register a signal that cause exit, and muntrace in it
+
+debug assembly:
+	as -a -gstabs(this just like -g using gcc for .c) -o xxx xxx
+	ld xx  -> a.out
+	ld xxx.o
+
+x/4w  0xxxxxxx  $esp , show value start from ....  in word and show 4

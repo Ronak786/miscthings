@@ -5,6 +5,7 @@ OTHER UTILS:
 		:make (do the make program)
 		:set makeprg=xxx (change make's function, set makeprg=gcc, so :make means :gcc
 			and you can append your option
+gcc -g3 to reserve macro infos for gdb
 
 DO NOT EXIT FROM GDB when you are debugging, or you will cost lots of no used time
 
