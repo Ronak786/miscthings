@@ -1,0 +1,27 @@
+use :h xx to see help info of command
+
+:grep  used just like command line one
+
+vit in normal mode: 
+	used to select word in <xxx>selected word</xxx>
+
+vim command option:
+	-u NONE   not load any vimrc
+	-N        set nocompatible
+
+buffer control:
+	:e filename, then you can open and edit that  file
+	:bn  buffer next
+	:ls  list buffers,  see :h bn
+
+.  redo the action you do last time in normal mode
+>G  move right a tab wide for line from cur to the end of text
+
+comand shortcut:
+	C 	c$   delete from cur char to end of line and into edit mode
+	s	cl   del cur char into edit
+	S	0c$  del cur line and into edit
+	I	0i   del and insert from start
+	A	$a   edit at end
+	o	A<CR>   edit to below line
+	O	ko	edit to above line
