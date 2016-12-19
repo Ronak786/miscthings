@@ -198,5 +198,10 @@ describe:
 archive:
 	git archive branchname --prefix='dir/' |  gzip > xxxx.tar.gz
 	git archive branchname --prefix='dir/' --format=zip |  xxxx.zip
+reflog:
+	git reflog show xxx(branch name or HEAD), show tip of branch or HEAD 's move track,
+		this is useful to find commits detached from HEAD, like you checkout a commit,
+		do some commit, and checkout away, that commit doesn't attach to any branch point,
+		so use this way to find and checkout as a new branch and do your merge :)
 
 
