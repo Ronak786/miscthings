@@ -9,19 +9,74 @@ vim command option:
 	-u NONE   not load any vimrc
 	-N        set nocompatible
 
+tips:
+	<esc>o is better than <cr>
+		because we when use 'u', will only clear the new line
+help:
+	help count :for count help
+	help operator : for cl cw dw y g .. .help infos
+
 buffer control:
 	:e filename, then you can open and edit that  file
 	:bn  buffer next
+	:bd  buffer delete
 	:ls  list buffers,  see :h bn
 
 .  redo the action you do last time in normal mode
 >G  move right a tab wide for line from cur to the end of text
 
+set option:
+	set nrformats/nf=   leave blank , then all explained as decimal, 
+					default is octal,hex, so 07 +1 is 10
+
 comand shortcut:
 	C 	c$   delete from cur char to end of line and into edit mode
 	s	cl   del cur char into edit
-	S	0c$  del cur line and into edit
+	S/cc	0c$  del cur line and into edit
 	I	0i   del and insert from start
 	A	$a   edit at end
 	o	A<CR>   edit to below line
 	O	ko	edit to above line
+
+find:
+	f{char}  ";" to next, "," to prev , F{char} search to left
+
+repeat:
+	"."  repeat last action in normal mode
+	"@:"  repeat last ex comand (start with :)
+	"&"   repeat last :s command
+
+recording:
+	q{char}(register number)
+	q to stop
+
+operator :
+	delete:
+		db  clear chars before cur(exclude cur) until the last non blank
+			so the head's space will be deleted,but blank after words will not
+		b   back until last not blank(will skip head blank)
+		dw  delete chars in and after cur until a char which is start of a word
+		daw delete a word(perfer tail blank, if not exist, del before blank)
+		dap delete a paragraph
+
+	edit:
+		cw, cW :  "w"  "W" the latter will contain punction as word
+		3cw c3w are the same
+	count:
+		<C-a> <C-x>  inc, dec
+			10<C-a> to inc +10
+
+	switch case:
+		gu gU g~  appended with l w W ...
+
+	type twice operator:
+		apply to curline
+
+	!{motion}{filter}: motion is w 2j..., filter is a program like sort ,sed which
+		will accept multi lines and do something
+	gg=G 
+		will autoident all lines
+
+	operator wait:
+		when type d, vim will wait until you type in another char as
+			the argument of d,this short wait time is waiting time
