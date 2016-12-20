@@ -1,0 +1,4 @@
+gpg --gen-key 
+	to generate a key
+--list-keys 
+	to list current keys

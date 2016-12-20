@@ -67,3 +67,41 @@ clean:
 	-i : interactive
 	-f : force
 	-d : remove dirs also if emtpy
+
+
+gpg:
+	firist generate a key,
+	git config --global user.signingkey  pubkey
+	sign a tag:
+		then you " git tag -s  v1.4 -m "xxxx", and will require you to type in your password
+
+		another committer fetch the tag, import your pubkey , than "git tag -v xxx" to verify that
+			fetched branch is comming from you
+	sign a commit:
+		git commit -S -m "xxx"
+
+		another committer type "git log --show-signature "
+			or use a log format %G? to show it 
+	git pull/merge  --verify-signatures:
+		also verify and reject if needed
+
+	git merge -S wll merge and sign that merged commit for you
+
+git grep:(this used to see "where" the pattern locates)
+	this default search current work tree, and you can specify search specific commit or branch !!
+	--and to && multi search options,
+	--break --heading to be more readable
+	-n show count
+	-e extended pattern
+	--and (--or is default)  
+	--count only show match counts
+
+git log -S (this used to see "when" the change made)
+	-G is more specific patter(advanced)
+	--grep can find in commits
+	'-L :funcname:filename'  to show you history of modify of
+		a func in a file
+	also  -L  '/func prototype/',/^}/:filename
+
+
+NOW AT 7.6  rewriting histroy
