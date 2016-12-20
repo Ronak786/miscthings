@@ -1,0 +1,69 @@
+revision:
+	git reference its object as revisions: sha-hash
+	sha1-number, short sha1-number(just 4~6 numbers)
+
+show branch tip's commit:
+	git rev-parse  branchname
+
+reflog: a log of reference of branch and HEAD /*only local behaviors you do to this ref, not networks's*/
+	git reflog
+	git show HEAD@{5} show current fifth reflog
+	git show master@{yesterday}
+	git show HEAD@{2.months.ago}
+
+	git log -g will show reflog instead of commit log
+
+parent reference:
+	HEAD^ HEAD^^^ first par of first par of ...
+	HEAD^2  second par of (only in merge take effect)
+	HEAD~2 first par of first par of ...  == HEAD^^, 
+	two idendification can be used together
+
+commit range:
+	double dote:
+		aaa..bbb  commit on bbb but not on aaa
+			git log origin/master..(HEAD)  (HEAD can  be omitted)
+	^ --not (advanced):
+		git log ^aaa bbb ccc : commits on bbb or ccc  but not on aaa
+		git log bbb ccc --not aaa
+	triple dot: 
+		aaa...bbb: git log --left-right aaa...bbb (this will use "<" ">" to show which commit come from
+				where)
+			commits on bbb or aaa but not on both
+		NOTE: this is diff from git diff aaa...bbb which means "git diff (git merge-base aaa bbb) bbb"
+
+interactive:
+	git add -i , use update to stage file, revert to unstage , diff to do a git diff --cache
+	option: patch: (also do it by "git add -p")
+		this help you to iterate sevaral diff section(hunk) in one file and make your decision
+	related:
+		git checkout --patch 
+		git reset --patch
+		git stash save --patch (what is save?)
+
+stash:
+	git stash to store staged and work dir's changed compared to commit
+	git stash list to show
+	git stash apply stash@{2}(default is the most recent, just like git stash pop, but also clear it)
+	git stash apply --index : 
+		will apply staged area, default will not
+	git stash drop 
+		to drop the stored apply in buffer
+
+	git stash --keep-index  keep what in stage
+	git stash -u will stash untracked files
+	git stash -p will let you choose which to stash
+	git stash branch name <stashname>
+		create a branch for your stash and apply it and drop that stash
+	
+clean:
+	git clean will clean your dir,  
+	default:
+		remove all untracked and not in .gitignore files
+	-x :
+		also remove those in ignore file
+	-n :
+		pretend to do and just tell what will do (good!!)
+	-i : interactive
+	-f : force
+	-d : remove dirs also if emtpy

@@ -1,3 +1,0 @@
-revision:
-	git reference its object as revisions: sha-hash
-	sha1-number, short sha1-number(just 4~6 numbers)
