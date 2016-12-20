@@ -80,3 +80,33 @@ operator :
 	operator wait:
 		when type d, vim will wait until you type in another char as
 			the argument of d,this short wait time is waiting time
+	replace :
+		R to replace until <Esc>
+		gR is more reliable, because tab will not be replaced by just one word
+		r gr also used .
+
+insert mode:
+	<c-w> delete word before current
+	<c-h> delete char before current
+	<c-u> delete until start of line
+	<c-]> == esc
+	<c-o>  switch to a insert-normal mode, just exec one normal command
+		<c-o>zz to relocate curline into the middle of screen
+
+	copy and parse:
+		yt{char}, copy from cursor's char to before {char} into register,
+		then  in insertmode, <c-r>0 to insert copied word, 
+		<c-r><c-p>{regisert} is more intelligent, will not affected by
+			autoindent( all copied char are like you type in from terminal,
+			so they will be affected by your vimrc configuration, but <c-r><c-p> will not
+	
+	<c-r>{register} parse register's info
+	<c-r>= we can use a calculate register
+	<c-v>xxx  type in a coding number, will show the value char not show on keyboard
+		if type in a char in keyboard ,just show that key
+	<c-k>{char}{char}  
+		will also show a two way :eg <c-k>12 is ½ , see :h digraphs-default   :digraphs
+								:h digraph-table
+	<c-v>uxxxx  more than three number needed unicode  
+		see :h i_CTRL-V_digit	
+
