@@ -22,7 +22,7 @@ diff:
 		what is on bbb that not on aaa && bbb's common base
 
 merge-base a b
-	this tell you the best common base of this two branch
+	this tell you the best common base of this two branch(just tell you ,don't do anything else)
 	so you can git diff that commit, and see what your branch do to that common base
 
 	SHORT :
@@ -203,5 +203,12 @@ reflog:
 		this is useful to find commits detached from HEAD, like you checkout a commit,
 		do some commit, and checkout away, that commit doesn't attach to any branch point,
 		so use this way to find and checkout as a new branch and do your merge :)
-
+ls-remote:
+	will show you not only normal branchs , but also other's pull request,
+	we can just fetch that request
+	or  in .git/config:
+		[remote "origin"]
+			fetch = +refs/pull/*/head:refs/remotes/origin/pr/*,
+			/*which means get remote's refs/pull/xxx/head and store into local as
+				origin/pr/xxx, normal remote branches are like origin/xxx*/
 

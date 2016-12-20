@@ -8,3 +8,22 @@ pull request:
 	mark down
 
 STOP ON 6.3
+https:// is better than ssh because anonymous person can clone your repo
+you can add collaborator in each repo
+
+README(.md)
+this is the file github will show content on page of your project
+CONTRIBUTION
+also special
+
+change default clone branch in setting
+transfer a repo:
+	move it to others
+
+organization
+team : you can create to do things different people
+
+service:
+	add your own service like email notify
+webhook
+	see  https://developer.github.com/webhooks/
