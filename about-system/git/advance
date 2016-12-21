@@ -105,3 +105,76 @@ git log -S (this used to see "when" the change made)
 
 
 NOW AT 7.6  rewriting histroy
+
+change commit:
+	git commit --amend
+	git rebase -i : interactively change ,this will find commits you want to apply,
+		and open a editor, you can change "pick" to "edit" , then close file,
+		then git will let you do that commit manually using git commit, 
+		and others will just applied like we type git rebase
+	remove is also possible, just delete that "pick" line
+	squash: applie multi commit into one commit
+	use edit: to split commits , just type edit and do a git reset HEAD^ to unstage
+		the edit will commit that one, and drop you on console, so you should 
+		do git reset HEAD^ to get that commit back to work dir
+		after your manual commit, use commit --amend to modify your extra commit
+			or you just commit others between all these
+	
+git filter-branch --tree-filter 'command' HEAD(used to modify all histroy from start of histroy)
+	will traverse all histroy  and execcommand on that snapshot
+	--all will rewrite all branch instead of HEAD
+
+	--subdirectory-filter dir -- --all  will make your subdir as a solely git repo
+		and only save history related to that, so you can just clone that repo
+
+	--commit-filter:
+		git filter-branch --commit-filter '
+		if [ "$GIT_AUTHOR_EMAIL" = "schacon@localhost" ];
+		then
+			GIT_AUTHOR_NAME="Scott Chacon";
+			GIT_AUTHOR_EMAIL="schacon@example.com";
+			git commit-tree "$@";
+		else
+			git commit-tree "$@";
+		fi' HEAD
+what git do:
+	git has three trees, work dir tree, stage tree, commit tree	
+		every git status will compare them and tell you
+
+about reset and checkout:
+	git cat-file -p HEAD will show currentHEAD's some info
+	git ls-tree HEAD will show file and dir in current HEAD
+	git ls-files will show exactly all files in git repo
+		-s will show all files' sha number (diff from commit shanumber)(these are files' index)
+
+	HEAD : the last commit
+	index: the next that will be commit
+
+	reset: 
+		git reset --soft HEAD^(only affect commit tree)
+		reset will move your  HEAD and branchtip it point to .
+		so now what in stage is diff from in commit tree, so you can run git commit,
+			this is just like a git commit --amend, and only affect HEAD(!!)
+		git reset : (default is --mixed)
+			this will reset commit and stage area with the commit snapshot of
+				the object HEAD points to
+		git reset --hard:
+			this will also reset work dir into the state of commit tree and stage tree
+			NOTE: if do this , work in dir will be destroied, if we committed before
+				we can search reflog to get them back, so if we have a commit , we
+				can get things back any way
+
+		git reset  <commit-id> -- file:
+			this will not move HEAD or other commit pointer, but just pull data
+				from that commit to rewrite content of file in stage area, (!!!only stage area)
+				so is the effect of unstage(now only work dir has the change)
+		git reset -p to revert in hunk by hunk
+
+	git checkout branch;(checkout commit is safer than checkout commit file)
+		this is diff from git reset --hard branch: reset will not preserve your changes in work dir
+				and reset will move branch pointer but checkout only move HEAD(so reset will
+				lost commit number of the original branch pointer)
+		use git checkout <branchname> -- file :(-- is used so that file not recognized as branchname)
+			not move HEAD ,but modify stage and work dir, so just like git reset --hard  file
+
+NOW WE AT 7.8
