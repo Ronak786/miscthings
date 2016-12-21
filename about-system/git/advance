@@ -178,3 +178,33 @@ about reset and checkout:
 			not move HEAD ,but modify stage and work dir, so just like git reset --hard  file
 
 NOW WE AT 7.8
+
+	merge
+		if merge conflict, and you do not want to do it anymore, type "git merge --abort"
+									or just "git reset --hard HEAD"
+		ignore white space:
+			-Xignore-all-space / -Xignore-space-change the latter treats multi space as one
+
+		a three way merge:
+			after conflict, git ls-files -u will show unmerged file in three way
+			use "git show :1:file > xxx.aa"
+			use "git show :2:file > xxx.bb"
+			use "git show :3:file > xxx.cc"
+			then do your process to resolve in 3, then git merge-file -p bb aa cc
+				bb is current, aa is base, cc is from merge branch
+
+	solving conflict:
+		git checkout --conflict=diff3 filename, than that file will be in three way mode instead of twoway
+				--conflict=merge is default what you see
+		git config --global merge.conflictstyle diff3 to set default
+		use git checkout --ours/--theirs  to just select one to be the merge result
+
+		use git log aaa..bbb check log for conflict source
+
+	undo merge:
+		git reset --hard HEAD^: only if your work is local and no more commits after that merge
+		git revert -m 1 HEAD this will revert the HEAD commit and -m 1 said the main parent is 1
+			NOTE: but this will lead to a condition that that reverted branch will be recognized as
+			already be merged and can not be merged any more that those reverted commit,
+			so you now should again git revert "reverted commit" to again include those merged
+			result !!!
