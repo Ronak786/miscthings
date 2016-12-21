@@ -110,3 +110,31 @@ insert mode:
 	<c-v>uxxxx  more than three number needed unicode  
 		see :h i_CTRL-V_digit	
 
+
+visual mode:
+	v V <c-v>  
+	gv used to select last selected block
+	use these char to switch between normal and visual
+		e to the end of word,w to the first of word
+		o to switch the another end of visual block
+
+	normal mode is better than visual, gUit to uppercase a "it" word(<a>it word</a>)
+		and use "." to repeat is better than "vitU" and repeat
+
+	visual can be used to change a line into one char
+
+	we can use <c-v> to edit multi line at one time use "c" !!
+		also  use this to add tail char at every line use "<c-v>jje" now we are
+			at end, then "A;" to add ":" after every line tail
+
+	"A" and "I":
+		after select with visual mode, "A" will add after every line's block
+										"I" will insert before every line's block
+		i and a will not work like this !!!!!
+
+tab and shift:
+	 how shiftwidth and softtabstop and tabstop works
+	 the tabstop is tab's width, shift width is ident width
+	 softtabstop decide how a tab keyboard press will expand width,
+	     but will use tabstop's width's tab numbers to insert tab
+
