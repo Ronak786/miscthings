@@ -28,6 +28,11 @@ buffer control:
 set option:
 	set nrformats/nf=   leave blank , then all explained as decimal, 
 					default is octal,hex, so 07 +1 is 10
+					when you use <c-a> <c-x> to inc dec number
+	set list , set nolist to show /unshow special chars
+	set listchars=xxx,xxx to set how you show visual chars
+		help:  list listchars hl-NonText hl-SpecialKey i_CTRL-V_digit
+
 
 comand shortcut:
 	C 	c$   delete from cur char to end of line and into edit mode
@@ -134,7 +139,14 @@ visual mode:
 
 tab and shift:
 	 how shiftwidth and softtabstop and tabstop works
-	 the tabstop is tab's width, shift width is ident width
+	 the tabstop is tab's width, if not chang this , existed tab in text will still
+		in old width, if changed ,all tabs in your text will changed immediately
+	 shift width is ident width,when use <  > in normal mode
 	 softtabstop decide how a tab keyboard press will expand width,
-	     but will use tabstop's width's tab numbers to insert tab
+	     but will use tabstop's width's tab numbers to insert tab(if less than that,
+			only use blank)
+	expandtab will use blank to intead tab, so backspace will delete blank only one
+		(but softtabstop will be most precedent over this)
+
+
 

@@ -1,0 +1,62 @@
+ex-comand:
+	":" or "/" or "<c-r>=" all will activate ex command
+	:h ex-cmd-index
+
+	:[range]delete  [x]
+	:[range]yank	[x]
+	:[line]put		[x]  put copied register after line
+	:[range]copy [address] copy to after thatline
+	:[range]normal  cmd   do a normal comand on those lines
+	:[range]join		join those lines
+	:[range]global/pattern/cmd	do ex cmd on those lines
+
+	in excommand ,<c-w/u/v/k/r{register}> exist
+	
+	range: {aaa+xxx, bbb-xxx} if no xxx, just +.-, then represent "1"
+		:print  print current line
+		:linenum  move to that line
+		:linenum{motion}  motion on that line
+		:num,num{motion}   do motion in a range
+
+		special range identifier:
+			"." is current line
+			$ is endline
+			% is all line, so %s/xx/xx to substitude globally !!!
+
+			use visual mode to select, then type :, can get you a area to do
+			'< is visual's prefix,  '> is postfix you last selected
+			use /xxx/+num,/xxx/-num to select an area
+
+		:copy == :t
+			:6t.  copy line 6 after cur line
+			:t6  copy curline under line 6
+			:t. copy curline under curline 
+				yyp will use regiseter, this will not
+			:'<,'>t$ copy visual selected area after endline
+
+		:move == :m
+			just like :t, and repeate just use @:
+
+		:[range]normal normal-command
+			:normal .  is powful to repeat last action on selected lines
+			(every time normal comand to be done on one line, cursor will
+				move to that line's begin, this can be use by "i")
+
+		repeat:
+			. to repeat last normal cmd
+			@: to repeat last ex command
+			@@ to repeat last @:, but I discover just @@ is useful and no need to @: ??
+			use <c-o> in normal mode to revert what <*next> done,
+
+		auto complete:
+			:xxx<c-d> will show you auto fill list
+				tab to iterate ,S-tab to revert iterate
+
+		:colorscheme <c-d> to select color
+		:set wildmode=longest,list to adapt bashmode, use <c-p> <c-n> to iterate
+		:set wildmenu   :set wildmode=full to adapt zsh mode, use tab to iterate
+		:h command-complete
+
+		<c-r><c-w> to put current word on ex-command's place(useful to pick that word)
+		<c-r><c-a> to copy that string instead just a word(a string is more long)
+			see :h c_CTRL-R_CTRL-W
