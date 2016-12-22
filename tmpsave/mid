@@ -1,0 +1,53 @@
+#!/bin/sh
+
+count=0
+index=0
+declare -a sys_array
+declare -a dev_array
+declare -a sg_array
+declare -a st_array
+
+for i in $(seq 0 11)
+do
+	sg_array[$i]=$(sg_ses  /dev/sg16 -x $i | grep -i 'sas address' | grep -v attach | gawk '{print $3}')
+done
+
+for i in $(seq 0 50)
+do
+	if [ -e "/sys/bus/scsi/devices/32:0:$i:0/" ]
+	then
+#		echo -n "$i         " 
+		sys_array[$index]=$(cat "/sys/bus/scsi/devices/32:0:$i:0/sas_address")
+		if [ -e "/sys/bus/scsi/devices/32:0:$i:0/block" ]
+		then
+			dev_array[$index]=$(ls "/sys/bus/scsi/devices/32:0:$i:0/block")
+			st_array[$index]=$(cat "/sys/bus/scsi/devices/32:0:$i:0/state")
+		fi
+		((index++))
+		((count++))
+	fi
+done
+#echo "count is $((count-1))"
+((index--))
+flag=0
+for i in $(seq 0 11)
+do
+#	echo -n "slot $i ${sg_array[i]} "
+	echo -n "slot $i "
+	for j in $(seq 0 $index)
+	do
+		if [ "${sys_array[j]}" == "${sg_array[i]}" ]
+		then
+#			echo -n ${sys_array[j]}  ${dev_array[j]} ${st_array[j]}
+			echo -n  "${dev_array[j]} ${st_array[j]}"
+			flag=1
+			break
+		fi
+	done
+	if [ "$flag" == "0" ]
+	then
+		echo -n "NULL   NULL"
+		flag=1
+	fi
+	echo
+done

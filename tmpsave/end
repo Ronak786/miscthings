@@ -1,0 +1,29 @@
+#!/bin/sh
+count=0
+index=0
+declare -a sys_array
+declare -a dev_array
+for i in $(seq 0 99)
+do
+	if [ -e "/sys/bus/scsi/devices/32:0:$i:0/" ]
+	then
+#		echo -n "$i         " 
+		sys_array[$index]=$(cat "/sys/bus/scsi/devices/32:0:$i:0/sas_address")
+		if [ -e "/sys/bus/scsi/devices/32:0:$i:0/block" ]
+		then
+			dev_array[$index]=$(ls "/sys/bus/scsi/devices/32:0:$i:0/block")
+		fi
+		((index++))
+		((count++))
+	fi
+done
+echo "count is $((count-1))"
+((index--))
+for i in $(seq 0 $index)
+do
+	if [ -n "${dev_array[i]}" ]
+	then
+		echo ${sys_array[i]}  ${dev_array[i]}
+	fi
+done
+

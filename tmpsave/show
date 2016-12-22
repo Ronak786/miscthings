@@ -1,0 +1,6 @@
+#!/bin/sh
+for i in $(seq 0 12)
+do
+	echo "$i  $(sg_ses  /dev/sg17 -x $i | grep -i 'sas address' | grep -v attach)"
+done
+
