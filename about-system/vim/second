@@ -60,3 +60,34 @@ ex-comand:
 		<c-r><c-w> to put current word on ex-command's place(useful to pick that word)
 		<c-r><c-a> to copy that string instead just a word(a string is more long)
 			see :h c_CTRL-R_CTRL-W
+
+		ex-command auto complete:
+			use <c-p> <c-n> will scroll, use <up> <down> will compelte depending current
+				exist word in excommand
+
+		history:
+			vim histroy is valueable even close current window, so more is better
+			"/"  search history is also valuable and indenpendent
+			use cnoremap <c-p> <up> to make them valuable as up down
+
+		command window:
+			type "q:" to open a comnd win, type :q to stop, or just <CR>
+				we can use vim's function to edit and <CR> to run that command
+			type "q/" to open comamnd search mode history
+			on ex-command line, type <c-f> to enter into cmnd window mode
+
+
+	about shell:
+		:!comnd to run shell command
+		param:
+			% the filename of current file
+		:w
+		:shell....exit to open a shell, do lots of comands, but <c-z> is better
+		:w !sh or :w ! sh to run sh with content of cur file
+		:w! sh will write curfile's content into a file called sh
+		:r !command to read command's output into curfile
+
+		:range!command will do command from range as input and output to that range too(filter)
+		:range write !command will just use range as input and no output affected
+		we can in normal use !{normal-command} to select region from curline to one line
+			then will auto enter exomamnd mode and set the range for you

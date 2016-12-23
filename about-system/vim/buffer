@@ -1,0 +1,16 @@
+edit:
+	vim edit by modifying mem mapping of file, until :w, just in mem
+	:ls to see all opened file
+		the file headed with "%" is cur file
+		the file headed with "#" can be switched to and forth with <c-^>
+	:bn bp to iterate
+	:bf :bl to first and last
+	:b number to one file
+	:b <tab> to iterate all opened file  useful !!
+
+	use nnoremap to remap some button for you!!
+	:n,m bd  to delete buffer from n to m or just use 1 2 3 4 5 bd
+
+args:
+	open a vim, :args  xx xx  then you can open multi files at onetime,(:e can not do this)
+	 you can use this to add multi files into opened vim buffer
