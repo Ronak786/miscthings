@@ -3,11 +3,11 @@
 
 #include <stdint.h>
 
-#define		LEN			80	
+#define		LEN		80	
 #define		SLOTNUM		12
 #define		SASNUM		20
 #define		VENDOR		"LSI"
-#define		SKIPNUM		9
+#define		SKIPNUM		16
 #define		GB			1000000000
 
 enum dev_state {
