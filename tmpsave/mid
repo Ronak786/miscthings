@@ -6,6 +6,7 @@ declare -a sys_array
 declare -a dev_array
 declare -a sg_array
 declare -a st_array
+declare -a sz_array
 
 for i in $(seq 0 11)
 do
@@ -39,14 +40,16 @@ do
 		if [ "${sys_array[j]}" == "${sg_array[i]}" ]
 		then
 #			echo -n ${sys_array[j]}  ${dev_array[j]} ${st_array[j]}
-			echo -n  "${dev_array[j]} ${st_array[j]}"
+			size=$(cat /sys/block/${dev_array[j]}/size)
+			size=$((size*512/1000000000))
+			echo -n  "${dev_array[j]} ${st_array[j]} $size"
 			flag=1
 			break
 		fi
 	done
 	if [ "$flag" == "0" ]
 	then
-		echo -n "NULL   NULL"
+		echo -n "0  0 0"
 	fi
 	flag=0
 	echo

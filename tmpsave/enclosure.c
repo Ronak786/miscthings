@@ -1,9 +1,23 @@
+#include <dirent.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <string.h>
+
 #include "enclosure.h"
 
 //const char * sysroot = "/sys";
 static const char * scsi_dev_host = "/sys/bus/scsi/devices";
 static const char * sg_cmnd = "sg_ses -jff ";
 static const char * lsscsi_cmnd = "lsscsi -g";
+
+static int get_boxname(char *name);
+static int get_slot_info(const char *boxname, uint64_t *sas_addr);
+static int get_scsidev_info(struct sys_sas_dev sys_sas_dev);
+static int get_scsidev_info(struct sys_sas_dev sys_sas_dev);
+static int fill_enclosure(uint64_t *sg_sas_addr, struct sys_sas_dev *sys_sas_dev, int sasnum, struct enclosure *enclosure);
 
 int main(void)
 {
@@ -22,7 +36,7 @@ int main(void)
 		fprintf(stderr, "get slot info using sg_ses error\n");
 		exit(1);
 	}
-	i = get_scsidev_info(sys_sas_dev)
+	i = get_scsidev_info(sys_sas_dev);
 	if (i == -1) {
 		fprintf(stderr, "error get sysfsinfo\n");
 		exit(1);
@@ -31,7 +45,10 @@ int main(void)
 		fprintf(stderr, "error fill enclosure\n");
 		exit(1);
 	}
-	print_enclosure_info(enclosure);
+
+	for (i = 0; i < SLOTNUM; i++) 
+		printf("slot %d, devname %s, state %d, size %lu\n", 
+			i, en[i].devname, en[i].state, en[i].size);
 	return 0;
 }
 
@@ -99,7 +116,7 @@ static int get_scsidev_info(struct sys_sas_dev sys_sas_dev)
 	fprintf(stderr, "opening %s\n", scsi_dev_host);
 	if ((dp = opendir(scsi_dev_host)) == NULL)
 		return -1;
-/*should check loop if will end*/
+	//should check loop if will end
 	for (i = 0; i < SASNUM; ) {
 		if ((dirp = readdir(dp)) == NULL)
 			break; // over
@@ -136,12 +153,4 @@ static int fill_enclosure(uint64_t *sg_sas_addr, struct sys_sas_dev *sys_sas_dev
 }
 
 		
-static void print_enclosure_info(struct enclosure *en)
-{
-	int i;
-
-	for (i = 0; i < SLOTNUM; i++) 
-		printf("slot %d, devname %s, state %d, size %lu\n", 
-			en[i].slot, en[i].devname, en[i].state, en[i].size);
-}
 	
