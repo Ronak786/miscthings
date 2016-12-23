@@ -33,7 +33,7 @@ flag=0
 for i in $(seq 0 11)
 do
 #	echo -n "slot $i ${sg_array[i]} "
-	echo -n "slot $i "
+	echo -n "$i "
 	for j in $(seq 0 $index)
 	do
 		if [ "${sys_array[j]}" == "${sg_array[i]}" ]
@@ -47,7 +47,7 @@ do
 	if [ "$flag" == "0" ]
 	then
 		echo -n "NULL   NULL"
-		flag=1
 	fi
+	flag=0
 	echo
 done
