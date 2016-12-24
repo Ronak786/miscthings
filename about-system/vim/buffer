@@ -14,3 +14,47 @@ edit:
 args:
 	open a vim, :args  xx xx  then you can open multi files at onetime,(:e can not do this)
 	 you can use this to add multi files into opened vim buffer
+	 glob
+		 use args *.*  **/*.*  ** will search in subdir
+	use arglist:
+		args `cat listfilename`  then content of file will be recognized as
+			filenames, in `` you can use any shell comnd,so is powerful
+		iterate:
+			use :next :prev to iterate
+
+	hidden buffer:
+		if not set autowrite, modify one buffer, will not allow switch to another buffer,
+			should use :bn!  to switch forcely
+		when :q, will notify you to write  them or ignorethem
+			use :wa! to write, use  :qa! to quit and ignore all,
+			use :e! to revert content to mem and will cause no change
+			:wn  write current to disk and open next to edit
+			:argdo {command} this will do ex-command on each windown in arglist
+			set hidden  will allow you to use :bn to switch among modified buffers
+
+split window;
+	<c-w>s  :sp	  -
+	<c-w>v  :vsp  |
+	:sp filename  to split and load a new file
+	<c-w>w  to iterate all windows
+	hold <c-w> not pop press  w or j k h l will move to diff direction's window !!
+	<c-w>o  to reverse only cur window and close others
+	<c-w>c to close cur window
+	n<c-w>_ to max height of cur window, if has n , the n is real height
+	n<c-w>| to max width of cur window
+	<c-w>= to make all win same size
+	see help: window-moving
+
+	<c-w> n-/+ to decrease/inc cur win height
+	<c-w> n</> to inc/dec width
+
+tab:
+	lcd to set cur activate WINDOW's file's locate dir
+	:tabe  filename open a new file on a new tab
+	:tabc  close current tab
+	:tabo  close until only current exist
+	:tabn number   Ngt		Nth tab
+	:tabn			gt		next tab
+	:tabp			gT    previous tab
+	<c-w>T  move cur window to a new tab(only valid on a multiwindow tab
+	:tabm N move tab to Nth pos, default is tail , :tabm 0 is head
