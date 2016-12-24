@@ -1,10 +1,21 @@
 set nocompatible
 set nu
 set ruler
+set autowrite
+set hidden
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
-"set expandtab   "will not work when editting makefile
+set history=200
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
+nnoremap <silent> [b :bprevious<CR>
+nnoremap <silent> ]b :bnext<CR>
+nnoremap <silent> [B :bfirst<CR>
+nnoremap <silent> [B :blast<CR>
+"iterate in one arglist
+nnoremap <silent> [a :prev<CR> 
+nnoremap <silent> ]a :next<CR>
 syntax on
 filetype on
 filetype plugin on
@@ -29,6 +40,3 @@ if has("cscope")
     endif  
 endif  
 inoremap jj <Esc> 
-
-
-
