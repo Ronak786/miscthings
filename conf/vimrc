@@ -16,6 +16,10 @@ nnoremap <silent> [B :blast<CR>
 "iterate in one arglist
 nnoremap <silent> [a :prev<CR> 
 nnoremap <silent> ]a :next<CR>
+noremap  <C-j> <C-w>-
+noremap  <C-k> <C-w>+
+noremap  <C-n> <C-w><
+noremap  <C-m> <C-w>>
 syntax on
 filetype on
 filetype plugin on

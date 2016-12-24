@@ -47,6 +47,7 @@ split window;
 
 	<c-w> n-/+ to decrease/inc cur win height
 	<c-w> n</> to inc/dec width
+	nnoremap  <C-j> <C-w>-  will map C-j as <C-w>-
 
 tab:
 	lcd to set cur activate WINDOW's file's locate dir
