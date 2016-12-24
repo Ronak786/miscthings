@@ -1,0 +1,35 @@
+:h motion to see all motion.txt
+	use hklj to move instead of arrow
+jklh:
+	j k move according to real line
+	gj gk move according to screen line,(one line will wrap two lines )
+	0 to head of line
+	g0 to head of screen line
+	^to first nonblank char
+	g^ to first nonblank char of screen line
+	$ g$
+w to next word's head
+b to cur/before word's head
+e to cur/next word's tail
+ge to before word's tail
+WBE gE will move accroding to WORD instead of word
+usually:
+	ea: move to end and add
+	gea: move back to last end and add
+
+word:
+	[0-9][a-zA-Z]_
+string:
+	all nonblank
+find:
+	f{char} use ; to next , use ',' to previous
+	z{height}<CR> will redraw window as the height
+	{line}zz will put line at mid of window
+	let mapleader="x" to set your own mapleader, default is \
+		then use noremap <Leader>k xxx to customize your own shortcut
+	f to next {char}, F to previous {char}
+	t to one char before next char, T to one char after previous char
+		the t often used to select or delete until some char
+	tip:
+		find word, you should use char in that word rarely appeared
+		at other time,so you can easily jump to that word
