@@ -52,34 +52,6 @@ int main(void)
 	return 0;
 }
 
-/*
- * find /dev/sgxx as the enclosure for sg_ses
- * input: a buf for name storing
- * retval: -1 error
- *			0 success
- */
-static int get_boxname(char *name)
-{
-	FILE *fp;
-	char vendor[LEN];
-	char buf[200];
-
-	if ((fp = popen(lsscsi_cmnd, "r")) == NULL)
-			return -1;
-
-	while (fgets(buf, 200, fp))
-	{
-		fscanf(fp, "%*s %*s %s %*s %*s %*s %s", vendor, name);
-		if (strcmp(VENDOR, vendor) == 0) {
-			pclose(fp);
-			return 0;
-		}
-	}
-	name[0] = '\0';
-	pclose(fp);
-	return -1;
-}
-
 static int skip_until_slot(FILE *fp)
 {
 	char skipbuf[LEN];
@@ -226,6 +198,33 @@ static int get_scsidev_info(struct sys_sas_dev *sys_sas_dev)
     return i;
 }
 
+static int get_boxname(char *name)
+{
+        FILE *fp;
+        DIR *dp;
+        struct dirent *dirp;
+        char namebuf[LEN];
+        char tmpbuf[LEN];
+
+        if ((dp = opendir(scsi_dev_host)) == NULL)
+                return -1;
+
+        while ((dirp = readdir(dp))) {
+                if (dirp->d_name[0] == '.')
+                        continue; //skip . and ..
+                snprintf(namebuf, LEN, "%s/%s/vendor", scsi_dev_host, dirp->d_name);
+                if ((fp = fopen(namebuf, "r")) == NULL)
+                        continue;  // dev/vendor not exist
+                if (strncmp("LSI", fgets(tmpbuf, LEN, fp), 3) == 0) {
+                        snprintf(namebuf, LEN, "%s/%s/scsi_generic", scsi_dev_host, dirp->d_name);
+                        if (get_dir_value(namebuf, tmpbuf) == -1)
+                                return -1;
+                        snprintf(name, LEN, "/dev/%s", tmpbuf);
+                        return 0;
+                }
+        }
+        return -1;
+}
 
 static int search_in_sys(uint64_t sg_sas_addr, struct sys_sas_dev *sys_sas_dev, int num)
 {

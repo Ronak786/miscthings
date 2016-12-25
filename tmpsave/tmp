@@ -1,30 +1,28 @@
-static int search_in_sys(uint64_t sg_sas_addr, struct sys_sas_dev *sys_sas_dev, int num)
+static int get_boxname(char *name)
 {
-    int i;
-    for (i = 0; i < num; i++) {
-        if (sg_sas_addr == sys_sas_dev[i].sas_address)
-                return i;
-    }
-     return -1;
-}
+        FILE *fp;
+        DIR *dp;
+        struct dirent *dirp;
+        char namebuf[LEN];
+        char tmpbuf[LEN];
 
-static int fill_enclosure(uint64_t *sg_sas_addr, struct sys_sas_dev *sys_sas_dev,
-                        int sasnum, struct enclosure *enclosure)
-{
-    int slot = 0, i;
+        if ((dp = opendir(scsi_dev_host)) == NULL)
+                return -1;
 
-    for (slot = 0; slot < SLOTNUM; slot++) {
-        i = search_in_sys(sg_sas_addr[slot], sys_sas_dev, sasnum);
-        if (i == -1) {
-            enclosure[slot].size = 0;
-            enclosure[slot].state = EMPTY;
-            enclosure[slot].devname[0] = '\0';
-        } else {
-            enclosure[slot].size = (sys_sas_dev[i].block << 9) / GB;
-            enclosure[slot].state = sys_sas_dev[i].state;
-            strcpy(enclosure[slot].devname, sys_sas_dev[i].devname);
+        while ((dirp = readdir(dp))) {
+                if (dirp->d_name[0] == '.')
+                        continue; //skip . and ..
+                snprintf(namebuf, LEN, "%s/%s/vendor", scsi_dev_host, dirp->d_name);
+                if ((fp = fopen(namebuf, "r")) == NULL)
+                        continue;  // dev/vendor not exist
+                if (strncmp("LSI", fgets(tmpbuf, LEN, fp), 3) == 0) {
+                        snprintf(namebuf, LEN, "%s/%s/scsi_generic", scsi_dev_host, dirp->d_name);
+                        if (get_dir_value(namebuf, tmpbuf) == -1)
+                                return -1;
+                        snprintf(name, LEN, "/dev/%s", tmpbuf);
+                        return 0;
+                }
         }
-    }
-    return 0;
+        return -1;
 }
 
