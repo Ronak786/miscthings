@@ -68,3 +68,35 @@ set mark:
 		`< `>  last visual mode start && end
 	use % to match bracket and modify, but first skip to the } one, then modify, the
 		use `` or <c-o> to skip back , this is the right method
+	
+trace:
+	<c-o> <c-i> will record your browser tracing route back or forth
+		this is maintained for each window
+		the <tab> is the same as <c-i>
+	jump:
+		:jump to show jumps, from 1 to xxx, the "1" is the nearest one,
+		one jump is from file to file or use :linenum or {count}G to jump
+		( sentence backford
+		) sentence forward
+		{ paragraph backford
+		} paragraph forward
+		H/M/L top middle low of cur screen
+		gf  skip to file with name on current cursor
+		<c-]> in ctags to skip to define
+		`{mark} '{mark} to skip to mark made by m{mark}
+	in insert:
+		<tab> is the same as <c-i>
+	changes:
+		to see a changes list of modified history of cur file
+		use g; and g, to iterate it
+	`` last place, 
+	`. last modifyed place
+	`^ last inserted place
+	gi  last inserted place and into insert mode !! powerful
+	gf to find current cursor's filename's file and open
+		use suffixadd+=.xxx to add a suffix when use gf to find file
+
+	path used in find and gf:
+		set path? to list path already setted, ,,means the current buf
+	mark  mxxx  `xx to jump
+	use vimgrep to grep from path
