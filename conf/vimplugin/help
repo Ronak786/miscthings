@@ -1,0 +1,5 @@
+first mkdir .vim/autoload  .vim/bundle
+then clone pathogen.vim into autoload
+then clone all other your plugin into bundle
+then in vim run :Helptags to generate doc
+then can use

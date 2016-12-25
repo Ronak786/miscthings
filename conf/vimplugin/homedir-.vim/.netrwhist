@@ -1,0 +1,8 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =6
+let g:netrw_dirhist_1='/home/sora/git/sw-kernel/arch/sw_64/kernel'
+let g:netrw_dirhist_2='/tmp/create_ap.wlp3s0.conf.m5n3kXAj/hostapd_ctrl'
+let g:netrw_dirhist_3='/home/sora/git/miscthings/misc'
+let g:netrw_dirhist_4='/home/sora/compile/gcc-6.2.0/INSTALL'
+let g:netrw_dirhist_5='/home/sora/git/stackbd/.git'
+let g:netrw_dirhist_6='/home/sora/git/stackbd'
