@@ -12,12 +12,10 @@
 static const char * scsi_dev_host = "/sys/bus/scsi/devices";
 static const char * sg_cmnd = "sg_ses -j ";
 static const char * lsscsi_cmnd = "lsscsi -g";
-static const char * blockdir = "/sys/block"
 
 static int get_boxname(char *name);
 static int get_slot_info(const char *boxname, uint64_t *sas_addr);
-static int get_scsidev_info(struct sys_sas_dev sys_sas_dev);
-static int get_scsidev_info(struct sys_sas_dev sys_sas_dev);
+static int get_scsidev_info(struct sys_sas_dev *sys_sas_dev);
 static int fill_enclosure(uint64_t *sg_sas_addr, struct sys_sas_dev *sys_sas_dev, 
 			int sasnum, struct enclosure *enclosure);
 
@@ -27,8 +25,8 @@ int main(void)
 	int i, err = 0;
 	char boxname[LEN];
 	uint64_t sg_sas_addr[SLOTNUM];
-	struct sys_sas_dev sys_sas_dev[SAS_NUM]; //sasnum more than slotnum because enclosure has it or may others has it
-	struct enclosure enclosure[SLOTNUM];
+	struct sys_sas_dev sys_sas_dev[SASNUM]; //sasnum more than slotnum because enclosure has it or may others has it
+	struct enclosure en[SLOTNUM];
 		
 	if (get_boxname(boxname) == -1) {
 		fprintf(stderr, "get boxname error %s\n", boxname); ///dev/sgxx
@@ -43,7 +41,7 @@ int main(void)
 		fprintf(stderr, "error get sysfsinfo\n");
 		exit(1);
 	}
-	if (fill_enclosure(sg_sas_addr, sys_sas_dev, i, enclosure) == -1) {
+	if (fill_enclosure(sg_sas_addr, sys_sas_dev, i, en) == -1) {
 		fprintf(stderr, "error fill enclosure\n");
 		exit(1);
 	}
@@ -101,7 +99,8 @@ static int get_slot_info(const char *boxname, uint64_t *sas_addr)
 {
 	FILE *fp;
 	char tmpbuf[LEN], *tmppos, namebuf[LEN];
-	char headbuf[LEN], secondhead[LEN];j
+	char headbuf[LEN], secondhead[LEN];
+	int i, j;
 
 	snprintf(namebuf, LEN,  "%s %s", sg_cmnd, boxname);
 	if ((fp = popen(sg_cmnd, "r")) == NULL) {
@@ -130,96 +129,131 @@ static int get_slot_info(const char *boxname, uint64_t *sas_addr)
 
 int get_value(char *filename, char *attr, void *arg)
 {
-	char path[LEN];
-	FILE *fp;
-	uint64_t block, sas_addr;
-	char statebuf[LEN];
-	enum dev_state state;
+    char path[LEN];
+    FILE *fp;
+    uint64_t block, sas_addr;
+    char statebuf[LEN];
+    enum dev_state state;
 
-	snprintf(path, LEN, "%s/%s", filename, attr);
+    snprintf(path, LEN, "%s/%s", filename, attr);
 
-	if (!strcmp(attr, "sas_address")) {
-		if ((fp = fopen(path, "r") == NULL) 
-			return -1;
-		if (fscanf(fp, "%llx", &sas_addr) == -1)
-			return -1;
-		fclose(fp);
-		*(uint64_t*)arg = sas_addr;
-	} else if (!strcmp(attr, "state")) {
-		if ((fp = fopen(path, "r") == NULL) 
-			return -1;
-		if (fscanf(fp, "%s", statebuf) <= 0)
-			return -1;
-		if (!strcmp(statebuf, "running"))
-			*(enum dev_state*)arg = ONLINE;
-		else
-			*(enum dev_state*)arg = OFFLINE;
-		fclose(fp);
-	} else if (!strcmp(attr, "size")) {
-		if ((fp = fopen(path, "r") == NULL) 
-			return -1;
-		if (fscanf(fp, "%ld", &block) == -1)
-			return -1;
-		*(uint64_t*)arg = block;
-		fclose(fp);
-	} else
-		return -1;
-	return 0;
+    if (!strcmp(attr, "sas_address")) {
+        if ((fp = fopen(path, "r")) == NULL)
+            return -1;
+        if (fscanf(fp, "%llx", &sas_addr) == -1)
+            return -1;
+        fclose(fp);
+        *(uint64_t*)arg = sas_addr;
+    } else if (!strcmp(attr, "state")) {
+        if ((fp = fopen(path, "r")) == NULL)
+            return -1;
+        if (fscanf(fp, "%s", statebuf) <= 0)
+            return -1;
+        if (!strcmp(statebuf, "running"))
+            *(enum dev_state*)arg = ONLINE;
+        else
+            *(enum dev_state*)arg = OFFLINE;
+        fclose(fp);
+    } else if (!strcmp(attr, "size")) {
+        if ((fp = fopen(path, "r")) == NULL)
+            return -1;
+        if (fscanf(fp, "%ld", &block) == -1)
+            return -1;
+        *(uint64_t*)arg = block;
+        fclose(fp);
+    } else
+        return -1;
+    return 0;
 }
-		
-static int get_scsidev_info(struct sys_sas_dev sys_sas_dev)
+
+
+static int get_dir_value(char *path, char *name)
 {
-	int i, fd;
-	FILE *fp;
-	DIR *dp;
-	struct dirent *dirp;
-	char scsinamebuf[LEN];
-	char blocknamebuf[LEN];
-	char devnamebuf[LEN];
+    DIR *dp;
+    struct dirent *dirp;
 
-	if ((dp = opendir(scsi_dev_host)) == NULL)
-		return -1;
-	//should check loop if will end
-	for (i = 0; i < SASNUM; ) {
-		if ((dirp = readdir(dp)) == NULL)
-			break; // finished
-		if (dirp->d_name[0] == '.')
-			continue;  // skip . ..
-		snprintf(scsinamebuf, LEN, "%s/%s", scsi_dev_host, dirp->d_name);
-		if (get_value(dirp->d_name, "sas_address", &sys_sas_dev[i].sas_address) == -1)
-			continue;  //this is not a real sas dev
-
-		snprintf(blocknamebuf, LEN, "%s/%s", scsinamebuf, "block");
-		if (get_dir_value(dirp->d_name, sys_sas_dev[i].devname) == -1)
-			continue; // this should be the enclosure
-
-		snprintf(devnamebuf, LEN, "%s/%s", blocknamebuf, sys_sas_dev[i].devname);
-		if (get_value(dirp->d_name, "size", &sys_sas_dev[i].size) == -1)
-			return -1;  //real sas dev,but read error
-
-		if (get_value(scsinamebuf, "state", &sys_sas_dev[i].state) == -1)
-			return -1;	//error can not read state
-		i++; //success read one sas dev
-	}
-	closedir(dp);
-	return i;
+    if ((dp = opendir(path)) == NULL)
+        return -1;
+    while((dirp = readdir(dp))){
+        if (dirp->d_name[0] == '.')
+            continue;
+        strncpy(name, dirp->d_name, LEN);
+        closedir(dp);
+        return 0;
+    }
+    return -1;
 }
 
-static int fill_enclosure(uint64_t *sg_sas_addr, struct sys_sas_dev *sys_sas_dev, int sasnum, struct enclosure *enclosure)
+static int get_scsidev_info(struct sys_sas_dev *sys_sas_dev)
 {
-	int slot = 0, index;
+    int i, fd;
+    FILE *fp;
+    DIR *dp;
+    struct dirent *dirp;
+    char scsinamebuf[LEN];
+    char blocknamebuf[LEN];
+    char devnamebuf[LEN];
 
-	for (slot = 0; slot < SLOTNUM, slot++) {
-		index = search_in_sys(sg_sas_addr[i], sys_sas_dev, sasnum);
-		if (index == -1)
-			return -1;
-		enclosure[i].size = (sys_sas_dev[i].block << 9) / GB;
-		enclosure[i].state = sys_sas_dev[i].state;
-		strcpy(enclosure[i].devname, sys_sas_dev[i].devname);
-		enclosure[i].slot = slot;
-	}
-	return 0;
+    if ((dp = opendir(scsi_dev_host)) == NULL) {
+        fprintf(stderr, "wrong open dir %s\n", scsi_dev_host);
+        return -1;
+    }
+    /*should check loop if will end*/
+    for (i = 0; i < SASNUM; ) {
+        if ((dirp = readdir(dp)) == NULL) {
+            fprintf(stderr, "now break in get scsidev_info's readdir\n");
+            break; // finished
+        }
+        if (dirp->d_name[0] == '.')
+            continue;  // skip . ..
+        snprintf(scsinamebuf, LEN, "%s/%s", scsi_dev_host, dirp->d_name);
+        if (get_value(scsinamebuf, "sas_address", &sys_sas_dev[i].sas_address) == -1)
+            continue;  //this is not a real sas dev
+
+        snprintf(blocknamebuf, LEN, "%s/%s", scsinamebuf, "block");
+        if (get_dir_value(blocknamebuf, sys_sas_dev[i].devname) == -1)
+            continue; // this should be the enclosure
+
+        snprintf(devnamebuf, LEN, "%s/%s", blocknamebuf, sys_sas_dev[i].devname);
+        if (get_value(devnamebuf, "size", &sys_sas_dev[i].block) == -1)
+            return -1;  //real sas dev,but read error
+
+        if (get_value(scsinamebuf, "state", &sys_sas_dev[i].state) == -1)
+            return -1;  //error can not read state
+        i++; //success read one sas dev
+    }
+    closedir(dp);
+    return i;
 }
 
-		
-	
+
+static int search_in_sys(uint64_t sg_sas_addr, struct sys_sas_dev *sys_sas_dev, int num)
+{
+    int i;
+    for (i = 0; i < num; i++) {
+        if (sg_sas_addr == sys_sas_dev[i].sas_address)
+                return i;
+    }
+     return -1;
+}
+
+static int fill_enclosure(uint64_t *sg_sas_addr, struct sys_sas_dev *sys_sas_dev,
+                        int sasnum, struct enclosure *enclosure)
+{
+    int slot = 0, i;
+
+    for (slot = 0; slot < SLOTNUM; slot++) {
+        i = search_in_sys(sg_sas_addr[slot], sys_sas_dev, sasnum);
+        if (i == -1) {
+            enclosure[slot].size = 0;
+            enclosure[slot].state = EMPTY;
+            enclosure[slot].devname[0] = '\0';
+        } else {
+            enclosure[slot].size = (sys_sas_dev[i].block << 9) / GB;
+            enclosure[slot].state = sys_sas_dev[i].state;
+            strcpy(enclosure[slot].devname, sys_sas_dev[i].devname);
+        }
+    }
+    return 0;
+}
+

@@ -1,0 +1,30 @@
+static int search_in_sys(uint64_t sg_sas_addr, struct sys_sas_dev *sys_sas_dev, int num)
+{
+    int i;
+    for (i = 0; i < num; i++) {
+        if (sg_sas_addr == sys_sas_dev[i].sas_address)
+                return i;
+    }
+     return -1;
+}
+
+static int fill_enclosure(uint64_t *sg_sas_addr, struct sys_sas_dev *sys_sas_dev,
+                        int sasnum, struct enclosure *enclosure)
+{
+    int slot = 0, i;
+
+    for (slot = 0; slot < SLOTNUM; slot++) {
+        i = search_in_sys(sg_sas_addr[slot], sys_sas_dev, sasnum);
+        if (i == -1) {
+            enclosure[slot].size = 0;
+            enclosure[slot].state = EMPTY;
+            enclosure[slot].devname[0] = '\0';
+        } else {
+            enclosure[slot].size = (sys_sas_dev[i].block << 9) / GB;
+            enclosure[slot].state = sys_sas_dev[i].state;
+            strcpy(enclosure[slot].devname, sys_sas_dev[i].devname);
+        }
+    }
+    return 0;
+}
+

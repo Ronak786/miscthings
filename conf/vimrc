@@ -2,11 +2,23 @@ set nocompatible
 set nu
 set ruler
 set autowrite
+"this hidden used to prevent warning when switch pass an unsaved buffer
 set hidden
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
 set history=200
+set wildmode=longest,list
+let mapleader=","
+noremap \ ,
+syntax on
+"filetype on
+"filetype plugin on
+filetype plugin indent on
+runtime macros/matchit.vim
+set incsearch
+set hlsearch
+cnoremap <expr> %% getcmdtype( ) == ':' ? expand('%:h').'/' : '%%'
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
 nnoremap <silent> [b :bprevious<CR>
@@ -20,11 +32,9 @@ noremap  <C-j> <C-w>-
 noremap  <C-k> <C-w>+
 noremap  <C-n> <C-w><
 noremap  <C-m> <C-w>>
-syntax on
-filetype on
-filetype plugin on
-set incsearch
-set hlsearch
+"noremap <Leader>n nzz
+"noremap <Leader>N Nzz
+execute pathogen#infect()
 if has("cscope")  
     set csprg=/usr/bin/cscope  
     set csto=0  
@@ -43,4 +53,4 @@ if has("cscope")
       endif        
     endif  
 endif  
-inoremap jj <Esc> 
+"inoremap jj <Esc> 
