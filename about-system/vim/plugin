@@ -1,0 +1,17 @@
+surround:
+	used to surround words with you surroundings (" <a></a> ....)
+	ds" to delete nearest afterward ""
+	cs"( will change nearest one
+	ysiw/aw/it" use " to wrap selected pattern,
+	yss" will wrap the cur line
+	ySxxxx or ySSB will put the selected one on another line, then wrap it
+	visual mode:
+		vxxxS{ used to surround selected area with { , 
+		VxxxxS{ will also put line on another line
+		vgxxxS{ will wrap every line in that block
+	insert mode:
+		<c-g>s( will insert a () and put cursor in that
+		<c-g>S( will put new line in a single start instead of just that line
+pathogen:
+	this make you easy to install plugin ,and to have doc, run :Helptags
+
