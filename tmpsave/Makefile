@@ -5,11 +5,13 @@ PRIVSOLIB = -lenclosure
 PRIVLIB = libenclosure.a
 
 
-all: main
+all: main fmtmain
 main: main.o libenclosure.so
 	gcc -Wall -fno-common $< -o $@ $(LDPATH) $(PRIVSOLIB) $(STDSOLIB) -Wl,-rpath=.
 
-#stmain: main.o $(PRIVLIB) 
+fmtmain: fmtmain.o libenclosure.so
+	gcc -Wall -fno-common $< -o $@ $(LDPATH) $(PRIVSOLIB) $(STDSOLIB) -Wl,-rpath=.
+#fmtmain: main.o $(PRIVLIB) 
 #	gcc $^ $(STDLIB) -o $@
 
 
@@ -23,4 +25,4 @@ libenclosure.a: enclosure.o sg_ses.o
 	ar rcs $@ $^
 	
 clean:
-	rm -f *.o stmain main *.so hi *.a
+	rm -f *.o stmain main *.so hi *.a fmtmain
