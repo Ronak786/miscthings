@@ -1,0 +1,25 @@
+b^n mod m , use (a1a2a3a4..)2 to represent n , 
+	then use a mod m == (a mod m ) mod m ,then ab mod m == (amodm * bmod m) mod m
+	to multi them together and calculate rest every time
+
+gcd(a , b) always == sa + tb, use ojilide's method and reverse it can be this
+
+每个数可以表示为唯一的一组素数的乘积
+gcd(a,b) =1 && a | bc  ==> a | c
+gcd(a , b) always == sa + tb, use ojilide's method and reverse it can be this
+
+ac==bc mod m && gcd(c,m) =1, so a==b mod m
+模逆， a and ~a mod m, is gcd (a,m) =1 , then ~a is absultedly exist
+	sa+tm = 1, tm == 0 mod m , so sa == 1 mod m, we can use 欧几里得方法得到
+	上面的等式，然后求出s就是逆
+	a~a==1  so a~ax == x, so  if ax==b, a~ax==b~a==x !!
+
+剩余定理
+x==a1 mod m1
+x==a2 mod m2
+....   if gcd(m1,m2)  gcd m2,m3 ==1 .。。
+x = a1M1y1 + a2M2y2...... 就是解
+其中M1是初当前下表的m外的其他乘积，y1是逆，所以M1y1同余1，所以x==a1 一次类推
+根据定理，m1m2m3m4...乘积范围内的所有数，都可以唯一的表示为模m1 m2 m3..之后的一个
+n元组（因为只要其中有一个不同，就会产生不同的解映射到不同的整数！！）
+这个是用来在不能表示大数的计算机上计算大数的方法
