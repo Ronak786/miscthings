@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ "$1" == "" ]
+then
+	echo "need count"
+	exit
+fi
+count=0
+while [ "$count" != "$1" ]
+do 
+	 ./stmain
+	 ((count++))
+done
+
+	

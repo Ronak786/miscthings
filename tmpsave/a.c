@@ -9,16 +9,74 @@
 
 #include "enclosure.h"
 
-struct sys_sas_dev {
-	uint64_t block;
-	uint64_t sas_address;
-	enum dev_state  state;
-	char devname[LEN];
-};
-
+static const char *sg_cmnd = "sg_ses -j";
 static const char *scsi_dev_host = "/sys/bus/scsi/devices";
 
-extern int get_slot_info(const char *boxname, uint64_t *sas_addr, int num);
+static int skip_until_slot(FILE *fp)
+{
+    char skipbuf[LEN];
+
+    do {
+        if (NULL == fgets(skipbuf, LEN, fp))
+            return -1;
+    } while ((strncmp("Slot", skipbuf, 4) != 0));
+    return 0;
+}
+
+static int get_slot_info(const char *boxname, uint64_t *sas_addr)
+{
+    FILE *fp;
+    char tmpbuf[LEN], *tmppos, namebuf[LEN];
+    char headbuf[LEN], secondhead[LEN];
+    int i, j;
+    struct stat mstat;
+    char *searchdir[SLEN] = {"/usr/bin/", "/bin/", "/usr/local/bin/", "/usr/sbin/", "/usr/local/sbin/", 
+				"/sbin/"};
+
+    for ( i = 0; i < SLEN; i++) {
+	snprintf(namebuf, LEN,  "%s%s", searchdir[i], "sg_ses");
+	if (stat(namebuf, &mstat) != -1)
+		break;
+    }
+    if (i == SLEN) {
+	fprintf(stderr, "can not find command %s in all standard bin dir\n", namebuf);
+	return -1;
+    }
+
+    snprintf(namebuf, LEN,  "%s%s %s", searchdir[i], sg_cmnd, boxname);
+    if ((fp = popen(namebuf, "r")) == NULL) {
+        fprintf(stderr, "error when exec %s\n", sg_cmnd);
+        return -1; 
+    }   
+    for (i = 0; i < SLOTNUM; i++) {
+        if (-1 == skip_until_slot(fp)) { //now when use fgets ,will get line just after "Slot xxxxxx"
+            fprintf(stderr, "error in index %d and skip to slot\n");
+	    pclose(fp);
+            return -1; 
+        }   
+
+        for (j = 0; j < SKIPNUM; j++) 
+            if (fgets(tmpbuf, LEN-1, fp) == NULL) { 
+		pclose(fp);
+		return -1;
+	    }
+	
+        fgets(tmpbuf, LEN, fp);
+        if (sscanf(tmpbuf, "%s %s %llx", headbuf, secondhead, &sas_addr[i]) != 3 ||  
+            strcmp(headbuf, "SAS") || strcmp(secondhead, "address:")) {
+            fprintf(stderr, "error index %d when parse sasaddr\n");
+	    pclose(fp);
+            return -1; 
+        }   
+    }   
+    if (i != SLOTNUM) {
+	fprintf(stderr, "error getting slotinfo\n");
+	pclose(fp);
+	return -1;
+    }
+    pclose(fp);
+    return 0;
+}
 
 static int get_value(char *filename, char *attr, void *arg)
 {
@@ -144,7 +202,6 @@ static int get_boxname(char *name)
 	}
 	return -1;
 }
-
 static int search_in_sys(uint64_t sg_sas_addr, struct sys_sas_dev *sys_sas_dev, int num)
 {    
     int i;
@@ -156,7 +213,7 @@ static int search_in_sys(uint64_t sg_sas_addr, struct sys_sas_dev *sys_sas_dev, 
 }
 
 static int fill_enclosure(uint64_t *sg_sas_addr, struct sys_sas_dev *sys_sas_dev, 
-			int sasnum, struct enclosure *enclosure, int num)
+			int sasnum, struct enclosure *enclosure)
 {
     int slot = 0, i;
 
@@ -175,7 +232,7 @@ static int fill_enclosure(uint64_t *sg_sas_addr, struct sys_sas_dev *sys_sas_dev
     return 0;
 }
 
-int get_enclosure_info(struct enclosure *enclosure, int num)
+int get_enclosure_info(struct enclosure *enclosure)
 {
 	char name[LEN];
 	uint64_t sas_addr[SLOTNUM];
@@ -185,12 +242,9 @@ int get_enclosure_info(struct enclosure *enclosure, int num)
 		perror("why");
 		return -1;
 	}
-	if (get_slot_info(name, sas_addr, num) == -1)
-		return -1;
+	get_slot_info(name, sas_addr);
 	i = get_scsidev_info(sys_sas_dev);
-	if (i == -1)
-		return -1;
-	fill_enclosure(sas_addr, sys_sas_dev, i, enclosure, num);
+	fill_enclosure(sas_addr, sys_sas_dev, i, enclosure);
 	return 0;
 }
  

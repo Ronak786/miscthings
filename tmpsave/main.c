@@ -1,21 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <string.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 #include "enclosure.h"
 
+
 int main(void)
 {
-	struct enclosure en[SLOTNUM];
-	int i;
+	struct enclosure enclosure[SLOTNUM];
+	int j;
 
-	if (get_enclosure_info(en) == -1) {
-		fprintf(stderr, "can not get enclosure info\n");
+	if (get_enclosure_info(enclosure, SLOTNUM) == -1) {
+		fprintf(stderr, "can not get enclosure\n");
 		return -1;
 	}
-
-	for (i = 0; i < SLOTNUM; i++) {
-		printf("slot %d, devname %s, state %d, size %luGB\n",
-			i, en[i].devname, en[i].state, en[i].size);
+	for (j = 0; j < SLOTNUM; j++) {
+		printf("slot %d, devname %s, size %ldgb, state %d\n",
+			j, enclosure[j].devname, enclosure[j].size, enclosure[j].state);
 	}
 	return 0;
 }
