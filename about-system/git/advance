@@ -208,3 +208,85 @@ NOW WE AT 7.8
 			already be merged and can not be merged any more that those reverted commit,
 			so you now should again git revert "reverted commit" to again include those merged
 			result !!!
+
+rerere:
+	git config --global rerere.enabled true 
+		to enable that, this will record your change to specific shape of change,
+		and if see second time, will do change auto without disturbing you
+
+	git rerere status, git rerere diff to see diffs
+	git checkout --conflict=merge file  to checkout conflict files
+
+debug:
+	git blame -L num,num file to see everyline in range's last commit history in a file
+		start with sha-1 number, ^xxxx means the first commit
+	git blame -C can tell you if this file is a result of copy or move
+	
+	binary search:
+		in a problem branch, git bisect start,
+							git bisect bad  to tell git current branch top is bad
+							git bisect goot v1.0  tell git one commit is good
+							then git will binary search and put you on every half commit,
+								you test, and git bisect good /bad to mark, then git will
+								put you on another, then at last find that bad commit
+							git bisect  reset to finish
+
+							or just git bisect start [badcommmit] [goodcommit]
+									git bisect run xxxx  
+										we can write a test prog ,right return 0, wrong return non-0 
+											to automate this processing
+
+submodule: include a whole git repo in one git repo
+	git submodule add url:
+		add a subdir which its own is a git repo and keep it standalone
+		use git config submodule.DbConnector.url PRIVATE_URL to reconfig submodule url
+			and they are in .gitmodules
+			use git diff --cached --submodules to see diffs
+
+	clone:
+		1) git clone --recursive xxxxx
+		2) git clone xx,   in cloned repo, git submodule init , git submodule update, 
+			then all sub repos can be pulled in
+
+	fetch merge:
+		cd into that subdir, git fetch and merge, then git diff --submodule can show you change commits,
+			set git config --global diff.submodule log to let git diff do this default
+
+		git submodule update --remote xxx to auto update that subdir
+			parent dir's fetch will not do subdir's fetch !!!
+
+		set submodule to track a diff branch then default
+		git config -f .gitmodules submodule.DbConnector.branch stable
+			if not use -f xxx, then changes will be in .git/config, so others who fetch them from your push
+			can not see these changes
+
+		git config status.submodulesummary 1 :
+			then git status will show you subdir changes
+
+	auto subdir merge:
+		checkout a branch in subdir, 
+		now you can run git submodule update --remote --merge/--rebase  to auto fetch and merge subdir
+		if forget to merge, subdir's status is in detached status,and you should checkout your own and 
+			do your merge /rebase your own
+
+	push:
+		git push --recurse-submodules=on-demand/check:
+			the former one will do subdir's push for you auto
+			the latter one just fail if subdir hasn't pushed yet
+
+		git submodule foreach  'xxx' will run command in each submodule dir
+		set some alias for submodule
+		if switch branch, you should add that subdir again
+		if rm that dir, in another branch, you should git submodule update --init to checkout again
+
+bundle: (wrap all repo info into a file , so others can use this to create a repo instead of git clone)
+	git bundle create filename HEAD branchname
+	git bundle create filename range1 ^range2, so commit between 1 and 2 will be inserted into bundle
+	other people:
+		git clone bundle.file  reponame (-b branchname(is HEAD is not specified in bundle create comnd line))
+		git bundle verify xxx to see changes
+		git bundle list-heads xx to see branches in bundle
+		git fetch bundle.file localbranch:bundle-branch to fetch
+
+
+NOW ON GIT 7.13 git tools-replace
