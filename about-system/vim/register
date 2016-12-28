@@ -1,0 +1,54 @@
+gv  select last selected visual portion
+use x,d  then use p, will paste those deleted before chars
+	tip: "xp" to replace chars under and after cursor
+		"ddp" to exchange two lines
+
+	paste:(insert mode paste: see :h i_ctrl-r, use ctrl-r " to paste unnamed register)
+		p to parse after current char
+		P to parse before current char,or before current line
+		gp  gP will move cursor to end of pasted region , may be better:
+			insert mode ctrl-r{register} paste maybe better
+	"{register}motion, the " is unnameed reg, use ""d or just d to cut  into unnameed reg
+		warn: the unnamed reg will be occupied
+			reg 0 will be used to backed up unnamed reg when copy using "y"
+
+	copy and paste register:
+		reg ", reg 0 ... to check every reg's data
+		use eg. "ayiw to copy a word into reg a , then "Ayiw to connect current word into
+			the word in register a !!!, uppercase word will connect
+		reg "+ used to communicate with system clipboard
+		reg "* used also ,but with mouse visual mode
+		reg "= used to do some calculation, and immediately after <CR>,
+			we use p/P to paste that
+
+		reg "%  filename
+		reg "#  switched filename
+		". previous inserted content
+		": previous ex command
+		"/ last search 
+
+		if copied into a register ,then visual some word, then p, will
+			paste word into visual portion and change them, BUT also
+			will put changed portion into register,just exchange!!
+
+			we can use this to exchange two words place are far
+
+		insert mode paste:
+			<insert><C-r>0<Esc>
+
+	used with ex-command:
+		:d {register}
+		:put {register}
+
+	black hole reg:
+		_d{motion} will remove without occupy register, so non-recoverable
+
+
+	system clipboard:
+		if vim configured with "+ register function activated ,then use this
+			always effective
+		if not, when you want to use system clipboard, :set paste,
+			after that, use :set paste!
+			we can :set pastetoggle=<f5>, then use <f5> as a switch between
+
+
