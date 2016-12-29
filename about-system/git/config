@@ -1,0 +1,10 @@
+core.editor  set editors
+git commit.template file-path  : when git commit, this file's content will be commit content,
+		you can modify upon that
+core.pager  "" means no pager, default is less
+user.signingkey  set sign key default, so every time commit willsign for you
+core.excludesfile   just like .gitignore, but is global, so useful if want to ignore global
+help.autocorrect  set to one then git auto modify your wrong type, give you 0.1s to deny doing that
+color.ui  output using color, but if pipe, not use that, so default is false, 
+			use --color when pipe
+color.branch/diff/status .... you can set colors for them
