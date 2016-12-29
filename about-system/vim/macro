@@ -1,0 +1,43 @@
+tips :
+	use ~ to switch upper case and lower case
+creat macro:
+	q{register}  subquent action will be recorded into register a,
+	at end , type q in normal mode to stop
+
+	type @{register} (after that ,use @@) to apply macro,
+		use {count}@{register} to apply count times of macro
+
+	attention:
+		every time record a macro, make sure you are in a exact place,
+			so recording will not confuse you
+		when recording, use search or "w" instead of "j l ..", because macro
+			will do exactly what you do when recording them
+
+		when doing macro, some action failed(you at end and macro typed "j"),
+			macro will fail and out, we can use this, so type 22@{register},
+			even if we need not 22times of macro apply, enough times will be done,
+			and just fail after that
+
+	repeat:
+		serial method:
+			use . is enough, but somtimes, ;.;.;.or j;j;j;j; will be done too many times,
+			we can just record a macro for this  and use {count}@{register}
+			(usually add a "j" in macro help you to use macro to repeat lots of time on multi line)
+		parallel method:
+			after record macro on one line, use visual mode select other line,
+				then use :'<,'>normal @a to repeat paralle on all line,
+				and will not fail when one line is error
+
+	modify macor:
+		just like modify register, qA  to add instead of qa
+
+	together with :argdo:
+			in one file, record a macro, 
+			use :arg open multi files,
+			undo your change in first file using :e!
+			:argdo normal @a  to do macro on all file
+		serial method:
+			qA to add a :next to previous macro,
+			then now we can use 22@a to make serail mode work
+
+		at last use :wall or :wnext or :argdo write to write all in buffer/arg buffer, 
