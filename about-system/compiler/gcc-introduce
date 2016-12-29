@@ -1,0 +1,5 @@
+warn:
+	in printf, print digitals must use %d, not %f, because when parse,
+	will be treated as a floating point format 
+-Wall:
+	always use this !!
