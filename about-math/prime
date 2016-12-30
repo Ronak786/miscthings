@@ -31,3 +31,16 @@ rsa:
 	带入等式替换，so C^d ==M mod(p) (使用费马小定理 x^(a-1) == 1 mod(a) if a is prime),
 		C^d == M mod q, so c^d == M mod(pq)(have 证明过了）, 就可以解密了，
 		所以加密密钥就是e, n(公开), 解密密钥就是d(要保密(p-1)(q-1), p,q)
+
+
+抽屉原理：
+	put n into k box, at least one box has  uppercase n/k members
+
+P(n,m) pick m from n
+C(n,m) pick m from n and no sequence
+把无标记的n个球放入有标记的k个盒子：
+	相当于用k-1条线切分n个球，所以就是k-1+n中选n个当作球
+	所以是C(n+k-1,n)
+把有标记的n个球放入有标记的k个盒子：
+	相当与n个球排序后，分几组选择，没有中在去掉排序，就是n! / (k1!k2!k3!)
+	k1：第一个盒子放几个球
