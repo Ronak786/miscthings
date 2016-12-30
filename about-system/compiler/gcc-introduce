@@ -53,6 +53,19 @@ command line option:
 		-Wtraditional: warn code has ansi and pre-ansi code together
 		-Werror : warn and stop compiling
 
+machine dependent option
+		use -mxxxx=xxx
+		eg . -march=pentium4 ,so code will be not run when arch is not pentium4
+		-m32 -m64 to output diff bits' code(careful)
+		-mcmodel=medium (small is default, upto 2G data size, sufficient)
+		-mcmodel=kernel -mno-red-zone:
+			these should be used in kernel compilation in amd !!!!(in arch/x86/Makefile)
+
+		systems support both 32 and 64bit will place 32bit .so in /lib, 64bit .so in /lib64
+
+		in DEC:
+			-mieee to avoid unexpected floating point exception(but will slower, alpha because
+				optimise this)
 macro: macro should used by surronnd a ()
 	system macros start with __, use cpp -dM /dev/null to see default macros defined by system
 		(those not start by "__" system macros can be disabled by -ansi)
@@ -90,6 +103,8 @@ optimise:
 		-funroll-loops(independent from other opts, so can use to further opt above -O3)
 		-Os , opt size 
 		-O0 for debug, -O2 for using
+		NOTE: when optimise, unintilization warn will be open in data flow analyze,
+			this is good (in-Wall will not )
 
 env: 
 	NOTE: (use export) use ":" to separate, current dir is ".", searched from left to right
@@ -107,3 +122,60 @@ dynamic link:  when using -l, .so has higher priority than .a
 	save disk space by only create one .so,
 	save mem by using virtualmem mapping .so into every process's address space
 
+
+compile c++:
+	use g++, file postfix is .cc .cpp .cxx .C(not .c)
+	use g++ to link instead of gcc, although gcc can compile .cpp, but can not link them(so use g++!!)
+
+	using namespace std; or std::function    to access func in a namespace
+		normally standard funcs are in libstdc++, default will link that
+
+	template in c++:
+		although includeed multi times in .o, when link ,will only link onces, in a section
+			called .gnu.link-once
+		-fno-implicit-templates will cause no template in .o, so will not cause duplicate,
+			only useful for other ld
+
+gcc help:
+	gcc --help
+	gcc -v --help : more verbose help
+	gcc -v xx.c will output more infos useful
+
+archive:(just include .o files into a .a file)
+	ar cr   (create if not exist; replace if original old one in it)
+	ar t xxx to list
+
+gprof: should use when compile and when link both!!
+	gcc -c -pg
+	gcc -o -pg
+	then run, then grpof a.out
+
+gcov:  show you every line's run time, so you can optimise
+	gcc -ftest-coverage :
+		add line count instrucments
+		-fprofile-arcs:
+			add branch select instrucments
+	then run
+	gcov source file, 
+	then you will have a commented source file to see result
+
+
+gcc work flow:
+	-I/cpp output *.i
+	-S output assembly
+	as to output .o file
+	ld to link against standard libs
+
+elf tools:
+	file to see type
+	nm: T for functions, U for undefined function
+	ldd: show .so dependencies
+
+extension read:
+	using gcc (official manual)
+	debuging with gdb
+	gnu make
+	the gnu c library reference manual
+	gnu bash reference manual
+	the C standard
+	ACCU: Association of C and C++ Users
