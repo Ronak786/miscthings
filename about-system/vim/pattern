@@ -1,0 +1,46 @@
+tip:
+	search, * forward,  # backward
+	after one search type /<UP>, you will see word wraped by <>
+q/:
+	pop out the search field
+set ignorecase:
+	usually not used,will affect search
+
+case in search:
+	whereever in search mode line , use \c \C to tell the whole line
+		will ignore case/case sensitive
+	ignorecase:
+		used to ignore case
+	smartcase:
+		higher priority than ignorecase, if type uppercase, will not ignorecasek
+			otherwise ignorecase
+
+regualar expre:
+	original in vim:
+		(), {, should used as \( \) \{ to make them special,
+			so used in regualar expr
+	\v:
+		\vxxxxx to make every chars except 0-9 a-z A-Z _ to be special
+			so no need of "\", so search in reg exp mode
+		use \x to match [0-9a-fA-F]
+	\V:
+		only "\" is special, others are normal,so search in original meaning
+	\M:
+		like \V ,but ^ ,$ has special meaning
+	normally is just \m, use \v can be more convenient
+
+search with subsitute:
+	:s//xxxxx/, "//" because will use pattern of last search
+
+	/\v<(\w+)\_s+1> will match two contineous word
+		the () will be put into pattern repo, use \1 \2 \3 to repeat those
+			()'s pattern
+			%() will cancel feature of \1 \2, so we can control which () to be
+				used in subquent \1 \2 \3 ...
+
+		see :h 27.8 how to match white space
+
+	word confine identifier:
+		/v<xxx> represent word (not space or punction
+		\w represent 0-9alpha_
+		\W represent exclude with \w

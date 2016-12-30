@@ -1,5 +1,6 @@
 tips :
 	use ~ to switch upper case and lower case
+	also use vU to switch upper case !!
 creat macro:
 	q{register}  subquent action will be recorded into register a,
 	at end , type q in normal mode to stop
@@ -41,3 +42,18 @@ creat macro:
 			then now we can use 22@a to make serail mode work
 
 		at last use :wall or :wnext or :argdo write to write all in buffer/arg buffer, 
+
+	use variable in macro:
+		:let i=1 can set value ,
+		i-ctrl-r-=i to insert that value
+		:let i+=1 to change to next var,
+		at last finish
+
+	modify macros:
+		macros just in register, so paste just like register
+		use :put {register} to paste that macro into a new line
+			(use "ap will paste at same line of current)
+		modify, then "add to delete and copy back into register a
+					or use "ay$ then dd to paste to avoid trailing 
+		change in function:
+			let @a=substitute(@a, '\~', 'vU', 'g')
