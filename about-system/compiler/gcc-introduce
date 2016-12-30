@@ -2,4 +2,108 @@ warn:
 	in printf, print digitals must use %d, not %f, because when parse,
 	will be treated as a floating point format 
 -Wall:
-	always use this !!
+	always use this when compile,
+	but in link, do not use that, because syntax have already been checked when compile
+
+order when compile:
+	definition should be after declaration, because some compiler search symbol in order
+	library should occur after every local .c file
+
+command line option:
+	-I -L:
+		extra include and link path ,will be preferred in order
+	-Wl,-rpath=xxx, hard code the path of non-standard .so path, for dynamic loader to use
+	(the dlopen do not need all of these, it just open .so when processing in .text code
+		so you do not have that .so's function's symbol, just typedef a function pointer point to
+		that
+	)
+
+	standard:
+		-ansi: used to disable gnu extension which are
+			in conflict with ansic ,  like  asm is valid in gun,so should not be used,
+			but with -ansi, asm is just a var, so can be used
+			also disable feature in glibc, so like M_PI (3.14159..) will disappear
+
+			if you want to enable glibc feature while using -ansi, use -D_GNU_SOURCE,
+				this will enable all features in libc, also you can enable your feature separately
+		-ansi, -pedantic:
+			used to disable all extra extention that not in ansi specification,
+				eg. variable length array as local var not permitted in this mode
+		-std=c89 -std=iso9899:1990
+		-std=iso9899:199409
+		-std=iso9899:1999 -std=c99
+		-std=gnu89
+		-std=gnu99  standard specification with gnu extension(diff from default?)
+
+	warning:
+		what's in -Wall:(these warnings should be modified eaisily to avoid, so put together)
+			-Wcomment: warn recursive comment, should use #if 0  ; #endif
+			-Wformat: warn format in printf scanf and corresponding args
+			-Wunused:  no used vars
+			-Wimplicit: not declared
+			-Wreturn-type: warn error return type and emtpy return(this
+				will cause the sentence before the return be the result of return value);
+		-W :
+			will detect some suspicious code, usually used with -Wall
+		-Wconversion: warn about force conversion
+		-Wshadow: when one name occupied another name(func, var..),will warn
+		-Wcast-qual: when you cast a const into a non-const, normally will not warn,
+				this will warn you
+		-Wwrite-strings: warn if you want to write to const strings
+		-Wtraditional: warn code has ansi and pre-ansi code together
+		-Werror : warn and stop compiling
+
+macro: macro should used by surronnd a ()
+	system macros start with __, use cpp -dM /dev/null to see default macros defined by system
+		(those not start by "__" system macros can be disabled by -ansi)
+	use -D on command line, #define in code:
+		-DAAA="XXX" : 
+			NOTE, the "" will be stripped by bash, so this is not string!!! use -Dxxx="\"xxx\""
+			-Dxx="" or #define xx  also means be treated as defined in #ifdef
+		#define AAA  XXX
+	use #ifdef xxx ; #endif in code
+
+	get preprocessor output:
+		gcc -E xxx.c or gcc -c -save-temps xx.c(also save other .s temps)
+
+debug:
+	-g to include debugging infos
+		-g and -O2 is default in gnu packages, -g will not slow ,just inc size
+	coredump: 
+		ulimit -c unlimited
+	use gdb exec_file core_dump to load dumps
+
+optimise:
+	source level opt:
+		CSE: common subexpression elimination, put common subexps to be cal once instead of using multi times
+	inline:(auto inline also exist)
+		may be together used with static and extern
+	unrolling:
+		reduce loop check, 
+	schedule:
+		compiler will do this according to each type of cpu, this is low level optimise
+	optimise level: (optimise will not always better, -O2 can be slower than -O1 !!)
+		-O, -O0: not opt(default)
+		-O1, some simple opt
+		-O2, instruction schedule and further opt, but not unrolling to inc size
+		-O3, inc size to unrolling
+		-funroll-loops(independent from other opts, so can use to further opt above -O3)
+		-Os , opt size 
+		-O0 for debug, -O2 for using
+
+env: 
+	NOTE: (use export) use ":" to separate, current dir is ".", searched from left to right
+	C_INCLUDE_PATH, CPLUS_INCLUDE_PATH:
+		envs to fine include path,  searched after -I
+	LIBRARY_PATH:
+		searched after -L
+	LD_LIBRARY_PATH:(priority than ld.so.cache)
+		used to search dynamic linked .so when loading
+
+	think ld.so.conf as a complement of standard path, and LD_LIBRARY_PATH is mucher higher,but lower
+		than -rpath
+
+dynamic link:  when using -l, .so has higher priority than .a
+	save disk space by only create one .so,
+	save mem by using virtualmem mapping .so into every process's address space
+
