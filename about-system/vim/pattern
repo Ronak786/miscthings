@@ -44,3 +44,24 @@ search with subsitute:
 		/v<xxx> represent word (not space or punction
 		\w represent 0-9alpha_
 		\W represent exclude with \w
+
+	
+delimiter:
+	< > to represent a word
+	\zs \ze  identifies start and end of highlighted part of word you want to
+		highlight, other words will control place where the highlight in
+		then if use :s//xxx/ to replace, only highlighted place will be replaced
+
+	use paste to search:
+		copy pattern into register, type "/", then use <c-r>{register} to paster
+		register's content ,remember to use \V to avoid special char
+
+	q/ q? to query / or ?'s search
+
+	use ? or / depend on how many / or ? is in your search pattern, less is better
+		"\" always need \\ ,\/ \?
+
+	we can auto escape using:
+		\V<c-r>= , now we type escape(@{register}, getcmdtype().'\')
+			then will insert pattern with approprate '\' before each special char,
+			the '.' is necessary
