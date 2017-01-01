@@ -9,6 +9,7 @@ set softtabstop=4
 set tabstop=4
 set history=200
 set wildmode=longest,list
+set pastetoggle=<f5>
 let mapleader=","
 noremap \ ,
 syntax on

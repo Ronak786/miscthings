@@ -1,0 +1,38 @@
+apue log func:
+	log_err, log_msg   just log and return or exit
+	log_sys, log_ret	will also print errno's err msg and then do as above
+dir operation:
+	opendir,readdir,closedir
+	chdir 
+		to change current dir
+
+FILE OPERATIONS:(stdio)
+	read, write,
+	getc, putc, and ferror to check error instead of end of line,
+	
+standard fd: (unistd.h)
+	STDIN_FILENO STDOUT_FILENO STDERR_FILENO
+	stdin , stdout, stderr for FILE *mode 
+
+exec:
+	execlp should pass the command name in first field, and
+	 args from arg0 to argxx at second to end and end with (char *)NULL !!!
+
+strings:
+	strtok to seperate string (will modify that !!)
+	strpbrk to find first occurence of char in given string identifier
+
+man page:
+	man intro to see user manual of intro
+
+error:
+	not use extern int errno, now we are multithreaded ,just include <errno.h>
+	errno is a modifiable lvalue!!!!
+
+management:
+	gid, uid:
+		getgid, getuid, used to get group and user id, these stored in file attr,
+			and matching string stored in passwd and group file under /etc
+	
+signal:
+	a little strange using signal(), will cause exit when called second time

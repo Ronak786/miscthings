@@ -1,0 +1,33 @@
+ansi ,iso
+	ansi make in 1989 the first C specification
+	iso confirm that and become iso1990, then iso99, ios2011,
+
+posix:
+	begin by ieee, include operating system interface 
+							shell && utilities
+							single unix spec
+							and a lot, we talk about this in book
+	susv4 :
+		single unix specification v4 in 2010, we refer to 
+
+limits:
+	compile limit: in header files <limits.h>
+	runtime file/dir limit: pathconf()
+	runtime sys limit: sysconf()
+	eg. FOPEN_MAX, TMP_MAX, FILENAME_MAX
+
+	use get conf:
+		first use eviron's conf, cpp -dM /dev/null can see that,
+		then if not defined ,use sysconf to get, if
+		can not get and errno == 0, means not defined,
+		then assign your guessed var
+
+		use setrlimit to set limit for your process use
+
+	unistd.h:
+		in it we have posix vars defined we can use 
+
+	define _POSIX_C_SOURCE to make compile only include posix comaptible code
+
+	sys/types.h
+		we have special types for some vars
