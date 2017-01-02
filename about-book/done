@@ -2,4 +2,5 @@
 深入linux设备驱动内部机制 	how module and some kernel function work
 软件调试的艺术			how to use gdb
 CSAPP				the base of computer
+gcc introducing
 
