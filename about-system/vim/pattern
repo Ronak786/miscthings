@@ -1,6 +1,6 @@
 tip:
 	search, * forward,  # backward
-	after one search type /<UP>, you will see word wraped by <>
+	after one search type /\v<UP>, you will see word wraped by <>
 q/:
 	pop out the search field
 set ignorecase:
