@@ -1,2 +1,6 @@
 rbd map:
 	rbd create --size xxx   name  --image-features=4 (must use, otherwise map will fail)
+
+setup ceph
+in mon dir, touch done  sysvinit
+	use service ceph start mon.host
