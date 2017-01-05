@@ -1,0 +1,6 @@
+first you should have a spec file
+command : rpmbuild -ba  xx.spec
+
+in that file:
+	setup -q: use this ,so you tar xf ,you have a dir ,the name is
+		specified in Source field. and have put into ~/rpmbuild/SOURCE,
