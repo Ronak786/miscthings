@@ -1,0 +1,2 @@
+rbd map:
+	rbd create --size xxx   name  --image-features=4 (must use, otherwise map will fail)
