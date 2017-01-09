@@ -1,0 +1,28 @@
+unistd:
+	STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO
+open_max:
+	getrlimit or use  sysconf's OPEN_MAX to get
+
+open, openat:
+	options: O_EXCL used with O_CREAT, to make sure only one time create
+			CLOEXEC	close on exec(), 
+			O_DIRECTORY  only can open directory, otherwise error
+			O_NOCTTY ,do not open as a controlling terminal
+			truck
+			sync, wait until physical io return, also attribute write return
+			dsync, only wait data write, and attr write only if that attr will affect your
+				data write(eg,size)
+			rsync, the same as sync
+
+			use openat to open relative to cur dir, be security
+
+			becareful NAME_MAX (255), POSIX_NO_TRUNC will check if name is too long
+					and error will return 
+
+close:
+	also release record locks on that file, 
+		when exit, all fd's will be closed
+lseek:
+	off_t is signed type, and return cur pos, 
+	THIS CAN BE NETATIVE, so if return -1, should check errno number
+
