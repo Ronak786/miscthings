@@ -1,1 +1,6 @@
 remenber firewall and selinux shut off
+
+new program path:
+	when install new program to replace an old one in a diff prefix dir,
+	you should exit and login again, because bash cache your exec path
+	to reduce search time
