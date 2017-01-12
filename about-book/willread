@@ -26,3 +26,7 @@ debug:
 binary hacks
 Debug Hacks
 ELF 文件格式 (以及ｗｉｋｉ上关于各个架构的update 和abi）
+
+os:
+osdev.org wiki: like cross compiler,  bare bone(a single os kernel)
+cross compiler
