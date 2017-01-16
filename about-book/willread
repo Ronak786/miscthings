@@ -18,13 +18,14 @@
 	计算机算法的设计与分析  
 	算法导论
 	taocp
+	算法　第四版 *
 
 讲话：
 	卡耐基演讲与口才
 
 debug:
 binary hacks
-Debug Hacks
+Debug Hacks  *
 ELF 文件格式 (以及ｗｉｋｉ上关于各个架构的update 和abi）
 
 os:
@@ -33,3 +34,5 @@ LFS:
 	basic lfs, advanced lfs and .....
 	CIFS:
 		cross compiler  gentoo wiki and arch wiki and the wiki have some links valuable
+
+APUE *
