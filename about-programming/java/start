@@ -13,3 +13,7 @@ when compile , just javac xxxx is enough,
 
 	总结 if use package xxx, then when run, should use java  aa.bb.cc.dd.file  or aa/bb/cc/dd/file
 			but your actually file need not under that filesystem 层级
+
+Warning:  when setting classpath, just set to jdk dir's lib dir is enough, and your own .jar or class dir
+		the standard class(like java/util/Arrays  in rt.jar are in rt.jar which java will find itself when runtime 
+		using jre  program, so do not worry that !!
