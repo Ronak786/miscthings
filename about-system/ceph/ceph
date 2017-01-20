@@ -10,3 +10,8 @@ rbd map foo --name client.admin to create block device
 
 
 note: when use cdeploy remember chwon -R ceph:ceph  of osd/mon  dir !!!!
+
+use systemctl is-enabled xx to check
+	systemctl enable ceph-osd@{host} to enable auto start
+			check {host} under /var/lib/ceph/osd
+			to mon .do the same
