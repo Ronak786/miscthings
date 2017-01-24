@@ -1,0 +1,23 @@
+iozone's direct on client is better?  
+block size bigger than 512k 1024k or more ???
+	the true bottle neck is wirte into one swgfs file, but if using too many  threads to 
+	write, will cost more(thread sum: 7 work, four rw file ??, or I should range thread sum
+	into less than cpu num, so while open thread, check, so global thread not a good idea)
+
+update scst 3.2
+
+
+_FILE_OFFSET_BITS ==> __USE_FILE_OFFSET64
+modify /usr/include/sys/statfs64.h struct statfs {}  signed long into unsigned long
+
+sg_ses --dev-slot-num=0 --clear=fault /dev/sg14
+
+/usr/bin/ceph-mon -f --cluster ceph --id x86_storage1 --setuser ceph --setgroup ceph to start ceph mo instead of systemd
+
+look at the ceph/guide of gentoo !!!!
+ceph osd too less: ceph osd pool set rbd pg_num 128
+
+remember to touch /var/lib/ceph/mon/ceph-node1/{done,systemd}  !!!!
+
+osd name too long:  osd max object name len = 256
+					osd max object namespace len = 64
