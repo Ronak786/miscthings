@@ -15,3 +15,8 @@ use systemctl is-enabled xx to check
 	systemctl enable ceph-osd@{host} to enable auto start
 			check {host} under /var/lib/ceph/osd
 			to mon .do the same
+
+crush用来制定pool所对应的osd的规则，就是使用哪些osd以及算法
+具体在https://access.redhat.com/documentation/en/red-hat-ceph-storage/version-1.2.3/red-hat-ceph-storage-123-storage-strategies/chapter-24-set-pool-values#adding-an-osd-to-crush
+以及https://elkano.org/blog/ceph-sata-ssd-pools-server-editing-crushmap/上面crush的设定以及
+和pool的绑定，还可以直接更改crush的
