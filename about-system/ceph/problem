@@ -19,5 +19,5 @@ ceph osd too less: ceph osd pool set rbd pg_num 128
 
 remember to touch /var/lib/ceph/mon/ceph-node1/{done,systemd}  !!!!
 
-osd name too long:  osd max object name len = 256
+osd name too long:  osd max object name len = 256  should use xfs instead of ext4
 					osd max object namespace len = 64
