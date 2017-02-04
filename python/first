@@ -51,7 +51,8 @@ if-elif-else
 	else xxx:
 		xxxx
 	print 'Done'
-
+note: 数字和字符串数字是不一样的，如果int(raw_input())只能用数字的123 判断==，
+		如果没有int（），那么要用“123” 判断
 
 while
 	while xxx:
