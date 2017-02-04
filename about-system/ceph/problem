@@ -23,3 +23,7 @@ osd name too long:  osd max object name len = 256  should use xfs instead of ext
 					osd max object namespace len = 64
 
 all owner should be ceph !!!
+
+
+remove cephfs:  /etc/init.d/ceph stop mds ,   ceph mds fail 0{1,2,3,4,...}  ,  ceph rm fs xx --yes-i-really-mean-it
+				then remove pools
