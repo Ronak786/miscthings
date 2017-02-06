@@ -1,0 +1,19 @@
+import and package:
+the package aa.bb.cc.dd is just a pkg name,
+	classes belonged to same pkg should have this command at the first statement of that file
+	if you use this , you can use every function in this pkg without import(static method must 
+		use import static or  use class.func to invoke)
+import  used if you do not belong to that pkg,
+	import aa.bb.cc.dd.class-name(or just .*)
+	then you can use class and functions in that pkg directly,otherwise you must use aa.bb.cc.cc.class.name
+
+when compile , just javac xxxx is enough,
+	but when run, you should use the whole pkg's path if your current class file also belong to that pkg
+		otherwise , just jave xxx to run
+
+	总结 if use package xxx, then when run, should use java  aa.bb.cc.dd.file  or aa/bb/cc/dd/file
+			but your actually file need not under that filesystem 层级
+
+Warning:  when setting classpath,  DO NOT FORGET THE export !!!!!!,  and set your own .jar or class dir
+		the standard class(like java/util/Arrays  in rt.jar are in rt.jar which java will find itself when runtime 
+		using jre  program, so do not worry that !!
