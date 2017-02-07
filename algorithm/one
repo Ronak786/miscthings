@@ -1,0 +1,36 @@
+overall:
+    java main should use String[] args as argument and return void
+
+structure:
+    public class filename {
+        public static type name(param) {}
+    }
+
+data type:
+    primitive: int double(64) boolean(true,false)  char(16), long short bype(8) float(32)
+        boolean use && || ! ^
+identifier:
+    letter, digit, _ , $ 
+cast:
+    then have casted type of data
+compare:
+    then have boolean type    == != >= <=
+delcaration:
+    java is strong type , so no mix type can be calculated together
+
+Array:
+    declare int[] xxx;
+    create   xxx = new int[n];
+    array should alloc dynamically, because not as a primitive type !!
+    double[] a = new double[N];
+    int[] a = {1, 2,3,4,5,65}
+    declare create  initialize  all important!!, (default initialize to 0)
+
+
+IO:
+    System.out.println  have not vars
+    System.out.printf  have vars
+Euclid:
+    last condition: divider is 0, now divided one is gcd
+    else, call func(divider, divided % divider)
+
