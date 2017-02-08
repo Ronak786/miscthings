@@ -1,0 +1,25 @@
+iozone's direct on client is better?  
+block size bigger than 512k 1024k or more ???
+	the true bottle neck is wirte into one swgfs file, but if using too many  threads to 
+	write, will cost more(thread sum: 7 work, four rw file ??, or I should range thread sum
+	into less than cpu num, so while open thread, check, so global thread not a good idea)
+
+update scst 3.2
+
+
+_FILE_OFFSET_BITS ==> __USE_FILE_OFFSET64
+modify /usr/include/sys/statfs64.h struct statfs {}  signed long into unsigned long
+
+sg_ses --dev-slot-num=0 --clear=fault /dev/sg14
+
+/usr/bin/ceph-mon -f --cluster ceph --id x86_storage1 --setuser ceph --setgroup ceph to start ceph mo instead of systemd
+
+
+硬盘指示灯那个放自启动
+
+./configure LIBNL_ROUTE3_LIBS='-L/usr/local/lib -lnl-route' LIBNL_ROUTE3_CFLAGS='-I/usr/local/include'
+ to compile libnl if lack of pkg-config .pc file
+
+
+ｒｐｍｂｕｉｌｄ的时候，要注意放到ｒｐｍｂｕｉｌｄｒｏｏｔ底下的　要是干净的目录，不然
+	可能打包失败
