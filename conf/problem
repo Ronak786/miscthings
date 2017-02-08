@@ -23,3 +23,10 @@ sg_ses --dev-slot-num=0 --clear=fault /dev/sg14
 
 ｒｐｍｂｕｉｌｄ的时候，要注意放到ｒｐｍｂｕｉｌｄｒｏｏｔ底下的　要是干净的目录，不然
 	可能打包失败
+
+网口固定：
+１　net.ifnames=0 biosdevname=0 命令行参数　内核
+２ persisten rules: SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="0c:c4:7a:95:7d:02", ATTR{dev_id}=="0x0", ATTR{type}=="1", KERNEL=="eth*", NAME="eno1"
+3  在ｓｙｓｔｅｍｄ系统中有个更改名字的程序，根据的是sysconfig/network-scripts 下文件中的hwaddr，只要设置了这个
+	对应ｍａｃ的网口名字就会被改成ifcfg-xxx文件的文件名
+
