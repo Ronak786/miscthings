@@ -30,3 +30,6 @@ sg_ses --dev-slot-num=0 --clear=fault /dev/sg14
 3  在ｓｙｓｔｅｍｄ系统中有个更改名字的程序，根据的是sysconfig/network-scripts 下文件中的hwaddr，只要设置了这个
 	对应ｍａｃ的网口名字就会被改成ifcfg-xxx文件的文件名
 
+
+显示器终端频率过高不能显示，　在ｇｒｕｂ的vmlinuz 行添加 nomodeset 参数，也可以放在/etc/default/grub 里
+	用grub2-mkconfig来做
