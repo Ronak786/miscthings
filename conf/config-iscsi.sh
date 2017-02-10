@@ -19,9 +19,9 @@
 FILEIO=fileio_tgt
 TARGPATH="/sys/kernel/scst_tgt/targets/iscsi"
 TARGPFX="iqn.2016-01.com.lwstore"
-#should be implicit file starting with "."
 CFILE="/etc/swgfs/iscsiconf"
 TFILE="/etc/swgfs/.iscsiconf.in"
+export ERRFILE="/tmp/.error"
 
 check_exec()
 {
@@ -62,10 +62,6 @@ do_create_iscsi()
 	targname_path="${TARGPFX}\:$1"
 	lunpath="${TARGPATH}/${targname}/luns/mgmt"
 	
-	if [ -e "${3}/${1}_${1}" ]; then
-		echo "already exist"
-		return 4
-	fi
 	truncate -s ${2}g  ${3}/${1}_${1}
 	nohup $FILEIO  $1 ${3}/${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
 	echo "add_target $targname" > "${TARGPATH}/mgmt"
@@ -164,6 +160,7 @@ ISCSILOG="/var/log/iscsi_log"
 mkdir -p "$ISCSILOG"
 [ ! -e $CFILE ] && touch $CFILE 
 [ ! -e $TFILE ] && touch $TFILE 
+touch $ERRFILE
 case $ACTION in 
 "load" )
 	load_mod
@@ -172,6 +169,20 @@ case $ACTION in
 	if [ "$#" != "5" ]; then
 		echo "not enough param  should 3"
 		exit 1
+	fi
+	echo "right" > $ERRFILE
+	cat $CFILE | while read ex_line
+	do
+		line_name=$(echo $ex_line | gawk '{print $1}')
+		if [ "$2" == "${line_name}" ]; then
+			echo "${line_name} alreadly exist, exiting"
+			echo "exist" > $ERRFILE
+			exit 
+		fi
+	done 
+	error=$(cat $ERRFILE)
+	if [ "$error" == "exist" ];then
+		exit
 	fi
 	do_create_iscsi $2 $3 $5
 	echo "$2 wb $3 $5" >> "$CFILE"
