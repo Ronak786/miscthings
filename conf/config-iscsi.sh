@@ -186,7 +186,7 @@ case $ACTION in
 	;;
 "help" )
 	echo "$0 create targetname size wb    create a new target"
-	echo "$0 delete targetname wb         delete an exist target"
+	echo "$0 delete targetname          delete an exist target"
 	echo "$0 rdconfig		    get info about existing targets"
 	echo "$0 recovery		    activate all target after bootup"
 	echo "$0 unlink			    deactivate all target"
