@@ -1,6 +1,6 @@
 #!/bin/sh
 # create: filename create targetname   size(in gb) wb
-# delete: filename delete targetname  wb
+# delete: filename delete targetname  
 # recovery: filename recovery 
 # unlink:   filename unlink
 # load  :   filename load
@@ -171,7 +171,7 @@ case $ACTION in
 	done
 	;;
 "delete" )
-	if [ "$#" != "3" ]; then
+	if [ "$#" != "2" ]; then
 		echo "not enough param  should 2"
 		exit 1
 	fi
