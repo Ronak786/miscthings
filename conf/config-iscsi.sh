@@ -18,11 +18,10 @@
 #set -o xtrace
 FILEIO=fileio_tgt
 TARGPATH="/sys/kernel/scst_tgt/targets/iscsi"
-STOREPATH="/tmp/scst"
 TARGPFX="iqn.2016-01.com.lwstore"
 #should be implicit file starting with "."
-CFILE="/tmp/tmpconf"
-TFILE="/tmp/tmpconf.tmp"
+CFILE="/etc/swgfs/iscsiconf"
+TFILE="/etc/swgfs/.iscsiconf.in"
 
 check_exec()
 {
