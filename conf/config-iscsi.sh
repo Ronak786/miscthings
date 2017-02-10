@@ -46,18 +46,29 @@ load_mod()
 	iscsi-scstd >/dev/null 2>&1 
 }
 
+get_block_file_pos()
+{
+	cat $CFILE | while read pos
+	do
+		local name="$(echo $pos | gawk '{print $1}')"
+		if [ "$1" == "$name" ]; then
+			echo "$(echo $pos | gawk '{print $4}')"
+		fi
+	done
+}
+
 do_create_iscsi()
 {
 	targname="${TARGPFX}:$1"
 	targname_path="${TARGPFX}\:$1"
 	lunpath="${TARGPATH}/${targname}/luns/mgmt"
 	
-	if [ -e "${STOREPATH}/${1}_${1}" ]; then
+	if [ -e "${3}/${1}_${1}" ]; then
 		echo "already exist"
 		return 4
 	fi
-	truncate -s ${2}g  ${STOREPATH}/${1}_${1}
-	nohup $FILEIO  $1 $STOREPATH/${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
+	truncate -s ${2}g  ${3}/${1}_${1}
+	nohup $FILEIO  $1 ${3}/${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
 	echo "add_target $targname" > "${TARGPATH}/mgmt"
 	usleep 1000000
 	echo "add $1 0" > "$lunpath"
@@ -71,11 +82,11 @@ do_recovery_iscsi()
 	targname_path="${TARGPFX}\:$1"
 	lunpath="${TARGPATH}/${targname}/luns/mgmt"
 	
-	if [ ! -e "${STOREPATH}/${1}_${1}" ]; then
+	if [ ! -e "${2}/${1}_${1}" ]; then
 		echo "not exist, can not restore $1"
 		return 4
 	fi
-	nohup $FILEIO  $1 $STOREPATH/${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
+	nohup $FILEIO  $1 ${2}/${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
 	echo "add_target $targname" > "${TARGPATH}/mgmt"
 	usleep 1000000
 	echo "add $1 0" > "$lunpath"
@@ -99,7 +110,6 @@ do_delete_iscsi()
 	if [ "n$pid" != "n" ]; then
 		kill $pid > /dev/null 2>&1
 	fi
-	rm -f $STOREPATH/${lunname}_${lunname} >/dev/null 2>&1
 }
 
 do_unlink_iscsi()
@@ -120,8 +130,11 @@ do_unlink_iscsi()
 	fi
 }
 
+
 do_remove_entry()
 {
+	FILEDIR=$(get_block_file_pos ${1})
+	rm -f $FILEDIR/${1}_${1} >/dev/null 2>&1
 	cat $CFILE | while read line
 	do
 		if [ "$1" != "$(echo $line | gawk '{print $1}')" ]
@@ -157,17 +170,19 @@ case $ACTION in
 	load_mod
 	;;
 "create" )
-	if [ "$#" != "4" ]; then
+	if [ "$#" != "5" ]; then
 		echo "not enough param  should 3"
 		exit 1
 	fi
-	do_create_iscsi $2 $3 
-	echo "$2 wb $3" >> "$CFILE"
+	do_create_iscsi $2 $3 $5
+	echo "$2 wb $3 $5" >> "$CFILE"
 	;;
 "recovery" )
 	cat $CFILE | while read recv_line
 	do
-		do_recovery_iscsi $recv_line
+		name=$(echo $recv_line | gawk '{print $1}')
+		FILEDIR=$(get_block_file_pos $name)
+		do_recovery_iscsi $name  $FILEDIR
 	done
 	;;
 "delete" )
@@ -185,13 +200,13 @@ case $ACTION in
 	done
 	;;
 "help" )
-	echo "$0 create targetname size wb    create a new target"
-	echo "$0 delete targetname          delete an exist target"
-	echo "$0 rdconfig		    get info about existing targets"
-	echo "$0 recovery		    activate all target after bootup"
-	echo "$0 unlink			    deactivate all target"
-	echo "$0 load		            load modules and start iscsi service(do this after bootup"
-	echo "$0 help		            show this help list"
+	echo "$0 create targetname size wb absdir     create a new target"
+	echo "$0 delete targetname		      delete an exist target"
+	echo "$0 rdconfig			    get info about existing targets"
+	echo "$0 recovery			    activate all target after bootup"
+	echo "$0 unlink				    deactivate all target"
+	echo "$0 load				    load modules and start iscsi service(do this after bootup"
+	echo "$0 help				    show this help list"
 	;;
 "rdconfig" )
 	do_read_config
