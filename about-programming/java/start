@@ -12,9 +12,18 @@ check style:
     checkstyle-algs4
     should have a header /*****
                           *****/  have 78 * and one /
+
+search path:
+    java -cp "xxxxxx" xx.xx.xx.filename   to specify and run
+
 print:
     use + in () to concate var with string
         this will convert another member into a string(just call toString)
+        具体的加法变成字符串的顺序是按照符号的顺序的
+
+input:
+    in java, input start from args[0] is the first, diff from C!!!
+    how to read from commandline?, just use args[xxx], 
 
 TYPE:
 
@@ -22,12 +31,31 @@ TYPE:
         char is 16bit unicode unsigned,
         bype is 8bit signed, and all characters represented by char
     Array:
-        int [][]a = new int[][]; will auto initialize to 0 or 0.0
+        int [][]a = new int[m][n]; will auto initialize to 0 or 0.0
             declare can use vars 
+        int a[] int[] a both right, but int[] a is clearer
 
     String:
         primitive type also have corresponding String type Integer which 
             have toString method
+
+
+    double:
+        infinity initialize: Double.POSITIVE_INFINITY  Double.NEGATIVE_INFINITY
+        a/0.0 will result in a value of Infinity
+
+    boolen:
+        in printf, use %b or %B to output
+
+calculate:
+    a/b will round ==> 0, (no matter positive or negative), then a%b will be a - a/b * b
+    if use 'a' + 'b', 
+        first level up to integer, then, add, so result is an int number!!,
+        if you want char character in println or printf, use (char)(xxxxx) to convert force
+
+    example:
+        java is convinient,   s = "" ; for(n = N; n > 0; n/=2) s = n % 2 + s;  to convert to binary
+            also use Integer.toBinaryString(N) is directly
 
 command:
     In.readInts to readin all args

@@ -24,3 +24,4 @@ Warning:  when setting classpath,  DO NOT FORGET THE export !!!!!!,  and set you
 in windows:
     设置classpath以及path  记住分隔符要用分号，不是冒号！！，还有运行的时候要到
         程序所在目录底下才行，因为java虚拟机就是这么干事情的
+    env path set in 设置，高级设置，环境变量
