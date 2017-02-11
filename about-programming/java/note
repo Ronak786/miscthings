@@ -3,6 +3,9 @@ the package aa.bb.cc.dd is just a pkg name,
 	classes belonged to same pkg should have this command at the first statement of that file
 	if you use this , you can use every function in this pkg without import(static method must 
 		use import static or  use class.func to invoke)
+    and call this method must use xx.xx.xx.xx.filename  to call!!!
+
+
 import  used if you do not belong to that pkg,
 	import aa.bb.cc.dd.class-name(or just .*)
 	then you can use class and functions in that pkg directly,otherwise you must use aa.bb.cc.cc.class.name
@@ -17,3 +20,7 @@ when compile , just javac xxxx is enough,
 Warning:  when setting classpath,  DO NOT FORGET THE export !!!!!!,  and set your own .jar or class dir
 		the standard class(like java/util/Arrays  in rt.jar are in rt.jar which java will find itself when runtime 
 		using jre  program, so do not worry that !!
+
+in windows:
+    设置classpath以及path  记住分隔符要用分号，不是冒号！！，还有运行的时候要到
+        程序所在目录底下才行，因为java虚拟机就是这么干事情的

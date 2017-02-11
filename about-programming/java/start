@@ -12,3 +12,45 @@ check style:
     checkstyle-algs4
     should have a header /*****
                           *****/  have 78 * and one /
+print:
+    use + in () to concate var with string
+        this will convert another member into a string(just call toString)
+
+TYPE:
+
+    char bype:
+        char is 16bit unicode unsigned,
+        bype is 8bit signed, and all characters represented by char
+    Array:
+        int [][]a = new int[][]; will auto initialize to 0 or 0.0
+            declare can use vars 
+
+    String:
+        primitive type also have corresponding String type Integer which 
+            have toString method
+
+command:
+    In.readInts to readin all args
+    parseInt to readin one int
+
+static method:
+    public static double name (double c)
+
+    property:
+        arg pass by value
+        method overload, (use with diff type of args)
+
+    static main( this can be in every java file as a test unit)
+
+recursive:
+    1 base case
+    2 every call should have smaller date range than prev
+    3 should not overlap data range between two call
+
+library:
+    a file, a public class filename, inwhich are static methods
+    static method can be called from outside
+
+    java.lang.Math
+    java.util.Arrays
+
