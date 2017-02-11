@@ -20,12 +20,17 @@ print:
     use + in () to concate var with string
         this will convert another member into a string(just call toString)
         具体的加法变成字符串的顺序是按照符号的顺序的
+    can use string conversion in println instead of printf
 
 input:
     in java, input start from args[0] is the first, diff from C!!!
     how to read from commandline?, just use args[xxx], 
 
 TYPE:
+
+    signed unsigned:
+        in java, no unsigned type, and >> use 1 if leftmost is 1,
+                                       >>> use 0 just as unsigned !!
 
     char bype:
         char is 16bit unicode unsigned,
