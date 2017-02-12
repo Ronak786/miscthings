@@ -10,3 +10,15 @@ SdtIn
 In
     In.readAllInts()  read ints from a file initialized when new a in instance
 
+StdDraw:
+    can draw, line circle, polygon, rectangle ,
+    can filled ,
+    can use thick pen, default is 0.005
+    can change color
+    can draw arc
+    x , y is from 0 to 1 ,so value should be 0.xxx
+
+Array:
+    int[] a;  a.length to get length
+    int[][] a; a.length to get how many row;  a[0].length to get how many column
+
