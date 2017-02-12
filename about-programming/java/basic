@@ -79,6 +79,9 @@ static method:
 
     static main( this can be in every java file as a test unit)
 
+    instance method used with instance vars, static method used with class names (not bind to specific
+        instance)
+
 recursive:
     1 base case
     2 every call should have smaller date range than prev
