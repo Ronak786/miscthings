@@ -1,0 +1,12 @@
+Integer Double.parseDouble  parseInt
+    parse a string to primitive type
+
+String:
+    string.charAt(index)  get character from a string at index 
+
+SdtIn
+    StdIn.readInt read one int one time from stdin
+
+In
+    In.readAllInts()  read ints from a file initialized when new a in instance
+

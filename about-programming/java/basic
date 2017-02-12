@@ -26,6 +26,10 @@ input:
     in java, input start from args[0] is the first, diff from C!!!
     how to read from commandline?, just use args[xxx], 
 
+    StdIn input only can read file(ofcourse !!, if want value, use pipe to pass)
+    In  also read from file, url .. , if want value, just use args
+        the argc is String[].length!!! and not include filename !!
+
 TYPE:
 
     signed unsigned:
