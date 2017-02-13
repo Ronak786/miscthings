@@ -65,8 +65,8 @@ do_create_iscsi()
 	targname_path="${TARGPFX}\:$1"
 	lunpath="${TARGPATH}/${targname}/luns/mgmt"
 	
-	truncate -s ${2}g  ${3}/${1}_${1}
-	nohup $FILEIO  $1 ${3}/${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
+	truncate -s ${2}g  ${3}/Iscsiblk_${1}_${1}
+	nohup $FILEIO  $1 ${3}/Iscsiblk_${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
 	echo "add_target $targname" > "${TARGPATH}/mgmt"
 	usleep 1000000
 	echo "add $1 0" > "$lunpath"
@@ -80,11 +80,11 @@ do_recovery_iscsi()
 	targname_path="${TARGPFX}\:$1"
 	lunpath="${TARGPATH}/${targname}/luns/mgmt"
 	
-	if [ ! -e "${2}/${1}_${1}" ]; then
+	if [ ! -e "${2}/Iscsiblk_${1}_${1}" ]; then
 		echo "not exist, can not restore $1"
 		return 4
 	fi
-	nohup $FILEIO  $1 ${2}/${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
+	nohup $FILEIO  $1 ${2}/Iscsiblk_${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
 	echo "add_target $targname" > "${TARGPATH}/mgmt"
 	usleep 1000000
 	echo "add $1 0" > "$lunpath"
@@ -132,7 +132,7 @@ do_unlink_iscsi()
 do_remove_entry()
 {
 	FILEDIR=$(get_block_file_pos ${1})
-	rm -f $FILEDIR/${1}_${1} >/dev/null 2>&1
+	rm -f $FILEDIR/Iscsiblk_${1}_${1} >/dev/null 2>&1
 	cat $CFILE | while read line
 	do
 		if [ "$1" != "$(echo $line | gawk '{print $1}')" ]
