@@ -47,7 +47,7 @@ TYPE:
     String:
         primitive type also have corresponding String type Integer which 
             have toString method
-
+		String is immutable, can not be modified
 
     double:
         infinity initialize: Double.POSITIVE_INFINITY  Double.NEGATIVE_INFINITY

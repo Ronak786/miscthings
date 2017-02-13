@@ -6,3 +6,4 @@ class　里可以有static method, 这些利用类名直接调用，放在ｊｖ
 
 java 有　public interface xx { func }
 	然后 public class yy implements xx  用来实现func, 这是一种抽象的方法
+
