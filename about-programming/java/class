@@ -3,3 +3,6 @@ class　里可以有static method, 这些利用类名直接调用，放在ｊｖ
 
 	类的实例化拥有的变量和函数都是跟着那个实例的，this 指针用于类的内部，可以
 		指向内部的全局变量，区分local　变量
+
+java 有　public interface xx { func }
+	然后 public class yy implements xx  用来实现func, 这是一种抽象的方法
