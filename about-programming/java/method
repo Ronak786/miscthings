@@ -22,3 +22,5 @@ Array:
     int[] a;  a.length to get length
     int[][] a; a.length to get how many row;  a[0].length to get how many column
 
+inherited method from class Object: (we can rewrite to overwrite them)
+	toString(), equals()(equals(NULL) should be false)
