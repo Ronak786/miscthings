@@ -19,8 +19,8 @@
 FILEIO=fileio_tgt
 TARGPATH="/sys/kernel/scst_tgt/targets/iscsi"
 TARGPFX="iqn.2016-01.com.lwstore"
-CFILE="/etc/swgfs/iscsiconf"
-TFILE="/etc/swgfs/.iscsiconf.in"
+CFILE="/tmp/iscsiconf"
+TFILE="/tmp/.iscsiconf.in"
 export ERRFILE="/tmp/.error"
 
 check_exec()
@@ -66,7 +66,11 @@ do_create_iscsi()
 	lunpath="${TARGPATH}/${targname}/luns/mgmt"
 	
 	truncate -s ${2}g  ${3}/Iscsiblk_${1}_${1}
-	nohup $FILEIO  $1 ${3}/Iscsiblk_${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
+	if [ "x$4" == "xwb" ]; then
+		nohup $FILEIO  $1 ${3}/Iscsiblk_${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
+	else
+		nohup $FILEIO -o $1 ${3}/Iscsiblk_${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
+	fi
 	echo "add_target $targname" > "${TARGPATH}/mgmt"
 	usleep 1000000
 	echo "add $1 0" > "$lunpath"
@@ -84,7 +88,11 @@ do_recovery_iscsi()
 		echo "not exist, can not restore $1"
 		return 4
 	fi
-	nohup $FILEIO  $1 ${2}/Iscsiblk_${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
+	if [ "x$3" == "xwb" ]; then
+		nohup $FILEIO  $1 ${2}/Iscsiblk_${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
+	else
+		nohup $FILEIO -o  $1 ${2}/Iscsiblk_${1}_${1} >> ${ISCSILOG}/${1} 2>&1 &
+	fi
 	echo "add_target $targname" > "${TARGPATH}/mgmt"
 	usleep 1000000
 	echo "add $1 0" > "$lunpath"
@@ -187,17 +195,18 @@ case $ACTION in
 	if [ "$error" == "exist" ];then
 		exit
 	fi
-	do_create_iscsi $2 $3 $5
-	echo "$2 wb $3 $5" >> "$CFILE"
+	do_create_iscsi $2 $3 $5 $4
+	echo "$2 $4 $3 $5" >> "$CFILE"
 	;;
 "recovery" )
 	cat $CFILE | while read recv_line
 	do
 		name=$(echo $recv_line | gawk '{print $1}')
+		mode=$(echo $recv_line | gawk '{print $2}')
 		FILEDIR=$(get_block_file_pos $name)
 		exist=$(ps aux | grep fileio_tgt | grep ${name}_${name} | grep -v grep)
 		if [ -z "$exist" ]; then
-			do_recovery_iscsi $name  $FILEDIR
+			do_recovery_iscsi $name  $FILEDIR $mode
 		fi
 	done
 	;;
