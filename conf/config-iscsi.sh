@@ -42,7 +42,10 @@ load_mod()
 {
 	modprobe scst_user >/dev/null 2>&1 
 	modprobe iscsi-scst >/dev/null 2>&1 
-	iscsi-scstd >/dev/null 2>&1 
+	exist=$(ps aux | grep iscsi-scstd | grep -v grep)
+	if [ -z "$exist" ]; then 
+		iscsi-scstd >/dev/null 2>&1 
+	fi
 }
 
 get_block_file_pos()
@@ -192,7 +195,10 @@ case $ACTION in
 	do
 		name=$(echo $recv_line | gawk '{print $1}')
 		FILEDIR=$(get_block_file_pos $name)
-		do_recovery_iscsi $name  $FILEDIR
+		exist=$(ps aux | grep fileio_tgt | grep ${name}_${name} | grep -v grep)
+		if [ -z "$exist" ]; then
+			do_recovery_iscsi $name  $FILEDIR
+		fi
 	done
 	;;
 "delete" )
