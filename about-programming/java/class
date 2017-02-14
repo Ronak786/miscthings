@@ -12,3 +12,14 @@ public class xxx<Item>  这个Item是泛用类型，可以在ｎｅｗ的时候�
 	取出的时候，自动Integer => int
 
 	Iterator 是一个迭代interface, 需要我们自己去implements 的
+
+	(obj instanceof classname) return true if obj belongs to class or a subclass of that
+					or belongs to a interface which implemented by a class
+
+enum class:
+	public enum name { }  , auto extends  java.lang.Enum, so not allowed to extends  for enum !!
+	public enum 构造函数不能public,只能在ｃｌａｓｓ内部直接构造enum的每一相
+
+	问题：　iterator 怎么用在ｅｎｕｍ上面，我看文档讲　表达式那章直接
+		for(classname p: class.values()) 就行了
+	
