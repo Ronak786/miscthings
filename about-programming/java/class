@@ -7,3 +7,8 @@ class　里可以有static method, 这些利用类名直接调用，放在ｊｖ
 java 有　public interface xx { func }
 	然后 public class yy implements xx  用来实现func, 这是一种抽象的方法
 
+public class xxx<Item>  这个Item是泛用类型，可以在ｎｅｗ的时候指定，是引用类型
+	autobox　　就是泛用类型也可以支持primitive类型，自动int=>Integer, 
+	取出的时候，自动Integer => int
+
+	Iterator 是一个迭代interface, 需要我们自己去implements 的
