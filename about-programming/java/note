@@ -25,3 +25,6 @@ in windows:
     设置classpath以及path  记住分隔符要用分号，不是冒号！！，还有运行的时候要到
         程序所在目录底下才行，因为java虚拟机就是这么干事情的
     env path set in 设置，高级设置，环境变量
+
+String 是字符串常量，String aa = “aaa”； 这个
+    是 创建了一个指向常量的引用，如果改变aa的值，并不会改变常量的值
