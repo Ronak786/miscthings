@@ -1,0 +1,13 @@
+bag:
+    just a container, can add in items, but can not fetch out
+
+iterable:
+    this class used to implement inerator attr
+    this has iterator class, you implement this in a subclass to implement truly iterator
+    
+    like:
+        public class xxx<Item> implements Iterable<Item> { }
+         in which we define a private class xxx<Item> implements Interator<Item>
+            the xxx is the return value of Iterator method
+
+            in which,we define a hasNext(),  a next() with return type Item and void remove()
