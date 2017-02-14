@@ -43,6 +43,7 @@ TYPE:
         int [][]a = new int[m][n]; will auto initialize to 0 or 0.0
             declare can use vars 
         int a[] int[] a both right, but int[] a is clearer
+		array has some methods be used to sort,get, fill, copy
 
     String:
         primitive type also have corresponding String type Integer which 
@@ -55,6 +56,13 @@ TYPE:
 
     boolen:
         in printf, use %b or %B to output
+	
+	int a = xx
+	double b = xxxB
+	fload  c = xxxF
+	long d = xxxL
+	use hex 0xaaaa
+	use binary  0basasasa
 
 calculate:
     a/b will round ==> 0, (no matter positive or negative), then a%b will be a - a/b * b
