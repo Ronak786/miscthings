@@ -11,3 +11,7 @@ iterable:
             the xxx is the return value of Iterator method
 
             in which,we define a hasNext(),  a next() with return type Item and void remove()
+
+    for (Item item : classname/this) 
+        doxxx(item)xxx     ==> this used as that this.iterator() to return item every iterator
+                                (you should implement interator() first)
