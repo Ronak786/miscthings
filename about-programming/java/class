@@ -23,3 +23,7 @@ enum class:
 	问题：　iterator 怎么用在ｅｎｕｍ上面，我看文档讲　表达式那章直接
 		for(classname p: class.values()) 就行了
 	
+int<Integer> char(Character> double<Double> floag<Float> have primitive 
+    and will auto convert to class type when using generics type class
+
+    一个函数必须时特定类型的，不能后面加<Item>这种，必须用<String>等特定类型
