@@ -41,3 +41,4 @@ String 是字符串常量，String aa = “aaa”； 这个
 important!!!:
     in iterator:  if you use foreach loop,  it will first call hasNext, then call next(),
         so if you do something unrecoverable in hasNext(), will be done twice!!!
+
