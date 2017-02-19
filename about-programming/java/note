@@ -36,7 +36,8 @@ String 是字符串常量，String aa = “aaa”； 这个
     内部类可以使用父类的任意元素
     generic 通用数组声明的时候普通就行了，只有new的时候需要那样，其他地方随便用
 
-    iterator 内部返回其他类的时候要实例化！！
+    iterator 内部返回其他类的时候要实例化！！  
+        当写iterator的时候注意 Node<Item> 不是 Node<item> ！！！
 
 important!!!:
     in iterator:  if you use foreach loop,  it will first call hasNext, then call next(),
