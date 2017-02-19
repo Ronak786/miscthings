@@ -4,3 +4,9 @@ binary search :
 
 include and dynamic link:
 	the path set in environment is C_INCLUDE_PATH and LD_LIBRARY_PATH  LIBRARY_PATH
+
+Jossephus circle:
+    利用画图比对的方法，
+    第一轮0到n-1  去掉报m-1的数后，之后的数从0开始排，
+        然后继续从0开始报到m-1，利用递归，子轮的第k个就是
+        父轮的(k+m)%n（当前父轮的n），可以比对得出的
