@@ -1,0 +1,7 @@
+creat group in ini_group of each target,
+
+1 if add initiator name in ini_group, add lun in ini_group, then
+	those initoators only can access those lun, if no lun, then those initiator can acces nothing
+  note: you can use echo 'add ! xxxx' > mgmt to add all initiator except that one
+
+2 even if the same disk is add to default target oriented lun dir, will not can be accessed
