@@ -1,0 +1,11 @@
+selection : every time select from curpos to end the max and change with cur;
+            so n exchanges and ~n^2 /2   compares , os O(n^2)
+insertion: from the second, every time insert to left,
+            need average  n^2 / 4 exchange and n^2 / 4 compare
+            need worst  n^2 /2 exch and n^2 / 2 compare,
+
+            if array is partial sorted ,insert is effective
+            every time insert, it will cancel some inversions( inversions are
+                (n, m) where m < n)
+                so the exchange just the same as number of inversions
+                and compare is one more than exchange every traverse 
