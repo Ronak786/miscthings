@@ -39,6 +39,9 @@ String 是字符串常量，String aa = “aaa”； 这个
     iterator 内部返回其他类的时候要实例化！！  
         当写iterator的时候注意 Node<Item> 不是 Node<item> ！！！
 
+    接口可以用来作为引用来接收new 出来的具体实现的实例，这个可以提高抽象性，同样
+    降低了可调试性
+
 important!!!:
     in iterator:  if you use foreach loop,  it will first call hasNext, then call next(),
         so if you do something unrecoverable in hasNext(), will be done twice!!!
