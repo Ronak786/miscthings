@@ -25,3 +25,6 @@ Shell:
 merge sort:
     nlog(n) time, but use extra propotional to N's space
     a in-place merge is possible but complicated
+
+    使用递推的方法来获取nlog n的复杂度，每次排序都是子序列的复杂度加上当前的一个合并动作
+        （需要 n 或者至少n/2）这么多的合并比较
