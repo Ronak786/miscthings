@@ -21,3 +21,7 @@ Shell:
         更复杂的可以有40%的提高，
         有一个定理 h-sorted after, then k-sorted, still remain h-sorted,
         所以我觉得重叠的越少越好(也不一定）
+
+merge sort:
+    nlog(n) time, but use extra propotional to N's space
+    a in-place merge is possible but complicated
