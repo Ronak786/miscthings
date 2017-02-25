@@ -1,0 +1,3 @@
+stddraw  have setScale method which can set scale,
+    this will not change canvas size, but change your draw size 
+    just after you set this function !!
