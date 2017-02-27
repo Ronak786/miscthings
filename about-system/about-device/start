@@ -1,0 +1,4 @@
+lspci how to see very deivce's detailed info ?
+	lspci 找到设备号
+	lspci -n | grep 设备号 找到设备ｉｄ
+	lspci -d 设备ｉｄ　　　找到具体信息，比如当前插入槽的带宽等都可以查到
