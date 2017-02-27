@@ -1,5 +1,6 @@
 切比雪夫不等式意义：
 	实际的与平均数的差是标准差的倍数，在ｍ倍的范围内的概率是１－(1/m^2)
+	quick sort的标准差是0.65n
 selection : every time select from curpos to end the max and change with cur;
             so n exchanges and ~n^2 /2   compares , os O(n^2)
 insertion: from the second, every time insert to left,
