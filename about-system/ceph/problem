@@ -31,3 +31,11 @@ remove cephfs:  /etc/init.d/ceph stop mds ,   ceph mds fail 0{1,2,3,4,...}  ,  c
 ceph osd crush rule create-simple rule-name  root-name   bucket-type   ==> to create a rule
 ceph osd pool set poolname crush_ruleset [num] to assign rule to a pool
 每个pool的pg数量如果过多会导致问题，一个pool对应的osd群在crushrule里设定，所以可以适当更改规则
+
+
+
+创建snap的时候，原image必须没有exclusive lock， 不然之后是不能恢复的  会只读
+创建文件系统的时候，制定权限时，要具有对mds的读写权限，这个控制对文件系统的读写与否
+权限控制：
+	ceph-authtoool可以定制到文件里，但最后需要ceph auth add name  -i  file  来读入系统中才能生效，
+		每次修改权限都是一次重写
