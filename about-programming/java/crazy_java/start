@@ -4,3 +4,9 @@ jdk  java standard development tool, install this will also install java run tim
 
 javac  -d destdir   sourcefile  可以把class文件放到指定的目录里面去
 
+classpath:
+	jdk 1.4及以前需要设置，包含dt.jar  tools.jar 以及当前目录
+	之后就自动包含这三者了，但是如果明确指定了classpath,还是会依照这个来
+
+	可以在命令行java -classpath  xxx:xxx:xxx来指定这一次的，　win上是；分号
+
