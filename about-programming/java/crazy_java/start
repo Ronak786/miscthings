@@ -10,3 +10,9 @@ classpath:
 
 	可以在命令行java -classpath  xxx:xxx:xxx来指定这一次的，　win上是；分号
 
+
+文件名和类名：
+	java每个文件可以有多个类，如果没有public类，那么文件名随意，
+		如果有那么文件名和public类名一样，所以最多一个文件一个public类，
+	建议一个文件一个类，这样清晰，java 必须以类为单位，类外面没有执行性的语句
+
