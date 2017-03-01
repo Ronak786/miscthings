@@ -33,3 +33,6 @@ sg_ses --dev-slot-num=0 --clear=fault /dev/sg14
 
 显示器终端频率过高不能显示，　在ｇｒｕｂ的vmlinuz 行添加 nomodeset 参数，也可以放在/etc/default/grub 里
 	用grub2-mkconfig来做
+
+
+编译时出现关于__u32符号不对的问题，在标准库里，怀疑是头文件本身不兼容，换了kernel对应头文件，解决
