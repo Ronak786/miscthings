@@ -1,0 +1,6 @@
+jdk  java standard development tool, install this will also install java run time
+
+安装之后要设置ＰＡＴＨ　以及ｃｌａｓｓｐａｔｈ路径
+
+javac  -d destdir   sourcefile  可以把class文件放到指定的目录里面去
+
