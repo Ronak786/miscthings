@@ -36,3 +36,11 @@ sg_ses --dev-slot-num=0 --clear=fault /dev/sg14
 
 
 编译时出现关于__u32符号不对的问题，在标准库里，怀疑是头文件本身不兼容，换了kernel对应头文件，解决
+
+
+flock:
+	这个只能锁整个文件，　这个可以被子进程继承，　　这个不能用在线程上
+fcntl f_setfl  
+	这个能锁文件部分，这个不能继承，　这个不能用在线程上
+pthread mutex lock 
+	这个用于线程
