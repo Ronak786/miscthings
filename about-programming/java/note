@@ -52,3 +52,6 @@ autobox autounbox:
     后者时在传参或者取值的时候，自动转回primitive类型
 
 父类里面有generic时，内部的子类由于不是静态的，跟着父类走，就不需要这个了！！　　implements 的还是需要的
+
+in java 如果要使用comparable  类 ， 实现的compareTo函数必须满足可以比较大小，所以有时候会直接使用所有
+    类都继承的equals而不是这个
