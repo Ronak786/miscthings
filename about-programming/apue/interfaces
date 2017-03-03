@@ -1,5 +1,5 @@
 apue log func:
-	log_err, log_msg   just log and return or exit
+	log_quit, log_msg   just log and return or exit
 	log_sys, log_ret	will also print errno's err msg and then do as above
 dir operation:
 	opendir,readdir,closedir
@@ -19,8 +19,10 @@ exec:
 	 args from arg0 to argxx at second to end and end with (char *)NULL !!!
 
 strings:
-	strtok to seperate string (will modify that !!)
+	strtok to seperate string (will modify that !!)(can change delimiter)
 	strpbrk to find first occurence of char in given string identifier
+	strspn get length of occurence from begin just have accept chars
+	strcspn get length of occurence from begin just not have accept chars
 
 man page:
 	man intro to see user manual of intro

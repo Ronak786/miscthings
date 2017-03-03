@@ -14,7 +14,9 @@ limits:
 	compile limit: in header files <limits.h>
 	runtime file/dir limit: pathconf()
 	runtime sys limit: sysconf()
-	eg. FOPEN_MAX, TMP_MAX, FILENAME_MAX
+	eg. FOPEN_MAX, TMP_MAX, FILENAME_MAX,  
+	note : 一般变量本身可能会定义在头文件里，但是其实真正运行时获取的是系统限制,这个才是有用的，
+		如果没有的话就是用系统的了
 
 	use get conf:
 		first use eviron's conf, cpp -dM /dev/null can see that,
