@@ -30,6 +30,7 @@ open, openat: (openat used to open file based on a dir)
 close:
 	also release record locks on that file, 
 		when exit, all fd's will be closed
+	close may error, but you must not close twice, that error just used to warn data might loss
 lseek:
 	off_t is signed type, and return cur pos, 
 	THIS CAN BE NETATIVE, so if return -1, should check errno number

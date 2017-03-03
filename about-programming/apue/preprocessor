@@ -1,0 +1,4 @@
+__FILE__ __LINE__ __FUNCTION__
+如果要使用比如  #define con(a,b)  a ## b 这个样子的##不会被扩展
+	需要双重宏  #define con(a,b) _con(a,b)
+				#define _con(a,b) a ## b
