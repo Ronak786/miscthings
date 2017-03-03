@@ -24,6 +24,8 @@ open, openat: (openat used to open file based on a dir)
 					and error will return 
 			O_NONBLOCK do not block when open fifo  char file  or blk-device
 			o_nofollow  if is a symbolic link ,not follow 
+	perfer:
+		creat ==  open(fd, O_RDWR | O_CREAT | O_TRUNC, mode)
 
 close:
 	also release record locks on that file, 
