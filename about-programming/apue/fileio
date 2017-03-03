@@ -3,12 +3,16 @@ unistd:
 open_max:
 	getrlimit or use  sysconf's OPEN_MAX to get
 
-open, openat:
+open, openat: (openat used to open file based on a dir)
+	openat fd: 
+		1 if path absolute, ignore fd
+		2 if fd has string, look for base on that
+		3 if fd is AT_FDCWD, just like open(2)
 	options: O_EXCL used with O_CREAT, to make sure only one time create
 			CLOEXEC	close on exec(), 
 			O_DIRECTORY  only can open directory, otherwise error
-			O_NOCTTY ,do not open as a controlling terminal
-			truck
+			O_NOCTTY ,do not open as a controlling terminal for this process
+			o_truck if open write only or rw, will truncate to zero length
 			sync, wait until physical io return, also attribute write return
 			dsync, only wait data write, and attr write only if that attr will affect your
 				data write(eg,size)
@@ -18,6 +22,8 @@ open, openat:
 
 			becareful NAME_MAX (255), POSIX_NO_TRUNC will check if name is too long
 					and error will return 
+			O_NONBLOCK do not block when open fifo  char file  or blk-device
+			o_nofollow  if is a symbolic link ,not follow 
 
 close:
 	also release record locks on that file, 
