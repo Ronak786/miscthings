@@ -33,3 +33,18 @@ limits:
 
 	sys/types.h
 		we have special types for some vars
+		
+FEATURE TEST MACROS:
+	in features.h, we have some macros to control some feature,
+		most defined by compiler, 
+		in every manual page's SYNOPSIS can we find that requirements
+
+	_POSIX_C_SOURCE _XOPEN_SOURCE _GNU_SOURCE _DEFAULT_SOURCE used to provide posix.1  sus gnu_feature, default features
+	_POSIX_C_SOURCE >= 200112L 等同于 _XOPEN_SOURCE >= 600
+	_POSIX_C_SOURCE >= 200809L 等同于 _XOPEN_SOURCE >= 700
+	_POSIZ_SOURCE 任何值都相当与_POSIX_C_SOURCE = 1
+	_XOPEN_SOURCE 定义这个对应的值除了sus的功能之外还会隐含_POSIX_C_SOURCE 的功能
+	_BSD_SOURCE 这个基本不用了，_DEFAULT_SOURCE 这个一起使用好一点基本一样
+	reentrant  thread_safe have no effect in glibc now
+
+	_FORTIFY_SOURCE 这个是用来增加检验，设为1就行了字符串函数的
