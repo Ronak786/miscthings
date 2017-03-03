@@ -1,0 +1,64 @@
+sql 是结构化查询语句 ，一般使用的是关联数据库
+
+语法： 关键字可大小写， 
+        语句后面有的数据库要分号，有的不要，一般还是要的
+关键字：
+    select  update delete 
+    insert into 
+    create database
+    alter database
+    alter table
+    create table
+    drop table
+    create index
+    drop index
+
+select:
+    select  aaa,bbb  from ccc;
+    select distinct xx from xx;  可以去掉列中重复的项
+
+where:
+    select xx from xx where  column =/<>(!=)/>/</>=/<=/between xxx and xxx/like xxx/in xxx
+    使用单引号表示列名字
+
+and or:
+    操作符，放在where里面，可以表示多个条件，可以组合使用，用括号
+
+insert into table (col1, col2, xxx)  values ('xxx','xxx')  最前面的序号是不用插入的
+
+update table set xx=xx,xx=xx....  where condition
+    如果忘记where 所有记录都会被更改！！！
+
+delete *  from xxx
+delete from xxx where xxx ;  这个where很重要，不然就全部删掉了
+
+top:
+    select top 20 (percent可以表示百分比）columns  from xxx ;
+    或者 select xxx  from xxx limit number;
+
+like:
+    select xx from xxx where cols like '%xx%' (not like '%xx%')  %表示统配0个或多个
+
+统配：
+    %  0到多个
+    _ 一个
+    [xyz] 其中一个
+    [x-z] 包括中间
+    [^x-z] 或[!x-z] 不包括其中任何一个
+in
+    select xx from xx where xx in (xx,xx,xx,xx); cols in one of those values
+between:
+    select xx from xx where xx between yy and zz
+    这个匹配数字的时候是全部匹配的，匹配字符串的时候匹配的是开头的字 ?
+select xx as yy, aa+' ' + bb+ ' '+ cc as dd
+from ee,ff
+where xxx and xxx
+    其中如果ee as gg 那个前面select的时候咳哟用gg.xx gg.bb这样来省略，如果有多个表的话
+
+select * from xxx inner join xxx on aa==bb
+    显示两个表单中具有相同选择关键字的项
+
+当在web上使用的时候，容易被人恶意加入多余的数据库语句，或者利用1=1  “”=“”的语法结构来执行非法操作，
+    所以web上的输入参数在语句中用@0 @1 @2代替，然后运行是动态检查，当作纯字符串输入
+
+
