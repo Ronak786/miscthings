@@ -37,5 +37,8 @@ close:
 	close may error, but you must not close twice, that error just used to warn data might loss
 lseek:
 	off_t is signed type, and return cur pos, 
+		offset can be very big, so when return will get 0
+	use offset 0 from seek_cur to get current pos
 	THIS CAN BE NETATIVE, so if return -1, should check errno number
+		also if can not seek(pipe ...) will return -1
 

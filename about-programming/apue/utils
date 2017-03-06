@@ -1,3 +1,6 @@
+utils:
+	od -c to see file in hex printing ascii
+
 apue log func:
 	log_quit, log_msg   just log and return or exit
 	log_sys, log_ret	will also print errno's err msg and then do as above
