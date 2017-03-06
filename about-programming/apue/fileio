@@ -3,6 +3,8 @@ unistd:
 open_max:
 	getrlimit or use  sysconf's OPEN_MAX to get
 
+	WE DON'T NEED FILE OFFSET 64 BECAUSE WE ARE 64BIT SYSTEM!!
+
 open, openat: (openat used to open file based on a dir)
 	openat fd: 
 		1 if path absolute, ignore fd
