@@ -1,0 +1,6 @@
+we have buffer between block dev and filesystem,
+	filesytem only access buffer, every piece of buffer can contain one dev block data,
+	if buffer not enough, write old one (use algorithm least used first)
+	also delayed write happens, when call write, just put into free list, every
+	new process want a buffer, and search pass that, call async write for it and continue to search,
+
