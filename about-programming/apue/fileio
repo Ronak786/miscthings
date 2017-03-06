@@ -1,9 +1,10 @@
+resource limits:  
 unistd:
 	STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO
 open_max:
 	getrlimit or use  sysconf's OPEN_MAX to get
-
 	WE DON'T NEED FILE OFFSET 64 BECAUSE WE ARE 64BIT SYSTEM!!
+getrlimit: see sys/resource.h supported list of resources, sysconf and pathconf see man page
 
 open, openat: (openat used to open file based on a dir)
 	openat fd: 
