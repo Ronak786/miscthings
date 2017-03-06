@@ -44,3 +44,6 @@ lseek:
 	THIS CAN BE NETATIVE, so if return -1, should check errno number
 		also if can not seek(pipe ...) will return -1
 
+read: 
+	return type is sign long, count is unsigned long
+	SIZE_MAX is in stdint.h  SSIZE_MAX just define bits/types.h
