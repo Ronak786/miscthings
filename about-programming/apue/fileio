@@ -45,6 +45,9 @@ lseek:
 		also if can not seek(pipe ...) will return -1
 	must use rdonly  wronly rdwr(one of three)
 	if using O_APPEND,then all write will append, and lseek only can control read
+		append is atomic 组合的到末尾，然后写，只不过pos不变
+	同样pread pwrite也是到指定位置，改动，然后pos不变。 append and these are all 原子操作！！
+		但是如果使用append，那么pwrite也会放到最后的
 
 read: 
 	return type is sign long, count is unsigned long
@@ -58,3 +61,5 @@ file descriptor:
 	every process has a table of fds=> 
 	every fd have a pointer to a file detail struct (to record modification status of own process)=>
 	every file strct point to a real files inode for data reference
+	when dup, two fd share one file table
+	when fork, two fd from diff process share one filetable
