@@ -23,6 +23,8 @@ open, openat: (openat used to open file based on a dir)
 			dsync, only wait data write, and attr write only if that attr will affect your
 				data write(eg,size)
 			rsync, the same as sync
+			O_CRATE 和O_excl 一起用可以保证操作在创建文件如果不是的话，会删除，
+				如果使用link在这样打开的文件上，link会失败
 
 			use openat to open relative to cur dir, be security
 
