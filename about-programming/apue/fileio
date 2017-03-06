@@ -66,3 +66,10 @@ file descriptor:
 	every file strct point to a real files inode for data reference
 	when dup, two fd share one file table
 	when fork, two fd from diff process share one filetable
+
+dup: 
+	duplicate old to the lowest available
+dup2:
+	duplicate old to new, if new is open, first close(atomic) FD_CLOEXEC这个fd的属性会dup的时候去掉
+fcntl( F_DUPFD )is the same as dup and dup2,使用最后的参数控制行为
+	这个两种函数来自不同的规范
