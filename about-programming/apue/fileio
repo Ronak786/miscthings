@@ -43,7 +43,18 @@ lseek:
 	use offset 0 from seek_cur to get current pos
 	THIS CAN BE NETATIVE, so if return -1, should check errno number
 		also if can not seek(pipe ...) will return -1
+	must use rdonly  wronly rdwr(one of three)
+	if using O_APPEND,then all write will append, and lseek only can control read
 
 read: 
 	return type is sign long, count is unsigned long
 	SIZE_MAX is in stdint.h  SSIZE_MAX just define bits/types.h
+
+BUFSIZ system default is 8192
+		这个和你的文件系统的blk配合使用，每次取相似数量的大小会有最高效，还要注意
+			去掉缓存的影响
+
+file descriptor:
+	every process has a table of fds=> 
+	every fd have a pointer to a file detail struct (to record modification status of own process)=>
+	every file strct point to a real files inode for data reference
