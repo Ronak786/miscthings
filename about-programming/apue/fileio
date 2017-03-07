@@ -14,7 +14,8 @@ open, openat: (openat used to open file based on a dir)
 		2 if fd has string, look for base on that
 		3 if fd is AT_FDCWD, just like open(2)
 	options: O_EXCL used with O_CREAT, to make sure only one time create
-			CLOEXEC	close on exec(), 
+			CLOEXEC	close on exec(), 这个可以避免用fcntl再去设置fd_cloexec
+				cloexec 这个控制的是执行exec之后，原来的fd号是否仍然可以引用到那个文件(不是fork的时候哦！！）
 			O_DIRECTORY  only can open directory, otherwise error
 			O_NOCTTY ,do not open as a controlling terminal for this process
 			o_append  append after last bytes
@@ -23,6 +24,7 @@ open, openat: (openat used to open file based on a dir)
 			dsync, only wait data write, and attr write only if that attr will affect your
 				data write(eg,size)
 			rsync, the same as sync
+			o_nonblocking  这个也可以在fcntl上设置,这个让open还有其他操作不能立刻成功时立刻返回
 			O_CRATE 和O_excl 一起用可以保证操作在创建文件如果不是的话，会失败，这样就可以原子创建了
 				如果使用link在这样打开的文件上，link会失败
 			mkdir(xx xx)这个是目录的原子创建
@@ -73,7 +75,14 @@ dup2:
 	duplicate old to new, if new is open, first close(atomic) FD_CLOEXEC这个fd的属性会dup的时候去掉
 fcntl( F_DUPFD )is the same as dup and dup2,使用最后的参数控制行为
 	这个两种函数来自不同的规范
+	F_DUPFD F_DUPFD_CLOEXE: 返回大于等于最后一个数的最小的可用fd,非cloexe版本会清除这个flag，否则会设置这个flag
+	F_getfd setfd 这两个可以获取（返回值）设置（第三个参数）fd的flag（每个fd特有，目前只定义了f_cloexe)
+	getfl setfl, 这两个是o_wronly rdonly rdwr exec apend nonblock **sync
+				比对的时候，读写状态需要先与accmode相与，然后才能比对每个读写flag值
+				set只允许sync dsync append async(这个只允许fcntl设置,似乎只允许socket，terminal， pipe）
 
 sync: just queue io for writing
 fsync(fd): wait until that fd's content write into disk
 fdatasync(fd): wait until data is on disk
+
+
