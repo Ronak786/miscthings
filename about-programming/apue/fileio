@@ -25,6 +25,7 @@ open, openat: (openat used to open file based on a dir)
 				data write(eg,size)
 			rsync, the same as sync
 			o_nonblocking  这个也可以在fcntl上设置,这个让open还有其他操作不能立刻成功时立刻返回
+				不能由于文件和快设备
 			O_CRATE 和O_excl 一起用可以保证操作在创建文件如果不是的话，会失败，这样就可以原子创建了
 				如果使用link在这样打开的文件上，link会失败
 			mkdir(xx xx)这个是目录的原子创建
