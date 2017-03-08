@@ -51,6 +51,7 @@ lseek:
 		also if can not seek(pipe ...) will return -1
 	must use rdonly  wronly rdwr(one of three)
 	if using O_APPEND,then all write will append, and lseek only can control read
+		注意，append 写的时候，会把file pos定位到tial，不会再返回去了！！要手动, 需要write权限，不然不能写
 		append is atomic 组合的到末尾，然后写，只不过pos不变
 	同样pread pwrite也是到指定位置，改动，然后pos不变。 append and these are all 原子操作！！
 		但是如果使用append，那么pwrite也会放到最后的
@@ -74,7 +75,8 @@ dup:
 	duplicate old to the lowest available
 dup2:
 	duplicate old to new, if new is open, first close(atomic) FD_CLOEXEC这个fd的属性会dup的时候去掉
-fcntl( F_DUPFD )is the same as dup and dup2,使用最后的参数控制行为
+fcntl(使用这个是要在运行时，或者不知道fd对应文件的时候（比如重定向），要改变fd行为的时候用的)
+    ( F_DUPFD )is the same as dup and dup2,使用最后的参数控制行为
 	这个两种函数来自不同的规范
 	F_DUPFD F_DUPFD_CLOEXE: 返回大于等于最后一个数的最小的可用fd,非cloexe版本会清除这个flag，否则会设置这个flag
 	F_getfd setfd 这两个可以获取（返回值）设置（第三个参数）fd的flag（每个fd特有，目前只定义了f_cloexe)
@@ -85,5 +87,13 @@ fcntl( F_DUPFD )is the same as dup and dup2,使用最后的参数控制行为
 sync: just queue io for writing
 fsync(fd): wait until that fd's content write into disk
 fdatasync(fd): wait until data is on disk
+	据测试：使用O_SYNC 比使用其他的对应FD的sync在所有写入完成之后要慢很多，只有几百k，普通的一次性fsync会在
+	80到200M，所有尽量不要对多次读写的每次都放这个标记，这个适合数据库一次性大批量保证写入
+	使用fsync 或fdatasync在所有写入结束后要快的多（但只能对一个fd）
+
+/dev/fd/0,1,2  /dev/stdin,stdout,stderr
+	这些是关联到标准输入输出的，如果用一个模式打开，在linux会相当于打开对应的输入输出流，复制了原来的fd，
+		但是flag是自己的
+	这个主要用在命令行，这样stdin stdout就不再是特殊情况，和其他文件一样只是一个文件了！！！！
 
 

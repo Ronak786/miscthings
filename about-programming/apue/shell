@@ -2,3 +2,7 @@
 2< xxx当成fd的2
 > xx  fd 1
 2<> xxx   把fd2当作是输入输出都关联到这个文件
+
+xxx > file  2>&1 ,首先1 重定位到file，然后2重定位到现在的1,也就是file， 成功
+xxx 2>&1 > file  首先2定位到1目前链接的stdout，然后原来的fd1定位到file，所以2 是到stdout的，描述付定位到的是
+		对应的file table entry，不是对应的描述副 !!!
