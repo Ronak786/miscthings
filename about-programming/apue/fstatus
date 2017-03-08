@@ -19,3 +19,5 @@ stat:  sys/stat.h
 					svtx 只有自己，目录主，超级用户可以删除你的文件
 			S_TYPEISMQ S_TYPEISSEM S_TYPEISSHM 这三个永远为假（参数是buf本身）表示
 				是否当前文件是消息队列， 信号量，或者共享内存（linux里这些都不是文件）
+
+uid gid suid sgid saved-uid/gid(the last two defined when SAVED_IDS macro is defined ,getconf can check)
