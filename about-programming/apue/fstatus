@@ -1,0 +1,21 @@
+stat:  sys/stat.h
+	stat  just refer to pathname
+	fstat open fd
+	lstat do not dereference symbolic link
+	fstatat use flag to control whether follow symbolic
+		return a struct stat:
+			dev_t is file's located dev's devnumber, 
+			time: access time control your read, or copy(also will read)
+					if mount with noatime,or  open with O_NOATIME, atime will not update
+				  modify time and status change time will be updated when write to file
+				  touch will update all time,
+				  ln ==> hard link will change attr time(soft link change nothing)
+			blkcnt is 512 byte block count;
+			blksize is best io blocksize byte recommended
+			rdev is special file's dev_number
+			mode_t  use S_IFMT mask 然后判断文件类型，或者ISXXX判断
+					利用S_IRUSR等判断权限
+					sgid 这个对目录，所有里面的文件都是目录的组权限，目录继承sgid
+					svtx 只有自己，目录主，超级用户可以删除你的文件
+			S_TYPEISMQ S_TYPEISSEM S_TYPEISSHM 这三个永远为假（参数是buf本身）表示
+				是否当前文件是消息队列， 信号量，或者共享内存（linux里这些都不是文件）
