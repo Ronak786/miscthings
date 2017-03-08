@@ -21,3 +21,10 @@ stat:  sys/stat.h
 				是否当前文件是消息队列， 信号量，或者共享内存（linux里这些都不是文件）
 
 uid gid suid sgid saved-uid/gid(the last two defined when SAVED_IDS macro is defined ,getconf can check)
+	uid gid 是实际的用户的，在etc/passwd里的，
+	euid egid 这本来和uid gid一样，除非设置了suid sgid 那么和文件的uid/gid一样
+	permission:
+		目录
+		x: 对于要打开的任何文件，我们必须在指定的路径上所有目录都要有可执行权限，这个是搜索权限
+			本地打开就是要有本地目录权限
+		r: 可以读目录的文件列表
