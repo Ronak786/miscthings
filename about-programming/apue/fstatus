@@ -28,3 +28,35 @@ uid gid suid sgid saved-uid/gid(the last two defined when SAVED_IDS macro is def
 		x: 对于要打开的任何文件，我们必须在指定的路径上所有目录都要有可执行权限，这个是搜索权限
 			本地打开就是要有本地目录权限
 		r: 可以读目录的文件列表
+		w && x: 可以创建文件在目录里,可以删除文件在目录里
+
+		x on file: 这个文件可以执行，必须是文本文件
+
+	权限匹配过程：
+		如果超级用户，所有权限
+		如果owner一样，比对具体rwx
+		如果group一样，比对rwx
+		最后比对other的rwx
+	当创建文件：
+		owner 设置为有效用户的owner
+		group可以是用户的，也可以是目录的
+	（如果使用了suid sgid bit位，那么有效用户或有效组会变成打开的程序的用户或组)
+
+access: F_OK(exist)  W_OK R_OK X_OK
+	test based on real user/group id 
+faccessat: 
+	if flag is AT_EACCESS ,那么比较的就是effective id了
+umask:
+	这个控制你创建的文件或目录绝对不允许有的权限值，会被自动屏蔽掉
+	umask -S 可以看到不会被屏蔽的权限部分
+chmod fchmod fchmodat: (通常使用stat获取mode，然后在基础上与或增删)
+	第三个有一个nofollow  flag，这个可以决定不要解析符号链接
+mode:
+	sticky bit:这个文件上没有用，目录上表示只有目录主，自己，root可以删除自己创建的文件在那个目录下
+	sgid会被自动清楚（从文件上，如果这个文件在设置之后被非root非自己的人修改过）
+						同样被清楚如果被创建出来的文件group名和进程有效gid ，元gid相同
+chown fchown fchownat lchown:
+	这些和上面的规则一样，但是改变uid只允许root， 改变gid必须uid用户自己（euid和文件uid一样），然后改变的
+		gid必须是他自己的附属组中的一个, uid 使用-1表示
+	非root用户成功使用后suid sgid被清除
+
