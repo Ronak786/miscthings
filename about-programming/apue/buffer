@@ -4,3 +4,8 @@ we have buffer between block dev and filesystem,
 	also delayed write happens, when call write, just put into free list, every
 	new process want a buffer, and search pass that, call async write for it and continue to search,
 
+inode:
+	一般存储属性，还有块的号码，一级 二级三级引用，够了，然后是inode中剩余的空间可以存储文件内容，
+		这样小文件直接就有数据了
+	block大小（文件系统的），这个设置了大的话读写效率高，但是浪费，小的话操作太多，消耗，
+		有一种做法，把最后的碎片统一放到制定的block里面
