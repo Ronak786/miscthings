@@ -63,3 +63,6 @@ chown fchown fchownat lchown:
 
 truncate ftruncate:
 	可以用来减少，增加文件长度
+
+link of dir:
+	目录的链接包括自己. 每个子目录的..  父目录的名字目录项，所有没有子目录的时候，两个，否则递增
