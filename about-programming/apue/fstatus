@@ -61,3 +61,5 @@ chown fchown fchownat lchown:
 		gid必须是他自己的附属组中的一个, uid 使用-1表示
 	非root用户成功使用后suid sgid被清除
 
+truncate ftruncate:
+	可以用来减少，增加文件长度
