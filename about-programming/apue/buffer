@@ -9,4 +9,9 @@ inode:
 		这样小文件直接就有数据了
 	block大小（文件系统的），这个设置了大的话读写效率高，但是浪费，小的话操作太多，消耗，
 		有一种做法，把最后的碎片统一放到制定的block里面
+	inode 在内核中的结构也和buffer一样作为一个缓冲区，当引用变为0时，说明当前buffer可以被其他
+		想要引用某个inode的process去引用disk节点了
+
+atime ctime mtime:
+	改变文件内容也会改变ctime， 反过来只改变ctime不一定改变mtime
 
