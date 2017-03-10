@@ -69,5 +69,6 @@ link of dir:
 
 link linkat
 	可以选择是否穿过符号链接
-unlink unlinkat
-	可以选择是否删除目录还是文件
+unlink unlinkat (不能删除软链接后面的那个文件，没有那样的函数）
+	可以选择是否删除目录还是文件  AT_REMOVEDIR控制
+remove: 这个等于unlink 或者rmdir 基于file 或者dir是对象
