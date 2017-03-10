@@ -66,3 +66,8 @@ truncate ftruncate:
 
 link of dir:
 	目录的链接包括自己. 每个子目录的..  父目录的名字目录项，所有没有子目录的时候，两个，否则递增
+
+link linkat
+	可以选择是否穿过符号链接
+unlink unlinkat
+	可以选择是否删除目录还是文件
