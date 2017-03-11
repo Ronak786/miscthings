@@ -1,0 +1,5 @@
+javadoc 
+	这个文档生成程序，可以生成文档，利用变量前的注释 /** 开头，*/结尾，
+	和www.oracle.com/technetwork/java/javase/downloads/index 的一样
+	只处理public  protected修饰的成员，因为是给外面看的，
+		使用了-private 可以修饰内部成员
