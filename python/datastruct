@@ -19,6 +19,9 @@ list:  using [] !!
 		print varlist
 	assign
 		aaa=varlist[2]
+    modify
+        varlist[2]=xxx
+    NOTE: can not modify after tail, only allow append
 
 元组tuple:using () !! (元组不能改动！！)
 	list in tuple , tuple in list , list in list , tuple in tuple all
@@ -52,4 +55,5 @@ using tuple to print
 
 序列:
 	1 just like list , you can list[1] list[2], list[2:3] list[2:-1], -1 is last, -2 is last second one
+            list[1:] can show the last one
 	2 applied to a string, then list[1] is just a character(：这个方法叫切片）

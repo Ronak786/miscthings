@@ -7,6 +7,7 @@ copy and assignment not the same
 string has some attributes,in help('str'):
 	str.starswith(xx) string start with xx then true
 	str.join(xx)  连接string with xx, 例如用　' '.join(xxx)连接一个list
+        note: not link, but use str as a separetor~!!!!
 	if xx in string   , xx 在string  
 
 	string can just use '+' to 连接 ,

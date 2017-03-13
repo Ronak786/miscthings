@@ -113,12 +113,14 @@ func return
 		pass (pass is a blank command block)
 
 docstring:
-	at the beginning of function, you can write a string
-	usually a line , then blank line , then defail descriptino
+	at the beginning of function,(just after func name)  you can write a string
+	usually a line , then blank line , then defail description
 
 	'''dsljflsdjflsjf
 
-	sdlfjsldfjsfjslfjs'''
+	sdlfjsldfjsfjslfjs'''  be sure to align the ident !!
+                            you can use help(funcname) in your .py file, or help from python cmd line(but this
+                                    only recognize when string is above funcname ??)
 
 	just like this
 	then you can call your func using , print func.__doc__,then 
