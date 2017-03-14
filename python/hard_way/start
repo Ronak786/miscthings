@@ -9,3 +9,38 @@ decimal:
 	for negative, '/' represent percent always as positive, that is to say,
 					-1.75 = -2 + 0.25 , so '/' will give you -2
 
+variable:
+	start with char, and can include digit
+
+format:
+	x=yyy is bad, use "x = yy" instead
+
+string:  "" for longer string, '' for shorter string or char """ """ for multiple line string
+		\n \t can use in string
+		\b  backspace,(will not delete, but next char will overwrite previous one)
+		\f switch to a new line but not return(the same col as previous!!)
+		\v just like \f
+		\N{xxx} unicode
+		\r return to line head (like lots of \b)
+		\ooo \xhh  for 8 16 jinzhi
+		\uxxx \Uxxx for hex value unicode
+
+print:
+	print 'xxx'%"str"  
+	print 'xxx'%("xxx",) (comma for tuple)(tuples can change line, but
+				"%(" should be on the first line !!)
+	print xxx * times   can repeat xxx more times
+	when print with calculation with param, use %(xxx*yyy) instead of % a*b (the latter will print a for b times)
+	print will encapsulate into another format string(with param) ,this also works
+
+	%r: this used for debugging
+		boolean: use %r can output False True as they are
+		every string can be output by %r, even format strings with %r in them
+		Note: print unicode should use %s insted of %r(this will print \xx \xx\xx
+	
+	format specifier in print:(you may just use format string and no %(x,xx), then format strs will
+			be just strs
+		%r  what ever can print, if string, will ouput a ' '
+		search "Python format characters" to see like %d %i %o %u %x %f %*.*s %e %g %c %E %G  ....
+
+
