@@ -1,0 +1,3 @@
+input:
+    raw_input() will get input as string using gnu's readline
+    input() will auto convert(cause security problem , do not use)
