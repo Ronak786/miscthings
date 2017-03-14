@@ -16,14 +16,16 @@ format:
 	x=yyy is bad, use "x = yy" instead
 
 string:  "" for longer string, '' for shorter string or char """ """ for multiple line string
+		\a for bell
 		\n \t can use in string
 		\b  backspace,(will not delete, but next char will overwrite previous one)
 		\f switch to a new line but not return(the same col as previous!!)
 		\v just like \f
 		\N{xxx} unicode
 		\r return to line head (like lots of \b)
-		\ooo \xhh  for 8 16 jinzhi
-		\uxxx \Uxxx for hex value unicode
+		\ooo \xhh  for 8 16 jinzhi values
+		\uxxx \Uxxx for hex value unicode, must use as  u'\Uxxxxxxxx', \U 32bit  \u 16bit
+		Note: these all in the string!!
 
 print:
 	print 'xxx'%"str"  
