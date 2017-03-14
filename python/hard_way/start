@@ -1,0 +1,11 @@
+font format:(put this at top of file)
+	#-*- coding: utf-8 -*-  can help you avoid ascii coding problem !!
+
+do calculation in python env:
+	vars should define first use  xxx=  
+
+decimal:
+	for positive, '/' just drop percents
+	for negative, '/' represent percent always as positive, that is to say,
+					-1.75 = -2 + 0.25 , so '/' will give you -2
+
