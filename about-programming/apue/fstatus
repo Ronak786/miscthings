@@ -68,7 +68,20 @@ link of dir:
 	目录的链接包括自己. 每个子目录的..  父目录的名字目录项，所有没有子目录的时候，两个，否则递增
 
 link linkat
-	可以选择是否穿过符号链接
+	可以选择是否穿过符号链接, 如果目标存在，不会覆盖
 unlink unlinkat (不能删除软链接后面的那个文件，没有那样的函数）
 	可以选择是否删除目录还是文件  AT_REMOVEDIR控制
 remove: 这个等于unlink 或者rmdir 基于file 或者dir是对象
+
+rename renameat:
+    重命名不会解析符号连接，如果是文件间，目标文件会删除，
+                            如果是目录间，目标目录如果的空的，会删除，然后成功，不然失败(并且新目录不能包含就目录路径）
+symlink: (use ls -l or ls -F 这个可以放个后缀在不同类型文件上）
+    可以跨越文件系统， mkdir mknod mkfifo 等等无法使用这些
+    when open(2) with O_EXCL O_CREAT to a symlink, will fail
+
+readlink readlinkat 这两个可以读取link文件的内容，返回长度，open只可以穿过link
+
+ftw nftw:
+    这两个用来遍历目录中的每一项. ..不算。然后每一项上用fn函数进行处理，返回0继续，否则全部返回结束
+        nftw这个可以控制每次处理之后的动作，继续，同层停止，下层停止，全部停止
