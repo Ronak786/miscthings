@@ -1,7 +1,10 @@
 input:
     raw_input() will get input as string using gnu's readline
-		the trailing '\n' is dropped!!
+		the trailing '\n' is dropped!!, 
+		this take every input as string , so every thing can be receive
     input() will auto convert(cause security problem , do not use)
+		input only can receive what python sync allowed, so string should wrapped by '', integer just input
+		but in python3 this can used as raw_input too??
 	autoident:
 		raw_input will NOT auto ident after your prompt, so make a blank yourself
 

@@ -25,3 +25,6 @@ file:
 		
 os.path:
 	exists()  tell if a path exist
+
+pprint:
+	print in a pretty format, or return a string in a pretty format
