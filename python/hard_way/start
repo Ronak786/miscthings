@@ -16,6 +16,7 @@ format:
 	x=yyy is bad, use "x = yy" instead
 
 string:  "" for longer string, '' for shorter string or char """ """ for multiple line string
+			Note: these three all can be print's format string !!
 		\a for bell
 		\n \t can use in string
 		\b  backspace,(will not delete, but next char will overwrite previous one)

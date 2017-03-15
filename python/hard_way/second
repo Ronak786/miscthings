@@ -1,3 +1,35 @@
 input:
     raw_input() will get input as string using gnu's readline
+		the trailing '\n' is dropped!!
     input() will auto convert(cause security problem , do not use)
+	autoident:
+		raw_input will NOT auto ident after your prompt, so make a blank yourself
+
+document:
+	pydoc2: this search for a function in python2
+
+from xxx import yyy :
+	used to import class yyy from .py file xxx
+
+function:
+	def xxx():  
+	param:  *arg means this argument is a list, 
+			we can unpack using xxx,yyy,zzz= arg in function(number must match)
+			pass:
+				can pass string, var, calculation math
+			default param can be used
+
+	ATTENTION:
+		start with 'def'
+		name with chars and '_' only
+		param inside () after name
+		put ':' after ()
+		ident lines in func using four tabs
+		end a func by no identing
+	run a func:
+		type name (param1, param2)
+	"To 'run,' 'call,' or 'use' a function all mean the same thing."
+
+	
+
+

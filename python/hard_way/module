@@ -1,0 +1,25 @@
+len:
+	return length of a string in bytes
+sys
+	argv ,unpack:  use a,b,c = argv to unpack, then every param will be assign to just one var,
+				BUT if you have more than one var, then number of args should match var numbers
+				else  if you have only one, then no unpack is make, just assgin
+
+file:
+	open: open is better than file to open a file
+		mode: default r, 
+				w truncate
+				w+ truncate and can rw
+				r+ can rw
+				a  for append,(in apue,if append write, then seek pos will be moved to that pos)
+				b  will not auto convert \n to system dependent \r\n if on win ...
+						if not use, you write a string with \n, then if win, that will be converted to \r\n
+																	if mac, will converted to \r
+	xx.read() to read
+	xx.close() to close
+	readline() this will readin the '\n' !!
+
+	Combination:  str = open(filename).read() # this do NOT need close, because you have not fd
+		
+os.path:
+	exists()  tell if a path exist
