@@ -30,6 +30,11 @@ function:
 		type name (param1, param2)
 	"To 'run,' 'call,' or 'use' a function all mean the same thing."
 
+	calculate in func param:
+		first left, then write(recusive is supported)
+
+operator:
+	+= -= *=   see pydoc2 +=
 	
 
 

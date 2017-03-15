@@ -18,6 +18,8 @@ file:
 	xx.read() to read
 	xx.close() to close
 	readline() this will readin the '\n' !!
+		so when use print , add ',' to avoid auto \n and only use readline()'s '\n'
+	xx.seek()  if open in text mode, the pos returned by tell after seek is the only valid pos
 
 	Combination:  str = open(filename).read() # this do NOT need close, because you have not fd
 		
