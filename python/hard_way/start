@@ -36,6 +36,8 @@ print:
 	when print with calculation with param, use %(xxx*yyy) instead of % a*b (the latter will print a for b times)
 	print will encapsulate into another format string(with param) ,this also works
 
+	format's param can be a return value of a func
+
 	%r: this used for debugging
 		boolean: use %r can output False True as they are
 		every string can be output by %r, even format strings with %r in them

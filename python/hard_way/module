@@ -1,5 +1,20 @@
+import:
+	from xx import xx/*
+	import will search local dir, useful
+document string:
+	just below every function's head, use """ xxxxx """ , this will be shown 
+		when in python and type help(xx)(no .py postfix), or pydoc2 xxx
+
+short function call:
+	from xxx import *: then you can directly use them
+
 len:
 	return length of a string in bytes
+sorted:
+	return a sorted list of param
+
+list:
+	pop[0] [-1]  these used to get listmember out ,-1 means the last one
 sys
 	argv ,unpack:  use a,b,c = argv to unpack, then every param will be assign to just one var,
 				BUT if you have more than one var, then number of args should match var numbers
