@@ -15,6 +15,7 @@ sorted:
 
 list:
 	pop[0] [-1]  these used to get listmember out ,-1 means the last one
+	list = [], list.append(xx) can be used
 sys
 	argv ,unpack:  use a,b,c = argv to unpack, then every param will be assign to just one var,
 				BUT if you have more than one var, then number of args should match var numbers

@@ -13,3 +13,7 @@ if statement:
 	if can nest itself
 
 	a < b , a > c can be represented by a in range(a,c)(including head, not tail)
+
+for xxx in xxx(iterable ones ,eg. list, range(x,y)):
+	xxxxxxx
+
