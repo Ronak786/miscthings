@@ -5,6 +5,7 @@ block size bigger than 512k 1024k or more ???
 	into less than cpu num, so while open thread, check, so global thread not a good idea)
 
 update scst 3.2
+	scst rpm包这个需要在spec文件中把kversion改成具体的模块目录名，然后装上对应的kernel-header这个会查
 
 
 _FILE_OFFSET_BITS ==> __USE_FILE_OFFSET64
