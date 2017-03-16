@@ -3,3 +3,13 @@ and or not != == >=
 
 python will prefer return one of var instead just True or False
 	True and 1 ==> 1   False and xx ==> False (because False encountered first )
+
+if statement:
+	if xxxx: (can be logical or func or something else which can create a boolean
+	(ident)
+	elif xxx:
+	else: 
+
+	if can nest itself
+
+	a < b , a > c can be represented by a in range(a,c)(including head, not tail)
