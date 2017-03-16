@@ -14,6 +14,50 @@ if statement:
 
 	a < b , a > c can be represented by a in range(a,c)(including head, not tail)
 
+	rule for if to avid false:
+		every if should have else(so can get error)
+		do not nest more than two
+		put blank before and after if-elif-else paragraph
+		put complex boolean judge before if, not in if
+
 for xxx in xxx(iterable ones ,eg. list, range(x,y)):
 	xxxxxxx
 
+while should be not used prefer to for
+
+
+SOME LOGICAL STATEMENT:
+
+	assert xxx   : assert  False or  0 will throw exception
+	continue, break; used in a loop
+	with  aa as bb: aa will return an object and  with will call its __enter__ function
+					then returned val assigned to bb, we use bb in comand block
+					after all done OR exception occurred, __exit__ of aa will be exec whatever
+
+					这个方法是的处理异常更加简洁优雅
+	del  len  (function you can use )
+	except Error, e(error string)
+	try:
+	except: (Error,Error2),e (if no Error, will catch all errors)
+		multi except may there, but except:  should be last
+	else:(if except not happened)
+	finally: must be run(even in else or except there is exit()!!!)
+	global: declare from now on, the var is used as a global var
+	is: just like == 
+	lambda: s = lambda y: y * y; s(3)
+	pass : empty function block
+	raise: raise an exception
+	yield xxx;  every time call this func, pause here and return a value,next time call continue
+
+	file is an iterable(has __iter__ next() method) ,so can be used in  for... in yyy 
+
+DATA TYPE:
+	None :represent none nothing
+	string, number float list dict
+
+format:
+	%d %i==%d %o %u(unsigned decimal) x e f F(same as f) %c %r %s %%
+operator:
+	//  永远的返回整数（不大于的最大整数）
+	% always positive
+	@修饰器 现在不懂

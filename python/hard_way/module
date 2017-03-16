@@ -8,18 +8,37 @@ document string:
 short function call:
 	from xxx import *: then you can directly use them
 
+x in y:
+	in loop (every loop assign a value from y)
+	in judge(judge if x is part of y)
+string can be used in for i in string
+
 len:
 	return length of a string in bytes
 sorted:
 	return a sorted list of param
 
-list:
+list:(can be assigned by a function returning list,eg. range(xxx)
 	pop[0] [-1]  these used to get listmember out ,-1 means the last one
 	list = [], list.append(xx) can be used
+
+	list can be used in :  for i in list:
+
+	two-dimentional list:
+		[[xx,xx,xx],[xx,x,x]]
+	list.insert(index, object) insert before index, 
+		index: -1 ==> last one;  very large index ==> after the last,
+
+range:
+	range(end)  [0...end-1]
+	range(start, end) [start..end-1]
+	range(start, end, hop) useful
 sys
 	argv ,unpack:  use a,b,c = argv to unpack, then every param will be assign to just one var,
 				BUT if you have more than one var, then number of args should match var numbers
 				else  if you have only one, then no unpack is make, just assgin
+	exit("xxx"):
+		exit from process ,if arg not integer, will output that string
 
 file:
 	open: open is better than file to open a file
