@@ -12,6 +12,7 @@ x in y:
 	in loop (every loop assign a value from y)
 	in judge(judge if x is part of y)
 string can be used in for i in string
+	use r'' before string can make string not be converted by like \n xxx
 
 len:
 	return length of a string in bytes
@@ -28,6 +29,13 @@ list:(can be assigned by a function returning list,eg. range(xxx)
 		[[xx,xx,xx],[xx,x,x]]
 	list.insert(index, object) insert before index, 
 		index: -1 ==> last one;  very large index ==> after the last,
+	list.count(xxx) the occurence number of xxx in list
+
+dict:
+	setdefault(xxx,xxx) set default value of xxx
+
+collection:
+	Counter: used to return you a dict of every one's frequent
 
 range:
 	range(end)  [0...end-1]
@@ -60,6 +68,41 @@ file:
 		
 os.path:
 	exists()  tell if a path exist
+	splitext  split filename into two part, prefix and postfix(.xxx)
+	isfile() test if is a file
+	access() just like C's access
+	walk()  used in iterator: three retval:
+		current search dir name string(no trailing '/')
+		subdir string list
+		subfile string list
+os
+	mkdir make a dir
+	os.name return the name of os
+	os.system() just like system call
+	os.getcwd() get pwd
+
+time:
+	some time lib
+stat:
+	some file system stat lib
+	use os.stat('') to get a list ,then use stat.xxx to judgement
+
+random:
+	randint : set and get random number
+	
+subprocess:
+	like popen xxx    ==> not really understand
+
 
 pprint:
 	print in a pretty format, or return a string in a pretty format
+
+argparse:
+	howto use: parse = argparse.ArgumentParser(description=xxxx)
+				parse.add_argument(var_identifier_name_string, metavar(showed name on cmdline), type, nargs(howmany),
+									description)
+				arg = parse.parse_args()
+				now you can use parse.var_identifier_name_string (no '') to get var,
+					or you can use  vars(parse.parse_args()) to get a dict,then use dict['var_identifier_name_string']
+					to get
+
