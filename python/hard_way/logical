@@ -35,7 +35,7 @@ SOME LOGICAL STATEMENT:
 					after all done OR exception occurred, __exit__ of aa will be exec whatever
 
 					这个方法是的处理异常更加简洁优雅
-	del  len  (function you can use )
+	del(not a funciton ,just use!!!)  len()  (function you can use )
 		del can be used to delete some vars, so they can not be referenced from now on any where
 	except Error, e(error string)
 	try:

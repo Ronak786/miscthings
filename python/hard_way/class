@@ -1,5 +1,6 @@
 function in class should have first param: self !!!
 
+define: class  aaa(object) 写上去
 class:
 	attr  # this is class's global attr, can be accssed by every object
 	self.attr #every obj's attr
@@ -8,6 +9,12 @@ class:
 		method start with captal
 		method use verbs
 		attr use nonu
+
+__init__:
+	if have inhert, use  super(myclass_name, self)__init__(args(self not needed)) to call parent's __init__
+	in python3 ,can use super().__init__()
+
+default attr:  set to None
 
 inhert:
 	class aaa(modname.bbb)
