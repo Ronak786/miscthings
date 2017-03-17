@@ -11,15 +11,25 @@ short function call:
 x in y:
 	in loop (every loop assign a value from y)
 	in judge(judge if x is part of y)
+
 string can be used in for i in string
 	use r'' before string can make string not be converted by like \n xxx
+	stirng.join(x) use string as a delimitor to joint x(iterable)
 
 len:
 	return length of a string in bytes
 sorted:
 	return a sorted list of param
+sum() sum of a list
+
+zip :
+	reuturn a list of tuples(first item from fist list, second item from second list)
+iterator:
+	任何要求iterator的地方都可以通过生成list来赋值（利用expr(x) for x in xxxx  来得到list）
 
 list:(can be assigned by a function returning list,eg. range(xxx)
+	USE list when you want to store some thing in order and random access them
+
 	pop[0] [-1]  these used to get listmember out ,-1 means the last one
 	list = [], list.append(xx) can be used
 
@@ -32,6 +42,10 @@ list:(can be assigned by a function returning list,eg. range(xxx)
 	list.count(xxx) the occurence number of xxx in list
 
 dict:
+	dict initialize:
+		dict() empty
+		dict([(xx,xx),(yy,yy)]  initialize with pari
+		dict(a=1,b=2,c=3) initialize with assignment
 	setdefault(xxx,xxx) set default value of xxx
 
 collection:

@@ -1,0 +1,32 @@
+function in class should have first param: self !!!
+
+class:
+	attr  # this is class's global attr, can be accssed by every object
+	self.attr #every obj's attr
+	attrs may overide method, so
+		prefix attr with an _
+		method start with captal
+		method use verbs
+		attr use nonu
+
+inhert:
+	class aaa(modname.bbb)
+	in cur class, just call baseclassname.func() to call basic class func(otherwise first search
+		cur origin, then base)
+
+isinstance(obj, classtype(like int)) will reutrn ture if cur class is type or derived from type
+issubclass(obj, type)  obj is a subclass of xxx
+
+iterators:
+	everything which can be assigned to for xxx in yyy  have an __iter__()method 
+		for will call iter() to get handler,  ,
+	so define a __iter__ return self(class obj), then define next(),
+		every time call,return a diff item, then done
+
+generator:
+	implement iterator more  convient:
+		def fucn:
+			in a loop:
+				yield xxx
+	every time yield, will stop, and next time call this func, will restart from there
+	you do not need __iter__ and next() manually .
