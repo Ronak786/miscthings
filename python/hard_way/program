@@ -1,0 +1,6 @@
+first think class hierarchy, draw down
+    then code dong blank function(just pass)
+
+use inherit  or use composite:
+    inherit is child(parent), use super(child, self).father'smethod()
+    composite is child(object), child.other = other_class(), now you can refer that class

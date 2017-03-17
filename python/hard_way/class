@@ -37,3 +37,6 @@ generator:
 				yield xxx
 	every time yield, will stop, and next time call this func, will restart from there
 	you do not need __iter__ and next() manually .
+
+
+
