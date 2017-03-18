@@ -3,4 +3,11 @@
 	email = muryliang@gmail.com
 [alias]
         lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	all = add -A
+	st = status
+	ci = commit
+	br = branch
+	co = checkout
+	unstage = reset HEAD --
+	cim = commit -m \"udpate\"
 
