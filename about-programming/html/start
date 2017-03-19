@@ -1,0 +1,34 @@
+open chrome
+	choose in tools development tools, then 
+
+	指定源码里的不同地方，可以看到参数，比如h1标题，这个用可以看到具体的字体大小，
+	图片，可以看到具体的border，width等
+
+	browser use dom(document object model)to interpret html tags,
+		so source code you see are just interpreted code by browser, not source code
+
+css decide how every element in html will look(like color, border...)
+html decide struct and content of whole page
+
+查看页面图片源码，右键检查,所有图片都是方形的,
+	html决定位置，或者上传图片，在线直接的图形可以用
+	css直接得到，再另外一边的样式里可以调大小和颜色
+		还可以勾选与否一些特性，可以改变形状
+
+	分析图形的时候应该使用方形来切割图片
+
+<head>
+	<link rel="sytlesheet" type="text/css" href="style.css">
+</head>
+<div class="xxx">content</div>
+
+CSS: 层叠风格表单，就是多个重叠的风格描述
+then in .css file, use 
+p {} used to applied to all paragraph
+.xxx {
+	color:red
+}  then this css style is applied onto your html file 
+可以在页面的另一个源码框内elemnt style中现场更改style
+
+display:flex 这个可以把属性合并到一行里面
+通过方框的 margin 来调整边距

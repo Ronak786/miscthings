@@ -39,4 +39,8 @@ generator:
 	you do not need __iter__ and next() manually .
 
 
+exception:
+	these are classes
 
+class 内部的方法，实例方法注意self参数， 如果要传入list，直接传，如果参数是*xxx ，那就是
+		把传入的参数当作 tuple ，如果是 **，那就是当作字典(具体输入方法a=1,b=2)

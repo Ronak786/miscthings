@@ -1,0 +1,20 @@
+nosetest:
+	dir,file being tested should name as (xxx)test( regular ex)	
+
+	nosetest will check all files under curdir who has 'test' as part of filename,
+		shold be inerleaved by '_'
+		and run functions in them with name containing  'test' !!
+	NOTE : ***_testxxxxxx.py also will work, only start with test is ok
+
+	if specify file name, then file's name no reuqirement
+
+from nose.tools import *
+	these tools such as assert_equal() used to check if two param are the same!!
+
+assert_raises(exception_type, fucntion call,  args......)
+	exception_type should be raised !!
+
+
+
+ipython
+jupyter  try using these!!!

@@ -1,6 +1,12 @@
 import:
 	from xx import xx/*
+	from package(dir) import file
+	from package.file import func/class
+
 	import will search local dir, useful
+	in every dir you want to import from, you shold have a __init__.py
+
+
 document string:
 	just below every function's head, use """ xxxxx """ , this will be shown 
 		when in python and type help(xx)(no .py postfix), or pydoc2 xxx
@@ -68,6 +74,8 @@ dict:
 	dict.items() will return aa,bb  pair of dict
 	dict's order(using sorted, will only process key or (key,value)pair if dirc.items())
 	dict.keys() return keys in a list
+	dict.update   (update content from param's dict)
+	dict.pop(xxx)
 
 collection:
 	Counter: used to return you a dict of every one's frequent
@@ -152,3 +160,16 @@ urllib:
 	urlopen( open a url,
 	readlines() read all lines from url into a list, 
 		remember to use strip to drop tailing '\n'
+
+web.py (command line arg, will be auto parse, first is "port"
+	SEE web.py website !!
+	url tuple (web path( "/") ,  "using class"), then you define that "using class" 's get function to return string
+	then run webclass.run
+	once connection is made, client will require '/' url, and web class will find its matching tuple member class,
+		then call that class's GET method ,return what it return
+
+	web.application(url, glabal()) this used for http protocal 
+	render = web.template.render('template_dir"), then  render.hello(),
+		this used to find a file named hello.html under template_dir, and parse using html syntax
+
+	urls=('/(.*)',xxxx(classnaem))  the (.*) used by provide name to get method, will appear as a name
