@@ -33,5 +33,32 @@ p {} used to applied to all paragraph
 display:flex 这个可以把属性合并到一行里面
 通过方框的 margin 来调整边距
 
+<p> <h1> ...  这些是块级元素。浏览器会在前后加空格，在上下加空行
+
+<!--This is a comment-->
+all blank line will be cancelled when parse(only one will be reserved for splitting word)
+
+label
+	<br /> (create a bland line) some label should close in the open tab like this
+	<head>   <title>  this should be put in head to set a head of title, meta data
+		<meta charset="utf-8"> is important to recognize other language!!
+	<a href=xxxx>xxx </a>  a hyper link
+	<img src=xxx width=  height=  alt=   />   add an image, alt will be output if img can not find
+	<hr /> a horizon line
+	<pre>  resserve the structure what you type
+	<bdo dir="rtl"> xxxx</bdo>   used to reverse direction of word
+
+attr:
+	generally can be applied:
+		class, id, style, title
+	align="center" (used in h1 h2 ...)
+	bgcolor="yellow" (used in <body>
+	border="1"   table's border used in <table> or <img />
+	style="backgroud-color:red   can be put in <h1 h2  ....
+
+
+
+
+
 
 

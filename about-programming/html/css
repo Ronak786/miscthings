@@ -1,0 +1,7 @@
+frame work 框架，指的是一些可以重复使用的样式
+响应式框架，指的是可以根据屏幕像素的不同而呈现不同像素大小的框架
+
+一般1024 1200 的使用960pixel，
+
+in css, we use xxx {}  xxx is html label name
+				.xxx{} .xxx is class name xxx
