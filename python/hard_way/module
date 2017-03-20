@@ -168,8 +168,22 @@ web.py (command line arg, will be auto parse, first is "port"
 	once connection is made, client will require '/' url, and web class will find its matching tuple member class,
 		then call that class's GET method ,return what it return
 
-	web.application(url, glabal()) this used for http protocal 
+	app = web.application(url, glabal()) this used for http protocal 
 	render = web.template.render('template_dir"), then  render.hello(),
 		this used to find a file named hello.html under template_dir, and parse using html syntax
+	use app.run() to manually run that webserver
+	OR you can use app.request(localpart='/', method='GET', data=None, host='0.0.0.0:8080',
+	            headers=None, https=False) (default method params, you can modify)
+			this one will just run web and send your request and get response and stop web
 
 	urls=('/(.*)',xxxx(classnaem))  the (.*) used by provide name to get method, will appear as a name
+
+	web.input(name=xxx)  set deafult value, 返回值的.name属性可以获取名字，可以有多个参数的
+			这个通过浏览器上面添加?name=xxx来输入 可以用 &来组合两个参数输入，可以选择参数输入
+	使用 <form action="/hello" method="POST"> 来定义input属于的表单，（可以理解为一次输入吧）
+			action表示对应传送到的路径， post是方法， 和get一样需要处理
+			内部使用input：   Greeting: <input type="text" name="greet"> name表示传入到的参数名字，
+										<input type="submit">可以产生一个提交按钮，具体的提交对象
+												由action决定,接受方法由method决定
+
+

@@ -1,0 +1,30 @@
+学习：理论很重要，要看
+
+数据库范式：1 2 3 bcn
+第一范式：字段不能再拆分，不可重复 (关系数据库的基础)
+	细化得到第二， 第三 bcn范式，这些是越往上相关性越弱冗余越少,也可以少许冗余加快查询
+第二范式：首先第一，然后非主键要完全依赖于主键（可以间接，但是不能只依赖于一部分）
+第三范式：首先第二，然后非逐渐必须直接依赖于主键
+
+数据库管理系统：
+	包括数据库本身，管理软件部分，应用软件部分
+
+sql：
+ddl 数据定义语言 create...
+dml 数据操作语言 insert ...
+dcl 数据控制语言 grant ...
+
+java  JDBC数据库函数接口, odbc 开放数据库接口，这个通用，
+	基本上不同语言有不同的嵌入sql的方法
+
+关系数据库基本单位是表，由字段组成,都是二维表，专用存储位置
+
+
+mysql:
+	分为服务端和客户端两部分
+
+in windows: mysql sys file: c:/program files/mysql/xxxx
+					data file: c/document and settting//alluser/application data/mysql/data
+		config:
+			in start=>program,  we can see a config wizard for graphical configuration
+
