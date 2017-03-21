@@ -1,0 +1,22 @@
+install with yum install apache or httpd
+
+conf file in /etc/httpd/conf/httpd.conf
+
+DocumentRoot is you web page root
+conf file  root is ServerRoot (is you use relative path, will based on that, if not ,will use absolute)
+
+in http-userdir.conf you can set userdir, relative to your home dir,
+	default is public_html(dir)
+
+	and path to that dir should have read permission
+
+	on website , use http://host/~homedir  remember the '~'
+
+set access passwd:
+	put .htaccess .htpasswd under your www's home dir
+	.htaccess 
+	AuthName "sys"
+	AuthType Basic
+	AuthUserFile /home/sora/public_html/.htpasswd
+	require user sora
+	.htpasswd :  htpasswd -c xxx(file pos)   username(default is root)

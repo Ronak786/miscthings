@@ -185,5 +185,17 @@ web.py (command line arg, will be auto parse, first is "port"
 			内部使用input：   Greeting: <input type="text" name="greet"> name表示传入到的参数名字，
 										<input type="submit">可以产生一个提交按钮，具体的提交对象
 												由action决定,接受方法由method决定
+	how to update file:
+		<form method="POST" enctype="multipart/form-data" action="">
+		    Your File: <input type="file" name="fileUpload" />
+		<input type="submit">
+		</form>
+		然后在web。py导入的那个程序中用form=web.input(fileUpload={}) 来获取内容，
+		web.debug(form['fileUpload'].filename)就是打印文件名
+		form['fileUpload'].value 文件内容
+		xxxx.file.read() also show you content of file
+		
+		raise web.seeother('/hello')  this used to redict to GET another page
+
 
 
