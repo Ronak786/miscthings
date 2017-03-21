@@ -5,3 +5,22 @@ frame work 框架，指的是一些可以重复使用的样式
 
 in css, we use xxx {}  xxx is html label name
 				.xxx{} .xxx is class name xxx
+
+padding:10px inside elemnt (padding will compress itself)
+margin:10px  outside elemnt(margin will push others ,so will push them out of their place
+
+overflow:auto  combine with height width, you can creat inside slipbar
+
+media query:
+	@media only screen and (max-width: 300px)  
+	@media: this is a media query:
+	only: compatible with old browser
+	screen: apply to screen
+	and : logical
+	max-width:300px:  only apply this rule if max-width is small than 300
+
+think about structure( which column , how many width(colunm)
+then think about size  h1  h2  big small ??
+
+font: search google/font, paste that link into <head>'s <link href=xx  rel="stylesheet" type=text/css>
+					then in css *{} paste that font ,then ko
