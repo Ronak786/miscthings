@@ -28,3 +28,4 @@ in windows: mysql sys file: c:/program files/mysql/xxxx
 		config:
 			in start=>program,  we can see a config wizard for graphical configuration
 
+

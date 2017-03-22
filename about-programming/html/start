@@ -47,6 +47,9 @@ label
 	<hr /> a horizon line
 	<pre>  resserve the structure what you type
 	<bdo dir="rtl"> xxxx</bdo>   used to reverse direction of word
+	<li>列表，每个会占一行，列表的样子
+	<ol> <ul> 前者是顺序，会显示1 2 3, 后者是无序，会显示黑点
+		使用这两个会让列表从左边腾空一些，不然紧挨
 
 attr:
 	generally can be applied:

@@ -1,0 +1,7 @@
+修改密码
+1首先的登录，然后 set password for user@localhost(remote use '%') = password('newpassword')
+2mysqladmin -uroot -p$(oldpassword) password  newpasswdstr
+3 in mysql, update user set password=password('xxx') where user='root' and host='localhost'
+				flush privileges
+
+忘记密码:mysqld --skip-grant-tables ,to start service , then update using above 3 method

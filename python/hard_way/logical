@@ -62,3 +62,17 @@ operator:
 	//  永远的返回整数（不大于的最大整数）
 	% always positive
 	@修饰器 现在不懂
+
+python的dict可以利用链表实现 操作 get update 或者添加
+
+web的基本流程，
+	set url--class tuple
+	set sessoin cookie, update this when running
+	define GET for every seeother('') op or just access
+	define POST and get from res=web.input(name=default), access with res.name
+		in page, use <form method="POST" action="url">
+						<input type="text" name="xxx">  <input type="submit">
+
+		and in use web.template.render('dir', baselayout name),
+		then render.html_file_name(param)
+		in file , head: $def with (param), now you can use that param

@@ -1,0 +1,9 @@
+web.application(mapping(), globals())
+mappings():
+	('url','classname',....)
+web.add_processor() 这个用于在get的时候会先执行这个，而参数是执行的get操作
+
+url:其中的'(.*)这个代表向后扩展，同时这部分作为GET的输入
+redirect, seeother , former one will instruct browser to cache the redirect for ever
+
+
