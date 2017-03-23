@@ -45,3 +45,12 @@ fcntl f_setfl
 	这个能锁文件部分，这个不能继承，　这个不能用在线程上
 pthread mutex lock 
 	这个用于线程
+
+
+hadoop:
+	hdfs dfs -ls/ -rm -r / -ls -R / -put/ -copyFromLocal/ -cat ...
+	hadoop jar  share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.3.jar  wordcount -Dmapreduce.
+	input.fileinputformat.input.dir.recursive=true /input /output
+	需要那个bool定义，不然不能在input里面递归，只能在input表层遍历文件
+
+	注意hostname的设置，和配置文件的里的设置要一样！！不然会找不到datanode
