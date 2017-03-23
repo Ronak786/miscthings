@@ -54,3 +54,5 @@ hadoop:
 	需要那个bool定义，不然不能在input里面递归，只能在input表层遍历文件
 
 	注意hostname的设置，和配置文件的里的设置要一样！！不然会找不到datanode
+	javac  -classpath share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.3.jar:share/hadoop/common/hadoop-common-2.7.3.jar:share/hadoop/common/lib/commons-cli-1.2.jar  -d playground/classes/  playground/src/WordCount.java
+		使用这个可以编译wordcount文件example  
