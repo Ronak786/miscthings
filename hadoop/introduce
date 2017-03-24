@@ -1,0 +1,19 @@
+使用上，就是map：分割文件为块，然后开始计算，传出计算结果，然后整理排序
+			reduce：接受上一步获得额排列后的列表的部分，计算同样key的总和，
+					整合在一起，结束
+
+master/slave结构
+	master一台，slaver多台，
+	namenode ： 在master，负责管理数据的切分形式，选择提供给client的datanode，提供给客户端,但是不进行计算
+				存在单点故障问题
+				通常消耗内存 io资源多，所有和datanode ， tasktracker 不在一台节点上
+				master告知数据块存储位置后，client直接通信datanode，datanode再自己负责通信其他人传副本
+	secondary namenode:
+			用于定期通信namenode，备份元数据，但是不会自己恢复，需要手动(小集群上可以和从节点放在一起）
+	jobtracker:
+		这个一般在master上，负责代码的分配，也就是决定哪个节点干哪部分的活（我觉得因为有副本，所有可选择的
+			多，还有失败自动重启计算，选择不同节点）(大集群上会和namenode不在一起）
+			切分任务
+	tasktracker:
+		这个在每个计算节点上，用于启动多个java虚拟机来并行计算（各自），定期和jobtracker通信，判定是否崩溃
+		一般和datanode在一起，可以本地计算）

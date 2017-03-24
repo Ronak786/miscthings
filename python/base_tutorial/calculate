@@ -9,3 +9,6 @@ math.floor() 和//差不多 == int(xxx)
 math.ceil
 cmath.sqrt 复数
 1 + 2j 复数，python原生支持
+
+字符串拼接
+"aa""bbb"  或者 a + b

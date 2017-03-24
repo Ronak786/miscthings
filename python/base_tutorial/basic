@@ -1,0 +1,3 @@
+add in first: #!/usr/bin/env  xxx=xxx  python   
+				#!/usr/bin/python2
+	这个会增加环境变量xxx 然后启动python （从PATH中搜索，你也可以改变path）
