@@ -1,3 +1,7 @@
+启动：
+	hdfs namenode -format <cluster_name>
+	start-all.sh (start-dfs.sh  start-yarn.sh)
+	stop-all.sh
 使用上，就是map：分割文件为块，然后开始计算，传出计算结果，然后整理排序
 			reduce：接受上一步获得额排列后的列表的部分，计算同样key的总和，
 					整合在一起，结束
@@ -17,3 +21,19 @@ master/slave结构
 	tasktracker:
 		这个在每个计算节点上，用于启动多个java虚拟机来并行计算（各自），定期和jobtracker通信，判定是否崩溃
 		一般和datanode在一起，可以本地计算）
+
+配置在etc/hadoop中， 可以设置目录的软链接来控制每次启动的配置的不同，
+				如果配置全空，会默认本地跑，无需hdfs
+				伪分布式代表了在同一个节点上
+
+
+hdfs:
+	路径： url 统一资源定位符，最精确
+		应该使用 hdfs://ip:port/path 来访问hdfs中来自ip:port上path地方的文件，在core-site中有默认配置，
+			，所有一般把ip port省略， 而在如果没有绝对路径，那么相对路径是/usr/$USER,也就是你的用户名，
+				那么可以直接访问
+
+	使用hdfs dfs -cmd args ... 
+		ls 显示的结果的 中间  1 2 表示副本，目录没有副本
+	-get  取回本地 （复制操作）
+	-help 
