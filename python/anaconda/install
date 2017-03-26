@@ -1,0 +1,65 @@
+install anaconda,
+then use conda upgrade --all to update
+conda install  xxx=xx(version) to install packages
+conda remove ...
+conda search xxx
+conda create -n xxx    packages,,,,  
+	create a environment , you can create a python2 env, or python3 env ...
+conda env export > environment.yaml
+	then  conda env create -f environment.yaml for another poeple to create another
+	env he should use to run your program
+conda env list to list current environment
+conda env remove -n xxx
+
+optional:
+	pip freeze > xxx.txt
+	pip install -r xxx.txt  this can also import that env's file
+
+
+jupyter notebook:
+	这是一个可以web共享的服务站，可以共享本地目录，可以在conda中启动，
+		隔离各个环境，然后共享
+
+jupyter:
+	会自动打开本目录下的ipynb文件，这个就是你保存的file，这是个可以用可以运行的python
+		单元格组成的文件，（还有markdown等格式，每个单元格可以不一样
+	使用shift-enter 可以运行当前行，走到下一行
+	ctrl-enter 可以运行当前行，停留在当前
+	
+	tab 可以补全打字
+	在import  之后也可以应用，  xxx.<tab>
+	random.guass 然后shift-tab 可以看函数使用方法 , 两下shift-tab可以具体显示文档
+
+shortcut:
+	命令模式 按esc进入  h 帮助 m 编程markdown模式， y to code mode, r to raw mode, l show line number
+						x  cut cell, dd delete cell,  s to save
+	编辑模式 按enter进入
+
+magic:
+	%timeit  面向行
+	%timeit 面向单元格
+
+convert:
+	jupyter nbconvert --to html notebook.ipynb
+	可以用来和其他人共享
+
+markdown:
+# head1
+## head2
+### head3
+[link name](www.baidu.com)
+**xx**  __xxx__  粗体
+*x* _x_ 斜体
+
+显示代码：
+文本内联  `xxx`
+代码块： ```xxxxxxx```  or  开头空四个，然后  代码
+
+latex 使用
+markdown中 公式块： $$ xxxxx $$  多行
+					或者 $  $ 单行
+空行：
+	要多一个空行才可以和上一行分开，不然连着
+	也可以行尾加两个空格，这样两个在一个段落里面
+	行首可以空格，这样多行会一起空格
+		但是必须在第一个这样ident的行之前空一行
