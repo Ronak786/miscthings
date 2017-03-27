@@ -37,3 +37,26 @@ hdfs:
 		ls 显示的结果的 中间  1 2 表示副本，目录没有副本
 	-get  取回本地 （复制操作）
 	-help 
+
+mapreduce:
+	需要实现Mapper Reducer 接口，就是要实现 map reduce 函数，
+	还有可以用作key的类型，有默认的BooleanWritable DoubleWritable Float Byte Int Long Null(无键值站位符）
+		Text， 如果想要自己实现，就extends WritableComparable<T>
+	Partitioner 这个用于需要自己实现hash的类去implement Partitioner
+
+	从 map 出来洗牌的过程就是hash，相同的key会一般放到同一台reduce机器上执行
+	Combiner: 本地洗牌,map之后，reduce之前由map机器做的优化操作
+
+	InputFormat: 这个基类是输入键值的基础，其他都是在他上面实现的，
+		默认的TextInputFormat 就是以当前字节偏移，值为当前行
+		KeyValueTextInputFormat : 以键值的形式，分隔符用key.value.separator.in.input.line来定义,
+			默认是\t
+		SequenceFileInputformat, 用户自定义
+		NLineInputFormat: N行作为值，key开始位移
+
+	要实现的时候，比如mapper ，继承Mapper 然后覆盖map函数
+					  reducer 继承Reducer 然后覆盖reduce
+					  partitioner  覆盖parittion
+					  input
+					  output 这两个是实现inputformats类和output的，可以利用
+						系统自己的Fileinputforamts继承，然后改写你自己的方法
