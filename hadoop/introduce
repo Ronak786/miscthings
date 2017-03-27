@@ -60,3 +60,6 @@ mapreduce:
 					  input
 					  output 这两个是实现inputformats类和output的，可以利用
 						系统自己的Fileinputforamts继承，然后改写你自己的方法
+
+stream:
+	设置输入输出流，可以接收其他语言程序的输入输出
