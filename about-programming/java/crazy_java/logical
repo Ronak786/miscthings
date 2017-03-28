@@ -1,0 +1,40 @@
+if else:
+	把小范围的放在前面，这样更加方便
+switch:
+	only  byte short char int java.lang.String enum !!
+break:
+	可以在循环之前一行，定义个标签 outer：， 然后break就可以break outer;直接跳出外层循环
+continue:
+	标签可以跳过标记的当次循环
+
+array:
+	init:  int[] arr = new int[]{1,2,3,4,} 初始化(元素可以是子类型，或者本身类型）
+			Object[] aa = new String[x]{xxxxx}  也可以的，
+			int[] arr = {1,2,3,4,5}
+		动态:
+			int[] arr = new int[N]
+		不要同时指定长度和初始化内容！！
+	exception:
+		java.lang.ArrayIndexOutOfBoundsException
+	length:
+		arr.length
+	基本类型的数组，数组引用本身在stack里，分配的空间在heap里
+	引用类型， 引用对应的对象在heap里，赋值的过程是让array 的某项直接指向heap中的引用对象的内存，和
+			你本身对那个对象的引用一样
+
+	二维数组：
+		这个就是利用数组的每个元素是另一个对数组的引用
+		int[][] a;
+		a = new int[3][] 这样就有了3个 int[]类型
+		Note：如果要无限扩展数组，可以用Object类
+		初始化: new int[3][] , new int[2][3], new int[][]{new int[3], new int[2]}初始二维需要用一维
+
+	java.util.Arrays
+	Arrays static method:
+		binarySearch, copyOf(copy array), equals ,fill, sort , toString 
+	System:
+		arraycopy 
+
+	循环:
+		for(int a: array) {xxx}  可以直接取出array的元素进行遍历
+
