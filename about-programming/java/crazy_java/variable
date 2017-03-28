@@ -2,4 +2,22 @@ javadoc
 	这个文档生成程序，可以生成文档，利用变量前的注释 /** 开头，*/结尾，
 	和www.oracle.com/technetwork/java/javase/downloads/index 的一样
 	只处理public  protected修饰的成员，因为是给外面看的，
+		处理类，接口，方法，成员变量，构造器，内部类之前的注释
 		使用了-private 可以修饰内部成员
+	
+	文档在http://www.oracle.com/technetwork/java/javase/documentation/jdk8-doc-downloads-2133158.html
+		可以下载，以后本地看
+
+javadoc options:
+	-d 放置文档路径
+	-windowtitle <text> 文档浏览器标题
+	-doctitle <html-code> 指定概述页面标题的文本
+	-header 页眉
+	使用javadoc -d apidoc -windowtitle test -doctitle study javadoc  test api  -header myclass  *Test.java 或者
+																								包的名字（放在不同文件夹,对应的package.html来描述包
+
+	要提取author, version, 要加入 -author -version javadoc的参数
+	mark:
+		类，接口：@deprecated @see author version
+		函数: @see deprecated param return throws exception
+		成员变量: deprecated see

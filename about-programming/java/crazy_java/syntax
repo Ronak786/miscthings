@@ -1,0 +1,49 @@
+分号： java 可以跨行
+标志符: start with  $  _ 字母（可以unicode各种字符，包含中文）
+关键字，都是小写 true false null ....
+基本类型:byte short int long char(2 byte) = (unsigned 整数) float double boolean
+
+数值： (数值之间可以下划线）
+	
+	小整数会被当作short 或byte
+	大整数会出错，要显式注明xxxL表示long(其他进制也一样）
+		二进制 0bxxxx(默认32位）   8: 0xxx  16: 0xyyyy
+	char:
+		字符， 'A'  '\n' '\uxxxx'16位的
+		可以直接当作16位整数使用
+	浮点：
+		科学： 4.2e10 (只能浮点）
+		5.12 double
+		5.12f  float(32)
+		Double.POSITIVE_INFINITY  Float.NEGATIVE_INFINITY NaN 
+			正负无穷各自相等， nan都不相等,通过除以0得到，整数除以0得到ArithmeticException
+		Note: 0.0 / 0.0 is NaN
+boolean:
+	布尔变量 true false
+
+String:
+	表示字符串，用双引号
+类型转换：
+	自动转换：
+		小的可以转成大的，直接赋值，但是byte不能变成char
+		可以直接用+ 来连接值和字符串，利用“”+xxx来生成
+	强制转换：
+		这个浮点到整数会删掉小数
+		float 复制需要 4.2f 而不是直接4.2 会出错
+	计算的时候：
+		byte short char 自动变为int（所有计算再回赋的时候注意强制转换）
+
+直接量：
+	只有基本类型，string，null 可以指定直接量赋值
+	直接量支持自动转换
+	直接量保存在constant pool 常量池，不可变动，所以String不能修改，编译在。class文件里面了
+
+包装类型：
+	各自拥有，有一个parseXXXX的函数
+
+计算类型：
+	% 这个本质要进行除法，所有0/0 会nan 0.0/0.0会nan， 另外除数是0,即使通过了，余数显示还是nan
+java.lang.Math:
+	可以进行复杂的平方操作
+	+ 可以用来连接字符串
+	- 可以用来取负值
