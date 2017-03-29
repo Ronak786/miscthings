@@ -144,6 +144,19 @@ class:
 None 空占位
 	[None] * 10 生成列表包含10个元素，为空元素
 
+赋值：
+	a,b,c = c,b,a  可以多个赋值
+	val=1,2,3  这样可以封包成tuple
+	python3 里可以a,b,*c = [1,2,3,4] 这样c就是一个列表
+		正常情况下左右数量必须相等！！
+
+	a=b=c
+	a *=2
+	str += 'foo' 这些都是可以的
+
+语句块：
+	冒号表示语句块的开始，然后下一行开始缩进
+
 功能
 	import xxx  as xxx
 	from xx import xxx as xxx
