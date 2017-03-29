@@ -1,0 +1,111 @@
+" ' has no difference
+python string  , str(xxx),  repr(xxx) `xxx` 后两种是相同的，
+	三者基本一样,repr `` 这两个面向python本身，而不是人类
+
+raw_input better than input() ,后者必须是python的语法，字符串要引号
+
+长字符串： “”“ ”“”  ‘’‘ ’‘’ 可以包括‘ “ 在里面
+原始字符串： r"xxxx"  不会解释任何特殊字符
+			最后一个字符不能是反斜线，不然语法错误~！~~~
+			可以在后面单独用’\\'来表示一个最后的反斜杠，两个字符串会自动骨连接起来
+unidode字符串，u'xxxx' 默认python2 是ascii， 可以coding: utf-8 来默认utf
+			然后这里可以用16机制表示键盘没有的unicode编码
+
+
+字符串 Note:字符串不可修改！！
+	可以索引，标号-1表示最后一个
+	可以用分片，这样可以操作一个范围内的数
+		分片包头不包尾 可以用[:] 放空元素表示开头或结尾
+	第三个参数是步长，可以负数,如果不指定头或者尾 ，会根据步长正负判断是头还是尾开始算
+
+	格式化:
+		'string'%(tuple or dict)
+			%s会打印字符串，如果不是字符串，会自动用str（）转化一个
+			这两部分都可以作为变量被引用，然后组合在一起,aa = "%d %s", bb=(1,"20"), aa % bb 就是你要的结果
+			如果不是用tuple 或dict，那么整个替换量只会被当作一个值
+		标记介绍：
+			'-'左对齐 '+' 加上正负号，” “正数之前保留空格， 0位数不够用0填充(这两个对负数会把-放在最前面)
+			*指定宽度，可以数字，*表示从tuple读
+			.* 表示实数小数位数，字符串最大宽度，或者从tuple读
+			%d,i  带符号数  u o x 无符号数  e f g 浮点  r(不会解释特殊） s 字符串 c单字符或整数,打印char
+
+列表
+	Note: 索引不能超过index out of bound，但是分片的时候，最后元素可以超出指定，这样会显示到最后一个数字
+	列表相加是更大的一个列表！！ Note: 加法不能断行
+		序列可以相加,字符串可以相加，但是序列不能加字符串
+
+	列表或字符串乘以数字可以扩展字符串或者链表n倍
+	利用加法乘法来批量生成某个字符或列表！！
+
+	modify: a[2] = xxx
+	del:  del a[2] or just del a to  delete all
+	利用分片：实质都是替换(分片可以超出index，默认到最后）
+		利用分片替换元素,长度可变  str="hello", strlist=list(str), strlist[2:]=list('hi'), 
+			res=''.join(strlist), res == "hehi"
+		利用分片插入  strlist[2:2] = [1,2,3] 会在strlist[2]的位置插入[1,2,3]
+		利用分片删除  strlist[2:5] = []  替换为空
+		间隔替换：  strlist[::2] = [x,x,x,x]  但是数量要匹配上
+	列表的方法:
+		list.append()
+		list.count(xx)  统计xx在list中作为元素出现的次数
+		list.extend(another_iterable)  扩展一个list，+ 会返回新list ，这个扩展
+			== list[len(list):] = another_iterable
+		list.index(xx)  xx出现的第一个位置索引
+		list.insert(num, 'str')  在index 为num的地方插入，而当前位置数后移，-1代表最后一个，这样
+				原来最后一个数后移，如果写大整数，会默认append操作
+		list.pop() 删除index处元素并返回, 不能超出
+		实现栈 push:  insert(0,...), pop: pop()
+		实现队列  enqueue, insert(0,...) dequeue: pop(0)
+
+		list.remove(xxx) 删除某个元素第一次的出现，无返回值
+		list.reverse()  本地修改反向一个list
+		list.sort() 本地排序，无返回值
+			param:
+				cmp function: 默认系统cmp（），可以自定义
+					只要定制何时-1,0,1即可
+				key: 处理每个元素，返回key，然后根据会根据key排序
+				reverse： True False  是否反向
+			Note: 排序反向： x.sort(), x.reverse()
+				不修改本地： sorted(x).reverse()
+
+元组：
+	不可修改，可以（）表示空，一个元素要（1,），逗号必要！！
+	扩展（复制一个新的）：
+		2*tuple  两倍长
+	
+class:
+	Template: 使用$来标出要替换的变量
+		from string import Template
+		s=Template("$a is a $b") , s.substitute(a="11", b="22)直接返回, 使用$$来输入美元符号
+		或者使用dict 作为这里的参数输入，数目要对上
+	
+
+None 空占位
+	[None] * 10 生成列表包含10个元素，为空元素
+
+功能
+	in 操作
+		对string，包含的子串，
+		对list，包含的元素, 元素可以是列表本身的，这时候你in的左边也要是列表
+	min, max:
+		这两个可以接受多个数字参数，或者列表
+	len
+		获取长度，对于iterable
+	list
+		将string变成列表，对列表, tuple保持原样, 对dict取出key
+		使用 ''.join(列表）可以组装回去
+	tuple
+		和list一样，不过都转换成元组
+	str()
+		转换为字符串，human-readable
+	reversed()(用于list string）
+		返回列表的迭代器，可以用于for循环, 使用list（reversed（））可以获得反向列表，不修改原列表
+	sorted() (used in list, string, 永远返回列表）
+		获得排序的副本
+		param:
+			cmp function: 默认系统cmp（），可以自定义
+				只要定制何时-1,0,1即可
+			key: 处理每个元素，返回key，然后根据会根据key排序
+			reverse： True False  是否反向
+	cmp()
+		内置比较函数
