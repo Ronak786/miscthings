@@ -1,0 +1,77 @@
+面向对象设计：
+	所做的事情 
+	名词： class
+	动词：method
+	形容词：attr
+	思考继承，避免全局变量
+class:
+	Template: 使用$来标出要替换的变量
+		from string import Template
+		s=Template("$a is a $b") , s.substitute(a="11", b="22)直接返回, 使用$$来输入美元符号
+		或者使用dict 作为这里的参数输入，数目要对上
+	string:
+		这个类里面有很多可以用的常量： 可以在判断里使用
+		string.ascii_letters  /uppercase/lowercase/digits/printable/punctuation等等
+	bisect:
+		二分查找
+	random.choice
+		返回一个序列里的随机一个对象
+	operator:
+		操作符号模块，比普通的有效率
+	inspect:
+		查看类内部，通常高级特性使用
+
+
+多态：python 的核心思想！！
+	就是有多种形态，不用具体管那种，对象有那个方法，我们直接调用就可以了
+		list, string both as count() method
+		+ can be used between 1+2 or '1' + '2'
+		repr(可以接受很多类型），也是多态
+		在不知道类的情况下就可以调用
+封装：
+	这个就是保持自己的私有属性，不全局
+继承：
+	使用已有的方法
+
+__metaclass__ = type
+	使用新式的类写在最前面，或者直接集成（object)
+
+class xxx:
+	def aa(self,xxx):
+		sssssss
+	类的第一个参数要是self，自己
+	在运行过程中，可以用：
+	ins=xxx()
+	ins.aa = bb 来覆盖原来的方法为外部的函数，这样也是可以的（外部函数不需要self）
+		使用del删除覆盖，可以看到原来的
+	
+	隐藏：
+		如果方法前有双下划线，那么就是内部方法，python 会在前面加上_类名,
+			结果就是 _classname__method, 所以外部访问就要变革方法了
+
+		也可以只用单下划线，这样没有隐藏效果，但是from xx import *不会导入他
+	
+	class全局变量
+		这个本身用self可以引用,用class名也可以引用。
+		用class来改变，以后不论self还是class引用都变了，
+		用self来改变,如果是直接变量，只影响自己，如果是list之类可变的，也是全局影响
+		也就是自己的变量默认是引用的同名全局的，但是改变后就是自己的了,
+			但是间接改变由于没有直接改变，所有没哟关系
+	
+
+class 相关函数,属性
+	issubclass(a,b)  a 是b的子类
+	classname.__bases__  
+		当前类的父类, 要使用类名，不是实例名
+	isinstance(instance, classname)  是否是子类
+	s.__class__  
+		当前实例的类
+	classname.__dict__  对象内存储的值
+
+	hasattr(instance,'func') ==>boolean
+	getattr(instance, 'func',None) ==可以设定默认值
+	hasattr(instance,'__call__') == callable() 是否可以调用（就是是否为函数）
+	setattr(instance,name, value)   应该等同于直接赋值
+
+	多重继承：
+		查找方法的顺序是从前到后 mro 方法解析顺序，这个会变

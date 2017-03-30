@@ -62,6 +62,7 @@ unidode字符串，u'xxxx' 默认python2 是ascii， 可以coding: utf-8 来默�
 			或者可以使用 u'xxxx'.upper() unicode 可以识别正确转换的
 		isspace() 
 		isupper() 用来判断字符的
+		count()  指定字串出现的次数
 		
 列表
 	Note: 索引不能超过index out of bound，但是分片的时候，最后元素可以超出指定，这样会显示到最后一个数字
@@ -144,6 +145,8 @@ class:
 	string:
 		这个类里面有很多可以用的常量： 可以在判断里使用
 		string.ascii_letters  /uppercase/lowercase/digits/printable/punctuation等等
+	bisect:
+		二分查找
 
 	
 None 空占位
@@ -267,10 +270,39 @@ comparison:
 			这样可以保证执行的语句效果在dict空间里，不会影响你的空间的变量
 	eval: 
 		用来计算字符串表达式的值，可以在后面加字典来表示空间，
+	map(func/None, list/tuple/dict(only keys can be process))
+		作用是利用func 来处理后面的list的每一项，如果多个list，会对应每一项合成list给func处理，
+		最后输出list，
+		如果没有func，直接合成输出
+	filter(func, xxx) list,tuple,string 都可以
+		用来过滤,输出为真的那些数
+	lambda x, y: xxxx   用来定义使用匿名函数，参数x指定参
+	reduce: 
+		这个用来每次把列表前两项的和作为一个参数，当前项作为另一个参数，交给func，返回值
+		作为参数和下一项一起再交给func，直到最后出值。
+		可以设定初始值，这个在列表为空的时候不至于报错
+	apply:	
+		这个不推荐使用，使用func(*arg,**kwarg)
 
 函数相关：
 	callable():
 		判断一个变量是否是可调用的函数
+	vars() == locals()
+		返回内建的变量值的字典表,叫命名空间
+		在函数内是另外一个空间，可以查看vars获取
+	globals() 这个会返回一个全局变量的字典,
+		可以利用这个获取全局变量, 可以利用这个修改global变量
+	locals()这个获取局部变量的字典
+
+	global xx 这个是函数体内的声明
+		在此之后，所有变动都会指向全局变量
+
+	函数内的函数定义：
+		def aa(p):
+			def bb(q):
+				return p*q
+			return bb
+		这个是可以的,这样可以返回一个固定了外层变量的内部函数，灵活
 
 
 funciton:
@@ -286,7 +318,21 @@ funciton:
 			*表示接收组成元组，** 表示接收组成字典
 			这样可以定制输入了，要以这种顺序的!!! **e :  a=1 b=2 xxxxx
 
-		定义没有*,实参却可以传入tuple的，也可以dict，只要参数名字匹配
+		定义没有*,实参却可以传入tuple的，也可以dict，只要参数名字匹配(用来解包的)
+	Note:	定义的时候，用来聚合不定参数
+			使用的时候，用来分割字典或元组,用途不同
+			只要记住实参加星号用来解包list，dict，tuple
+					行参则用来压包，接收的是一个序列的数，
+					可以先解后压的
+
+		函数接力：
+			参数传递需要保持一直，行参也一致，传入*arg **arg2 ,传给子函数也要这样，
+			子函数形参也要这样，如果不加星号，就代表不进行解包，那传下去就是
+			单一的一个list或者dict，是一个对象，
+
+		形参星号可以用来接受冗余参数，去除错误
+
+
 	
 function attr:
 	__doc__ 文档属性, 可以利用func.__doc__ or help(func) to get
