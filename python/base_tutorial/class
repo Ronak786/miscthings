@@ -33,8 +33,9 @@ class:
 继承：
 	使用已有的方法
 
-__metaclass__ = type
-	使用新式的类写在最前面，或者直接集成（object)
+使用新类
+	__metaclass__ = type
+		使用新式的类写在最前面，或者直接集成（object)
 
 class xxx:
 	def aa(self,xxx):
@@ -75,3 +76,30 @@ class 相关函数,属性
 
 	多重继承：
 		查找方法的顺序是从前到后 mro 方法解析顺序，这个会变
+
+exceptions:
+	import exceptions,
+	dir(exceptions) 可以看到所有的内建exceptions，
+	使用raise 来触发异常，可以加入参数字符串，回答出来
+
+	自建异常
+		必须继承于内建
+		异常可以向上传递，直到有人处理（按函数嵌套层传递）
+
+	try:
+		xxx
+	except Except:
+		xxx   
+		raise  可以在具体的捕捉到的下面重新触发
+	except (aaa,bbb):   可以把多个异常放在一个tuple里面在一起
+	except (aaa,bbb), e: 可以打印错误,错误字符串在e里面
+		如果想要接受所有错误，使用 except Exception, e  ， 这个好一点，一般不用，
+		因为屏蔽了不好
+	except 会接受所有异常，这个可以放在循环里，然后else处理成功后的跳出，还有
+		可以执行finally
+	finally:
+		一定会执行，但是这里的异常不会被捕捉
+
+	except 里面可以pass，这样就省略了异常处理，ignore，
+		然后在try 里面print的时候用+而不是 ，逗号，这样不会导致由于后半段出现异常，
+		输出了一半的情况
