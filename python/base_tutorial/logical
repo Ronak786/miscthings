@@ -1,3 +1,0 @@
-import 
-from xx import xx 当确定没有重名时使用
-aa=math.floor  用变量来引用函数，之后可以直接用aa

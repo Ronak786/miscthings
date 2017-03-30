@@ -1,0 +1,7 @@
+how to use nosetest:
+	every dir should have a __init__.py
+	the test file should named  test_xxx.py or xxx_test_xxx.py
+	in that file ,all tests should be name xxx_test_xxx()
+
+import nose.tools.*
+use  assert_equals(xxx,xxx)
