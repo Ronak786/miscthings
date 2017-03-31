@@ -1,3 +1,52 @@
 这个用来处理数据计算，
 基本是通过数组随意转换的矩阵进行的，
 	可以求平均，标准差，相乘。。。。。操作，而且很快
+
+np.array([list]can be multidimention, type(float, int))
+
+pd.Series([list],index=xxxx)
+	when reference, you can select multiple col 
+		using a list inside your select list [[xx,xx,xx]]
+		use  xx > a to judge False or True
+		use  xx[xx>a] to filter out those
+pd.DataFrame({xx:Series,yy:series,....}, index=[xxx])
+pd.DataFrame({xx:[xxxx],yy:[yyyyy]]}
+
+pd.dtypes()
+pd.describe() show mean std min max cout ...
+pd.head()
+pd.tail()
+
+dataframe: as df
+df.loc(your_index) can select just that line
+df[df['age']> 3]   to filter
+df[df['name'] == 'bian'][df['age'] == 20] 
+	this kind is also work
+df['name'] == df.name
+
+index:
+	df.loc( can use label, can use number
+	df.iloc  can only used as index
+	row col both can be used:
+		df.loc[:,3] to show col 3
+	df.apply(numpy.mean) 
+		will apply mean function on every col
+	df[xxx].map(lambda function)( map used on Series)
+	df.applymap(xxx) (applymap used on DataFrame)
+		will apply that func on every member on that col
+
+Note:
+	df[xxx].apply(numpy.mean) will apply function on every member
+	df[[xxx]].apply(xxx) will use the whole col as input, this is what you 
+		may be want
+
+dot multiply:
+	[1,2,3] * [4,5,6] == [1*4,2*5,3*6]
+	numpy.dot(list1, list2)
+	
+	dot can be used among two list, and a numpy.dataframe and a list or another dataframe
+
+
+
+scikit-learn:
+	use this to train data and do predict
