@@ -1,0 +1,10 @@
+import pandas as pd
+pd.Series({1:2,3:3,4:2}) 字典左边是索引，右边是值，这个是一维数组(纵向显示）
+pd.Series([1,2,3],index=[4,5,6]) 索引默认从1开始，可以自己决定，也可以多，多出来的值那边会是None，少的直接没有
+s.keys  索引
+
+pd.DataFrame({1:Series(xxxx),2:Series(yyyyy)},index=[xxxxx])
+	创建二维，字典索引代表列， Series取原来的行，index筛选不同的行
+pd.DataFrame({1:another_dict, 2:another-dict ....}) 可以不等长
+pd.keys
+pd.columns 列的索引

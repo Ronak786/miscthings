@@ -73,6 +73,7 @@ unidode字符串，u'xxxx' 默认python2 是ascii， 可以coding: utf-8 来默�
 	利用加法乘法来批量生成某个字符或列表！！
 
 
+	list[-i] = list[len-i]
 	modify: a[2] = xxx
 	del:  del a[2] or just del a to  delete all
 		用来移除对象引用，值其实并不会删除，会被垃圾回收的,所以两个同样引用不会因为一个del，另一个就不见了

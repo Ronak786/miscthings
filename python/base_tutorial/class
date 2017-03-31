@@ -76,6 +76,83 @@ class 相关函数,属性
 
 	多重继承：
 		查找方法的顺序是从前到后 mro 方法解析顺序，这个会变
+	继承重写：
+		可以覆盖父类方法
+	继承父类的隐藏方法：
+		隐藏方法也可以继承使用
+
+magic functions:
+	__init__ 构造函数
+		1, 调用父类的方法： class B(A): def __init__(self):  B.__init__(self)即可
+			这叫做未绑定方法，因为是用类名调用的，所以可以传入self，也必须传入，不然不知道
+				初始化谁
+		2, super(subclass, self).__init__()   要使用这个，必须父类祖先所有都是新类
+			这个是新方法，也比较好，传入子类自己，以及对象自己self，__init__里面不需要传东西
+	__del__ 析构函数，但是时间不定，所有不要用
+	__len__: 这个返回对象内元素的数量，若为0，则对象本身被当作假值（空list dict tuple string）
+	__getitem__(self, key):
+		list: key is index,  
+		dict: key is key
+	__setitem__(self, key, value)
+		inverse of get
+	__delitem__(self, key)
+		删除元素
+	使用isinstance(key,(int,long))来检查索引的类型，标准规定必须是long或int
+
+	访问器方法：
+		就是类中的getsize, setsize 之类设置获取属性的方法
+		替代:
+			加上：attr= property(fget, fset, (fdel), fstring) 
+				这样，就可以在类上直接用 obj.attr = xxx 来获取或者设置了
+			注意：你使用的property方法和内部的变量不能同名！！
+
+	静态函数： 静态参数里没有ｓｅｌｆ
+	类函数： 参数第一个是cls,代表ｃｌａｓｓ，
+		这两个可以用类名调用, 也可以用对象调用
+	修饰：
+		@staticmethod
+		@classmethod  放在静态和类上面 ,多个装饰器使用顺序相反
+	拦截属性函数：
+		__getattribute__(self, name)
+			这个新式，会拦截一切属性访问，不论内外，所以注意，要在最后面调用父类的同名函数，不然
+			操作几乎无法完成
+		__getattr__ 
+			只会拦截不存在的属性获取
+		__setattr__:
+			这个要避免死循环，和__getattribute__一样，你设置了属性，
+			内部要用不一样的名字，不然内部的设置操作也会被拦截，然后如果同名，继续无限循环
+		
+	迭代器：
+		__iter__ : 这个返回一个迭代器，就是含有next方法的对象
+		next: 实现这个方法，每次返回一个对象
+			这样就可以把对象用在for循环里了
+			想要停止就raise StopIteration
+
+		迭代器转化为list： 
+			首先保证有限，然后直接list(obj_name)即可,因为这里被当作了迭代器
+
+	生成器：
+		这个是自定义的函数，内部用yield来作为断点，输出一个值，
+		和迭代器类似
+		可以使用return 无参数版本，代表结束
+	生成器推导式：
+		和列表推导式类似，但使用圆括号
+		(i*i for i in range(5))  
+			返回一个对象，每次用 a.next()获取下一个值
+	递归生成：
+		可以递归自己，然后加上边界条件,对于list，扩展到元素的时候，再扩展会typeerror，利用
+			except捕捉直接打印返回即可
+		Note: 对于字符串不能递归，因为扩展的时候对于一个元素的字符串会扩展到自身，无线循环
+			try: value + ''
+			except TypeError: pass
+			else raise TypeError
+			这个可以判断，如果传入字符串，报错，否则通过
+		sum(i*i for i in range(5)) 这样也可以，而且还少了一层括号，方便！！
+
+	生成器方法：
+		代码里用 k = (yield xxx)
+			这样在第一次运行过生成器next方法后，就可以用g.send("xxx")给生成器发送信息了，
+			之后每次挂起都可以发送，但是第一次运行前不可以
 
 exceptions:
 	import exceptions,
@@ -103,3 +180,11 @@ exceptions:
 	except 里面可以pass，这样就省略了异常处理，ignore，
 		然后在try 里面print的时候用+而不是 ，逗号，这样不会导致由于后半段出现异常，
 		输出了一半的情况
+
+error: checktype:  isinstance(key, (int,long))
+	IndexError:
+		list index out of bound
+	TypeError:
+		index type not correct
+	KeyError:
+		dict's key not found??
