@@ -292,6 +292,10 @@ comparison:
 		可以设定初始值，这个在列表为空的时候不至于报错
 	apply:	
 		这个不推荐使用，使用func(*arg,**kwarg)
+	reload:
+		这个可以重新载入mod，但是必须之前载入过
+	pprint:
+		只能分行打印
 
 函数相关：
 	callable():

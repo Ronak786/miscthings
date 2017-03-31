@@ -133,8 +133,11 @@ magic functions:
 
 	生成器：
 		这个是自定义的函数，内部用yield来作为断点，输出一个值，
+			输出后会暂时返回，下次继续进行
 		和迭代器类似
 		可以使用return 无参数版本，代表结束
+		yield 其实就是return一样的效果
+
 	生成器推导式：
 		和列表推导式类似，但使用圆括号
 		(i*i for i in range(5))  
@@ -148,6 +151,8 @@ magic functions:
 			else raise TypeError
 			这个可以判断，如果传入字符串，报错，否则通过
 		sum(i*i for i in range(5)) 这样也可以，而且还少了一层括号，方便！！
+Note：对于生成器不要恐惧，就是平常的prinf函数，只不过内部不会一次性产生罢了
+	一般在产生结果的时候用
 
 	生成器方法：
 		代码里用 k = (yield xxx)

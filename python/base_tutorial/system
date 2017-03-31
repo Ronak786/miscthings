@@ -1,0 +1,16 @@
+Note: 
+	.pyc 平台无关的效率文件，如果源文件修改过这个会重新生成
+	模块不会重复载入的
+	python -m xxx  args  可以把标准路径下的模块当作脚本直接执行
+
+	__name__ == "__main__" 
+		这个在import的时候不成立，所有用来本地测试
+	
+sys:
+	sys.path  return a list of module place 模块查找位置
+		you can sys.path.append(your path)
+		一般放在site package里面
+	PYTHONPATH  个人路径
+
+	
+
