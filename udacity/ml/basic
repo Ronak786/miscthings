@@ -48,3 +48,29 @@ standard deviation:
 	贝塞尔校正系数，就是方差的分布由n变成n-1  对于样本估计来说
 	叫样本方差
 Note:要更多的关注总体分布，而不是细节的每一个点
+
+
+
+sklearn.preprocessing ==>labelencoder 使用：
+	le = LabelEncoder
+	对于数据，使用 le.fit(数据数组)
+	之后对于需要转换的数据 le.transform(xxx)即可
+	作用是把离散的一些值转换成从固定数字开始的变量
+
+OneHotLabel:
+	这个同样是标记，不过是对连续元素，这次是把他们变成
+	： 同样类型的不同值变成一个bit序列的不同位上
+
+数据种类：
+	数值数据
+	分类数据
+	时间序列数据
+
+注意数据的时序，
+	训练数据在前面，验证数据中间，测试数据结尾
+
+from sklearn import cross_validation 1.7
+from sklearn.model_selection import train_test_split 1.8
+train_feature, tran_test, label_train, label_test = train_test_split(featrue, label,test_size=0.5(50% for test), random_state = 0)
+这个用来训练
+其中label指的是target
