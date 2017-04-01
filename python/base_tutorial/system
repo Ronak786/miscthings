@@ -85,6 +85,83 @@ heapq:
 	headreplace 放入一个，并且去掉最小的
 	nlargest(n,iter)
 	nsmallest(n,iter) 可以返回迭代对象中第n大小的元素，比普通的sort之后index更有效率
+
+collections.deque:
+	双向队列(单向可以用list表示）
+	append,appendleft
+	pop, popleft
+	rotate(1,-1...)  轮转，默认右边
+	extend, extendleft  这个会反向插入左边
+
+time:
+	time 包括年月日时分秒周几，年内第几天，夏令时开启与否
+	asctime(tuple) turn tuple to stirng(default local cur time) 只负责转换，不管本地与否
+	ctime(float) turn float from 1970 to string, to localtime == asctime(localtime()) 把
+		秒数代表的国际时间转化为字符串的本地时间
+	localtime() 把国际时间转换为本地元组，交给asctime专程string
+	gmtime() 国际元组
+	mktime 把本地tuple转换成国际秒
+	sleep 
+	strptime(把字符串转成本地元组）
+	time.time() 转换成国际秒
+	strftime 自定义
+	localtime(seconds) turn to local time
+
+datetime
+
+timeit
+	
+random:
+	random()  return real num [0,1)
+	getrandbits(n) 返回n个随机比特的长整形值
+	uniform 随机from a,b
+	randrange(start ,stop,step) 返回这个范围内的随机数
+	choice 选择list中一个
+	shuffle 原地洗牌
+	sample（seq, n)选择n个样本
+
+re:
+	正则表达式
+	.  任意一个字符，必须一个，不能\n
+	转义，由于\本身解释器认识，所以需要\\表示传给re的\,
+		同时也可以使用r'xxx'
+	匹配集合：
+		[a-z] [^a-z]  特殊字符*.?+这些在字符集里不需要转义
+		^这个如果需要匹配，且放在开头，需要转，否则不要
+		-]放在开头不用转，-放在末尾也不用转，否则要转
+	子模式和选择符号：
+		(xx|yy) 匹配其中一个
+	* 0~infi
+	+ 1~infi
+	? 0~1
+	{m,n}  m~n
+	^$  开头结尾
+	function:
+		compile(pattern) 创建内部匹配对象，更高效
+		search(查找匹配 从任意地方
+		match 从开头匹配
+		split 切割 类似 string.split('') 但是这里匹配选择更广
+			在匹配里如果有一个（xx）的括号匹配分组，那么这个匹配上去的也会当作分组出现
+		findall 找到所有模式匹配的字符串
+		sub(pattern, replace, string)
+		escape 转义字符串中所有特殊字符 (方便避免本地解释）
+
+	可以直接re.xxx() 调用，传入字符串pattern和文本
+		也可以compile之后调用返回对象的相应函数
+
+	成功：
+		返回匹配对象，b = a.match(xxx), b.string  
+		返回信息：
+			匹配的分组：分组是按括号来制定的，最大的分组0,每个括号都是一个分组
+	失败：
+		返回None
+
+shelve:(简易数据库，可以使用字典的方式访问）
+	open("file",writeback=true) 后面这个可以保证修改是对文件的，
+					否则如果访问，返回的永远是副本，修改也修改不会去
+					比如 a['x'].append(6) 首先获取副本list，然后添加，元list不会被修改
+			Note：writeback需要最后close！～～～
+
 package:
 	每个包都是一个目录，里面要有一个 __init__.py文件，
 	当只导入这个包的时候，__init__.py文件内容就是包的内容！！！
