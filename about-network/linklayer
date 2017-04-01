@@ -1,0 +1,20 @@
+ppp
+ethernet
+
+arp: 
+	arp -a /  arp  可以查看当前arp缓存的目标
+	telnet ip  www  可以尝试链接
+		然后tcpdump -e xxx 可以查看交互的帧
+
+	arp帧： 
+		缓存：
+			有效可达地址缓存20分，不可达的尝试过的缓存3分
+			对于可达的以后再链接尝试次数多一点
+		如果是本地子网：
+			ethernet帧的开头：发收地址，最后crc，
+			payload部分，arp 发的地址：分mac，ip，还有类型，长度，
+							然后收的地址：ip空，mac 全1,表示广播，还哟flag表示发送
+
+			收到后匹配，填写ip，反转收发（arp部分，改变flag），
+
+

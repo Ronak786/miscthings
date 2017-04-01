@@ -6,11 +6,98 @@ Note:
 	__name__ == "__main__" 
 		这个在import的时候不成立，所有用来本地测试
 	
+
+module 相关函数
+	dir() 显示内部名字 [n for n in dir(module) if not n.startswith('__')] 
+		避免显示内部名字
+	__all__ 这个变量在import的时候
+		指示会自动import的变量，设置这个可以有效的屏蔽非强制导入一些无用之物
+		from xx import * 只会导入__all__引入的变量
+	__doc__
+		这个文档字符串直接打出
+	help() 
+		这个比文档字符串更详细，还有函数标签
+	官方网站找更详细的文档
+
+	查找源代码：
+		sys.path searching....
+		use  module.__file__  !!!
+		Note 模块像sys 融入了解释器，没有源码,或者是C写的
+
 sys:
 	sys.path  return a list of module place 模块查找位置
 		you can sys.path.append(your path)
 		一般放在site package里面
 	PYTHONPATH  个人路径
+	sys.argv 命令行参数 ,包括自己
+	sys.exit(arg)  参数可选 推出程序 , 具体看pydoc解释参数
+	sys.module 一个字典，模块名字到载入模块的位置的字典(目前导入的模块）
+	sys.path  模块查找路径
+	sys.platform 平台info
+	sys.stdin/stdout/stderr  返回0 1 2 代表的文件
+
+os:
+	os.environ  环境变量的字典
+	os.system('') bash命令
+		os.startfile 这个在win中好用，因为路径有空格，这个可以处理，注意
+			一般要使用r''防止python解释内部的一些东西
+	os.sep  系统分隔符
+	os.pathsep path变量中的分割
+	os.linesep 行分割
+	os.urandom(n) 返回随机数据
+
+subprocess:
+	拥有os.system   execve popen function
+
+webbrowser
+	webbrowser.open() 打开浏览器
+
+fileinput:
+	input(xxx) 参数可选，用于遍历 没有参数默认stdin，有参数'-'也是stdin
+		inplace 表示本地修改，print的打印会导致当前行的改变
+	filename()  return filename
+	lineno() return line number  ,all-together
+	filelineno   return line num of current file 
+	isfirstline  first line of cur file
+	isstdin  if cur is stdin
+	nextfile() goto nextfile
+	close     close all file
+	close()
+	
+set:
+	内建无需import
+	无重复元素，
+	可以使用list生成一个set
+	set（range（10））
+	operations:
+		& | union issubset - ^ 等等
+	set.union 静态方法，可以在reduce等函数里使用
+
+	set只能包含不可变的值，如果要包含集合
+		要set.add(frozenset(another-set))
+
+heapq:
+	不存在heap类型，利用list来做
+	heap = []
+	heappush(head, 1)
+	heappop(head)
+	heapify() 将任意list转成heap，上面的操作只能对heap做
+	headreplace 放入一个，并且去掉最小的
+	nlargest(n,iter)
+	nsmallest(n,iter) 可以返回迭代对象中第n大小的元素，比普通的sort之后index更有效率
+package:
+	每个包都是一个目录，里面要有一个 __init__.py文件，
+	当只导入这个包的时候，__init__.py文件内容就是包的内容！！！
+	导入：
+		tree:
+		bin/
+		├── gen.py
+		├── inflist.py
+		├── __init__.py
+		import bin : 可以使用bin.xxx访问__init__中的内容
+		import bin.gen  可以使用 bin.gen.xxx访问gen中的内容
+		from bin import gen 可以使用gen.xxx访问gen中的内容
+
 
 	
 

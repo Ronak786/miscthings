@@ -247,11 +247,14 @@ comparison:
 		参数 (name=1, sex = '2') 也是可以的(key可以不加引号）,但这里不能用常量做key了,需要指定字符串
 	enumerate(list):
 		这个会把列表中的每一项变成一个迭代器，用list（）可以转换成列表，
-		每一项是一个索引，然后内容，
+		每一项是一个索引，然后内容，(就是一个tuple）
+	shuffle()
+		洗牌list
 	str()
 		转换为字符串，human-readable
 	reversed()(用于list string）
 		返回列表的迭代器，可以用于for循环, 使用list（reversed（））可以获得反向列表，不修改原列表
+		返回值是None！！
 	sorted() (used in list, string, 永远返回列表）
 		获得排序的副本
 		param:
