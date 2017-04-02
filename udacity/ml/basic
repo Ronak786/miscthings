@@ -51,26 +51,44 @@ Note:要更多的关注总体分布，而不是细节的每一个点
 
 
 
-sklearn.preprocessing ==>labelencoder 使用：
-	le = LabelEncoder
-	对于数据，使用 le.fit(数据数组)
-	之后对于需要转换的数据 le.transform(xxx)即可
-	作用是把离散的一些值转换成从固定数字开始的变量
+准确率 
+	这个并非唯一有效的标准,(如果正确集合很小，那么直接判定所有都0，会得到很高的准确率，
+		这种作弊的方法要避免，这时候准确率就要重新定义了
+	在数据集存在倾斜（类中数量极小）
+	需要宁枉勿纵的时候，准确率的考量是第二位的
 
-OneHotLabel:
-	这个同样是标记，不过是对连续元素，这次是把他们变成
-	： 同样类型的不同值变成一个bit序列的不同位上
+混淆矩阵：
+	二维坐标分为 实际0 1， 预测0 1，然后填入四个空格当前的预测情况
 
-数据种类：
-	数值数据
-	分类数据
-	时间序列数据
+recall：在所有为a的项目中，我预测为真的数目的比率(预测覆盖律）越高代表漏网的越少                         
+		而其他不为a的项目上，我预测正确与否，不管
+	查全率 在已知是当前情况的基础上，识别正确的概率
+precision： 对于所有我预测为a的数据，我确实预测到是a的概率
+	查准律：
+		在查到是这个类的基础上，实际上确实是这个类的概率
 
-注意数据的时序，
-	训练数据在前面，验证数据中间，测试数据结尾
+tp :true positive : when true, and you predict true, only one member in matrix
+fp false positive : when false, and you predict true , one column
+fn false negative : when true, but you predict false, one row
+tn  true negative: answer is negative and you turly guessed that(you guess is False)
+precison rate =  tp / (fp + tp)
+recall rate = tp / (tp + fn)
+f1 fraction:  2 * (precition * recall) / recall + precition)
+		best 1, worst 0
 
-from sklearn import cross_validation 1.7
-from sklearn.model_selection import train_test_split 1.8
-train_feature, tran_test, label_train, label_test = train_test_split(featrue, label,test_size=0.5(50% for test), random_state = 0)
-这个用来训练
-其中label指的是target
+
+高偏差 bias：
+	过少的关注特征值，模型过于简单，预测偏差
+高方差 variance
+	过多的关注模型，过于复杂过度拟合,在使用独立的测试数据的时候
+		无法工作的很好
+维度灾难：
+	每增加一个维度的属性，需要计算的量呈指数增长，所以要控制
+
+
+切记，你的机器学习模型只能在测试集上跑一次，一考定终身！
+切记，你的机器学习模型只能在测试集上跑一次，一考定终身！
+切记，你的机器学习模型只能在测试集上跑一次，一考定终身！
+切记，你的机器学习模型只能在测试集上跑一次，一考定终身！
+切记，你的机器学习模型只能在测试集上跑一次，一考定终身！
+切记，你的机器学习模型只能在测试集上跑一次，一考定终身！

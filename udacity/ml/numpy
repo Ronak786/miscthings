@@ -16,6 +16,9 @@ pd.dtypes()
 pd.describe() show mean std min max cout ...
 pd.head()
 pd.tail()
+pd.DataFrame.drop('xxx',axis=0/1)
+	把表格里的xxx列或行去掉，如果axis为1，代表是label名字，如果是0，代表
+		是号码，（行数）
 
 dataframe: as df
 df.loc(your_index) can select just that line
@@ -46,7 +49,55 @@ dot multiply:
 	
 	dot can be used among two list, and a numpy.dataframe and a list or another dataframe
 
+numpy.mean(xxx,axis=0/1)
+	axis = None  ,所有数据平铺，算所有的平均值
+	= 0， 算每个字数组对应的数间的平均值
+	= 1， 算每个子数组内部的平均值
+
 
 
 scikit-learn:
 	use this to train data and do predict
+
+sklearn.preprocessing ==>labelencoder 使用：
+	le = LabelEncoder
+	对于数据，使用 le.fit(数据数组)
+	之后对于需要转换的数据 le.transform(xxx)即可
+	作用是把离散的一些值转换成从固定数字开始的变量
+
+关于fit  transform
+	fit训练，transform降维，实际使用
+
+OneHotLabel:
+	这个同样是标记，不过是对连续元素，这次是把他们变成
+	： 同样类型的不同值变成一个bit序列的不同位上
+
+sklearn.cross_validation:
+	KFold  k折交叉验证(集合内容数量， 折数）
+		就是把训练集合分为两部分，一部分验证，另一部分训练，
+		每次的分割方法不同，做k次，找平均值，来看我们的方法的准确度
+
+GridSearchCV:
+	这个可以自动进行参数测试，选择最优参数使用，
+	所谓的参数是你的estimator的参数，可以用具体的estimator.get_param()来获取
+
+数据种类：
+	数值数据
+	分类数据
+	时间序列数据
+
+注意数据的时序，
+	训练数据在前面，验证数据中间，测试数据结尾
+
+from sklearn import cross_validation 1.7
+from sklearn.model_selection import train_test_split 1.8
+train_feature, tran_test, label_train, label_test = train_test_split(featrue, label,test_size=0.5(50% for test), random_state = 0)
+这个用来训练
+其中label指的是target
+
+sklearn.metrics:
+	r2_score :这个用来表示结果的相关度的
+	如果输入是多维数据，相关度的比较是每维度各自的，
+		输出的时候可以选择模式，可以是直接输出一个各自维度的相关度的数组，
+		可以是多个的平均值，平均值也有两种，一种无权重分配，一种根据结果
+		数组中每个的方差分配权重
