@@ -1,0 +1,11 @@
+import sqlite3 这是个本地的文件形态的数据库
+con = sqlite3.connect("filename") to connect
+cur = con.cursor() 返回游标，这个是可以用来操作sql命令的handle
+con.commit()用来提交，有点像sync
+
+con.execute 来运行， 第一个参数是sql语句的格式版本，使用?来替代未知数
+			第二个参数是那些未知数，可以用列表显示
+select 返回的结果，
+	descrpition 游标的描述，里面是列的描述
+	fetchall（）这个返回所有字段在一个列表里面，
+		和descrpition对应输出

@@ -135,9 +135,20 @@ re:
 	+ 1~infi
 	? 0~1
 	{m,n}  m~n
-	^$  开头结尾
+	^$  开头结尾  这个是空行，同时空行也可以匹配string[0] == '\n'
+	[^] 括号里的尖号代表了非，就是后面的都不是，反的
+Note: 
+	所有匹配都是贪婪版本，也就是会匹配中间尽可能多的
+	非贪婪版本：只要在多匹配比如* + 后面加上一个？就行了 ！！
+				这样只会匹配最少匹配
 	function:
 		compile(pattern) 创建内部匹配对象，更高效
+			可以添加注释：
+			re.compile(r'''
+				\* #sssss
+				(  #ssssss
+				‘’‘，re.VERBOSE）
+			每一部分都可以注释的
 		search(查找匹配 从任意地方
 		match 从开头匹配
 		split 切割 类似 string.split('') 但是这里匹配选择更广
@@ -153,8 +164,29 @@ re:
 		返回匹配对象，b = a.match(xxx), b.string  
 		返回信息：
 			匹配的分组：分组是按括号来制定的，最大的分组0,每个括号都是一个分组
+			group: 可匹配的对象返回的matchobject才可以这样
+				只有在圆括号的可以为组，而圆括号可以随便加的
+				m = re.match(xxx,xxx)
+				m.group
+				m.start
+				m.end
+				m.span 这些都是在匹配成功之后可以获取的数据，每个匹配组都有start end，span（
+					start，end的阈值），还有group表示匹配组的匹配结果
+					一个匹配组就是一个括号内）
 	失败：
 		返回None
+
+	结合exec， eval使用：
+		这两个都有作用于的用法，exec aa in bb,  eval(aa, bb)
+		可以在匹配成功的情况下执行一些操作
+		对于匹配到的部分用group获取，然后eval执行（这个只能获取值）
+			或者exec执行（这个用来执行操作）
+		在re中sub 的第一个替换参数可以是一个函数，参数是match的object，
+		然后返回值就是要替换的内容，很强大！！
+		eval 可以执行python语句的，所有可以执行类似 import xxx  要加引号表示字符串
+		exec则可以执行表达是赋值
+		所以exec对于不存在的表达式执行，eval对于已经由的语法执行
+	execfile 可以执行python脚本
 
 shelve:(简易数据库，可以使用字典的方式访问）
 	open("file",writeback=true) 后面这个可以保证修改是对文件的，
@@ -162,6 +194,54 @@ shelve:(简易数据库，可以使用字典的方式访问）
 					比如 a['x'].append(6) 首先获取副本list，然后添加，元list不会被修改
 			Note：writeback需要最后close！～～～
 
+Template:
+	模板库，看一下
+
+file 操作：
+	open(name, mode, buffering) 默认读 ， IOError
+		mode u可以让所有平台类型的换行符全部转换成＼ｎ模式，一般二进制要加ｂ
+		buffering这个0 nobuffering， 1 有缓冲 负数默认缓冲  >1 缓冲大小设定
+	标准文件  sys.stdin  sys.stdout sys.stderr
+	x.read x.write ，  如果没有可读，返回空
+	x.tell 返回当前字节位置，也就是即将读写的位置
+	x.seek  可以转移到那个位置
+	readline(maxbyte) 包括换行
+	readline  readlines
+	writelines(这个不会添加换行符！！）
+	Note:
+		为保证文件关闭， try  xxxx  final  close
+		或者直接 with  xxx  as xx ，后面的就是open返回的handle
+			上下文管理，需要__enter__ __exit__方法的支持
+
+	短文件读取：
+		直接 for char in f.read()  可以获取每个字符处理
+			for line in f.readline() 可以获取每个行处理
+			for line in fileinput.input() 可以获取每行，迭代获取，不会占内存过多
+	Note:
+		文件对象都是可迭代的：
+		f = open(xxx)  or  sys.stdin 也可以
+		for line in f:   or for line in open(xxx)
+			后者无法正常关闭文件，要注意
+		也可以直接使用可迭代函数如list(open(xxx))来列表化获取的行
+
+	类文件对象，
+		比如urlopen返回的对象，同样支持read readline等操作
+
+wx:
+	窗口控件：
+	app = wx.App() 生成事件循环器
+	win = wx.Frame(title=xxx) 生成窗口对象
+	wx.Button(win,label = xxx,  pos xxx,size xxx) 用来生成按钮和位置
+	wx.TextCtrl(文本控件 申城文本框的
+		pos 指定开始的左上角，size指定宽度和高度
+
+	智能调节：
+		首先把win设置一个panel ，
+		bkg = wx.Panel(win)
+		然后添加boxsizer，显示水平方向，设置扩展比例，是否填充扩展，
+			把文本框，按钮对象添加到boxsizer里面，包括水平，垂直方向，
+			最后bkg setSeize = boxsizer应用，即可
+		之后就可以show了
 package:
 	每个包都是一个目录，里面要有一个 __init__.py文件，
 	当只导入这个包的时候，__init__.py文件内容就是包的内容！！！

@@ -1,0 +1,15 @@
+socket module:
+server:
+	s = socket.socket()
+	host = socket.gethostname()
+	s.bind((host, port))
+	s.listen(5)
+	c, addr = s.accept()
+	c 接收的socket 利用这个来write ，read
+	addr  这个是ip port tuple
+	完毕后c.close()
+
+client:
+	s = socket.socket()
+	s.connect((host, port)) 连接server的socket
+	s.write s.read  .... 
