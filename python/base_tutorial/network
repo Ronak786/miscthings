@@ -13,3 +13,16 @@ client:
 	s = socket.socket()
 	s.connect((host, port)) 连接server的socket
 	s.write s.read  .... 
+
+urllib:
+	urlopen
+	urlretrieve 这个可以存在本地，然后打开，然后正则表达式匹配
+
+使用SockServer
+	这个是一类处理协议的超类
+	tcp:
+	tcpserver, streamrequesthandler
+	首先实现handler 继承streamrequesthandler,
+		implement handle function,
+	then  TCPServer((host,port), Handler class)
+		server.serve_forever() 来同步获取客户端连接
