@@ -16,6 +16,7 @@ sql 是结构化查询语句 ，一般使用的是关联数据库
 select:
     select  aaa,bbb  from ccc;
     select distinct xx from xx;  可以去掉列中重复的项
+	select xx,xx,xx from xx where  yy =<> > <  bb / yy like %a% (通配符%）
 
 where:
     select xx from xx where  column =/<>(!=)/>/</>=/<=/between xxx and xxx/like xxx/in xxx
