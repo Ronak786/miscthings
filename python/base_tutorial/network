@@ -26,3 +26,20 @@ urllib:
 		implement handle function,
 	then  TCPServer((host,port), Handler class)
 		server.serve_forever() 来同步获取客户端连接
+
+使用forkingmixin  threadingmixin
+	这两个多线程处理 ，就是用一个server类里面把thread 和tcpserver当作父类即可
+
+select
+	设置当前socket为read类成员，然后不断监听
+	获取新的，判断是监听，就accept，然后添加
+	如果不是，就做相应操作
+
+poll:
+	这个要register 每个socket，包括开始的和每个接收到的
+	然后p.poll(), return events,
+	for fd ,event in events ,检查fd，同时检查event == select.POLLIN 表示读取
+
+twisted:
+	这个网络框架，只需要实现一个协议类Procotol 或者它的子类，
+	然后覆盖connect  receive 函数，就可以自定义动作的
