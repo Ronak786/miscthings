@@ -11,3 +11,19 @@ unittest
 
 pychecker
 pylint 静态检查工具
+
+profile module:
+	import profile
+	profile.run('xxxx(func)')
+
+	import pstats
+	pstats.Stats(profile_result_file)
+
+test driven programing
+
+swig:
+	这个用来包装写好的C语言变成python可以调用的库，
+	首先写好C库，然后用swig编译出包装文件，然后一起
+	链接成共享库，可以直接用了
+disutils:
+	让你更加方便编译C代码
