@@ -1,0 +1,13 @@
+doctest:
+	这个会把docstring里面类似解释器的部分当作代码运行
+	然后比对下一行的结果，可以用来进行测试
+	import doctest, my_mod
+	doctest.testmod(my_mod)
+
+unittest
+	这个要写一个类，unittest.TESTCASE 的子类，
+	实现所有testxxx方法， 利用self。xxx的方法来做测试
+	最后执行unittest.main()
+
+pychecker
+pylint 静态检查工具

@@ -1,4 +1,23 @@
 屏幕抓取：
 tidy
+	这个让不规范的标记补全
 
 xhtml
+	这个格式更加规范，号解析
+
+htmlparser
+	这个类可以继承，然后改写其中在遇到标签，内容时会被调用的方法
+
+beautiful soap:
+	这个也可以获取每个标签里面的内容
+
+cgi:
+	公共网管接口：
+		这个用来当作网页返回内容，
+		其实就是一个.cgi的脚本，里面写好使用的解释器。
+		会在访问的时候运行，要自行处理http的协议头部，以及内容
+	输入：
+		form = cgi.FieldStorage()
+		name = form.getvalue('name', 'default')
+		用这种方法从html表单获取输入
+		也可以url里面直接指定参数，比如 xxxx?name=aa&age=12

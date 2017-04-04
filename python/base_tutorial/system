@@ -48,6 +48,7 @@ os:
 
 subprocess:
 	拥有os.system   execve popen function
+	Popen(command list, stdout=xx, stdin=xxx, stderr = xxx)
 
 webbrowser
 	webbrowser.open() 打开浏览器

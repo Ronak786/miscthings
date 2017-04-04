@@ -20,3 +20,8 @@ set access passwd:
 	AuthUserFile /home/sora/public_html/.htpasswd
 	require user sora
 	.htpasswd :  htpasswd -c xxx(file pos)   username(default is root)
+
+
+cgi:
+	这个有设置的目录在conf里面，同时要打开alias  cgi-script  ， add handler 那几个项目
+	然后脚本要可执行，权限正确，头部有解释器的那一行 
