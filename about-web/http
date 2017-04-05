@@ -1,0 +1,8 @@
+协议头部分为各个字段：
+	xxx: yyy 
+
+	user-Agent: 浏览器
+	Cookie: u存储会话数据
+	Status：请求成功与否 200 success 404 not found
+
+#robots.txt 这个是君子协定，用来告诉你你不可以采集本网站的哪些网址。。。。。

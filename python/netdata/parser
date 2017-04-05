@@ -1,0 +1,92 @@
+Note:
+	{1,2,3,4,4}这种是set，不是字典！！！
+lxml:
+	高速解析
+html parser:
+	内置
+
+beautifulsoup4  short: bs
+	对于html。read（）返回的内容，使用BeautifulSoup 实例化
+	attr: type: bs4.element.tag
+		html, title, head , body, xxx  每个标签对应一个内容
+		这些标签属性都是自定义的，可以随意输入，不存在的是None
+		如果有多个标签，使用obj.findAll('label') 返回列表，所有的
+		可以用head.h1这种找嵌套
+	attr.get_text()  type: str
+		这个找到标签里的文本，不带标签本身
+		会去处所有文本
+	findAll: type b4.element.ResultSet
+		attr 
+			字典，class:xxx, yyy:xzz
+		member: type b4.element.tag
+		name: {1,2,3,4,5} 可以用这种方法传set进去，字典的值也可以这样！！
+		recursive :默认是递归层的
+		text: 
+			目前这个我只会完全匹配一个标签里面的内容，输出是ruleset的list，
+			里是你想要的内容
+		limit:
+			限制前几个结果
+		kwargs:
+			可以自己定制 id=xxx,(貌似class只能放在attr里面）
+			其实这个可以用attr完成的  findAll("",{'id':'xxx','class':'xxx'})
+
+		总的来说，第一个参数可以传set，是或的功能，最后一个参数以及attr是与的功能
+
+		lambda:
+			findAll的参数可以是一个匿名函数，参数是tag 也就是element。tag类型，
+				返回boolean 用来过滤
+			这个有时可以替代正则
+
+		return:
+			每个element tag里都是标签元素，可以用字典的方法访问每个元素 tag['class']  tag['src']
+			tag.attrs 获取所有标签
+				tag.attrs['src'] 好像和上面一样
+
+
+	find:(和attr的精准定位放在一起就有用了）
+		这个就是findall 把limit 置1的结果
+		这样获取的就是一个，而不是一个list了
+
+
+	对象：
+		beautifulsoup
+		element.tag
+		element.ruleset
+		comment
+		navigablestring
+
+	标签树：
+		子标签和后代标签
+			一般总是处理当前标签的后代(不包括本人）
+			bsobj.h1.findAll(xxxxx)
+				而默认h1是指第一个出现的h1
+		element.tag:
+			对于rulset 里面的每个tag，都有children和descendant属性
+			children这个就是打印直属标签，
+			descendant 这个会打印所有标签和内容，所有嵌套标签会打印多遍，最后一层是纯文本打印
+		next_siblings, next_sibling, previous_sibling, previous_siblings
+			这个用于接下来的标签，和当前你设定的在同一等级的所有，会一一遍历给你
+			其中会有空的，因为换行也被当成一个了
+		parent
+			父标签
+
+	正则匹配
+		attr 等可以用re.compile(xxxxx） 来进行正则匹配
+
+virtualenv newenv
+	cd newenv
+	source bin/activate    to enter
+	deactivate   to leave
+
+http error:
+	urllib.error.HTTPError   except HTTPError as e:
+		网页不存在，会返回错误，如404, 500 这种，会返回HTTPError
+		但是成功的标签也会None，要检查标签
+	AttributeError 
+		如果对None标签继续深入引用，就会这样
+	服务器不存在，会返回None
+
+	也就是说在获取过程中要判定httperrro,获取好后引用的时候要判定
+	None(html本身和attr都会None）
+
+		

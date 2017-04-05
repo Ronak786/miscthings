@@ -1,0 +1,11 @@
+byte 这个是字节形式
+	str 这个是普通文本形式
+	网页上转下来的都是bypte，
+	byte.decode(xxx类型) ==> str
+	str.encode(xxx) ==> byte
+
+对字节byte修改，需要转换成bytearray
+	使用isinstance 来判断类型
+
+使用chardet 中的detect来判断
+	编码的类型，这个不能用在unicode上
