@@ -44,12 +44,23 @@ label
 		<meta charset="utf-8"> is important to recognize other language!!
 	<a href=xxxx>xxx </a>  a hyper link
 	<img src=xxx width=  height=  alt=   />   add an image, alt will be output if img can not find
+	<a href='/'><img src=xxxx></a> 这个可以让图片变成链接
 	<hr /> a horizon line
 	<pre>  resserve the structure what you type
 	<bdo dir="rtl"> xxxx</bdo>   used to reverse direction of word
 	<li>列表，每个会占一行，列表的样子
-	<ol> <ul> 前者是顺序，会显示1 2 3, 后者是无序，会显示黑点
-		使用这两个会让列表从左边腾空一些，不然紧挨
+		<ol> <ul> 前者是顺序，会显示1 2 3, 后者是无序，会显示黑点
+			使用这两个会让列表从左边腾空一些，不然紧挨
+		具体这么用：
+			<ul>(或者ｏｌ）
+				<li>xxx</li>
+			</ul>
+	<dl>
+		<dt>
+		<dd>
+	</dl> 这个是定义列表，dt定义的ｔｅｒｍ　　ｄｄ是定义的描述
+
+	可以使用html tidy　来修正不规范的标签
 
 attr:
 	generally can be applied:

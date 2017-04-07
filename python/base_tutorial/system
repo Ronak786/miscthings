@@ -121,6 +121,14 @@ random:
 	shuffle 原地洗牌
 	sample（seq, n)选择n个样本
 
+ConfigParser:
+	这个可以读取配置文件，格式：
+		[field]
+		name1 : xxx
+		name2 : xx
+logging:
+	log.info ....　这种可以记录日志，很方便
+
 re:  http://regexpal.com/  在线测试
 	正则表达式
 	.  任意一个字符，必须一个，不能\n

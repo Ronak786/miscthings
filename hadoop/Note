@@ -12,3 +12,8 @@ hbase：
 这两个可以整合，就是可以让hive创建的表同步在hbase上可以读取，同时
 可以让hive创建逻辑表映射到hbase的表上，
 （hive本身不会创建数据）
+
+
+安装运行的时候，如果出问题，把ｎａｍｅｎｏｄｅ的tmp  data目录的下东西全部删掉
+	然后 ./bin/hdfs namenode -format
+	然后按顺序　start hdfs, start yarn　就行了，　注意多看日志
