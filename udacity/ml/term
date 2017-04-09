@@ -1,0 +1,7 @@
+instance: 实例，也就是输入的对象
+concept: 这个是函数映射的意思
+target concept 目标函数映射，最终产生结果的函数映射,实际最终结果
+hypertheis: 考虑的所有映射
+sample  训练集合以及结果
+candidate 选定的可能是target 的concept
+testing set 测试集合，用来验证candidtate就是target或不是

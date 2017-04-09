@@ -1,0 +1,30 @@
+plot:
+	划线：
+	matplotlib.pyplot
+		scatter 画点
+		plot  画线
+		xlabel  ylabel
+		show  to show
+LinearRegression:
+	sklearn.linear_model.LinearRegression
+	fit(train, result)
+	predict(xxx)  这个只能接收list!!
+
+估计：
+	score:  r^2 score
+		输出由输入所决定的百分比，相性
+	可以比较训练和测试集合的分数差
+	使用平方和来衡量很不标准，因为数据两大，就会大
+
+Note:
+	注意数据的格式，就在文档的shape里面，注意要纵向量的，就是两层数组
+	slope 返回 二维数组
+	intercept返回一维数组
+	predict return 二维数组 , 接受二维数组
+
+最小化误差的方法：
+	最小二乘法
+	梯度下降法
+	
+	使用平方而不是绝对值，这个对大的差惩罚大，对于支持向量机
+		更加有效记录，而且微分性质好
