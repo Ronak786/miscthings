@@ -1,0 +1,49 @@
+版本：
+	hadoop 2.7.3
+	hbase 0.98.13
+	gora 0.6
+	nutch 2.3.1
+	solr 4.10.3
+
+利用ｊｐｓ查看ｊａｖａ的启动进程
+
+hadoop:
+	复制四个配置文件到目录
+	在源文件目录的父目录创建dfs, tmp 文件夹（配置文件用的）
+	启动  ./bin/start-dfs.sh  ./bin/start-yarn.sh
+hbase:
+	复制配置文件三个，
+	建立ｔｍｐ目录在父目录，根据配置
+	./bin/start-hbase.sh 启动
+
+yum install ant
+
+gora:
+	复制pom.xml文件　主要修改了hadoop-2.version
+	mvn clean install -DskipTests
+	mvn install -DskipTests
+nutch:
+	复制四个配置文件，	　详细修改看https://suyashaoc.wordpress.com/2016/12/04/nutch-2-3-1-hbase-0-98-8-hadoop-2-5-2-solr-4-1-web-crawling-and-indexing/
+	以及 http://blog.csdn.net/butyesbutno/article/details/47022569
+	ant clean
+	ant runtime
+	把ｈｂａｓｅ/lib下的hbase-common*  hbase-client* hbase-protocol*.jar复制到runtime/local/lib
+
+	还有博客的第四条也可以做一下
+	mkdir -p /disk2/nutch/nutch-2.3/runtime/local/lib/native/Linux-amd64-64/
+	cd /disk2/hadoop/hadoop-2.7.1/lib/native/
+	cp * /disk2/nutch/nutch-2.3/runtime/local/lib/native/Linux-amd64-64/
+	cp * /disk2/nutch/nutch-2.3/runtime/local/lib/native/
+
+	拷贝ｇｏｒａ的包
+	cp /disk/gora/gora-core/lib/hadoop* /disk2/nutch/nutch-2.3/runtime/local/lib/
+
+solr
+	在example/solr/collection1/conf下替换nutch/conf 下的schema.xml,这个是ｐａｒｓｅ时候的匹配filed
+	然后在example下　java -jar start.jar　就可以开启了，
+
+在nutch中　./bin/crawl urls/seed.txt sohu  http://192.168.202.112:8983/solr/ 1 数字表示次数
+			sohu 是自定义名字，可以作为数据库中的表格名字
+			在hbase, ./bin/hbase shell,
+			$ list
+			$ scan 'sohu_webpage' 可以看到获取的内容

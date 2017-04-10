@@ -1,0 +1,9 @@
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.121-0.b13.el7_3.x86_64/
+export PATH=$JAVA_HOME/bin:$PATH
+export HADOOP_HOME="/home/cde/hadoop/hadoop-2.7.3"
+export PATH=$HADOOP_HOME/bin:$PATH
+export HBASE_HOME="/home/cde/hbase/hbase-0.98.13-hadoop2"
+export PATH=$HBASE_HOME/bin:$PATH
+export APACHE_SOLR_HOME=/home/cde/solr/solr-6.5.0
+export NUTCH_RUNTIME_HOME=/home/cde/nutch/apache-nutch-2.3.1
+
