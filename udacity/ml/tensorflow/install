@@ -1,0 +1,11 @@
+protocol buffer:
+	结构化数据的处理，处理结构化数据的传递，这里
+	结构化就是字段，值的关联多项组合，格式要实现定义
+		这样比json, xml要节省空间,解析快
+
+bazel:
+	用来编译安装，类makefile
+	编译tensorflow 按照书上
+	
+	Note:import 的时候，不能在tensorlflow的本目录下，要另外找个目录，不然报找不到.so的错！！
+
