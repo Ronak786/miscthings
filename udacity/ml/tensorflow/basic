@@ -1,0 +1,56 @@
+tensor: 张量
+flow: 流 计算模型
+
+计算图：
+	默认有一张计算图，通过tf.get_default_graph()  or   a.graph()( a = tf.constant([1,2]))
+	g = tf.Graph() create a new graph
+	with g.as_default():  
+		now we are in graph g1, all vars will be local to this graph
+
+	g.device(xxx) 可以指定图运行的设备
+
+计算节点：
+	每个变量，操作都是一种计算节点，
+	由名字，shape，类型来标记，
+		类型是统一的，可以两两计算的类型也是统一的
+
+变量： 使用之前要初始化！！ var.initialized_value
+	tf.constant(name, shape, dtype)  第三个可以不指定
+	dtype:
+		tf.float32 float64 int8 int16 int32 int64 unit8 bool, complex64 complex128
+	tf.Variable()
+	var.initializer  这个变量的初始化器，调用了就表示这个变量单独初始化了
+	var.initialized_value() 这个是初始化后变量的值，用来放在依赖他的变量的初始化里面
+
+	initialize_all_values()  一次性初始化所有值
+
+随机数： 这些产生随机的数of shape
+	tf.random_normal(shape)
+	tf.truncated_normal
+	tf.random_uniform
+	tf.random_gamma
+	tf.zeros, ones, fill(shape, number), constant()
+
+张量：
+	var.get_shape()  获取维度
+	类似多维数组，可以用来存储中间信息，也可以放在sess.run()里面用来获取结果
+
+会话：
+	用来执行计算，管理运行资源，所以需要sess = tf.Session() and sess.close()
+	or you can use
+		with tf.Session() as sess: 不存在默认会话，
+			sess.run()  or print xxxx.eval()
+
+	还哟一种：
+		with sess.as_default(): or with tf.Session():
+			print var.eval()  可以直接打印值，这个是生成默认会话的意思
+
+	配置：
+		打开会话的时候，可以设置参数，使用 tf.ConfigProto(xxx)
+		usually:
+			allow_soft_placement() gpu不够的时候或者cpu方便的时候自动使用cpu
+			log_device_placement()  记录运行计算的设备日志
+
+矩阵乘法：
+	tf.matmul(xx,xx)
+	矩阵加法直接加就行了，也可以加一个数，一行数
