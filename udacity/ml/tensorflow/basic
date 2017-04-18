@@ -97,6 +97,8 @@ collection:
 		with sess.as_default(): or with tf.Session():
 			print var.eval()  可以直接打印值，这个是生成默认会话的意思
 
+			eval()得到的是numpy.ndarray()
+
 	配置：
 		打开会话的时候，可以设置参数，使用 tf.ConfigProto(xxx)
 		usually:
