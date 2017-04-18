@@ -14,7 +14,7 @@ flow: 流 计算模型
 	由名字，shape，类型来标记，
 		类型是统一的，可以两两计算的类型也是统一的
 
-变量： 使用之前要初始化！！ var.initialized_value
+变量： 使用之前要初始化！！ var.initialized_value()
 	tf.constant(name, shape, dtype)  第三个可以不指定
 	dtype:
 		tf.float32 float64 int8 int16 int32 int64 unit8 bool, complex64 complex128
@@ -23,6 +23,52 @@ flow: 流 计算模型
 	var.initialized_value() 这个是初始化后变量的值，用来放在依赖他的变量的初始化里面
 
 	initialize_all_values()  一次性初始化所有值
+	
+	赋值：
+		tf.assign
+		var.assign   validate_shape=False可以使得不同维张量互相赋值，否则不可以
+
+	placeholder:
+		占位符，placeholder(type, shape=(), name="")
+			sess.run(xxx, feed_dict={x:[[xxx],[xxx]]}) 注意至少双层
+
+	variable_scope
+	get_variable 这两个配合使用，在创建variable的时候reuse=True, 或者get_variable_scope().reuse_variables()
+		这样之后，同一个空间中的变量同名的就会指向同一个了
+		但是不同的graph中的还是不同的
+
+张量：
+	var.get_shape()  获取维度
+	类似多维数组，可以用来存储中间信息，也可以放在sess.run()里面用来获取结果
+
+函数：
+	clip_by_value()  限定值的范围
+	reduce_mean() 压缩求均值
+	-y_label * tf.log(y)  求交叉熵，y 可以用tf.clip_by_value(y, 1e-10, max) 来保证不为0
+
+非线性：
+	bias 偏置
+	激活函数：
+		relu(): max(0,x)
+		sigmoid 1 / (1+e^(-x))
+		tanh (1-e^-2x) / (1+e^-2x)
+
+	tf.nn.relu tf.sigmoid, tf.tanh
+
+多层网络：
+	单层不可以实现异或功能（证明复杂，可以用playground模拟）
+	两层就可以（前提是有非线性因素在里面）
+
+
+优化器
+	tf.train.AdamOptimizer/GradientDescentOptimizer/MomentumOptimizer 
+		optimizer.minize()
+
+collection:
+	GraphKeys.TRAINABLE_VARIABLES 包含所有变量
+		使用tf.trainable_variables() 来获取，这里面是默认会被优化的变量
+			一般变量会自动放进去？，可以用trainable_variables()获取列表，然后获取
+		创建Variable 时用trainable=True 会把变量放进去，方便优化
 
 随机数： 这些产生随机的数of shape
 	tf.random_normal(shape)
@@ -31,9 +77,6 @@ flow: 流 计算模型
 	tf.random_gamma
 	tf.zeros, ones, fill(shape, number), constant()
 
-张量：
-	var.get_shape()  获取维度
-	类似多维数组，可以用来存储中间信息，也可以放在sess.run()里面用来获取结果
 
 会话：
 	用来执行计算，管理运行资源，所以需要sess = tf.Session() and sess.close()
@@ -50,6 +93,7 @@ flow: 流 计算模型
 		usually:
 			allow_soft_placement() gpu不够的时候或者cpu方便的时候自动使用cpu
 			log_device_placement()  记录运行计算的设备日志
+		tf.Session(Config=xx)
 
 矩阵乘法：
 	tf.matmul(xx,xx)
