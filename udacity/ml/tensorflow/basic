@@ -43,7 +43,7 @@ flow: 流 计算模型
 
 函数：
 	clip_by_value()  限定值的范围
-	reduce_mean() 压缩求均值
+	reduce_mean() 压缩求均值(会对所有的矩阵中的值一起求平均）
 	-y_label * tf.log(y)  求交叉熵，y 可以用tf.clip_by_value(y, 1e-10, max) 来保证不为0
 
 非线性：
@@ -86,12 +86,17 @@ collection:
 	tf.random_gamma
 	tf.zeros, ones, fill(shape, number), constant()
 
+乘法：
+	* 表示各个位置的数之间的运算
+	matmul 表示矩阵乘法
+	tf.log(xxx) 也是对每个元素
+
 
 会话：
 	用来执行计算，管理运行资源，所以需要sess = tf.Session() and sess.close()
 	or you can use
 		with tf.Session() as sess: 不存在默认会话，
-			sess.run()  or print xxxx.eval()
+求值 (需要先初始化variable)			sess.run()  or print xxxx.eval()
 
 	还哟一种：
 		with sess.as_default(): or with tf.Session():
@@ -109,3 +114,14 @@ collection:
 矩阵乘法：
 	tf.matmul(xx,xx)
 	矩阵加法直接加就行了，也可以加一个数，一行数
+
+损失函数：
+	交叉熵：
+		-tf.reduce_mean(y_label * tf.log(tf.clip_by_value(y_real, min, max)))
+		如果要使用softmax以及交叉熵，同时label里每行多个几率不为0,那么可用tf.nn.softmax_cross_entropy_with_logits
+		如果每行label只有一个几率不为0,那么更加可以用tf.nn.sparse_softmax_cross_entropy_with_logits加速
+			注意使用这两个的时候predict的值不能事先softmax(tf.nn.softmax)
+	均方差：
+		tf.reduce_mean(tf.square(y-y_))
+
+	
