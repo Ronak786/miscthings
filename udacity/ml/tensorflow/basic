@@ -64,6 +64,15 @@ flow: 流 计算模型
 	tf.train.AdamOptimizer/GradientDescentOptimizer/MomentumOptimizer 
 		optimizer.minize()
 
+损失函数：
+	计算类别属于的时候，
+	1 两类：这样只要把-y_label*log(y_real) 就可以了，这里交叉熵，但是另一项是0，（因为要么属于，要么不属于）
+		所以不管另一项了
+	2 多类，类别是一个数组，如果只属于一类（比如手写字符0到9中的一个，）仍然只要true的label计算熵就行了
+
+	归一：
+		softmax 保证产生0到1之间的概率，所有概率总和为1,用于交叉熵
+
 collection:
 	GraphKeys.TRAINABLE_VARIABLES 包含所有变量
 		使用tf.trainable_variables() 来获取，这里面是默认会被优化的变量
