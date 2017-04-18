@@ -1,0 +1,10 @@
+利用DataFrame.drop('xxx', axis=1)来舍去某列
+利用 num=[xx,xx,xx]  , data[num].apply(lambda x: )可以
+		给每个数应用你的公式
+
+sklearn.preprocessing.MinMaxScaler
+xxx=MinMaxScaler()
+然后可以利用这个scaler fit_transform制定的列到
+	0～1之间
+
+pandas.get_dummies() 可以把非数字换成数字，并且变成独热编码
