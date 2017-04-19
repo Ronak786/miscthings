@@ -1,3 +1,5 @@
+numpy:
+	numpy.random.RandomState 用来生成随机数的，好用
 tensor: 张量
 flow: 流 计算模型
 
@@ -25,7 +27,7 @@ flow: 流 计算模型
 	initialize_all_values()  一次性初始化所有值
 	
 	赋值：
-		tf.assign
+		tf.assign 用于赋值
 		var.assign   validate_shape=False可以使得不同维张量互相赋值，否则不可以
 
 	placeholder:
@@ -45,6 +47,11 @@ flow: 流 计算模型
 	clip_by_value()  限定值的范围
 	reduce_mean() 压缩求均值(会对所有的矩阵中的值一起求平均）
 	-y_label * tf.log(y)  求交叉熵，y 可以用tf.clip_by_value(y, 1e-10, max) 来保证不为0
+	tf.select  这个根据判断选择第一或第二个式子
+	tf.greater 这个对每一对元素判断
+	tf.add_n  累加列表里的tensor对象
+	tf.add_to_collection("collection", val/func)
+	tf.get_collection("xxx") reutrn a list in collection
 
 非线性：
 	bias 偏置
@@ -64,14 +71,6 @@ flow: 流 计算模型
 	tf.train.AdamOptimizer/GradientDescentOptimizer/MomentumOptimizer 
 		optimizer.minize()
 
-损失函数：
-	计算类别属于的时候，
-	1 两类：这样只要把-y_label*log(y_real) 就可以了，这里交叉熵，但是另一项是0，（因为要么属于，要么不属于）
-		所以不管另一项了
-	2 多类，类别是一个数组，如果只属于一类（比如手写字符0到9中的一个，）仍然只要true的label计算熵就行了
-
-	归一：
-		softmax 保证产生0到1之间的概率，所有概率总和为1,用于交叉熵
 
 collection:
 	GraphKeys.TRAINABLE_VARIABLES 包含所有变量
@@ -124,4 +123,37 @@ collection:
 	均方差：
 		tf.reduce_mean(tf.square(y-y_))
 
+	计算类别属于的时候，
+	1 两类：这样只要把-y_label*log(y_real) 就可以了，这里交叉熵，但是另一项是0，（因为要么属于，要么不属于）
+		所以不管另一项了
+	2 多类，类别是一个数组，如果只属于一类（比如手写字符0到9中的一个，）仍然只要true的label计算熵就行了
+
+	归一：
+		softmax 保证产生0到1之间的概率，所有概率总和为1,用于交叉熵
+
+	不同的损失函数的结果是不一样的
+		要根据实际的情况自己计算损失函数
+
+梯度下降：
+	保证往error减少的方向移动参数向量，但是可能会哟局部最优解
+	全梯度下降太慢，
+	随机太不稳定
+	使用batch批量梯度下降，每次一批
+
+	tf.train.exponential_decay:
+		让学习率以指数的形式递减，可以控制多少轮之后递减一次，保证所有数据用上之后再递减
+		其中global_step表示当前的循环次数，传入optimizer.minimze中去更新，用来控制当前
+		step占decay_step的比重
 	
+过拟合：
+	这个问题在于模型区域复杂
+	可以在损失函数后面加上第二个正则化权重来修正，保证参数不会过大（复杂）
+	tensorflow.contrib.layers.l2_regularizer(lambda)  这个会返回一个函数（可以直接后面加w参数当作函数调用）
+		然后那个返回的函数当作损失函数第二项
+		这个算的平方和，还有l1的绝对值和，不过不好优化，
+
+平滑移动：
+	tf.train.ExponentialMovingAverage(decay, num_updates) 每次移动的时候，会取
+		这两这种最大的衰减率移动(也就是新值的比重最重的那个）
+		这个控制真实值的改变，每次改动后要调用 apply方法，
+		然后用average方法获取值(这个会记忆之前的调用，所以会不断朝着最终方向小步伐移动)
