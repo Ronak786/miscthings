@@ -34,10 +34,24 @@ flow: 流 计算模型
 		占位符，placeholder(type, shape=(), name="")
 			sess.run(xxx, feed_dict={x:[[xxx],[xxx]]}) 注意至少双层
 
+Note: 一个需要注意的疑问：
+	如果我在一个函数里使用了变量空间，通过参数传递是否复用，而我只是显式调用第一次reuse=false
+	今后优化的时候会自动获取到那些值，然后计算，不用担心是否自动计算的时候要不要传reuse进去
+	但是显式调用的时候要的
+
 	variable_scope
 	get_variable 这两个配合使用，在创建variable的时候reuse=True, 或者get_variable_scope().reuse_variables()
 		这样之后，同一个空间中的变量同名的就会指向同一个了
 		但是不同的graph中的还是不同的
+
+		initializer:  tf.constant_initializer, ones_initializer, zeros_initializer(这两个ｓｈａｐ在参数里面设置）
+				tf.random_normal_initializer/truncated_normal/random_uniform/uniform_unit_scaling_
+
+		默认有一个variable_scope，所以可以创建变量，但不能重复，(名字叫做　"")
+			可以with tf.variable_scope("xxx"): 然后可以另外创建变量，只要本命名空间没有一样的,不然报错
+				("xxx", reuse=True)可以获取已存在的变量，但是必须存在，不然报错
+				用var.name 打印名字
+		要获取变量，都要打开空间
 
 张量：
 	var.get_shape()  获取维度
@@ -52,6 +66,13 @@ flow: 流 计算模型
 	tf.add_n  累加列表里的tensor对象
 	tf.add_to_collection("collection", val/func)
 	tf.get_collection("xxx") reutrn a list in collection
+	tf.app.run()  call main function
+	tf.equal(x,y) 
+	tf.argmax(x,1)  1表示维度
+	tf.cast(xx,tf.float32) 强制转换
+	tf.reduce_mean/reduce_sum(总和或者平均）
+
+	from tensorflow.examples.tutorials.mnist import input_data  这个是内置的测试用集合
 
 非线性：
 	bias 偏置
@@ -119,6 +140,7 @@ collection:
 		-tf.reduce_mean(y_label * tf.log(tf.clip_by_value(y_real, min, max)))
 		如果要使用softmax以及交叉熵，同时label里每行多个几率不为0,那么可用tf.nn.softmax_cross_entropy_with_logits
 		如果每行label只有一个几率不为0,那么更加可以用tf.nn.sparse_softmax_cross_entropy_with_logits加速
+			sparse 这个需要提供的y是有值的label可以用tf.argmax(y_, 1)获取
 			注意使用这两个的时候predict的值不能事先softmax(tf.nn.softmax)
 	均方差：
 		tf.reduce_mean(tf.square(y-y_))
@@ -152,8 +174,14 @@ collection:
 		然后那个返回的函数当作损失函数第二项
 		这个算的平方和，还有l1的绝对值和，不过不好优化，
 
-平滑移动：
+平滑移动：(这个用在随机梯度下降中，因为随机的每次更新不一定准确，要减小颠簸）
 	tf.train.ExponentialMovingAverage(decay, num_updates) 每次移动的时候，会取
 		这两这种最大的衰减率移动(也就是新值的比重最重的那个）
 		这个控制真实值的改变，每次改动后要调用 apply方法，
+		num_updates 这个用于加快早期的更新速度，后期慢点,因为后期数字小，这个和学习率的效果相似
 		然后用average方法获取值(这个会记忆之前的调用，所以会不断朝着最终方向小步伐移动)
+
+	使用方法：
+		原参数按照自己的方法进行迭代，但是每一轮迭代后，这个滑动的参数也要更新一下，
+		到需要测试的时候，拿滑动得到的参数进行测试计算，得到准确率
+
