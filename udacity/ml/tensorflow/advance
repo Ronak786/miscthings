@@ -19,3 +19,24 @@ save:
 			同样的字典结构，同样的知代，如果没有字典，要求文件中的名字和变量的名字一致
 
 		默认的名字是 Variable  Variable_xxx(第二个开始）
+
+保存图：
+	tf.python.framework.graph_util
+	具体是获取图，保存计算节点到文件，
+	恢复的时候，读取，导入到相应变量
+	就可以sess.run(var)了
+
+	save.export_meta_graph() 可以到处图到文件json格式
+		其中定义了每个运算，运算的输入输出, 以及对应的属性（就像css一样）
+
+	包含：
+		meta info ==> op list:操作的列表
+		graph_def ==>node def: 各个计算节点间互相联系的描述(以及各种操作的名称(唯一），对应的操作op)
+				node 中ｎａｍｅ唯一，ｉｎｐｕｔ对应输入节点以及是第几个，０省略
+		saver_def
+			设定保存和回复的一些信息
+		collection-def	
+			保存变量的管理集合
+
+tf.train.NewCheckpointReader
+	用于读取变量保存的文件，具体在书１２５可以获取变量
