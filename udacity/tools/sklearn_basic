@@ -1,0 +1,15 @@
+特征选择剔除：
+	sklearn.feature_selection.RFE
+
+随机特征搜索：(这个会随机抽每个参数选择中的一个，做成一个组合，
+		参数还可以用分布来做范围，比网格要高效)
+	sklearn.model_selection.RandomizedSearchCV
+
+f_score:
+	这个就是一个加权的调和平均数，其中权加在precision上面
+
+特征选择：
+	有些分类算法有feature_importances 的attribute ，可以按顺序列出feature的重要性
+
+get_dummy, onehotencoder/labelencoder
+	前者只会修改非数字的列，后者可以手动调和你想修改的

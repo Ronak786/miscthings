@@ -1,0 +1,15 @@
+数据不平衡：两种分类的数据比例很大，比如1:4
+	解决思路：
+		１　寻找更多的数据，可能比例会改变
+		２	使用非准确率的检测标准，比如fbeta_score, 混淆矩阵，kappa, roc curves
+		3   roc  看一下如何使用
+			roc  一种曲线，描述了tpr(检验阳且真阳占总阳的比率）　fpr（检验阳且真阴占总阴的比率） 关系
+			但具体的曲线的用途未知？
+			这个使用来调整分类器的阈值使得可以更好的描述我要表述的问题??
+		4 oversample
+		  undersample
+
+tp  我的判断是对的(True), 我判断了positive
+tn  判断对的，判断了negative
+fp  判断错误，判断了positive
+fn　判断错误，判断了negative

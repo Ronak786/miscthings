@@ -1,0 +1,17 @@
+in-balance data
+	http://machinelearningmastery.com/tactics-to-combat-imbalanced-classes-in-your-machine-learning-dataset/
+
+oversample undersample
+	http://www.marcoaltini.com/blog/dealing-with-imbalanced-data-undersampling-oversampling-and-proper-cross-validation
+
+feature selection:
+	http://www.cnblogs.com/heaad/archive/2011/01/02/1924088.html
+
+machine learning algorithm  cheatsheet
+ http://www.lauradhamilton.com/machine-learning-algorithm-cheat-sheet
+
+ 其中fscore的高说明了其在precision的表现上比其他算法优越，这在我们这里的imbalance数据集上是优先考虑的
+
+很好的数据科学向导（不仅仅是技术）
+	http://blog.kaggle.com/2016/06/13/communicating-data-science-an-interview-with-a-storytelling-expert-tyler-byers/
+	https://taylorpearson.me/dothework/
