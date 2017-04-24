@@ -1,0 +1,4 @@
+tensorflow.python.framework graphutil
+tensorflow.python.platform gfile
+这两个用于把整个图当作常量存储在一个文件里面，然后取出，
+	这个在迁移模型的时候用
