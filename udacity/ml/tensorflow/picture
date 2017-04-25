@@ -1,0 +1,5 @@
+tf.image.decode_jpeg/encode_jpeg
+tf.image.resize_images( 获得的返回值就是新图片）
+	不过使用前要转ｆｌｏａｔ，使用后要转ｉｎｔ
+	tf.image.convert_image_dtype(img_data, dtype=tf.float32)
+	tf.image.convert_image_dtype(resized, dtype=tf.uint8)
