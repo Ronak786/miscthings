@@ -6,5 +6,9 @@ sklearn.preprocessing.MinMaxScaler
 xxx=MinMaxScaler()
 然后可以利用这个scaler fit_transform制定的列到
 	0～1之间
+	之后，对于测试数据，就可以直接使用transform(这时候不能用ｆｉｔ）
+	fit意思是适配，这个是对ｔｒａｉｎ数据做的，做了归一化，
+	然后对transform的话，测试数据必须用同一组transform,而且不能参与
+	ｆｉｔ，这样才能保证测试的未知性质
 
 pandas.get_dummies() 可以把非数字换成数字，并且变成独热编码
