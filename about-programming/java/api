@@ -1,3 +1,6 @@
 stddraw  have setScale method which can set scale,
     this will not change canvas size, but change your draw size 
     just after you set this function !!
+
+==  表示的是字节的相等，
+equals 表示的是意义上的相等，可以自定义的，string里就是两个字符串值相等
