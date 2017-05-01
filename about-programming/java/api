@@ -4,3 +4,7 @@ stddraw  have setScale method which can set scale,
 
 ==  表示的是字节的相等，
 equals 表示的是意义上的相等，可以自定义的，string里就是两个字符串值相等
+
+小类型可以赋值给大类型，隐式扩展
+
+数组new出来的是引用的位置，每个位置还要对具体对象的引用再new， primitive就不需要了
