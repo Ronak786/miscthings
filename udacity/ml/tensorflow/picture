@@ -1,0 +1,22 @@
+tf.image.decode_jpeg/encode_jpeg
+tf.image.resize_images( 获得的返回值就是新图片）
+	不过使用前要转ｆｌｏａｔ，使用后要转ｉｎｔ
+	tf.image.convert_image_dtype(img_data, dtype=tf.float32)
+	tf.image.convert_image_dtype(resized, dtype=tf.uint8)
+
+tfrecorder:
+	这个就是写入的时候对数字或字符串进行处理，然后每个对象结合成一个对象写入
+	读取的时候读出来，然后解析，每个对象就是一个字典了
+
+coord  tf.train.Coordinator
+	这个用来同步的，一般放在tf.train.start_queue_runners()里面，这个会自动启动
+	默认queue_runners集合里面的所有队列，
+	只要发送coord.request_stop()就会停止所有线程
+
+queue,queue_runner:
+	队列可以手动tf.train.FIFOQueue 或者　tf.train,string_input_producer结合ｍａｔｃｈ
+		批量读入，还可以指定多线程
+batch:
+	tf.train.shuffle_batch 等可以把单个读入的数据对象组合起来，形成之前批量的读入对象，
+	这个和手动制作图片的集合，手动批量获取可以结合吗，还是互斥，或者手动录入不同的
+	训练测试到不同的tfrecord文件，然后交给他批量读取处理？
