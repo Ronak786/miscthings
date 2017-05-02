@@ -1,0 +1,78 @@
+java.util.ArrayList:
+    使用import java.util.* 避免键入全名
+    add remve contains indexOf ...isEmpty size, get(index)  
+        remove(index) remove(item)
+    ArrayList<xxx> aa = new ArrayList<xxx>()
+
+java.lang.* (Math,System, String)
+    这个包可以直接用，不用显式import
+
+继承 与组成 extends
+    自己复述： xxx 是一个 yyy 就是应该做继承关系
+                xxx 中有一个yyy， 就应该组成关系，
+                                后者应该是前者的变量
+    利用super引用父类方法
+
+权限： private default protected public  逐渐权限增大
+ private : 不会被继承
+public ： 会被继承
+
+多态：
+    引用对象可以是实际new出来的对象的父类（同样可以在函数
+        调用的参数里用这个）  
+
+    利用：
+        当你想要使用原来的类的功能，但是又想加入新功能，
+        可以继承，然后新的类由于多态性可以传入老的函数
+        当做老的类使用，但调的函数是新的
+
+    注意：
+        覆盖不能改变参数, 返回类型要是指定父类返回的子类型至少
+        不能降低权限
+
+重载：
+    同名函数，不同类型参数，返回值随意，如果同参数，那就是多态那个了，
+需要返回值子类型至少
+    可以随意更改权限
+
+不让继承类：
+    package 中的类只允许自己package继承
+    final修饰的类不允许继承(就是不能覆盖，对方法也可以这样）
+    private 构造函数的类不能继承，也不能生成对象
+
+抽象类：
+    不应该被实例化的类
+    abstract class xxxxxx
+    抽象类一定要被继承
+
+    抽象方法
+        抽象方法没有函数体，一定要被覆盖
+        抽象方法一定咋抽象类里面
+        好处是多态，抽象的方法被调用，底下只负责实现
+
+        抽象类可以实现部分抽象方法，把剩下的交给底下继承的类
+            继续实现
+    Object:
+        是所有的父类，可以放在函数的赋值处，可以当做
+        arraylist的容器，因为可以放进任何东西，但是拿出来的
+        时候只会是object类，去掉了其他所有属性
+            可以用强制转换转回去（用instanceof 判断一下先）
+
+    instanceof
+        这个一个运算符
+        obj instanceof class
+            表示对象属于某个类，或者某个类的子类
+
+接口：(实现的类要实现其所有方法）
+    这个就是纯的抽象类，里面没有非抽象的方法
+    public interface xxx {}
+    public implements xxx
+
+    作用是多态，可以让一个类拥有多种特性，因为java么有
+    多继承，其他的功能通过接口获得
+
+    接口可以作为多态类型的，这时候只要子类型实现了接口
+    就可以直接使用！！
+    接口可以多继承
+
+
