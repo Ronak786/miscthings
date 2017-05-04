@@ -1,0 +1,15 @@
+fileoutputstream
+objectoutputstream(fileoutputstream)  后者是在前者的基础上获得的对象存取功能，可以存取对象
+	保存对象的时候，内部引用的其他对象一并保存
+
+	所有需要保存的类都要实现一个Serializable　接口，不用干任何事情，但是要实现这个，
+		不想保存的变量用transient声明
+	如果父类不能序列化，回复的时候会重做一边构造
+	父类序列化，子类自动序列化
+
+	这个只能保存对象的数据，不能保存类的数据
+	解包顺序要相同
+
+FileWriter  
+	写文字
+		

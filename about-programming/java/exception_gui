@@ -1,0 +1,40 @@
+异常：
+	函数throws之后，调用者需要try,.... catch
+		内部使用 throw  new xxxException() 抛出
+	接收后，使用ex.printStackTrace()打印
+
+	RuntimeException这个可以ｃａｔｃｈ，也可以不抓，不检查
+		这个一般是逻辑问题，需要手工修正，而不是应该作为代码一部分
+		被自动化处理的
+
+	try...catch..catch...finally..一定执行
+		如果ｔｒｙ没有ｃａｔｃｈ，那么这个ｃａｌｌｅｒ必定是做了throws 的
+
+	throws  可以多个，逗号间隔，可以只抛出父类
+		可以一直向上抛出，而不处理，直到ｍａｉｎ，最后崩溃
+	catch 应该分别，也可以直接父类，不过不好
+		要按照范围从小到大
+		Exception include RuntimeException,所以生产不用
+
+	javax.sound.midi:
+		shortmessage:
+			command: 声音类型
+			channel: 乐器种类
+			data1:	声音音高
+			data2: 声音音量
+
+事件：
+	java.awt.event
+	java.swing
+	implement ActionListener 接口，里面的actionPerformed方法，
+		然后具体的按钮可以加入对象代表的obj表示按钮监听这个程序的时间addActionListener
+
+	
+	继承 JPanel 的类可以通过实现paintComponent方法来画出不同的自定义图像，或者引用图片等，
+		这些图的处理和Graphics 类有关
+		frame.repain()调用也可以让图重新绘制，适合有随机值的情况
+
+	ControllerEventListener controlChange 这个实现函数的接口,这个在注册的controller event发声时调用
+		注册的类的这个函数，sequencer使用的
+
+	frame.getContentPane().add(BorderLayout.CENTER/SOUTH/NORTH.LEFT/RIGHT, youbutton/paintComponent from JPane)

@@ -1,0 +1,16 @@
+布局：
+	框架上有面板，面板上有其他东西
+	框架的布局是BorderLayout,
+	面板的布局是FlowLayout
+	还有BoxLayout
+
+	BorderLayout 上下左右的长宽各自受到内部字符数量的影响，中间剩余部分
+		BorderLayout.CENTER
+
+	JPanel panel.add(new JButton("a button"))  flowlayout
+	JFrame frame.getContentPane().add(BorderLayout.EAST, panel) BorderLayout
+
+	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)) 替换默认布局器
+
+	frame 上有一个大面板，　你使用getContentPane()来获取他，然后把你的JPanel小面板放上去，
+		也可以setContentPane设置自己额大面板
