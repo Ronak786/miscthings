@@ -13,3 +13,24 @@ objectoutputstream(fileoutputstream)  后者是在前者的基础上获得的对
 FileWriter  
 	写文字
 		
+File
+	用于路径操作，非读写操作
+BufferedReader(FileReader(File))
+BufferedWriter(FileWriter(File))
+
+
+socket: 客户端
+	input:
+		Socket = new Socket(ip, port)(ip is string)
+		inputstreamreader(socket.getinputstream)
+		bufferedreader(inputstreamreader)
+	output:
+		socket ....
+		printwriter(socket.getoutputstream)
+		printwriter.println(....)
+	
+	服务端：
+		ServerSocker(port);
+		ServerSocker.accept() wait.....
+
+

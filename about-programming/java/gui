@@ -14,3 +14,7 @@
 
 	frame 上有一个大面板，　你使用getContentPane()来获取他，然后把你的JPanel小面板放上去，
 		也可以setContentPane设置自己额大面板
+
+	JMenu 放在ｂａｒ上
+	JMenuBar 菜单栏，放在frame上的 frame.setMenuBar(xxx)
+	JMenuItem 放在ｍｅｎｕ上，是下拉的
