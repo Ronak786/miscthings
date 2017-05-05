@@ -1,0 +1,21 @@
+ArrayList: add(index , xxx) 但是比较慢 实现了ｌｉｓｔ接口，所以可以赋值给collections去使用，来排序
+	变长数组，没有排序功能
+
+TreeSet:
+	有序，防止重复
+HashMap
+	可成对放入取出
+LinkList
+	插入删除中间元素优化
+HashSet:
+	防止重复
+LinkHashMap:
+	类似ｍａｐ，可以记住顺序，
+
+
+public class ArrayList<E> extends AbstractList<E> 
+	这个是表示泛型元素的集合类
+	但是只能使用这种类型！！
+public  <T extends Animal> void takeThing(ArrayList<T>) list)
+	这样方法就可以使用Animal的任意兼容类型了
+	这种方法使用没有在类声明中定义泛型，而是自己想使用某种未知类型的时候

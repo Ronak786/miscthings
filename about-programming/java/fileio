@@ -34,3 +34,17 @@ socket: 客户端
 		ServerSocker.accept() wait.....
 
 
+Thread
+Runnable  后者是一个接口，你把自己的类实现里面的ｒｕｎ函数，传给前者，就可以开线程了
+		前者也可以继承开线程，但是设计概念不好，没有继承的意义，我需要的不是更加特殊的线程，而是任务
+		Thread.sleep  should catch  InterruptedException
+		setName 设定名称 
+		thread.currentthread.name 获取名字
+
+		synchronized 修饰 方法，表示这个方法只能一个线程调用
+			锁是在对象上的，每个对象有一个，会在指定了的同步方法上其作用，每个类也有一个锁，给静态变量的
+			所以这个synchronized 可以用在方法定义上，也可以放在调用时，作为一个块
+				synchronized(this) {
+					call xxx
+					call yyy
+				} 这样可以只同步一个小块
