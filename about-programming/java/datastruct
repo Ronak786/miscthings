@@ -19,3 +19,38 @@ public class ArrayList<E> extends AbstractList<E>
 public  <T extends Animal> void takeThing(ArrayList<T>) list)
 	这样方法就可以使用Animal的任意兼容类型了
 	这种方法使用没有在类声明中定义泛型，而是自己想使用某种未知类型的时候
+
+排序:
+	public class xxx implements Comparable<String> {
+	public int compareTo(String xx)  实现了这个，就可以传递给Collections.sort()进行排序了
+排序类：
+	这个可以设定多个排序函数，在需要多重不同排序的时候使用,用了这个就不会用上面那个了
+	这样，实现多个comparetor内部类，就可以实现多种排序，自己选择，而且名字都是一样的，就像过程调用里的多个函数
+
+	实现comparable　的需要实现compareTo函数，然后这个类可以直接给sort支持的类用
+	实现comparator的需要实现一个compare函数，然后这个类可以仍给ｓｏｒｔ函数使用，放在第二个参数，
+			这个的好处是可以让一个类有多个ｃｏｍｐａｒｅ函数，因为可以有多个内部类
+
+重复判断：
+	hashset中，首先要覆盖ｈａｓｈｃｏｄｅ函数，这个一样表示的是在同一个ｈａｓｈｓｅｔ，这个原来计算的是
+	对象的哈系码，你可以构造自己的分类方法，然后是equals方法，这个覆盖，在同ｈａｓｈ的情况下会用这个来判断是否重复
+	hashcode , equals 后者相同必定要前者相同
+
+	treeset可以保持有序,但是要类自己要实现comparable 接口，
+		或者传给treeset构造函数一个comparator 类作为比较函数
+
+	hashmap:
+		字典
+
+多态数组：
+	普通的对象数组，可以多态的，就是数组本身可以是子类型数组，内部变量也可以是子类型
+	但是ArrayList数组　声明的是什么数组，只能赋值什么数组，内部内容可以子类型
+
+	这个是因为如果允许的话，在函数内部使用的时候，因为是父类型，那么可以加入其他子类型，这样
+		就相当于在一个子类里面加入第二个子类，会有问题
+		普通数组也会有问题，不过是运行时才报错
+
+万能参数：
+	public void func(ArrayList<? extends Animal> animal) 
+	public <T extends Animals> void func(ArrayList<T> xx)  两个一样，后者多参数可以少写点）
+		这样，函数就可以传入任何子类了，但是不能修改！！
