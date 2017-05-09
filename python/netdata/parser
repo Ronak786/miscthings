@@ -38,11 +38,13 @@ beautifulsoup4  short: bs
 			findAll的参数可以是一个匿名函数，参数是tag 也就是element。tag类型，
 				返回boolean 用来过滤
 			这个有时可以替代正则
+			soup.findAll(lambda tag: len(tag.attrs) == 2)
 
 		return:
 			每个element tag里都是标签元素，可以用字典的方法访问每个元素 tag['class']  tag['src']
 			tag.attrs 获取所有标签
 				tag.attrs['src'] 好像和上面一样
+				或者直接tag['src'] ??
 
 
 	find:(和attr的精准定位放在一起就有用了）
@@ -74,6 +76,7 @@ beautifulsoup4  short: bs
 
 	正则匹配
 		attr 等可以用re.compile(xxxxx） 来进行正则匹配
+		?! 表示不包含，还未使用过
 
 virtualenv newenv
 	cd newenv
