@@ -6,6 +6,7 @@ block size bigger than 512k 1024k or more ???
 
 update scst 3.2
 	scst rpm包这个需要在spec文件中把kversion改成具体的模块目录名，然后装上对应的kernel-header这个会查
+	使用 %define kversion xxxx 来直接定义
 
 
 _FILE_OFFSET_BITS ==> __USE_FILE_OFFSET64
@@ -56,4 +57,5 @@ hadoop:
 	注意hostname的设置，和配置文件的里的设置要一样！！不然会找不到datanode
 	javac  -classpath share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.7.3.jar:share/hadoop/common/hadoop-common-2.7.3.jar:share/hadoop/common/lib/commons-cli-1.2.jar  -d playground/classes/  playground/src/WordCount.java
 		使用这个可以编译wordcount文件example  
+
 

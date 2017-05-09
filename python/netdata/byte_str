@@ -1,6 +1,6 @@
 byte 这个是字节形式
 	str 这个是普通文本形式
-	网页上转下来的都是bypte，
+	网页上转下来的都是byte，
 	byte.decode(xxx类型) ==> str
 	str.encode(xxx) ==> byte
 

@@ -6,7 +6,8 @@ html parser:
 	内置
 
 beautifulsoup4  short: bs
-	对于html。read（）返回的内容，使用BeautifulSoup 实例化
+	对于html.read（）返回的内容，使用BeautifulSoup 实例化
+		obj = BeautifulSoup() , obj.html.body.h1 ...
 	attr: type: bs4.element.tag
 		html, title, head , body, xxx  每个标签对应一个内容
 		这些标签属性都是自定义的，可以随意输入，不存在的是None
@@ -16,6 +17,7 @@ beautifulsoup4  short: bs
 		这个找到标签里的文本，不带标签本身
 		会去处所有文本
 	findAll: type b4.element.ResultSet
+		第一个参数可以是集合{xx,xx,xx,} 或者单个
 		attr 
 			字典，class:xxx, yyy:xzz
 		member: type b4.element.tag
@@ -62,7 +64,7 @@ beautifulsoup4  short: bs
 				而默认h1是指第一个出现的h1
 		element.tag:
 			对于rulset 里面的每个tag，都有children和descendant属性
-			children这个就是打印直属标签，
+			children这个就是打印直属标签，(直接的子标签）
 			descendant 这个会打印所有标签和内容，所有嵌套标签会打印多遍，最后一层是纯文本打印
 		next_siblings, next_sibling, previous_sibling, previous_siblings
 			这个用于接下来的标签，和当前你设定的在同一等级的所有，会一一遍历给你
@@ -81,7 +83,7 @@ virtualenv newenv
 http error:
 	urllib.error.HTTPError   except HTTPError as e:
 		网页不存在，会返回错误，如404, 500 这种，会返回HTTPError
-		但是成功的标签也会None，要检查标签
+		返回Ｎｏｎｅ，应该是服务器找不到，而不是网页找不到
 	AttributeError 
 		如果对None标签继续深入引用，就会这样
 	服务器不存在，会返回None
