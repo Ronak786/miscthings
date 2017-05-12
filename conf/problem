@@ -61,3 +61,11 @@ hadoop:
 
 python 交互环境无法利用箭头上下：
 	安装py-readline,然后如果找不到库，找高高版本做个链接
+
+pip 本地源：
+	~/.pip/pipconf:
+		[global]
+		index-url = http://pypi.douban.com/simple
+		[install]
+		trusted-host=pypi.douban.com
+		或者　https://pypi.tuna.tsinghua.edu.cn/simple
