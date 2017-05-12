@@ -59,3 +59,5 @@ hadoop:
 		使用这个可以编译wordcount文件example  
 
 
+python 交互环境无法利用箭头上下：
+	安装py-readline,然后如果找不到库，找高高版本做个链接
