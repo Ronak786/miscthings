@@ -1,3 +1,6 @@
+start mariadb on archlinux:
+	sudo mysql_install_db --user=mysql --basedir=/usr/ --ldata=/var/lib/mysql/
+
 学习：理论很重要，要看
 
 数据库范式：1 2 3 bcn

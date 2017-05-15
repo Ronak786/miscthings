@@ -1,0 +1,3 @@
+json
+	import json
+	json.load  其实就是一个字典，jsonxxx.get(xx) 可以获得
