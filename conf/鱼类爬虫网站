@@ -1,0 +1,15 @@
+ocean.org  内容较少，每种只有一张图片
+	使用http://oceana.org/marine-life/marine-mammals/harp-seal?combine=&page=｛0,1,2}可以获得三张网页，
+	里面底下类别可以挖出每种一张图片
+
+
+http://www.zoology.csdb.cn/ 
+	就一张图片每种，纯动态加载，目前不会，放着
+
+http://site1.zjou.edu.cn/fish/
+	这个无法模拟登录，需要动态ｊｓ函数，不会
+
+
+frame:
+	webdriver.switch_to.frame(name)  可以切换
+	使用xpath找具体的按钮

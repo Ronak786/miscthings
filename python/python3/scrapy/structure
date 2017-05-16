@@ -1,0 +1,22 @@
+scrapy.Spider class:
+	start_requests:  define urls , return a iterable request list . or just a request list,member: scrapy.Request(xxx)
+		optionally: you can just define start_urls in the class (inherited by scrapy.Scrapy)
+
+	parse:
+		get a response object,  deal with that, can call Reqeust recursively
+
+
+cmdline:
+	scrapy shell 'url'
+project
+	scrapy startproject xxx
+run just one py
+	scrapy runspider xxx(name)
+run project
+	scrapy crawl xxx
+
+request:
+	.css('xxx')  one 属性
+	.extrace()  获取
+	.css('xxx::text')[0].extract() 抽取里面的内容，去掉标签的，没有ｔｅｘｔ则有标签
+	.css('xxx:text').re(r'xxxxx')  正则表达式
