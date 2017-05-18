@@ -1,0 +1,21 @@
+中国海洋鱼类数据库　http://site1.zjou.edu.cn/fish/fish_bio_db.asp
+
+	贝类
+	http://site1.zjou.edu.cn/fish/shell_1.asp?px=id&lx=%CE%DE%B0%E5%B8%D9%2C+%B5%A5%B0%E5%B8%D9%2C+%B6%E0%B0%E5%B8%D9%2C+%B8%B9%D7%E3%B8%D9%2C+%BE%F2%D7%E3%B8%D9%2C+%CB%AB%BF%C7%B8%D9%2C+%CD%B7%D7%E3%B8%D9&PageNo=1&typer=0&key=&liker=1&page=10&order=ASC  修改ｐａｇｅ和呈现数量，可以获得所有链接
+	图片已经存下，也可以继续获取
+
+	鱼类：
+	可以使用http://site1.zjou.edu.cn/fish/fish_1.asp?px=id&PageNo=1&typer=yw&key=b&liker=0&page=5000&order=ASC分别对key
+	26个字母，首先获取所有链接，比对是否已经存在，然后下载即可
+
+	台湾贝类
+	http://shell.sinica.edu.tw/chinese/taiwanshell.php?pageNum_taiwanshell=256&totalRows_taiwanshell=3841&orderby=Photo_IF%20DESC  
+
+http://fishdb.sinica.edu.tw/index.htm:
+	有部分图片
+
+台湾鱼类：
+http://fishdb.sinica.edu.tw/AjaxTree/tree.php
+可以分类抓，挺多的，抓世界的那个还不会
+
+http://www.algaebase.org/search/images/detail/?img_id=K856a7ab39f877256

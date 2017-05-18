@@ -1,0 +1,11 @@
+--2017-05-18 09:37:30--  http://site1.zjou.edu.cn/fish/shell_detail_1.asp?id=%7B018CB7A1%2D84D6%2D40AE%2DADD6%2D7323810AD51C%7D
+Resolving site1.zjou.edu.cn... 61.153.216.111
+Connecting to site1.zjou.edu.cn|61.153.216.111|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 5327 (5.2K) [text/html]
+Saving to: ‘shell_detail_1.asp?id=%7B018CB7A1%2D84D6%2D40AE%2DADD6%2D7323810AD51C%7D’
+
+               shell_detail_1.   0%[                                                   ]       0  --.-KB/s               shell_detail_1.asp?id=%7B018CB 100%[==================================================>]   5.20K  --.-KB/s    in 0s      
+
+2017-05-18 09:37:30 (113 MB/s) - ‘shell_detail_1.asp?id=%7B018CB7A1%2D84D6%2D40AE%2DADD6%2D7323810AD51C%7D’ saved [5327/5327]
+

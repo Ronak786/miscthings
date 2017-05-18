@@ -13,3 +13,7 @@ http://site1.zjou.edu.cn/fish/
 frame:
 	webdriver.switch_to.frame(name)  可以切换
 	使用xpath找具体的按钮
+	
+
+requests.get 获取的页面可能乱码，查看ｅｎｃｏｄｉｎｇ，这个和内部指定的ｃｈａｒｓｅｔ可能不一样
+要修改这个变量，在ｔｅｘｔ打印
