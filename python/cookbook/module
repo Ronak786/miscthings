@@ -1,0 +1,81 @@
+collections.deque:
+    不设置长度就无限
+    这个用于保存限定大小的list，优化从两端获取
+    q.append  q.appendleft
+
+heapq:
+    获取最大最小n个元素，可以用lambda指定key
+    heapq.nsmallest(3, array, key=lambda s: s[xxx])
+        单个元素使用min max
+        获取接近n 使用sorted(xxx)[-N:] 合适
+    or heapq.heapify(xxx) , heapq.heapop(xx)
+        pop只有heapify过了才能正常使用
+    heap默认小排序，所以可以在大的基础上转为负数，
+        再可以利用第二个元素（组成tuple）保证同级的不乱序
+min,max 也可以设置key，用lambda
+
+defaultdict: one key ==> multi value
+    defaultdict(list)  这个可以为每个key初始化分一个list作为值，
+    可选：dict（），d.setdefault('a',[]).append(),但是麻烦
+OrderedDict:
+    顺序的字典，但是2倍内存，大型数据要考虑
+dict 的集合操作：
+    a.keys & b.keys  交集
+    a.keys - b.keys   差集   很好用
+    a.items 也可以，  a.values不可以，因为不唯一，不像set
+
+去重：
+    核心思想是放入set，但是不可hash的比如字典，方不进去，
+    可以加个 lambda函数传进入，获取item的key，然后加入set
+
+collections.Counter:
+    接受hashable对象产生计数字典，还可以update新的对象进来
+    用来计数重复的次数
+    可以自己的对象间进行加减法，有与并的功能再里面
+
+operator.itemgetter(xxx)  
+    获取每个对象中的key对应的value，用再排序的key的函数上，
+        比lambda快一点  , 可以多个参数，会变tuple
+operator.attrgetter()
+    同上，但是用于对象，可以获得对象的属性用来排序
+itertools.groupby(lst, key)
+    返回的是一个迭代对象，每组是一个key，memberlist的tuple，可以
+    分解，后者再循环解出得到
+    同样可以利用defaultdict直接遍历然后存入
+
+zip:
+    包装多个数据到一个tuple，迭代，只能访问一次
+    tip：要比较比如字典的时候，可以用这个把value key反过来包装，
+        因为tuple比较的时候是先比较第一项的
+
+
+列表表达式
+    [ n for n in m if n > 0 else 0]
+生成表达式
+    ( xxxx)  获得的迭代器在给for 用，这个不耗内存，建议
+filter 迭代器（用list() 变成list）
+    filter(func, list)  这样可以传入较为复杂的函数
+itertools.compress(lst, boolean_list)
+    返回迭代起，包括再第二个lst中为true的第一个lst的元素
+    和filter传入函数类似，不过这里传列表
+
+字典推导式
+    p1 = {key:value for key,value  in xxx if xxx}
+    p1 = dict((key,value) for key,value in xxx if ) 前者更快
+
+collections.nametuple
+    xxx=nametuple('name', ['filed','filed'xxxxx]
+    yy = xxx(aa,bb,cc,dd) 传入你的元组，要*tuple展开，
+        然后就可以用yy['filed']像字典一样访问了但是不能更改，
+        要用yy._replace(xx=yy)的方式更改,可以传入展开的字典**zxx
+
+collections.ChainMap
+    ChainMap(a,b) 可以返回一个合并的字典，优先第一个，增删则只会再第一个
+    仅仅是合并了两个字典，然后实现的字典中的方法会再里面操作两个字典，
+    使用new_child(）可以增加另一个字典,parents返回原来的字典
+
+    这个是会修改原字典的，而xx=dict(y),xx.update(z)不会修改y字典
+转换的同时计算：
+    sum(x*x for x in nums)
+    any(name.endswith('.py') for name in files) 不用传迭代器，直接传计算进去
+
