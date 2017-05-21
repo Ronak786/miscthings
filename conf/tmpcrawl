@@ -1,0 +1,5 @@
+tree.xpath("//tr/td/p/a/img/@src") 获取搜索页的直接图片大图，
+tree.xpath("//tr/td/p/a/@href[../img]") 获取详细页地址，然后join
+进入后
+tree2.xpath("//div[@id='random-img-grid']/a/div/@style") 获取其他图片url
+" ".join(tree2.xpath("//h2//i/text()")) 获得名字， ok
