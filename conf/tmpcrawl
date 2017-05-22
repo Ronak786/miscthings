@@ -1,5 +1,77 @@
+可以爬百科！！！
+scrapy shell 'http://site1.zjou.edu.cn/fish/shell_1.asp?px=id&lx=%CE%DE%B0%E5%B8%D9%2C+%B5%A5%B0%E5%B8%D9%2C+%B6%E0%B0%E5%B8%D9%2C+%B8%B9%D7%E3%B8%D9%2C+%BE%F2%D7%E3%B8%D9%2C+%CB%AB%BF%C7%B8%D9%2C+%CD%B7%D7%E3%B8%D9&PageNo=1&typer=0&key=&liker=1&page=40&order=ASC'
+response.xpath("//span[@class='style5']/a[@href]/text()").extract()  to get all names
+response.xpath("//span[@class='style5']/a/@href").extract()  to get all links for shell
+
+for every link:
+	urllib.parse.urljoin(origurl, yoururl)
+	headers = {'User-Agent':'Mozilla/5.0 (X11; Linux x86_64; rv:53.0) Gecko/20100101 Firefox/53.0', 'Accept-Encoding':'gzip, deflate', 'Accept-Language':'en-US,en;q=0.5', 'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+'}
+	requests.get(xxx.headers=xxx)
+	result.encoding = gb2312
+	result.text == > bs4
+	bs4
+	tbl = bs.body.findAll("table")[1].findAll("td")
+	imgs = tbl[2:4]
+	tbl[2:4] = []
+	for i in range(0,len(tbl),2):
+		clist[tbl[i].get_text()] = tbl[i+1].get_text()
+		imgs = tbl[2:4]
+		tbl[2:4]= []
+		for i in range(0,len(tbl),2):
+			clist[tbl[i].get_text().strip] = tbl[i+1].get_text().strip
+
+	from urllib.parse import urljoin
+	link = imgs[0].find("img").attrs['src']
+	join_link = urljoin(result.url, link)
+	img = requests.get(join_link) now get the image
+
+
+对于鱼类：
+
+starturl = 'http://site1.zjou.edu.cn/fish/fish_1.asp?px=id&PageNo=2&typer=yw&key=a&liker=0&page=50&order=ASC'
+startpage = requests.get(starturl, headers = headers) encoding ...
+lxml== > tree.xpath("//span[@class='style5']/a/@onclick")   get all urls on one page, (add into a set, to filter)
+
+nameurl = tree.xpath("//span[@class='style5']/a/@onclick")[0]  get one link to the page
+	parturl = re.match("MM_openBrWindow\('(fish[^']*).*", nameurl).group(1)  get that url into it , join that
+	get that page, encoding,  beautiful soup it 
+
+tbl2 = infoobj.body.table.findAll("tr")[1].td.findAll("tr")  get all table info in that,
+imgs = tbl2[5]
+source = tbl2[:5]
+tbl2[0].td.font.b.contents  get name chinese, english, recorder author
+tbl2[2].findAll("td")[1].get_text().strip().replace('\xa0','')  for [1,2,3,4] [0] as key, [1] as item in dict
+imgs.findAll("img")[0]['src']  get url, join to starturl, requests.get and write into file
+
+
+
+
+
 tree.xpath("//tr/td/p/a/img/@src") 获取搜索页的直接图片大图，
 tree.xpath("//tr/td/p/a/@href[../img]") 获取详细页地址，然后join
 进入后
 tree2.xpath("//div[@id='random-img-grid']/a/div/@style") 获取其他图片url
 " ".join(tree2.xpath("//h2//i/text()")) 获得名字， ok
+
+
+taiwan:
+##需要修改最后的索引
+searchurl = http://fishdb.sinica.edu.tw/chi/synonyms_list.php?id=&pz=25&page=0&R1=&key=Amphiprion+perideraion
+twpage = requests.get(twurl, headers = headers)
+tree.xpath("//td/a[./i/text() = 'Amphiprion perideraion']/@href")[0]  到找第一个链接
+join, get fishpage
+pagetree.xpath("//td[../td/text() = '科中文名']/text()")[1]
+
+pagetree.xpath("//img[@title='照片']/../@href")[0] 内部照片
+fbpart = pagetree.xpath("//img[@title='FishBase']/../@href")[0] fishbase照片
+
+internal url:
+	intree.xpath("//div[@class='pic']/a/img/@src") get most , need join
+	intree.xpath("//div[@class='pic']/a[./div]/@href")[0] 
+		re.match('[^=]*=([^&]*)&.*', parturl).group(1)	  get last one , no need join
+
+external url:
+	fbpart = pagetree.xpath("//img[@title='FishBase']/../@href")[0]
+	partpic =  fbtree.xpath("//span[@class='slabel8']/a/@href")[0]  join it
+	pictree.xpath("//a[@class='tooltip']/span/img/@src") do join(some should join) then get picture
