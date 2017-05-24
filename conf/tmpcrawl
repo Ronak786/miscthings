@@ -55,7 +55,7 @@ tree2.xpath("//div[@id='random-img-grid']/a/div/@style") 获取其他图片url
 " ".join(tree2.xpath("//h2//i/text()")) 获得名字， ok
 
 
-taiwan:
+taiwan: 这个好像被察觉了，现在很难下载图片，浏览器也不行
 ##需要修改最后的索引
 searchurl = http://fishdb.sinica.edu.tw/chi/synonyms_list.php?id=&pz=25&page=0&R1=&key=Amphiprion+perideraion
 twpage = requests.get(twurl, headers = headers)
