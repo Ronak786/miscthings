@@ -1,0 +1,59 @@
+引用类型一般用单引号的！！
+双引号用在使用数据库的程序中，用来包含数据库语句，所以这里坚持单引号
+跳脱引号 \  或者 '
+
+create database:
+	create database xxx;
+
+into database:
+	use database_name
+create table:
+	create table name (attr type (可选　not null)(可选　default xxx), attr type, ...)
+		not null 表示insert的时候必须填值，不然报错
+	
+	type:
+		INT DEC(allnum, 小数数量), BLOB(大容量文本）　，varchar(num), char(num) (后者固定长度，前者变长，再前者无限)
+		DATE, DATETIME 这个表示固定的当前时间
+
+查看表的描述：
+	desc table_name
+
+delete table:
+	drop table name;
+
+insert: (表中插入的顺序没有意义，内部会调整）
+	insert into table_name (column,...) values ('value1',....) 数字不用加引号，其他要, column不用加引号
+	
+	1 有列名时，可以颠倒顺序
+	２没有列名时，必须顺序写值，全部填入
+	３　不能漏填
+	3 可以指定列名，然后只填入一小部分，剩下的会是null (这个不能互相比较）
+
+select:
+	select xx from table_name where  xx='xx'   
+	查询：
+		dec可以用引号，可以不同，float 查询匹配可以没有０的小数部分，可以有
+	查询条件： (null 不能用在条件里面，因为不能比较） 
+		可以　where xx is null , 使用其他的where条件是找不出来的！！！，除非select * from table 这个返回全表的
+		where  xx=xx AND yy = yy; 可以多个条件
+					or   选择其一个条件
+		操作符:
+			= < > <>(!=) <= >= 
+			字符比较
+				name > 'L' and name < 'M'  找到所有首字母大于L,小于M的元素
+			between xx and yy :
+				这个方便 >= <= 如果小于某个字母，那么那个字母以及以他开头的单词都没了,所以要向后跳一个，到下一个字母
+
+			like:
+				where xx like '%aa%' %任意多个(0到多个），　_ 表示只有一个　未知字符
+
+			in ('xxx','yyy'..)  , not in (...)
+				这个用在有多个取值，省去使用or的麻烦
+
+			not :
+				放在and, or, in, bewteen, null 等之前即可，还可以放在where后面，直接对后面的式子去否定
+				xxx is not null  
+
+这个很危险，一般可以先select,确定了再delete
+delete from tablename where 
+	where 这个很重要，如果没有，整个表都删掉了！！
