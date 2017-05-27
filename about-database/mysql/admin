@@ -5,3 +5,20 @@
 				flush privileges
 
 忘记密码:mysqld --skip-grant-tables ,to start service , then update using above 3 method
+
+
+关闭mysql:
+# service mysqld stop
+然后:
+# mysqld_safe --skip-grant-tables
+启动mysql:
+# service mysqld start
+mysql -u root
+mysql> use mysql
+mysql> UPDATE user SET Password=PASSWORD('xxx') WHERE user='root';
+mysql> flush privileges;
+mysql>\q
+
+
+到这里密码已经修改成功，
+mysql -u root -p
