@@ -54,6 +54,8 @@ select:
 				放在and, or, in, bewteen, null 等之前即可，还可以放在where后面，直接对后面的式子去否定
 				xxx is not null  
 
+
+
 select 字符串匹配：
     substring_index(name, seperator, 第几个分隔符）返回分隔符前面的部分
     right(name, number) 取从右边数的几个字符
@@ -76,5 +78,39 @@ delete from tablename where
 update:
     update tablename set xxx=xxx, yy = yy where xxxxxx
     可以利用计算 set  cost = cost + 1
+    update的顺序很重要，不然同一个语句中，后面的udpate会覆盖前面的动作
 
+    多个语句同时更新，where会显得麻烦，使用case
+    update table_name set xxx = 
+    case
+        when xxx = xx then xxx
+        when yyy = yy and zz =zzz then yyy
+        else xxxx
+    end where ...; 加where也是可以的
+
+
+order by 获取的输出按字符顺序排列, 可以排列多个列,按先后顺序以不同的列排,
+        这样最后的大类是后面的
+    放在最后，where条件表达的后面
+    order by xxx desc;  
+        desc: 表示反转这一项的排序
+
+limit start, count
+    这个搭配order by ，可以在顺序返回的数据的基础上，选择取第几个到第几个数据
+
+
+select sum(xxx) from table_name; 这样会把匹配的列项相加
+        group by xxx 可以分组，这个结合sum，可以最组内sum
+        order by sum(xx) desc; 这样可以逆序排列所有的加总
+        select count(distinct xxx) from xxx group by xxx
+            这样，会对分组后的数据进行计数
+select distinct column_name from table_name order by table_name
+        获取的是不同的值的数量
+
+avg :
+    平均函数
+sum:    
+    加总函数
+min, max 最大最小
+count: 计算行的数量
 
