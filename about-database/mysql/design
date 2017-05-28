@@ -1,0 +1,45 @@
+使用like有可能获得不需要的数据
+冗余会造成updae的工作量加大，硬盘占用过大
+
+1nf
+    每行具有一个主key
+    每行都是原子的
+
+    主key
+        必须唯一，
+        必须指定
+        不可修改，
+        要简洁
+
+主key
+    contact_id int not null auto_increment  这样会自动增加
+    create的时候， show create table  xx 可以获取原来的命令
+    show create database 
+    show index from xxxx
+    show warning
+    返回的命令中的撇号用来强调这个是名字，不是保留字
+    
+    如果覆盖了主key，如果原来存在，那么覆盖失败，直接丢失，如果不存在，
+        可以跳着覆盖,跳过之后，如果再默认添加，会在最大index往后添加了
+
+alter table name add column id not null auto_increment first,
+                add primary key (contact_id)
+                add contact_id id not null auto_increment after xxxx,
+                                /before xxx/second/third/fifth/last
+            可以添加列
+alter table name change/modify/ add/ drop
+    change同时改变类型和名字
+        擅自改变类型，可能导致数据截断或者错误解释 
+    modify column xxx type after xxx; 这个只改变类型，不改名字
+        尽量不要改位置，消耗大，select的时候，可以选位置的
+    drop column xxx
+        drop primary key
+    add column xxx 
+alter table xxx rename to xxx  重命名表
+    change:
+        change column xx  yy int not null auto_increment,
+        add primary key (xxx)
+
+auto_increment:
+    每个表里只能 一个而且要not null，
+    如果要修改属性，使用alter change直接同名改

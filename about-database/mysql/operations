@@ -54,6 +54,27 @@ select:
 				放在and, or, in, bewteen, null 等之前即可，还可以放在where后面，直接对后面的式子去否定
 				xxx is not null  
 
+select 字符串匹配：
+    substring_index(name, seperator, 第几个分隔符）返回分隔符前面的部分
+    right(name, number) 取从右边数的几个字符
+    left（xxxx）
+    substring(string, start, count) 取指定位置字符串
+    upper
+    lower
+    reverse
+    ltrim, rtrim 去掉左右空格
+    length()返回字符串长度
+    这些都用再select
+
+    配合update
+        update xxx set xx=upper(xxxx)
+
 这个很危险，一般可以先select,确定了再delete
 delete from tablename where 
 	where 这个很重要，如果没有，整个表都删掉了！！
+
+update:
+    update tablename set xxx=xxx, yy = yy where xxxxxx
+    可以利用计算 set  cost = cost + 1
+
+
