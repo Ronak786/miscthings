@@ -37,6 +37,7 @@ select:
 		可以　where xx is null , 使用其他的where条件是找不出来的！！！，除非select * from table 这个返回全表的
 		where  xx=xx AND yy = yy; 可以多个条件
 					or   选择其一个条件
+            and or 可以后跟一个括号，里面是其他的and or的子条件
 		操作符:
 			= < > <>(!=) <= >= 
 			字符比较
@@ -114,3 +115,16 @@ sum:
 min, max 最大最小
 count: 计算行的数量
 
+
+外键，
+    这个用来联系2张表，使用约束，可以保证不能随意删除被引用的主key
+    create table xx (
+    int_id  int not null auto_increment primary key, ## this table's key
+    current_id int not null,
+    constrant my_contacts_contact_id 约束限定,名字好像随便的
+    foreign (current_id) 远端key
+    references my_contacts (contact_id) 联系
+    ); 
+
+中间表 junction table:
+    这个用于两个表多对多的情况，可以 消除重复

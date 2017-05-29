@@ -10,6 +10,12 @@
         必须指定
         不可修改，
         要简洁
+2nf
+    满足1nf，
+    不存在部分依赖（可以有组合主key，必须全依赖）
+3nf:
+    满足2nf
+    不存在传递依赖
 
 主key
     contact_id int not null auto_increment  这样会自动增加
@@ -43,3 +49,8 @@ alter table xxx rename to xxx  重命名表
 auto_increment:
     每个表里只能 一个而且要not null，
     如果要修改属性，使用alter change直接同名改
+
+主key ， 组合key
+    依赖列，就是依赖于主key的列，
+    部分依赖：如果主key是一个组合key
+    传递依赖，如果改变非主key，导致另外的非主key改变，就说他们之间有传递依赖
