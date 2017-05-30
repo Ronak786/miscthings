@@ -41,6 +41,7 @@ alter table name change/modify/ add/ drop
     drop column xxx
         drop primary key
     add column xxx 
+    add contraint check xx in (xx,xx,xx) 可以增加某列的检测
 alter table xxx rename to xxx  重命名表
     change:
         change column xx  yy int not null auto_increment,
@@ -54,3 +55,77 @@ auto_increment:
     依赖列，就是依赖于主key的列，
     部分依赖：如果主key是一个组合key
     传递依赖，如果改变非主key，导致另外的非主key改变，就说他们之间有传递依赖
+
+
+cross join:
+    用于把两个表进行各项的链接，数量 a*b
+    select t.a, q,b from aaa as t corss join bbb as q;
+    可以没有cross join, 
+    用逗号代替 !!!!!
+
+inner join
+    on  用在inner join的后面，表示链接的条件 on xxx= xxx
+    select xx.aa yy.bb from xx bias inner join yy bias(可以省略as) on
+        xx = xx 或者 xx <> yy 表示不等
+    这个可以把一张表当成两张表来衡量
+natural join
+    这个只有在选出的项目在两表中一样时才链接
+
+union:
+    可以多个表一起，返回的是不同表值的综合
+union all
+    返回的会有重复值
+
+    create table as 
+    select xxxx   union select xxxx
+intersect
+except    表示交集和差集
+
+check (xxx in (xx,xx,xx,xx)) mysql 不能用
+    这个可以用在 create table 的每一列的时候，作为一条属性加上）
+
+
+创建视图
+    create view xxx_name as 
+    select xxx xxx  语句  
+    这样可以保存查询结果
+
+    当select的结果是一个虚拟表，就需要最后as xxx 然后最前面加select * from
+    这样就可以从虚拟表里面获取东西了，
+    或者就直接create view xxx 
+
+事务：
+    一系列要一起完成的操作
+    start transaction;
+    xxxxx
+    roll back; 回滚，否定前面的行为
+    xxxx
+    commit; 提交
+
+
+控制
+    设密码：
+        set password for 'root'@'localhost' = password('xxxx')
+        create user xxx identified by 'xxxxx'  为新用户设置密码
+    赋予权限：
+        grant select on table_name to user,user2 with grant option 可以再赋予别人权限
+        grant all on .... on database_name.*(数据库的名字） to xxxx  所有表，所有权限
+    撤销：
+        revoke ...
+        revoke grant option on delete on table_name from ....
+            取消可再赋予的权力
+         revoke  ... cascade  连锁撤销
+        revoke ... restrict 如果有连锁，不撤销，报错
+
+创建角色：
+    create role xxx
+    grant xxx to role_name
+    grant role_name to user 把某个角色的能力赋予某个用户
+    drop role xxx_name
+
+    grant role_name to user with admin option 可以赋予其他人
+    revoke xx  from user cascade默认的
+
+    组合
+        grant select on 
+        table_name to user identified by 'xxx';

@@ -29,7 +29,7 @@ insert: (表中插入的顺序没有意义，内部会调整）
 	３　不能漏填
 	3 可以指定列名，然后只填入一小部分，剩下的会是null (这个不能互相比较）
 
-select:
+select: 可以select xx.yy 的方式来选择指定表的列
 	select xx from table_name where  xx='xx'   
 	查询：
 		dec可以用引号，可以不同，float 查询匹配可以没有０的小数部分，可以有
@@ -140,5 +140,27 @@ count: 计算行的数量
     references my_contacts (contact_id) 联系
     ); 
 
+    自引用外键
+        这个是引用的本表的其他记录的主key作为自己的外key
+
 中间表 junction table:
     这个用于两个表多对多的情况，可以 消除重复
+
+子查询：
+    外层查询中某个条件的右表达式，用括号，然后写另一个查询表达式在里面）
+    一般只能返回一个值！！
+    如果使用 where xxx in (select xxxx) 则内查询可以返回多个值）
+
+    可以放在select的第一部分中，表示每次提供筛选的一个值
+
+    非关联子查询：
+        子查询完全独立于父查询可以内部自己运行
+    关联子查询
+        会用到父查询中的表的内容，
+
+    not_exist  这个代表不在列出的表内，类似not in
+
+外链接：
+    left outer join 表示左边的全部接受，右边的选择和它匹配的连起来，
+        不存在直接null
+    right outer join 右边的外链接
