@@ -1,0 +1,7 @@
+css:
+    要放在head里
+    <style type="text/css">
+
+    </style> 目前只有css一种样式
+
+<a href=xxx> xxxx</a> 这是一种超文本引用，可以用文件系统的路径形式
