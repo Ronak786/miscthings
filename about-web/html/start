@@ -4,4 +4,34 @@ css:
 
     </style> 目前只有css一种样式
 
-<a href=xxx> xxxx</a> 这是一种超文本引用，可以用文件系统的路径形式
+<a href=xxx title=xxx target="_blank"> xxxx</a> 这是一种超文本引用，可以用文件系统的路径形式
+id 的使用：页面中必须唯一
+    <h1 id="aaa">xxxx</h1>
+    <a href=xxx#aaa>xxx</a> 这样，在单击的时候，就会调到指定
+        页面中的指定id的地方，就像书签一样 
+        可以没有xxx部分，这样就是省略index
+target:
+    这个表示目标窗口永远是一个新窗口，这个可以是一个字符串，如果是另一个字符串，那么所有那个字符串的链接都在同一个窗口打开
+title:
+    这个属性可以加在任何元素上，当作鼠标停留的解释，
+
+<q>  这个用于段落里面，表示短语引用
+<blockquote> 这个用于段落外面，当作单独的引用
+<br> 这种属于void元素，没有内容，所以可以简写，不用写一对
+    <img >也是这种， <br/>这种写法兼容xhtml
+
+<li>xxx</li>  列表元素，前面是黑点
+<ol> <ul> 有序， 无序列表，包围在<li>前后，里面不放其他元素,只放<li>
+<dl> <dt> </dt><dd></dd></dl> 
+    自定义列表
+<code> 显示代码
+<pre> 按照自己的格式原样输出， 比较自主化</pre>
+<time>xxx</time> 显示时间的格式
+<em> 强调
+
+敏感字符的缩写：(字符实体）
+    < == &lt;
+    > == &gt;
+    & == &amp;
+    http://www.w3schools.com/tags/ref_entities.asp
+    http://www.unicode.org/charts/
