@@ -1,0 +1,5 @@
+datadir=/mnt/sdb1/mysqldb/mysql  数据位置，可以移动的，只要修改
+character-set-server=utf8　　编码，这个支持中文
+max_allowed_packet=1000M　　这个保证每次commit可以支持的大小，本来只有４Ｍ
+			使用show global variables  like 'max_allowed_packet';查
+show global variables  like '%timeout%'; 可以找到每次commit等待的超时，这个普通足够，可以自己调
