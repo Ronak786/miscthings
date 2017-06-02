@@ -1,0 +1,3 @@
+url
+    如果给的是一个目录，默认会找目录下的index.html or default.html or index.php, 取决于不同的服务器
+    如果没有/ , 默认如果存在目录/的话，会自动加上
