@@ -3,3 +3,28 @@ character-set-server=utf8　　编码，这个支持中文
 max_allowed_packet=1000M　　这个保证每次commit可以支持的大小，本来只有４Ｍ
 			使用show global variables  like 'max_allowed_packet';查
 show global variables  like '%timeout%'; 可以找到每次commit等待的超时，这个普通足够，可以自己调
+
+
+secure_file_priv="/" 即可
+	SELECT @@global.secure_file_priv 找到允许import outport 的路径，可以在配置里修改
+
+如果要输入中文，注意编码，
+可以使用show 命令以及status查看
+create database xxx character set utf8
+create table name (xxx) set utf8
+
+用pymysql:
+	操作数据库的时候，字符串如果用 execute(cnd, param)的形式的话（只能%s)会自动给你加引号，就不会有问题，
+		而如果使用{0} 在格式化串里面的话，.format插入的值是没有引号的
+set global validate_password_policy=0; 让密码判定强弱基于长度
+set global validate_password_length=1　然后让密码可以只有一位，默认８位以上
+set password for 'root'@'localhost' = password('xxxx')
+
+
+迁移表：
+	select * from fromtable into outfile "d:/fromtable .txt"
+	load   data   infile   d:/fromtable .txt   into   table   fromtable
+
+	或者
+		mysqldump -u root -p fishdb twfishtable > /tmp/move.sql
+		mysql -uroot fishdb < move.sql　　就可以导出导入了
