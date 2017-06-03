@@ -1,3 +1,9 @@
 url
     如果给的是一个目录，默认会找目录下的index.html or default.html or index.php, 取决于不同的服务器
     如果没有/ , 默认如果存在目录/的话，会自动加上
+
+jpg:适合连续色调图像
+png, git适合单色调图 这两个无损
+<img src=xxx  alt=xxx(图片无法显示的时候的语句 width="" height=""
+    src显示缩略图， 可以整个放在<a href = xxx> 里面，这样，单击图片就会
+跳转到另一个page
