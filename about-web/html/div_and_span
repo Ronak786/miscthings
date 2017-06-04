@@ -1,0 +1,40 @@
+div:
+    用来选定一个区域，用css来装饰这个区域
+width: 只会指定内容区的宽度
+    所以总宽度是内容width+内边距加边框加外边距，都是2倍
+text-align: center 对齐文本
+
+指定特定的标签
+    div h2 {
+    xxxxx
+    }  这样，只有div下的h2会被应用
+    #yourid h2 {...}
+        这样，只有具体id下的h2会被应用
+    div>h2 这样表示直接儿子才会有影响
+
+line-height xxem表示最初一开始的默认字体的比例倍数，
+            而如果是数字 1，2，3这种，那就是自己的字体本身的倍数
+
+简写：
+    pdding: xx xx xx xx top right bottom left
+            xx xx  top-down left-right
+            xx   top-down-left-right
+    background color url repeat-mode;
+
+
+<span> 
+    这个可以为元素内容创建分组，如<span class="xxx">sdlkfjlsd</span>
+        这样，内容会被span影响
+
+<a> 的特性：
+    css:
+        a:link {xxx}
+        a:visited
+        a:hover
+        a:active
+        a:focus 这些表示连接被访问中，后，停留。。等时候的连接状态
+这种叫伪类，只要设置，不用亲自去使用，浏览器会用的
+
+层叠样式：
+    浏览器收集所有样式之后，作者的排第一，读者第二，浏览器第三
+    如果找不到样式，就找祖先的继承，还没有，就浏览器默认的

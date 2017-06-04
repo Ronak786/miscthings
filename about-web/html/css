@@ -1,0 +1,101 @@
+jigsaw.w3.org/css-validator/  css验证程序
+格式：
+    label {
+            xxxxx: xxx;
+        }
+
+<head>
+    <style>
+        p,h1 { 
+            color:  maroon;
+            font-family: sans-serif;
+            }
+        h1{
+            borer-bottom: 1px solid black; 类型html的underline,但是延伸屏幕
+        }   这样h1右三个属性， p有两个，两全了
+    </style>
+</head>
+
+额外的css文件
+xxx.css
+<link type="text/css" rel="stylesheet" href="location" media= "xxx">
+    可以多个，后面的同名覆盖前面的
+    媒体查询
+        media可以指定不同的设备类型使用不同的样式表，这个有用
+        或者直接写在类里面
+            @media screen and (min-device-width: 300px) {
+                // min-width 表示浏览器窗口大小，上面是设备大小
+                #guarantee { // set id
+                    xxxxxx: ss:
+                }
+        不过不同的css文件更清晰，不然单个文件太大
+
+元素继承：
+    元素作用在大范围标签，会影响其中的小范围
+comment: /* */
+对特定段落使用特定class的属性：
+    p.green {xxxx}
+    <p class="green"> xxx
+    可以省略p， 直接.green{xxx}这样就能应用到任何标签上了
+
+    一个标签也可以有多个css
+    多个规则的时候，越是特定的规则越有效
+    如果程度相同，按照在css文件中的顺序，最后的最高
+
+对特定的某个元素使用css，要用id而不是class，更规范
+    in css file:  #xxxid { xxxxx} 或者 p#xxxid {} 这样更加特定
+    使用的地方 <p id=xxxxx> 这代表只有这个唯一的元素可以使用这个风格
+
+font-family： xx,xx,xx; 可以指定多种字体，会按优先级来选择
+
+    @font-face {
+        font-family: name;
+        src: url("httpxxxx"),
+            url("httpxxxx");
+    }
+    这样就创建了一个web字体，
+    然后 h1 { font-family: name;} 这样，h1就会使用我们服务器上的字体了，
+            新浏览器支持这种
+
+font-size: xxpx; or 150%; 1.2em（这种也是相对大小）
+     后者表示相对于大范围的字体的大小
+    或者 xx-small x-small, small, medium large, x-large , xx-large
+    用这种约定的相对大小比较好
+
+    这里的相对，都是在css文件中的相对位置！！！
+
+font-weight:
+    bold normal设定粗细
+font-style:
+    italic, oblique 后者是浏览器的倾斜动作，前者是规定的倾斜风格，
+        不过基本一样
+        <em>也是倾斜，不过这个用来强调用的，应用范围要注意
+
+color:
+    background-color: rgb(20%, 30%, 50%);
+    background-color: rgb(1, 2, 3); (0,255)
+    background-color: #ccff25  三个16进制
+                    如果一组数字两个一样，可以只写一个#cfb
+text-decoration: underline 下划线 overline 上划线 line-through 中间划线
+    查找web color charts
+    同一种规划，对于一个属性，要在一个里面指定，不然互相覆盖
+    <del> 也有删除线的功能
+
+line-height: 行高 可以用em设定为字体的比例大小
+
+内边距 这个和元素内容颜色已知，所以属于元素内部距离
+边框   界线
+外边距 这个是元素外部的，属于外部的背景同样的颜色
+这两个距离本身是不能设置颜色的，只能长度
+border-color border-width border-style:solid double groove ....
+border-radius:  14px  指定边框圆角
+    这些可以设定边框
+padding: 设定四周的内边距
+padding-left: xxxx
+margin: 外边距
+background-image: url(xxxx); 可以设定背景图片
+    这个和img不一样
+background-repeat: no-repeat;(repeat-x repeat-y inherit)
+background-position: top left
+
+color 前景+边框  border-color 边框， background-color 背景

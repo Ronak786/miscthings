@@ -7,3 +7,9 @@ png, git适合单色调图 这两个无损
 <img src=xxx  alt=xxx(图片无法显示的时候的语句 width="" height=""
     src显示缩略图， 可以整个放在<a href = xxx> 里面，这样，单击图片就会
 跳转到另一个page
+
+<!doctype html> 这个代表页面使用html5标准
+<meta charset="utf-8">meta表示页面属性，里面的就是它的各个属性
+    html5中不必http-equiv  content 设置，只要charset就行了 放在head中
+
+validator.w3.org 是个验证网页标签正确性的工具
