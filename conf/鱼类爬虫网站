@@ -17,3 +17,13 @@ frame:
 
 requests.get 获取的页面可能乱码，查看ｅｎｃｏｄｉｎｇ，这个和内部指定的ｃｈａｒｓｅｔ可能不一样
 要修改这个变量，在ｔｅｘｔ打印
+
+动物数据库
+	http://www.zoology.csdb.cn/csdb/getInfo.asp?_=1496651557130&id=%7B06E05FCC-52F1-4F77-9548-AA6CAFAE58C1%7D
+
+
+	http://www.zoology.csdb.cn/csdb/getRank.asp?_=1496650359940  get id
+	http://www.zoology.csdb.cn/csdb/getInfo.asp?_=1496651557130&id=CDC9AC80-7BDC-4A07-BB37-C389537ABBFB  use id get info
+	use xml get pic from info
+		pic url modify with  http://www.zoology.csdb.cn/csdb/  and strip tailing \'
+	
