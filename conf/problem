@@ -69,3 +69,9 @@ pip 本地源：
 		[install]
 		trusted-host=pypi.douban.com
 		或者　https://pypi.tuna.tsinghua.edu.cn/simple
+
+
+怎样安装nginx 以及php
+	yum install php-fpm  php php-devel php-common nginx
+	把本目录里的nginx.conf 复制到/etc/nginx 下覆盖，里面改掉你的目录，有两个地方
+	php要启动php-fpm ,这些都可以使systemctl启动
