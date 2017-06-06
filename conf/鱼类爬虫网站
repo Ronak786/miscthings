@@ -27,3 +27,8 @@ requests.get 获取的页面可能乱码，查看ｅｎｃｏｄｉｎｇ，这�
 	use xml get pic from info
 		pic url modify with  http://www.zoology.csdb.cn/csdb/  and strip tailing \'
 	
+
+
+worms:
+	http://marinespecies.org/photogallery.php?p=show&album=754&pg=48  利用这种ａｌｂｕｍ的方法和页数获取每页
+	http://marinespecies.org/photogallery.php?p=search&term=Anguilla+japonica  利用这样来搜
