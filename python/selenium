@@ -1,0 +1,10 @@
+等待加载：
+	sleep
+	driver.implicitly_wait  至多等待这么多时间，不过时间内一加载完立刻往下, 只要设置一次
+
+	from selenium.webdriver.support.wait import WebDriverWait
+	from selenium.webdriver.support import expected_conditions as EC
+	from selenium.webdriver.common.by import By
+
+	driver.get('https://huilansame.github.io')locator = (By.LINK_TEXT, 'CSDN')try:WebDriverWait(driver, 20, 0.5).until(EC.presence_of_element_located(locator))print driver.find_element_by_link_text('CSDN').get_attribute('href')finally:driver.close()
+
