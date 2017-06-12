@@ -75,3 +75,7 @@ pip 本地源：
 	yum install php-fpm  php php-devel php-common nginx
 	把本目录里的nginx.conf 复制到/etc/nginx 下覆盖，里面改掉你的目录，有两个地方
 	php要启动php-fpm ,这些都可以使systemctl启动
+
+
+/home/jztec/anaconda2/envs/py3/lib/python3.6/site-packages/scrapyd/webservice.py 里的cancel类代表cancel
+	默认是term 信号，不过有时候删不掉，应该在scrapy 里修改，支持这个信息
