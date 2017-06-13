@@ -1,0 +1,11 @@
+in scrapyd  webservice.py class Cancel used to cancel a job
+in spiderkeeper app/proxy/contrib/scrapy.py, cancel_spider will send that cancel post request,
+	you can also send yourself using 
+		curl http://192.168.202.122:6800/cancel.json -d project=kof -d job=56f65670501711e7a324000c2934ef85,
+			this get from http://192.168.202.122:6800/, is scrapyd's webpage,
+
+	this is a graceful cancel, so will last for a very long time to truly stop
+
+debug:
+	just using logging.warning() this is useful
+	app/spider/controller.py  job_stop    not work, use system(curl)
