@@ -1,3 +1,5 @@
+conda  中scrapyd启动错误，有可能是环境不对，比如装的Anaconda3 or 2
+
 iozone's direct on client is better?  
 block size bigger than 512k 1024k or more ???
 	the true bottle neck is wirte into one swgfs file, but if using too many  threads to 
