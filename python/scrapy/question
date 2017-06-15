@@ -17,3 +17,6 @@ debug:
 启动的时候有时候会报错，openssl 符号导入错误，
 	查证应该是cryptography　这个模块，scrapyd 用pip 安装，自带scrapy ,但这个自带的和pip里的cryptography是不兼容的，
 		要用conda install的cryptography
+
+安装：
+	创建ｃｏｎｄａ环境，　conda install cryptography, pip install scrapyd,  pip install spiderkeeper, pip install scrapyd-client
