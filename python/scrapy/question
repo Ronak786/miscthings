@@ -13,3 +13,7 @@ debug:
 	just using logging.warning() this is useful
 	app/spider/controller.py  job_stop    not work, use system(curl)
 		明天再看一下，cancel的时候哦的最后一项，是不是curl,还是其他的
+
+启动的时候有时候会报错，openssl 符号导入错误，
+	查证应该是cryptography　这个模块，scrapyd 用pip 安装，自带scrapy ,但这个自带的和pip里的cryptography是不兼容的，
+		要用conda install的cryptography
