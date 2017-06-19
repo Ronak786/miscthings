@@ -75,3 +75,14 @@ external url:
 	fbpart = pagetree.xpath("//img[@title='FishBase']/../@href")[0]
 	partpic =  fbtree.xpath("//span[@class='slabel8']/a/@href")[0]  join it
 	pictree.xpath("//a[@class='tooltip']/span/img/@src") do join(some should join) then get picture
+
+
+bing:
+>>> page = requests.get("http://cn.bing.com/images/async?async=content&q=fish&first=0&count=35")
+>>> tree = fromstring(page.text)
+>>> res = tree.xpath("//div[@class='imgpt']/a/@m")
+>>> lst = [ url['murl'] for url in res]
+lst = [ eval(url)['murl'] for url in res]
+>>> for img in lst:
+...     kset.add(img)
+
