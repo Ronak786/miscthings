@@ -1,3 +1,7 @@
+安装：　conda install -c conda-forge scrapy　　用conda-forge 避免问题！！！
+
+
+
 in scrapyd  webservice.py class Cancel used to cancel a job
 in spiderkeeper app/proxy/contrib/scrapy.py, cancel_spider will send that cancel post request,
 	you can also send yourself using 
