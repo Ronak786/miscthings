@@ -53,8 +53,15 @@ obj
 	<a href="xxxx" onclick="func(this.getAttribute('href'));return false;">xxx</a>
 
 隔离
-	onclick 可以放在 obj.onclick=xxxx 这个地方，
+	onclick 可以放在 obj.onclick=xxxx 这个地方，(可以定义匿名函数，因为这个地方不能加参数，可以
+		定义一个匿名的，然后参数加在里面的函数上）
 	可以通过使用getElementsByTagName, 然后遍历，找到指定class属性的目标，然后加入onclick属性
+
+	onkeypress 这个用于键盘按下　，可以和鼠标的放在一起
+		这个尽量不要用，所有ｋｅｙ都会反应，不好, mouse 可以识别key的
+
+
+
 
 
 对象检测
