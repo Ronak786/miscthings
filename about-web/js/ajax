@@ -1,0 +1,20 @@
+异步加载页面
+request = getHTTPObject()
+	这个有XMLHttpRequest, ActiveXObject("Msxml2.XMLHTTP.6.0/3.0/无")
+request.open("GET", url, true(是否异步))
+request.responseText:返回的内容
+		responseXML 头部text/xml中的数据
+request.readyState 请求已经回应后的状态
+	0 not initialized
+	1 loading
+	2 load over
+	3 interactivating
+	4 done
+request.onreadystatechange = xxx　设置请求回应准备就绪后调用的函数
+最后request.send(null) 发送前面设置好的请求
+
+
+hijax:
+	就是在原有页面完整功能的基础上，用ajax去增加到onsubmit等按钮的功能上，拦截本来的提交，
+	目的是做到平稳退化
+

@@ -1,6 +1,27 @@
 改变网页
+旧方法
 	document.write("xxxx")  可以在使用的地方添加这个语句，可以是标签语句
 		缺点是要<script></script>
 	innerHtml
 		直接get到元素后，obj.innerHTML = xxxx 可以往内部添加文本形式的元素组合，
 			添加方便 ,a.innerHTML="<p>I inserted<em>this</em> content.</p>"
+
+新方法：
+	chi = document.createElement("p"); 此时已经有nodeType 1, nodeName "P"
+	parent = document.getElementById("xxx")
+	parent.appendChild(chi) 就添加好了
+
+	txt = createTextNode("xxxx")
+	chi.appendChild(txt) 这样这个文本节点就是元素节点的子节点了
+
+	insertBefore:
+		targetnode.parentNode.insertBefore(newnode,  targetnode); 可以把新元素插入到目标元素前面，
+			ｐａｒｅｎｔ一定是元素，不是属性或文本，，没有ａｆｔｅｒ
+		function insertAfter(new, target) {
+			var parent = target.parentNode;
+			if (parent.lastChild == target) {
+				parent.appendChild(new);
+			} else {
+				parent.insertBefore(new, target.nextSibling);
+			}
+		}

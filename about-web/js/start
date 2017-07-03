@@ -20,6 +20,7 @@ alert 显示
 
 
 if , while , do while, for 同Ｃ语言
+	for 有一种 for ( xxx in array)  格式　获取字典形式的下表
 
 function xx() {
 	xxxx
@@ -54,7 +55,7 @@ obj
 
 隔离
 	onclick 可以放在 obj.onclick=xxxx 这个地方，(可以定义匿名函数，因为这个地方不能加参数，可以
-		定义一个匿名的，然后参数加在里面的函数上）
+		定义一个匿名的，然后参数加在里面的函数, function () { xxxxx} 
 	可以通过使用getElementsByTagName, 然后遍历，找到指定class属性的目标，然后加入onclick属性
 
 	onkeypress 这个用于键盘按下　，可以和鼠标的放在一起

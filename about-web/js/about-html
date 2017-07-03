@@ -7,6 +7,8 @@
 
 tag:
 <ul>(<ol>)<li>
+<abbr>xxx</abbr> 表示缩略词，浏览器的显示模式不一定一样
+<dl> <dt> <dd>  表示　列表，　每项标题，　每项描述
 
 event:
 	onmouseover 悬停
