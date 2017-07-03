@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+</head>
+</html>
+
+tag:
+<ul>(<ol>)<li>
+
+event:
+	onmouseover 悬停
+	onmouseout  移开
+	onclick  点击 : onclick = "func(this);return false"  this 代表当前标签对象,
+			return false 使得页面不会跳转，这个代表事件管理器认为有没有点击
+
+	

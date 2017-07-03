@@ -1,0 +1,5 @@
+#xxxx { }  对应id
+xx.xx {} 对应某个拥有某个tag的某个label
+document.getElementById(xx)
+document.getElementsByTagName()
+document.getElementsByClass()

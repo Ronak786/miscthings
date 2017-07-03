@@ -1,0 +1,68 @@
+<script src="xxx"></script>  链接外部ｊｓ脚本
+alert 显示
+//  /* */ 注释
+
+数组
+	var arr = Array(4) or Array("a","b") or [1,2,3,4]
+		关联数组　arr["hehe"] = "haha"
+
+对象
+	var obj = Object() or new Array()
+	obj.aa="bb"
+	obj.cc="dd"
+	或者
+		var obj = {"aa":"bb", "cc":"dd"}
+	
+	内建对象：
+		Math.round, current_day
+	宿主对象：
+		document
+
+
+if , while , do while, for 同Ｃ语言
+
+function xx() {
+	xxxx
+}
+
+
+
+DOM: 每个元素有typeof 属性可以查看
+	document.getElementsByTagName 获得列表，有length属性
+
+attr:
+	childNodes  列表，当前对象的所有子标签
+	每个节点有nodetype,用来判定
+		1 元素节点
+		２　属性节点
+		３　文本节点
+
+	例如<p>xxx</p> p.nodeValue 是元素节点，p.childNodes[0].nodeValue 才是xxxx
+		p.firstChild p.lastChild
+
+obj
+	window.onload = func 页面载入的时候会调用js	
+		这个属性的调用代表页面加载完毕,可以在里面设定javascript函数的执行
+	window.open("url", "name", "attr(xx=bb,yy=cc)") 可以打开一个新的窗口
+
+平稳退化：即使浏览器不支持js，也可以正常显示
+	伪协议： 这个不行
+		javascript:function(xxx)  可以在href后面添加，作为点击时调用的方法
+	onclick 也不行
+
+	<a href="xxxx" onclick="func(this.getAttribute('href'));return false;">xxx</a>
+
+隔离
+	onclick 可以放在 obj.onclick=xxxx 这个地方，
+	可以通过使用getElementsByTagName, 然后遍历，找到指定class属性的目标，然后加入onclick属性
+
+
+对象检测
+	if (!document.getElementsByTagName) {return false}
+		有些浏览器不支持这个方法
+
+性能
+	过多的标记，过多使用dom方法，都会降低性能
+	脚本尽量放在一个文件里
+	放在body最后比head里好，这样不会事先加载，导致页面加载缓慢
+	js 压缩工具 jsmin, yui cimpressor, closure compiler
