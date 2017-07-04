@@ -25,3 +25,45 @@
 				parent.insertBefore(new, target.nextSibling);
 			}
 		}
+
+		obj.nextSibling 这个属性返回下一个节点，不一定是元素节点，用nodeType== 1来判断
+
+
+dom 与　css: <a style="color:red; font-family:xxxx"></a>
+	elem.style.color
+	elem.style.fontFamily (减号的地方用驼峰代替）
+		但是只能获得内嵌样式
+		但是同样可以设置内嵌样式覆盖ｃｓｓ，这个位置定位有时候更加方便
+
+	更好的方法：
+		更新class,css里预留一个css设定．
+		obj.setAttribute("class",xxx)　　or obj.className=xxx . obj.className += xxx如果原来有的话，可以写成函数
+
+时间控制:
+	res = setTimeout("function_call_str()", time) 只有一次
+			setInterval 间隔调用
+	clearTimeout(res) 可以取消
+	这个最好用对象属性记录，这样下次调用的时候就能记忆修改，
+		每次调用最好把上次的clear，不然如果上次移动未完成，会造成延迟累计
+
+动画效果
+	就是按间隔调用函数调整位置，之前要设定好，在onload函数里，然后设置absolute,这样就位置绝对了
+	浏览器宽高利用document.documentElement.Height/Width 获取，位置用Top, Left获取
+
+	溢出属性overflow:
+		visible: 溢出不管
+		hidden:显示部分
+		scroll 显示滚动条
+		auto, 溢出才显示滚动条
+		这些放在一个容器里显示，所以放在div里面
+
+	position 使用relative表示相对于容器的位置，可以限定在小框里
+		static 和relative 一样，不过不能浮动
+		absolute绝对位置(这个是相对于div容器的绝对位置，如果容器是relative），
+			外，这个值是必须的，如果要在固定容器里隐藏部分图片的话，不然图片不会移动，默认好像是static，没用
+
+类型转化:
+	parseInt 忽略非数字
+	parseFloat  只有事先用css或者dom分配过style字段，才有用
+
+

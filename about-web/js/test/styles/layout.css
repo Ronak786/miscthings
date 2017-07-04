@@ -32,6 +32,13 @@ img {
 	clear:both;
 }
 
+#slideshow {
+	width: 200px;
+	height: 200px;
+	position: relative;
+	overflow: hidden;
+}
+
 #imagegallery {
 	list-style: none;
 }
@@ -40,4 +47,7 @@ img {
 }
 #imagegallery li a img {
 	border: 0;
+}
+#preview {
+	position: absolute;
 }

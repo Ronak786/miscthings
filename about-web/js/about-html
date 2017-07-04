@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
+	<link rel="stylesheet" href="" type="text/css" media="screen" />
 </head>
 </html>
 
@@ -9,11 +10,40 @@ tag:
 <ul>(<ol>)<li>
 <abbr>xxx</abbr> 表示缩略词，浏览器的显示模式不一定一样
 <dl> <dt> <dd>  表示　列表，　每项标题，　每项描述
+<blockquote cite=xxxxx>  用于引用，ｉ并且cite告诉你引用的网址
+<sup> 装饰用的，放在<a>外面
+		<a href="" accesskey="1"></a> 这个表示快捷键，如果<alt-1> 会有效果
+
+<table>
+	<thead>
+		<caption></caption> 表名j
+		<tr>表头
+			<th>每个表项名字</th>
+			<th></th>
+		<tr>
+	</thead>
+	<tbody> 内容
+		<tr> 每行
+			<td> 每项
+			<td>
+		</tr>
+	</tbody>
+</table>
 
 event:
-	onmouseover 悬停
+	onmouseover 悬停  相当与 css   :hover 伪类属性
 	onmouseout  移开
 	onclick  点击 : onclick = "func(this);return false"  this 代表当前标签对象,
 			return false 使得页面不会跳转，这个代表事件管理器认为有没有点击
+
+
+html5:
+	有新的自定义标签，这个ie以外可以直接写，然后css描述一下，
+		ie要用js创建标签
+	Modernizr 这个工具可以作一些特性判断，然后在html头里设置对应class，feature，no-feature，你可以针对这些特色进行
+		css或者js设置
+		从http：//www.modernizrcom/下载，然后在《head》里src=“modernizr-1.5.min.js来进行链入
+
+	<canvas> 这个标签就是一个画布，获取后可以画画，然后作为数据直接展示，或者作为img标签的src
 
 	

@@ -8,6 +8,7 @@ alert 显示
 
 对象
 	var obj = Object() or new Array()
+		如果函数里不使用ｖａｒ，那么默认变量就是全局变量了
 	obj.aa="bb"
 	obj.cc="dd"
 	或者
@@ -15,6 +16,7 @@ alert 显示
 	
 	内建对象：
 		Math.round, current_day
+		Math.ceil/floor (一般除法都是分数的，所以直接用）
 	宿主对象：
 		document
 
@@ -32,13 +34,13 @@ DOM: 每个元素有typeof 属性可以查看
 	document.getElementsByTagName 获得列表，有length属性
 
 attr:
-	childNodes  列表，当前对象的所有子标签
+	childNodes  列表，当前对象的所有子标签, 是指直接子标签！！！，有些浏览器会把标签间的换行当作一个标签的，要检验nodeType
 	每个节点有nodetype,用来判定
 		1 元素节点
 		２　属性节点
 		３　文本节点
 
-	例如<p>xxx</p> p.nodeValue 是元素节点，p.childNodes[0].nodeValue 才是xxxx
+	例如<p>xxx</p> p.nodeValue 是元素节点，p.childNodes[0].nodeValue 才是xxxx , 文本节点
 		p.firstChild p.lastChild
 
 obj
@@ -57,6 +59,7 @@ obj
 	onclick 可以放在 obj.onclick=xxxx 这个地方，(可以定义匿名函数，因为这个地方不能加参数，可以
 		定义一个匿名的，然后参数加在里面的函数, function () { xxxxx} 
 	可以通过使用getElementsByTagName, 然后遍历，找到指定class属性的目标，然后加入onclick属性
+		这个可以用*通配所有元素节点
 
 	onkeypress 这个用于键盘按下　，可以和鼠标的放在一起
 		这个尽量不要用，所有ｋｅｙ都会反应，不好, mouse 可以识别key的
