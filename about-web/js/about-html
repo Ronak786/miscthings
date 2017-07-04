@@ -45,5 +45,14 @@ html5:
 		从http：//www.modernizrcom/下载，然后在《head》里src=“modernizr-1.5.min.js来进行链入
 
 	<canvas> 这个标签就是一个画布，获取后可以画画，然后作为数据直接展示，或者作为img标签的src
+	<video src=...  control><audio> 
+	<video control>
+		<source src=xxx>
+		<source src=xxx>
+		<source src=xxx> 用于多个可选格式的时候
+	</video>
+			这两个只要填src=就行了，比以前使用object方便，但是支持格式混杂，
+			需要至少H。264 WEB。m  等多种，这样保持最大兼容性
+			control 必须，这样可以有控制条
 
 	
