@@ -14,7 +14,7 @@
 	txt = createTextNode("xxxx")
 	chi.appendChild(txt) 这样这个文本节点就是元素节点的子节点了
 
-	insertBefore:
+	insertBefore: 需要父节点调用
 		targetnode.parentNode.insertBefore(newnode,  targetnode); 可以把新元素插入到目标元素前面，
 			ｐａｒｅｎｔ一定是元素，不是属性或文本，，没有ａｆｔｅｒ
 		function insertAfter(new, target) {
@@ -38,6 +38,7 @@ dom 与　css: <a style="color:red; font-family:xxxx"></a>
 	更好的方法：
 		更新class,css里预留一个css设定．
 		obj.setAttribute("class",xxx)　　or obj.className=xxx . obj.className += xxx如果原来有的话，可以写成函数
+		style.display: none/block;可以用来调节是否显示某个块，这样可以在点击某个链接onclick的时候选择显示某个块
 
 时间控制:
 	res = setTimeout("function_call_str()", time) 只有一次
@@ -66,4 +67,13 @@ dom 与　css: <a style="color:red; font-family:xxxx"></a>
 	parseInt 忽略非数字
 	parseFloat  只有事先用css或者dom分配过style字段，才有用
 
+字符串匹配：
+	string.indexOf(substring) 如果substring在string里面，返回位置，否则返回-1
+	string.split(splitstr) 可以分割字符串
 
+form 对象
+	这个是html dom对象 他的length elements等属性是专门内部属性的，而不是childNodes一样的泛用节点，指标是input，
+	textarea等节点，方便
+
+压缩：
+	http://closure-compiler.appspot.com/home

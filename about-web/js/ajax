@@ -2,6 +2,8 @@
 request = getHTTPObject()
 	这个有XMLHttpRequest, ActiveXObject("Msxml2.XMLHTTP.6.0/3.0/无")
 request.open("GET", url, true(是否异步))
+request.setRequestHerder("xxx", "bbb"); 设置头部某项
+request.send(data) 这个是urlencode之后的，用a=b&&c=d形式发送的字符串，如果post的话。
 request.responseText:返回的内容
 		responseXML 头部text/xml中的数据
 request.readyState 请求已经回应后的状态

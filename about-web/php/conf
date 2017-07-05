@@ -1,0 +1,11 @@
+首先安装按照ｗ３ｃ上的链接http://php.net/manual/zh/install.unix.nginx.php里面，
+首先安装php-fpm, php, nginx, 
+然后设置php.ini cgi.fix_pathinfo=0
+set  php-fpm.conf  listen = 9000,  user= www-data group = www-data
+set nginx  
+	1 location  index 加上index.php
+	2 location \.php 内 可以设置ｐｏｒｔ，主要是设置一个root,因为ｂｕｇ，
+	其他地方的ｒｏｏｔ不管用，这里也要ｒｏｏｔ　/usr/share/nginx/html,
+	fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;  修改成这样，添加www-data用户和组，然后启动．
+
+	<?php php-info() ?> 进行测试 ,应该显示版本

@@ -37,6 +37,4 @@ function displayAbbreviations() {
 	document.body.appendChild(dlist);
 }
 
-
-
 addLoadEvent(displayAbbreviations);

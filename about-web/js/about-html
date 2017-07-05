@@ -9,12 +9,12 @@
 tag:
 <ul>(<ol>)<li>
 <abbr>xxx</abbr> 表示缩略词，浏览器的显示模式不一定一样
-<dl> <dt> <dd>  表示　列表，　每项标题，　每项描述
+<dl> <dt> <dd>  表示　列表，　每项标题，　每项描述 , 这个是一列到底的形式css可调整
 <blockquote cite=xxxxx>  用于引用，ｉ并且cite告诉你引用的网址
 <sup> 装饰用的，放在<a>外面
 		<a href="" accesskey="1"></a> 这个表示快捷键，如果<alt-1> 会有效果
 
-<table>
+<table> 这个是表格，像sql表一样的
 	<thead>
 		<caption></caption> 表名j
 		<tr>表头
@@ -29,6 +29,8 @@ tag:
 		</tr>
 	</tbody>
 </table>
+
+<label for=xxx> 这个标签放在input一起，可以有一些浏览器帮助功能
 
 event:
 	onmouseover 悬停  相当与 css   :hover 伪类属性
@@ -56,3 +58,5 @@ html5:
 			control 必须，这样可以有控制条
 
 	
+			<nav>中的链接<a href="#xxx"></a>
+				在后面的section id="xxx" ,如果页面太长，那么点击href会跳转到id的地方

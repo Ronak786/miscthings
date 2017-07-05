@@ -5,6 +5,7 @@ alert 显示
 数组
 	var arr = Array(4) or Array("a","b") or [1,2,3,4]
 		关联数组　arr["hehe"] = "haha"
+		array.join('&') 可以链接数组
 
 对象
 	var obj = Object() or new Array()
@@ -47,6 +48,7 @@ obj
 	window.onload = func 页面载入的时候会调用js	
 		这个属性的调用代表页面加载完毕,可以在里面设定javascript函数的执行
 	window.open("url", "name", "attr(xx=bb,yy=cc)") 可以打开一个新的窗口
+	window.localtion.href 表示当前网页url
 
 平稳退化：即使浏览器不支持js，也可以正常显示
 	伪协议： 这个不行
@@ -63,6 +65,10 @@ obj
 
 	onkeypress 这个用于键盘按下　，可以和鼠标的放在一起
 		这个尽量不要用，所有ｋｅｙ都会反应，不好, mouse 可以识别key的
+
+	onfucus 当聚焦某个框的时候
+	onblur当取消聚焦的时候
+	form.onsubmit 可以加入提交时候运行的函数
 
 
 
