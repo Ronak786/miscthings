@@ -20,3 +20,129 @@ echo 输出文本, 可以内嵌在ｈｔｍｌ里面 ,输出的就是ｈｔｍ�
 	$GLOBALS[index] 也可以访问全局值
 
 	static 也是局部的，不过不会消失
+
+output:
+	echo 输出多个字符串，无返回 , 引号内可以$，放变量的，多个串逗号分割
+	print 输出一个字符串，返回１
+
+整数：
+	var_dump($x)可以调试显示对象类型和值
+	-12, 032, 0x12 十　八　十六进制都可以
+浮点数：
+	1.2, 2.5e2, 5e-2, 这种
+string:
+	字符串
+bool:
+	true, false 可以 and ,or, xor, && || !
+array:
+	a = array("1","2","3");
+	count(array) 长度
+	关联数组：
+		$age=array("peter"=>"23","ben"=>"24");
+		或者 age['peter']="23";
+
+		遍历：
+			foreach ($age as $x=>$y) {}
+		排序：
+			sort,rsort 对索引数组
+			asort arsort krsort ksort 对关联数组 a对值，k对key
+类：
+	class Car
+	{
+		var $color;
+		function Car($color="green") {
+			$this->color =  $color;
+		function what_color() {
+			return $this->color;
+		}
+	}
+	function print_vars($obj) {
+		foreach (get_object_vars($obj) as $prop => $val) {
+			echo "\t$prop = $val\n";
+		}
+	}
+	$herbie = new Car("white");
+	print_vars($herbie);
+
+	这样可以打印对象，属性用->,变量要声明
+
+null:
+	null 空值
+
+
+字符串函数：
+	strlen, strpos(str, substr)
+	. a.b 就是ab连接起来
+
+常量：不需要$
+	define("name", value, true/false) 是否大小写不敏感,默认false,就是敏感的
+	echo name 即可
+
+
+数组运算：
+	+ 联合，不去重
+	== ！= 相等不等
+	=== ！=== 全等 表示顺序也一样，不太明白，先不管
+
+
+控制：
+	if...elseif...else
+	switch($xx) 
+	{
+	case 1:
+	break;
+	case 2:
+	case 3
+	default:
+	break;
+	}
+
+	while,
+	do. ....while
+	for (xxxx);
+	foreach ($array as $var) ;
+
+函数：
+	function sum($x=2,$y) {} 可以设默认参数
+	isset
+	empty 都是内置函数
+
+超全局变量：
+	任何地方都可以直接访问：
+	$GLOBALS['VAR'] 可以访问所有全局变量
+	$_SERVER 保存报头的信息 要引号
+		PHP_SELF, SERVER_NAME,HTTP_HOST, HTTP_REFERER, HTTP_USER_AGENT, SCRIPT_NAME
+		REQUEST_METHOD = 'POST' OR 'GET'
+	$_REQUEST['var'] 可以获得对应的form上传的变量，在action里填入对应的网页即可
+	$_POP 和上面一样用，针对post
+	$_GET 这个在get请求的时候也可以获取参数，具体的get请求是就<a href="xxxx?zz=aa&bb=yy"></a>这种
+
+		这里的流程，get post之后，action的内容整个会被回传回来,里面可以是网页，可以是只有php，我觉得这个是针对
+			ajax异步加载用的
+
+get and post:
+	get 信息全在url里，所有人可见，而且有字符数限制
+	post 信息不可见，无限，但是不能添加书签
+
+input type:
+	name:<input type="text" name="xx">
+	area:<textarea name, rows="5" cols="50">默认值</textarea>
+	单选：
+		<input type="radio" name="" value="">man
+		<input type="radio" name="" value="">woman
+	默认值：
+		设定默认值可以让他显示之前填入的值，用php就可以实现,action要选原来的页面，不然没有意义，返回的页面不对
+	
+
+正则表达式：
+	preg_match(pattern, $var);可以判断是否符合
+
+安全相关：
+	<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF");?>">
+		htmlspecialchars 这个用来防止用户恶意键入javascript代码，没有的话，如果用户输入的网址
+		使用后面加javascript的代码的，就会执行 nginx 不会执行，代码有问题？？
+
+	获取的字符串使用trim删除空白字符，stripslashes删除反斜杠，然后htmlspecialchars,这样返回就安全了
+
+	服务端检测，这个用if ($_SERVER["REQUEST_METHOD"] =="POST") 来判定，表明已经提交
+	

@@ -77,3 +77,7 @@ form 对象
 
 压缩：
 	http://closure-compiler.appspot.com/home
+
+编码：
+	encodeURI 编码 decodeURI解码，但是不会动内部标准字符，比如http://
+	encodeURIComponent decodeURIComponent 这个把所有特殊字符全部改掉，包括://
