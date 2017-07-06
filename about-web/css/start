@@ -1,0 +1,101 @@
+选择器：
+	类型选择，
+	群组选择 h1,body,h2 {
+	包含选择  h1 span {
+	子选择  h1>span  这个用于仅仅第一代选择
+	id selector   #id
+	class selector  .class
+	组合  h1#id   h1.class  h1 #id,   #id h1
+	* 通配选择
+
+
+伪类：
+	:link 未访问样式
+	:hover 悬停
+	:active 点击中
+	:visited 已访问
+	:focus 输入焦点
+	:first_child 第一个子对象
+	:first 页面的第一页
+
+伪对象：
+	:after 设置之后
+	:before 设置之前
+	:first-letter 第一个字符
+	:first 对象第一行
+
+单位：
+	px 像素
+	em 字体尺寸
+	ex 当前文本相对高度
+	pt 磅
+	mm 毫米
+	in 英寸
+	cm 厘米
+	rgb 颜色  color:rgb（244,244,244）， rgb（12%，100, 5%）   #000fff(三个8位） color:blue
+
+应用：
+	<h1 style="xxxx;xxxx;xxxx;">
+	<head><style type="text/css"> xxx;xxx;xxx;</style></head>
+	<link rel="stylesheet" href="style.css" type="text/css" />
+
+优先级：
+	行内， head内， 然后才是外部
+	id优先于class
+	基本上越特定的越大
+
+	同一个样式里的重复设置，优先后面的，不过可以color:blue;!important  来提升优先级别
+
+/******/注释
+
+
+span:行间区块定义, 应用之后，后面的内容会自动链接在旁边，这个没有margin等边框属性的
+div:
+	默认block状态，也就是占据一行
+	inline对象是允许下一个对象与之同一行的
+
+	主要诀窍：
+		分方块，先一个大的container_div,然后内部，从上倒下，然后从左到右，
+
+float:
+	这个属性决定了下一个目标是贴近还是另其一行显示
+	浮动就是当前对象脱离文档流（但是会占个位置）的周边全部空出，下一个文档流对象可以紧密的流入空隙
+		除了不能覆盖当前浮动到的位置外，可以当作上个浮动对象不存在，侵占他浮走的位置
+	clear:left:
+		拒绝浮动，这个在全部浮动后导致效果不对的时候，新的元素想另外重新开始的时候使用（因为
+			上一个元素的浮动会导致当前元素浮上去，）
+			可以和float一起用，设置当前的浮动，那么接下来的元素还是会浮在当前旁边的
+		或者设置一个空div, 然后clear:both
+
+position: absolute;
+	绝对定位 z-index:1; 这个设定覆盖优先级，大的优先
+		relative:
+			存在一个虚假的原始位置，其他元素还是想对于他的原始位置继续定位，覆盖也不管，
+			而当前元素的设置top left值都是想对于自己的原始位置的
+			嵌套，那么都是相对定位了
+			不设定top left的relative仍然是一个浮动元素
+				一个relative中的absolute是想对于父亲进行绝对定位的意义在于可以独立覆盖，
+				但是父亲要设定top left
+
+boxxing model: 这个信息不会继承给子  top right bottom left
+	一个盒子：
+		width+2*padding+2*border+2*margin 内边距+边+外边距,
+			后面这些值设定后都会额外增加，因为width固定了必须有这个大的内部可用空间，
+			所以即使padding也会增大内部填充空间
+			只有ie5只会增加外边据，其他设置都是缩小width来达到的
+
+		margin叠加：
+			上下两个box，margin会按照最大的一个设置，但如果设置了float，就不会叠加(经实验，主要是后面那个影响）
+			左右两个浮动时候，ie6会叠加,设置display:inline;来禁止
+
+注意
+	如果之前利用a b c 做了某些操作，如果c有个id，想利用id的操作覆盖，那么要
+		a b c#id 直接id无法覆盖，好像优先级不够
+
+横向导航：
+	这里使用ul li 每个li float left，然后每个内部的a属性都要display：block，这样才能对它设置margin
+		默认是text的inline属性，只能挨着
+		li { list-style:none} 用于去掉前面的点！！}
+
+
+

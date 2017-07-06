@@ -1,0 +1,89 @@
+#layout {
+	width:408px; /*这个需要计算(200+2*2)*2*/
+	margin:0px auto;
+}
+#left {
+	background-color:#cccccc;
+	border:2px solid #333333;
+	width:100px;
+	height:300px;
+	position:absolute;
+	top: 0px;
+	left: 0px;
+}
+#right {
+	background-color:#cccccc;
+	border:2px solid #333333;
+	width:100px;
+	height:300px;
+	position:absolute;
+	right:0px;
+	top:0px;
+}
+#center {
+	background-color:#cccccc;
+	border:2px solid #333333;
+	height:300px;
+	margin-left:104px;
+	margin-right:104px;
+}
+
+body {
+	margin:0px;
+	padding:0px;
+}
+
+#divGroup {
+	margin: 30px 0 0 50px;
+	position: relative;
+	border:1px solid #000;
+	width: 400px;
+	height:200px;
+}
+
+#a,#b,#c,#d {
+	background-color:#eee;
+	border:2px solid #aaa;
+	width: 100px;
+	height: 100px;
+	margin: 2px 2px 2px 0px;
+	float: left;
+}
+
+#b {
+	position: absolute;
+	left: 10px;
+	top: 30px;
+}
+
+#nav li {
+	list-style:none;
+	float: left;
+}
+
+#nav li a{
+	color: #000000;
+	text-decoration:none;
+	padding-top:4px;
+	display:block;
+	width:97px;
+	height:22px;
+	text-align:center;
+	background-color:#ececec;
+	margin-left: 2px;
+}
+
+#nav li a:hover{
+	background-color:#bbbbbb;
+	color:#ffffff;
+}
+
+#nav li a#current {
+	background-color:#2788da;
+	color: #ffffff;
+}
+
+#nav {
+	height:26px;
+	border-bottom:2px solid #2788da;
+}

@@ -1,0 +1,28 @@
+background-color  背景色
+border：2px solid #333333 设置边框
+width: 100px(80%); 
+	注意这里的是内部的宽度，实际总占空间还有各种边距，线宽，所以不能几列合成100%，会超出去的
+	固定单独一列,只要设置一列宽度，另一列不管就行了(但是另一列不能设置float，不然很小）
+height: 300px;
+margin: a b(auto)  一个是四边，两个是上下，左右，auto表示一样
+		不会自动跑到屏幕中央，因为默认是从上倒下的，下边据一直是0
+float:none/left/right;
+	left表示浮动到左边，
+	如果上个元素是块，那么另其一行，否则挨在上个元素旁边
+position:absolute; 这个不会影响其他的元素定位，已经分离出来了，使用top  left right bottom(哪个近，方便就哪个）
+			所以其他元素会被他们覆盖
+
+高度自适应：
+	html,body{
+	margin:0px;
+	height:100%;
+	}
+	#id {
+		height:100%;
+	}
+	这样才有效，首先设置最高的父元素，因为其他都是在这个内部获取相对空间的
+
+border-bottom: 下划线 2px solid #ffffff
+
+
+
