@@ -8,3 +8,9 @@ create table name (xxx) set utf8
 		而如果使用{0} 在格式化串里面的话，.format插入的值是没有引号的
 set global validate_password_policy=0; 让密码判定强弱基于长度
 set global validate_password_length=1　然后让密码可以只有一位，默认８位以上
+
+改变列：
+	alter table baidumeta change  saveURL saveURL varchar(225) default null;
+添加属性唯一：
+	alter table baidumeta  add unique (saveURL); 
+	注意没有引号，而且最大767字符，utf8有三倍，所以只能200多
