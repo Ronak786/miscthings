@@ -31,3 +31,6 @@ yield
 scrapy-redis:
 	这个有个pipeline，不一定要加的，加了之后item会添加一个回到redis队列里面去，用的rpush，lpop这个要注意，这样才顺序
 
+
+RedisSpider: make_request_from_data 方法重写，可以操控rediskey里的数据
+	自己实现到底get post 或者组合非url, 每次调用应该返回一个Request类
