@@ -34,3 +34,4 @@ scrapy-redis:
 
 RedisSpider: make_request_from_data 方法重写，可以操控rediskey里的数据
 	自己实现到底get post 或者组合非url, 每次调用应该返回一个Request类
+	在里面使用scrapy.FormRequest 形成post 见 https://doc.scrapy.org/en/latest/topics/request-response.html#topics-request-response-ref-errbacks
