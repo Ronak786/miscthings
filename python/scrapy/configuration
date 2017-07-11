@@ -1,0 +1,33 @@
+所有操作：
+请求 scrapy.Request, scrapy.follow(有join功能）
+settings: 对应表的名字和spider的名字， 表要事先创建好
+middleware， download的，主要目的是针对名字是google的那个设定proxy，
+	使用privoxy设置，本地转sock到http
+pipeline
+	imagepipeline：
+		get media request 这个返回request的列表，可以设置meta，这个用来标定type，如果用class的属性
+		会产生错乱，用这个好, 在response里可以查到
+		item completed 根据图片下载完成的的情况进行赋值
+		file path  这个用来产生特定路径
+	store直接存储
+		使用from crawler class方法开始，
+
+各种匹配可以用lxml。html。fromstring, re   或者直接的response。xpath， 
+	有些不好解析，会用到//div[contains(@class,'pattern')]
+	有时候urlopen比requests有用，只有他能解析出来，
+	使用urllib.parse.urljoin 连接
+		urllib.request.Request 来设置url 和header
+		urllib.request.urlopen 打开上面的request对象，然后read().decode('utf-8')就可以得到页面了
+
+yield 
+	的停止，raise StopIteration, 
+	指定的parse函数本人一定要yield一个东西，他的子调用函数的yield没用的？,干脆生成另外一个request好了
+	
+设置更改：
+	每个spider可以自己设定，在custom_settings = {xx:xx }可以这样在类里面设置	
+文档：
+	这个要注意，最好和当前版本一样，或者找左上角lastest的版本，英文为好
+
+scrapy-redis:
+	这个有个pipeline，不一定要加的，加了之后item会添加一个回到redis队列里面去，用的rpush，lpop这个要注意，这样才顺序
+
