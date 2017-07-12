@@ -19,12 +19,17 @@ pipeline
 		urllib.request.Request 来设置url 和header
 		urllib.request.urlopen 打开上面的request对象，然后read().decode('utf-8')就可以得到页面了
 
-yield 
-	的停止，raise StopIteration, 
-	指定的parse函数本人一定要yield一个东西，他的子调用函数的yield没用的？,干脆生成另外一个request好了
-	
+post:
+	scrapy.FormRequest,
+	param:
+		formdata 字典，
+		不需要写method=post，自动就是的
+		一般url是一样的，所以要设置，dont_filter=True防止过滤
+
 设置更改：
 	每个spider可以自己设定，在custom_settings = {xx:xx }可以这样在类里面设置	
+	DOWNLOAD_TIMEOUT = 40 这个可以更改，是超时时间，时常注意
+
 文档：
 	这个要注意，最好和当前版本一样，或者找左上角lastest的版本，英文为好
 
@@ -35,3 +40,12 @@ scrapy-redis:
 RedisSpider: make_request_from_data 方法重写，可以操控rediskey里的数据
 	自己实现到底get post 或者组合非url, 每次调用应该返回一个Request类
 	在里面使用scrapy.FormRequest 形成post 见 https://doc.scrapy.org/en/latest/topics/request-response.html#topics-request-response-ref-errbacks
+
+redirect:
+	302 在scrapy中的重定向会把post改为get，这个会在algaebase网站出现问题，
+	scrapy/downloadermiddlewares/redirect.py 里面进行一些修改，把302加入不修改method的重定向即可
+
+关于parse的返回：
+	这个函数必须本身要有返回，request或者item or None，如果调用的子函数来进行这些操作的，那么就
+	用for res in subfunc（xxx）：
+		yield res 这样来返回
