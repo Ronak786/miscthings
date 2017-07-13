@@ -1,0 +1,47 @@
+session:
+	s= requests.Session()
+	s.get xxxx   这个会在session内部保留cookie，保留通过session加入的变量
+		s.auth('user','pass')
+		s.headers.update(dict)
+		如果同时func参数里指定了headers，那么是叠加的或者更新的,如果想删除，我觉得是指定None
+
+手动request:
+	from requests import Request, Sessoin
+	s = Session()
+	req = Request('GET',url, data=xx. headers=xxx)
+	prepped = s.prepare_request(req)  or prepped = req.prepare() 前者有session保存功能
+	prepped.body = 'modified content'
+	prepped.headers['xxx'] = 'yyy'
+	resp = s.send(prepped, stream=stream, verify=verify,proxies=proxies, cert=cert, timeout=timeout)
+	resp 就是你要的response
+
+verify: set to False to ignore, default is True
+	这个是文件路径
+	用来进行认证的，有些网站需要ssl认证
+	REQUESTS_CA_BUNDLE 环境变量也可以
+	If verify is set to a path to a directory, the directory must have been processed using the c_rehash utility supplied with OpenSSL.
+	in session:  s.cert='filename'
+
+headers:
+	keep-alive is auto for you(thanks to urllib3
+	content-length: 这个是内容长度，可以检测
+	requests.get(stream=True) 会先不下载body部分，访问r.content的时候才会下载，好处是可以检验
+		长度，然后判断再下载
+	r.iter_content()
+	r.iter_lines() 这两个可以指定一定的大小分批下载
+	r.close() to close that request for stream, 
+		这个要注意，设置了stream后，要读完内容，否则链接不会还回pool造成泄漏
+		so with get(xxx) as r:
+			sss   is recommended
+
+stream upload:	
+	with open("file", "mode") as f:
+		s.post(url, data = f)
+	同样支持iterable 返回形式的上传
+
+	reponse's chunk load:
+		response.iter_content(chunk_size=None/number)
+
+	post多个：
+		r.post(url, files=[ ('labelname', ('name','binary data', type)), (xxx),(xxx)])
+			单个的可以使用字典里value作为tuple
