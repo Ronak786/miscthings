@@ -1,0 +1,75 @@
+r = requests.get(url)
+r = requests.post(url, data=dict())
+r = requests.put(url, data=dict())
+r = requests.delete(url)
+r = requests.head(url)
+r = requests.options(url)
+
+GET with params: None value will not be added
+	r = requests.get(url, params=dict()) http://www.baidu.com?xx=yy&kk=bb....
+		dict = {a:1, b:[2,3]} then url?a=1&b=2&b=3
+	headers: response headers,  requests.get(url, headers=headers) dict()
+		should use string bytestring or unicode(not recommended)
+		precedence:
+			auth= > .netrc > headers=
+	r.request.headers: sending headers
+
+	cookies:
+		requests.get(url, cookies=dict)
+
+	cookieJar: 也可以直接用
+		jar = requests.cookie.RequestsCookieJar()
+		jar.set('xxx','yyy',domain='xxx',path='xxx')
+		requests(url, cookies=jar)
+
+	url:
+		r.url
+	hisotry:
+		r.history  这个是请求过程中产生的重定向中的每个request，从老到新
+
+	redirect:
+		requests.get(url, allow_redirects=False)  default is True, but requests.head(default is False)
+
+	timeout: 指的是server没有在timeout时间内响应，而不是没有传递完成
+		fail raise requests.exceptions.Timeout
+
+	exceptions: baseclass: requests,exceptions.RequestException
+		timeout, toomanyredirects
+
+POST:
+	data = dict() or data = ((key,value), (key,value))
+	or data = json.dumps(dict or tuple)  仅仅加了引号，表示一个字符串，这时会直接上传
+	or request(url, json=data) 即可
+
+	upload file:
+		request.post(url, files=dict)   dict={'file':open('xxx','rb')}
+			or dict={'file':('filename',open(xxxx), 'application/vnd.ms-excel',{'Expires':'0'})}
+
+response:
+	r.text content(will auto decode using r.encoding, you can change that)
+	r.content: raw content, used to inspect encoding infos
+		gzip and deflate done auto for you
+	r.json()  
+		treat response as json code 
+		if not json, raise ValueError
+
+	GET RAW content from web:
+		r = requests.get(url, stream=True)
+		r.raw.read(10)  read 10 bytes
+
+		download raw:
+			with open(name, "wb") as f:
+				for chunk in r.iter_content(chunk_size=128):
+					f.write(chunk)
+
+status:
+	r.status_code == requests.codes.ok 判定200
+	r.raise_for_status() 
+		use this to raise exception when judge error manually
+
+	r.headers dict, case-insensitive
+	r.cookies dict
+
+
+codecs:
+	what is this?? related with encoding
