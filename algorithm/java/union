@@ -1,0 +1,32 @@
+1 quick find:
+    union q p : everybody whose value == q, change to q, os O(N)
+    find just test, so O(1)
+quick union:
+    union p q: search root of q,p, if same, do not do,
+                if not, choose p's root to specify to q's root
+    find : search both root to test equality
+weighted union:
+    union: maintain extra array record current group's count,
+            choose smaller ones to connect to bigger ones
+        depth at most can be lg(N)
+        prove:
+            when can node x increase depth?
+            when x's T merge into T2, so T2 is bigger than T,
+            and total tree is bigger than 2*T, we can do ln(N) times 2*T,
+            so at most lg(N) depth
+path compression:
+    when find, make search passed every node  directly point to root , to compress path
+    two-pass:
+        in second pass, make every one point to root
+    one-pass:
+        during find, make every one point to grandpa, so halve the current find path
+    both fast as each other
+
+LINEAR algorighm no exist
+
+
+application:
+    dynamic water problem:
+        whether water from square block's top can flow to bottom,
+        use union-find, we can also add two virtual node on top && bottom
+        to connect both top and bottom all nodes, so we can just check this two nodes
