@@ -1,0 +1,20 @@
+run from command line:
+	python -i to run and enter into interactive mode
+	python -m module arg to run a module
+	python -c "command arg"
+
+sys.argv:
+	a list of strings, start with script name,so len at least one
+
+source text:
+	default utf-8,
+	declare first-line/secondline(if first is #!/bin/python), 
+			#-*- coding: utf-8 -*-
+
+coding:
+	module codecs
+	这个包负责加解码，
+	编码的意思是把文本字符串变成计算机认识的byte类型，所有编码格式的目标都是byte格式，
+	而解码的意思是把byte转换成str，如果用错解码格式，有时候能解出来，有时候不能,因为
+		不符合对应的编码规则,所以string有encode方法，byte有decode方法
+	chr() ord() 分别进行单字符到unicode，unicode到单字符转换
