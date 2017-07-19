@@ -1,0 +1,97 @@
+System.exit(num) 用来异常退出，否则不需要返回值的main直接就是0
+System.out.println() .print() 这个不换行
+
+comment:
+	/**   */ 这种是文档字符串，会生成文档
+
+data type: 
+	int 4, short 2, long 8(后面加 L), byte 1, char 2(used for unicode), 
+	0x for 16, 0 for 8, 0b for 2进制
+	数字之间可以加 _  1_000_000 来让人容易识别
+	java 没有无符号数
+	float 7位有效 末尾F
+	double 15位有效 末尾D或者没有 (浮点不一定精确，每种进制都有表示不精确的数存在）
+		Double.isNaN(xxx), Double.NaN, Double.POSITIVE_INFINITY Double.NEGATIVE_INFINITY
+	小数的16进制： 0x1.0p-3  整数16,小数十进制，表示的2进制的小数 这里2^(-3)
+		大于0科学计数法用e而不是p
+	char: 建议不使用，而是抽象数据类型表示
+		单个字符，'A' 单引号 or '\n' '\b'  '\u0008'
+
+	unicode:
+		这个是16位，但是后来又不够了，本身超出16位，出现了双16位表示,使用utf-16编码，可以识别到这是一个双字节
+
+	类型计算转换：
+		double, float, long, int (一定会至少转成int）
+			int到float转换可能会损失精度
+		(type)强制转化，截断小数
+		Math.round() 四舍五入
+		boolean 不要转换！
+
+	enum Size {xx,yy,zz};
+	Size aa = xx;(null;) 这样使用枚举
+
+变量名：
+	可以是字符，unicode，使用Character.isJavaIdentifierStart isJavaIdentifierPart 来检测
+	int i, j; is not recommended, seperated declared is better
+
+	final 定义常量，一旦赋值第一次，后面就不能赋值了
+
+运算：
+	除法如果都是整数，就是结果整数，
+	浮点除法出现无穷或者NaN
+	strictfp 这个用于表示中间计算会截断精度，严格使用非扩展精度，不管这个
+	& | ^ 应用于bool则得到bool
+	>> >>>(无符号移动）  <<  
+		超出位数的移动，首先会取模，然后才移动
+
+	Math.sqrt  .pow, Math.PI, Math.E   
+	使用import static java.lang.Math.* 就可以直接使用这个静态方法了
+
+	& ^ | 比 && || 高
+	>> << 在+-下面 >= <= 上面
+
+字符串： String
+	都是 unicode
+	.substring(0,3) ==  [0,2]
+	拼接 + ,非字符串自动转化，类要自己写方法，不然是基类的转化
+	.equals  相等 true false
+	== 检验是否是指向同一个位置
+	.compareTo 比较，可以产生0 -1 1
+
+	"" 空串，.length() == 0, .equals("")
+		null 表示空对象，首先要检验这个，再上面
+	
+	代码单元
+		有的字符要两个单元，length返回的是单元数量,charAt()
+	代码点：
+		一个点就是一个字符，str.codePointAt(), offsetByCodePoint(0, i), codePointCount(0, length())
+	遍历：
+		int cp = str.codePointAt(i);
+		if (Character.isSupplementaryCodePoint(cp)) i += 2;
+		else i++
+
+		i--;
+		if (Character.isSurrogate(str.CharAt(i))) i--;
+		int cp = str.CodePointAt(i);
+
+		使用codepoint 相关的方法比charat要好
+
+	StringBuilder 用于string构造,避免每次+都产生一个,append, toString()
+
+输入输出：
+	java.lang.Scanner ,不是java 。lang 一定要import
+	out:
+		System.out.println()
+	in:
+		Scanner scan = new Scanner(System.in);
+		scan.nextLine(); next()(word) nextInt() nextDouble()
+	读密码：
+		Console con = System.console();
+		String str= con.readLine("xxx") 读用户名
+		cons.readPassword("xxx")会保证不泄漏密码,不回显
+
+	printf:
+		%a 16进制浮点 %h hash, %b bool, %c char, %tx time %,.2f 可以添加逗号分割符号
+		%d%<x <表示格式化前面的数值再一次
+
+	curpage: p74

@@ -1,0 +1,3 @@
+tutorail : http://docs.oracle.com/javase/tutorial/getStarted/cupojava/
+
+set CLASSPATH=xxxx  java xxxx
