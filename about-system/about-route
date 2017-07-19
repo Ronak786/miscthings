@@ -1,0 +1,2 @@
+ip route del default 删除默认路由
+ip route add default(xx.xx.xx.xx/xx)  via  网关  dev yyy (网关就是yyy的ip对应的网关）
