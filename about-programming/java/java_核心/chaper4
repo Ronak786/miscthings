@@ -1,0 +1,16 @@
+类的关系
+	use-a 函数内使用其他类，减少就减少耦合
+	has-a
+
+null:
+	表示没有任何引用
+
+Date
+GregorianCalendar 后面这个用于日历，可以定义时间
+	转换 GregorianCalendar a = new GregorianCalendar(), 
+		Date time = a.getTime()
+		a.setTime(a)
+		a.get(Calendar.MONTH)
+		a.get(Calendar.DAY_OF_WEEK) 这些用于获取
+		a.set(xx, 200)
+		a.add(xx,3) 用于设置

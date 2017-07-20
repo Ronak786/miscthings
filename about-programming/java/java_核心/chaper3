@@ -35,6 +35,7 @@ data type:
 	int i, j; is not recommended, seperated declared is better
 
 	final 定义常量，一旦赋值第一次，后面就不能赋值了
+	块作用域不能声明和外部同名的变量
 
 运算：
 	除法如果都是整数，就是结果整数，
@@ -77,6 +78,7 @@ data type:
 		使用codepoint 相关的方法比charat要好
 
 	StringBuilder 用于string构造,避免每次+都产生一个,append, toString()
+	String.format 产生字符串而不是输出
 
 输入输出：
 	java.lang.Scanner ,不是java 。lang 一定要import
@@ -89,9 +91,58 @@ data type:
 		Console con = System.console();
 		String str= con.readLine("xxx") 读用户名
 		cons.readPassword("xxx")会保证不泄漏密码,不回显
+	文件：
+		Scanner(Paths.get("file"))  接受一个File类型
+			Paths.get()根据名字构造File对象
+		PrintWriter 输出
+		Scanner ("xxx") 以数据为输入，而不是当作文件名！！
+		System.getProperty("user.dir"); 获取当前路径
 
 	printf:
 		%a 16进制浮点 %h hash, %b bool, %c char, %tx time %,.2f 可以添加逗号分割符号
 		%d%<x <表示格式化前面的数值再一次
+		Formattable 实现formatTo 这个如果有，会被%s调用，不然没有
+		%num$s   $之前%之后部分表示从1开始的索引，就是后面字符串的索引，
+			这样可以重复利用单个字符串进行不同的格式化，在%txxx的时候有用，对象是new Date(),
+				%tc %tB ...
 
-	curpage: p74
+
+循环：
+	循环判断注意浮点，不一定准确的
+	for (int ele: a) : a 是数组或者实现了Iterable接口的类，如ArrayList
+	对多维数组
+		for(int[] row: in a)
+			for(int b: in row)
+				xxx
+
+switch:
+	label : int short byte char, enum, 字符串字面量
+
+break label;
+continue label;
+	break 可以任意跳，标签放好就行了label: ，但是只能跳到块的外面，不能跳入
+	continue可以跳到任意循环首部
+
+java.math.BigInteger, BigDecimal
+	BigInteger a = BigInteger.valueof(100) 赋值
+	a.multiply , a.add a.valueOf(long x);
+
+数组:
+	int[] a = new int[xxx];
+	打印： print(Arrays.toString(a))
+			Arrays.deepToString() 对二维数组
+	初始化 int[] aa = {xx,xx,x,x} or new int[2] or = new int[] {xxx,xx,xx,xx}
+		允许0长度数组
+	复制：　Arrays.copyOf(a, a.length) 长度是新数组的长度，可以增加,
+			多余的用０，　ｆａｌｓｅ填充，否则截断
+
+	main的String[] args 都是参数，没有程序名，和ｐｙｔｈｏｎ，Ｃ不一样
+	sort: Arrays.srot()
+
+	随机数 Math.random
+	Arrays.binarySearch(二分搜索）
+	Arrays.fill(a, v) 设置默认值
+	Arrays.equals(数组值相等）
+
+	多维数组可以先声明行，不管列 int[][] a = new int[20][]
+		然后每列可以单独分配不一样的
