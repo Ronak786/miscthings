@@ -30,3 +30,13 @@ application:
         whether water from square block's top can flow to bottom,
         use union-find, we can also add two virtual node on top && bottom
         to connect both top and bottom all nodes, so we can just check this two nodes
+
+bitonic search:
+	双调数组， 这个可以利用3lgn时间，先找最大值，再两边搜索，来查找
+			还可以利用2lgn时间，这个只要明白：
+			二分搜索的本质不是全数组有序，而是要搜索的数的那一边要有序就行了，
+				所以双调数组，
+				如果key>hi, key > lo只要保证hi>lo，,那么如果key<mid, 那么hi那一侧就算有个上升波折，
+				因为上升期所有数都会大于你要的数，所以一定会被忽略的，这样可以在两边都
+				如果key 在lo hi之间，那么直接二分就行了
+					如果是其他情况，可以左右加两个数，造成上面的情况就行了
