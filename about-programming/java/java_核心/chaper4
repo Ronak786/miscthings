@@ -6,6 +6,7 @@ null:
 	表示没有任何引用
 
 Date
+DateFormatSymbols.getShortWeekdays() 用于获取一些当地的星期缩写，月份缩写之类的
 GregorianCalendar 后面这个用于日历，可以定义时间
 	转换 GregorianCalendar a = new GregorianCalendar(), 
 		Date time = a.getTime()
@@ -14,3 +15,96 @@ GregorianCalendar 后面这个用于日历，可以定义时间
 		a.get(Calendar.DAY_OF_WEEK) 这些用于获取
 		a.set(xx, 200)
 		a.add(xx,3) 用于设置
+		getFirstDayOfWeek() 当地最前的星期
+java.util.Random Random().nextInt(n) return [0, n-1] randomly
+	
+
+编译：
+	有连带编译功能，如果源文件新，也会更新
+	javac -cp , java -cp 来设定classpath
+
+public:
+	任何类任何方法都能用
+private:
+	自身可以使用
+	但是方法可以访问当前类的所有对象的私有属性（包括其他对象的，用来实现.equals...
+默认作用域：
+	默认是包作用域，默认包就是包含自己的文件(还有其他文件，如果没有声明的话，都是默认包？），如果声明了包．默认包内所有人都可以访问了，如果
+		没有显示表明
+
+final:
+	只能在构造的时候赋值一次，对基类有用，对引用没啥用
+	不可修改，但是System.out.setOut()可以更改，因为这个不是ｊａｖａ实现的方法，绕过了
+static:
+	属于整个类
+	static method 能用类名调用(也可以对象，不过不好），只能访问静态成员
+
+构造：
+	不要使用和类域同名的局部变量
+	构造不初始化的值自动初始化，所以ｆｉｎａｌ一定要初始化
+	如果没有构造器，默认一个空的构造器，
+		如果有构造器，那么不会用默认的
+
+	可以直接在类里面对类变量赋值，这样就不用构造函数赋值了，
+		还可以使用静态方法帮助赋值
+	this(xxx,xx) 可以在里面调用另一个构造器
+	还可以　用初始化块，会在对象初始化之前使用 (按顺序）
+
+	static { } 静态初始化块，类加载的时候定义, 可以在里面运行函数
+
+destructor:
+	不存在，可以定义finalize　修饰的方法，用Runtime.addShutdownHook 添加
+this 
+	用来指当前实例，可以区分全局局部变量,每个实例方法都有
+
+返回：
+	建议类不返回可变对象，可以返回obj.clone() 一个克隆
+
+main:
+	每个类都可以有一个，一个文件里的非共有类也可以有，编译后可以直接运行它的类的名字的，包括非公有类
+
+重载：
+	不同的方法，同样的名字，返回值不是重载判断标准，所以还是一样的为好
+		参数类型，数量是标准
+
+
+
+使用类：
+	１加上完整包名new java.util.Date();
+	2 import java.util.Date; 之后直接用, 只能导入一个包　不能import java.*
+		如果导入了不同包的同名，可以最后显示导入一个具体的，或者显示调用一个
+		导入静态: import static java.lang.System.*;
+	3 声明包，类可以使用所有包内的类
+
+包：
+	声明包，然后要把文件放到同样的子文件夹里　,然后在基目录，运行javac xx.java, 会自己找
+	加载 要用 java  xx.xx.xx.xx  的形式，
+
+类文件的存储：
+	可以在某个目录底下，呈现ｐａｃｋａｇｅ的层级，也可以打成jar,
+	classpath指定前者到目录，后者到ｊａｒ文件本身
+	rt.jar jre/lib jre/lib/ext 会被自动搜索，不用添加classpath
+	javac 会自动查找当前目录
+	java 如果设置了classpath 就不会自动查了
+
+
+文档注释
+/** ...  */
+里面　@param, @return  @throw 分别表示开始不同类型的描述,
+	@author @since @deprecated @see package.class#method(type) 可以跳转到具体的地方，
+	@see可以多个，放一起
+	@link 一样的规则
+包描述：
+	package.html <body>....<body>
+	overview.html 浏览导航的ｈｔｍｌ，也可写
+提取注释：
+	cd codedir; javadoc -d destdir packagename  pkgname  ...
+	可以使用html, 图片放在doc-files 子目录
+
+注意事项：
+	数据私有
+	要初始化
+	尽量用一个类代替过多的内部变量
+	不是所有域都要访问和修改器的
+	类功能分开，比如一副牌和一张牌
+	名字形容＋名词，访问ｇｅｔｘｘｘ，　修改ｓｅｔｘｘｘ
