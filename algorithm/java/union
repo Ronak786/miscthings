@@ -41,3 +41,14 @@ bitonic search:
 				如果key 在lo hi之间，那么直接二分就行了
 					如果是其他情况，可以左右加两个数，造成上面的情况就行了(似乎直接使用双边大于的条件也可以
 						进行下去，最终会变成双边大于的情况的)
+
+
+			The right way to solve the problem in time ~ 2log(N) is to proceed as follows (assuming the array is first in ascending order and then in descending order):
+
+		Take the middle of the array
+		Compare the middle element with one of its neighbor to see if the max is on the right or on the left
+		Compare the middle element with the desired value
+		If the middle element is smaller than the desired value AND the max is on the left side, then do bitonic search on the left subarray (we are sure that the value is not in the right subarray)
+		If the middle element is smaller than the desired value AND the max is on the right side, then do bitonic search on the right subarray
+		If the middle element is bigger than the desired value, then do descending binary search on the right subarray and ascending binary search on the left subarray.
+		In the last case, it might be surprising to do a binary search on a subarray that may be bitonic but it actually works because we know that the elements that are not in the good order are all bigger than the desired value. For instance, doing an ascending binary search for the value 5 in the array [2, 4, 5, 6, 9, 8, 7] will work because 7 and 8 are bigger than the desired value 5.
