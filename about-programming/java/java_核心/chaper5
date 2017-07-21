@@ -1,0 +1,105 @@
+继承：
+	xxx extends xx
+	子类不能访问超类的私有变量,需要super.getmethod() 利用
+		超类提供的访问方法来访问
+		超类的私有方法也不能访问，所以不会被调用到
+	super(xx,xx,xx) 调用超类构造器，如果没有，默认调用超类的默认空的，
+		如果超类定义过了构造但是没有空的那么报错,
+
+	调用构造器只能是第一句语句．．．所以super this只能用一个？试一下
+
+多态：
+	基类对象可以引用子类
+	数组也可以，但是这样如果子类数组赋值给基类变量，然后积累调用ｎｅｗ，
+		子类这边再操作会报错，这个要人工注意
+	编译器会列举所有找得到的同名方法，匹配类型，以及自动转化类型(int->double)
+		返回值不是标签，但返回类型可以是子类型
+
+	private static final 不可覆盖，只会调用那个
+
+	子方法不能低于超方法的可见性，public->public
+
+	final 类阻止继承 (方法自动ｆｉｎａｌ，但域不会）
+	ｆｉｎａｌ方法组织继承
+
+	yyy isinstanceof xxx 用来检测ｙ是否是ｘ类，用于强制转换基类到子类的时候
+		否则直接转换raise ClassCaseException
+
+抽象类
+抽象方法：
+	method 本身不用实现，子类继承后，如果也不实现所有，也要定义为抽象类
+		抽象方法不能实例化，但可以作为变量包含子类
+		没有抽象方法也可以是抽象类
+	抽象类抽象方法的作用：
+		就是利用父类变量，也可以访问子类，当然可以使用空方法，
+		但是这个机制更精准表示意图
+
+protected 对所有子类和同包其他类都可见
+	保护域，子类可以直接访问的，但是对其他人私有不可访问的域，不好，破坏封装
+	保护方法，子类受到信任，可以调用的父类的私有方法
+
+getClass:
+	获取当前类的类信息，可以用于比较
+
+equals:
+	obj.equals (这个会检测ｎｕｌｌ，如果没有返回a.equals(b))
+	检测：
+		this == obj true
+		other == null false
+		getclass != obj.getclass() false
+			如果拥有统一的语义，不存在继承问题，可以用isinstanceof
+		other = (you obj)obj
+		return object.equals(field, other.field) ....这个可以比较ｎｕｌｌ的情况
+	自反，传递　对称　一致（可反复调用）　obj== null -> return false
+hashcode:
+	这个和equals要一致，所以一起定义，可以利用equals中使用的域制作ｈａｓｈｃｏｄｅ
+	Objects.hashcode Arrays.hashcode 这两个 用来组合
+toString():
+	getClass().getName() + .....
+	数组打印需要Arrays.toString()
+
+标记：
+	@Override 表示当前在覆盖，如果其实没有覆盖，而是定义了新方法，会报错
+
+
+泛型数组：
+	ｊａｖａ可以运行时确定数组的大小
+	动态数组
+		ArrayList<xx> a = new ArrayList<xx>() 定义一个泛型数组到具体的类
+		a.add(xxx)
+		a.ensureCapacity() 这样可以优化操作，预先分配,或者构造的时候传初始数量
+		a.size, a.trimToSize() 这个会回收多余空间，不再增加时再用
+		使用set get add 来修改，获取，添加值, add可以带索引(insert), remove 删除
+			没有ａｄｄ过的地方是不能ｇｅｔ的
+		int[] k = new int[a.size()];
+		a.toArray(k) 可以转成正常数组
+
+对象包装器：
+	不可变对象，不能继承, 泛型的内部对象需要用到autobox,
+		会自动的
+	可以自动n++
+	注意比较的时候，要用equals ,
+
+可变参数：
+	可以将最后一个参数是数组的，定义为一个可变参数　String[] args -> String...args
+
+enum:
+	enum aa {a,b,c,d};
+	这个可以定义构造方法
+	enum aa {
+	 a("1"}, b("2");
+	 private aa(String abbr) {this.abb = abbr}
+	 public String getAttr() { return abb;}
+	 private String abb;
+	 }
+
+class:
+	e.getClass() ==  类名.class
+
+try { } catch (Exception e) {}; 可以捕获异常
+
+建议：
+	不要过度继承，只有基类方法都有用才继承
+	公共部分公共放
+	不用protected
+	不要改变预期的方法行为通过覆盖
