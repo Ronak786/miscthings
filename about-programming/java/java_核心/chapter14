@@ -1,0 +1,16 @@
+Thread.sleep() 可以休眠毫秒
+
+Thread
+	实现Runnable接口的run方法，
+	Runnable run = new xxx
+	Thread th = new Thread(run)
+	th.start() 
+	或者直接extends Thread,实现ｒｕｎ
+
+	中断：
+		Thread.currentThread().isInterrupted() 可以判断是否被请求中断
+		但是使用sleep 的会清除中断状态，而是抛出InterrruptedException,所以要捕获
+		没有的话则是普通的置位
+
+	可以设置优先级
+	setDaemon() 设置守护，这样会在不存在非守护的时候被自动关闭
