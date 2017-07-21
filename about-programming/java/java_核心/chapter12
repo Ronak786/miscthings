@@ -1,0 +1,27 @@
+泛型
+	当需要在一个类里面使用某种当前未知的类型的时候
+	A<type> xx = new A<type>()
+
+	public class A<T,U> {
+		private T xx }
+
+	泛型方法：
+		public static <T extends superclass & Comparable, U> T aa(T... a) 这里指可变参数
+			制定了允许的Ｔ是实现了那个接口的 ,注意是extends不是implements
+			如果还有父类，要放在第一个，可以多个用＆隔离
+		调用　obj.<String>aa(xx,xxx,xx)
+			<String>没有也可以，编译器会判断，有时候会报错,可以故意报错，看一些允许的类型
+
+	instanceof 只返回原始类型，就是extend之后的那个,一般是Object,所以泛型　里不能这个比较
+	不能创建参数化类型的数组，可以声明
+		a<T> [] = new a<T>[20] 右边不行
+		a<T>[] a = (a<T>[]) new a<?>[10];可以的
+		ArrayList<A<T>>这样比较好
+	静态上下文中不能用泛型里的T
+
+	通配符
+		<? extends xxx> 这个用来可以放在函数参数表里，因为两个父子类的泛型本身不是
+			父子关系，所以可以ｉ这样匹配
+		? super xx 代表他的任意父类
+		func(classname<?> p)
+			无限定通配

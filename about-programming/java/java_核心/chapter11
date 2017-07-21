@@ -1,0 +1,59 @@
+异常：
+	基类:Throwable -> error
+					-> exception -> runtimeexception -> arrayindexout / nullpointer
+								-> ioexception
+	function throws xxexceptino 表示声明我不能处理某个异常
+
+	抛出：
+		调用一个本身抛出异常的函数的时候
+		运行中出错，本身用throw new xxx() 抛出　这两种必须主动写明抛出
+			应该抛出的不是错误，不是运行时异常，这些要么不可控，要么可以避免
+
+		子类只能抛出更加特定的异常
+		父类无异常，子类也没有
+
+	可以定义自己的异常，继承Exception 或子类
+	捕获
+		try { } catch (Exception xxx) { } catch(IOException | RuntimeException e) {} 合并处理
+		xxx.getMessage, xxx.printStackTrace()
+
+	更改：
+		catch (Aexception e) {
+			Throwable se = new BException();
+			se.initCause(e);
+			throw se;
+			}  这样可以抛出一个修改过的另一个异常
+	finally:
+		保证执行
+		如果这里有异常，那么原来的异常就会覆盖掉
+
+	AutoCloseable 自动关闭接口，继承这个，
+		实现关闭的方法
+		在try(resource res = xxxx) 这样如果异常，最终会执行ｃｌｏｓｅ
+			这里的catch  finally 会在close之后执行
+
+建议：
+	不要过分细化异常
+	能测试就不要异常
+	早抛出，晚捕获为好
+
+assert:
+	assert x > 0: x; 这样可以看到错误报告
+	java -ea 启动assert(不用重新编译） java -ea:myclass  -ea:com.aa.bb  可以启动某个类或包的断言
+	用于一定不应该发生的情况
+
+
+日志：
+	Logger.getGlobal().info("xxx")
+	Logger.getGlobal().setLever(Level.OFF)
+
+	Logger logger,
+	Logger.getLogger("com.aa.bb") 获取或者创建日志
+	logger.setLevel(level.FINE)
+	logger.fine(xxx)
+	logger.warning()
+	logger.log(level, message)
+	logger.throwing(classname, methodname, exception) 记录异常
+
+	java -Djava.util.loggin.config.file 设定存储位置
+		main 中System.setProperty("xxx", "file) 对这个没有影响

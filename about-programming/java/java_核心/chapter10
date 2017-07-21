@@ -11,9 +11,18 @@ jar package:
 		Main-Class: xx.xx.xx.yy.class
 		最后一行要换行结束
 java -jar jarfile 运行
+	运行打包方法
+	jar cvfe jarfilename 运行的名字（有包的就写aa.bb.cc.classname没有后缀） file or dir
+		后面两项要对应，如果是包里的，就要在最外层目录外执行这条，目标是一个目录
+		可以用javac -d .  xxx　来生成对应的class
 
 还可以放置非ｊａｖａ文件，
 	然后在具体加载类的文件中，classname.class.getResource("filename") 获取图片声音文件，getImage getAutioClip
 		在转换，　classname.class.getResourceAsStream()获取其他类型资源
 	
-
+密封包：
+	其他程序不能声明这个包内部，不能　ｐａｃｋａｇｅ　ｘｘｘｘ；
+	这个在MANIFEST.MF 里加上Sealed: true
+		可以在不同的包里加上不同的Seal 属性
+		Name : package name  aa/bb/cc
+		Sealed: true 即可
