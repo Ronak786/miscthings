@@ -1,0 +1,10 @@
+集合：
+	Iterator 泛型接口，实现了这个，就可以用这个对象遍历
+	Collection<E>内部有实现一个方法返回那个对象
+
+	foreach 搭配Iterable 接口，这个单纯返回Iterator接口的函数
+		remove 　必须在next之后调用
+
+	Collection 里有一些内置的集合类　hash tree set heap list array ...
+	Collections 里有一些内置的排序查找算法
+
