@@ -1,0 +1,55 @@
+interface:
+	public interface Comparable<T> {
+	int compareTo(T other); 只要在具体类里面实现这个就行了 , 这里不用ｐｕｂｌｉｃ，默认的
+	 }
+	类实现接口，就可以提供某些功能
+	不能有实例域和实现的方法
+	接口可以有常量  double a = 20; 自动变成 public static final
+
+	class xxx implements yy { }
+
+	继承： 接口本身也可以继承的
+		由于接口是父类实现的，子类覆盖的时候，要用同样的参数名
+		比较的开始应该先检测getClass 是否一致
+		可以声明接口的变量
+		instanceof 可以获取判断是否属于接口，是否属于类，都可以
+
+	Comparable  compareTo Arrays.sort(objarray)
+	Cloneable   object.clone(obj)
+
+	可以实现多个接口，逗号分开
+
+	浅拷贝 object.clone ,使用当前实现接口，然后内部调用object 的protected clone method
+			这个内部的对象引用会引到一起去
+	深拷贝  会拷贝内部对象
+
+	要实现克隆方法的，首先要实现Cloneable接口，这个没用实际上，是一个标记，表明要克隆，
+		然后覆盖object类的clone方法，内部调用他的protected方法
+		这种标记接口用于　instanceof Cloneable　检验
+		要ｔｈｒｏｗs　CloneNotSupportedExceptin
+
+
+内部类：
+	这个只有当前外部类可以看到，其他的包内类是看不到的
+	可以访问外围类的数据！
+	共有内部类可以被外部访问的　 outclass.innerclass a = outobject.new innterclass();
+	只有内部类才能私有，外部类只能包可见或者公开
+
+局部类：函数内定义的类,所以不要限定符号
+	只有函数内部可以访问，其他都不行
+	如果类内要使用局部变量，包括函数参数变量，就要当初用final声明那个变量
+	如果想要改变引用的外部的局部变量，可以声明final array[1]来包含一个值，就可以改变了
+		final本身虽然不变
+
+匿名类：
+	supertype aa = new supertype() { 这里是扩展类的实现或者接口的实现}
+	不能有构造函数，参数传给父类了
+	建立匿名类的同时初始化  func(new supertype() { {cmd;cmd;} });
+		判断匿名类 new supertype(){}.getClass().getEnclosingClass()
+
+静态内部类：
+	静态内部类，公开的话，外部通过outer.inner引用获取静态内部类，
+	静态方法中只能返回静态内部类，
+	静态类不同之处在于不能获取外部类的信息
+
+	接口中的内部类自动成为static public

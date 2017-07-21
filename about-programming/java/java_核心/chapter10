@@ -1,0 +1,19 @@
+jar package:
+	jar cvfe  jarfilename  aa.bb.cc.main.class -C classdir *.class 切换到那个目录包含里面的文件,
+											同时指定主类
+	jar cfm jarfilename manifestfilename xx.class 创建manifest file,同时创建ｊａｒ
+	jar ufm jarfilename manifestfilename  更新manifest file
+清单文件
+	MANIFEST.MF
+		Manifest-Version: 1.0
+		Name: xx.class
+		Name: aa/bb/cc  (package)
+		Main-Class: xx.xx.xx.yy.class
+		最后一行要换行结束
+java -jar jarfile 运行
+
+还可以放置非ｊａｖａ文件，
+	然后在具体加载类的文件中，classname.class.getResource("filename") 获取图片声音文件，getImage getAutioClip
+		在转换，　classname.class.getResourceAsStream()获取其他类型资源
+	
+

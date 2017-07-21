@@ -22,6 +22,7 @@ java.util.Random Random().nextInt(n) return [0, n-1] randomly
 编译：
 	有连带编译功能，如果源文件新，也会更新
 	javac -cp , java -cp 来设定classpath
+	javac -d xx  *.java 可以编译后放到指定的包的目录里面去
 
 public:
 	任何类任何方法都能用
