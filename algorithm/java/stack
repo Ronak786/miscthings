@@ -1,0 +1,23 @@
+every java obj has 16byte const, every inner class have another 8 byte
+    every obj reference has 8 byte
+
+stack 
+    可以用list 可以用array， 不过array注意第一有限，
+        第二如果删除的元素，置引用null，这样java可以回收
+    变长array，这个可以在到达2的幂次长度的时候翻倍，到达1/4的时候减半，
+        用摊还分析，平均还是O（N）次的动作
+
+queue:
+    先进先出，要两个指针保存
+    变长数组，head tail保存头尾， 这样，如果头尾指向一样，表示满或者空，用
+        一个计数来判断，满了之后，复制到另一个数组，空到1/4也复制到另一个数组
+
+泛型：
+    这个如果要数组，需要 (T[]) new Object[sizer];才行，不能直接new T[]
+    -Xlint=unchecked 来避免警告
+
+Iterable interface : java.util.Iterator;
+    define a iterator which return Iterator interface,
+    we define a class implement that Iterator which has next() hasNext() method,
+
+    the Iterable can be used by for each
