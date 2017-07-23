@@ -21,3 +21,15 @@ Iterable interface : java.util.Iterator;
     we define a class implement that Iterator which has next() hasNext() method,
 
     the Iterable can be used by for each
+
+deque:
+    这个可以用双向链表实现
+randomqueue：
+    随机返回
+    这个可以用数组实现，到达阈值点就翻倍，1/4点就缩小一半，
+    而随机返回这个，首先随机挑选一个返回，然后把最后一个数放到这个位置，数组减一
+permutation:
+    要求均匀几率返回流读取的未知总数的k个数，
+    可以接受，然后利用上面的randomqueue返回k个，
+    似乎可以只设置接受k个，仍然可以保证是所有数最后打印的几率是一样大的，
+        目前不会，似乎和组合数学有关
