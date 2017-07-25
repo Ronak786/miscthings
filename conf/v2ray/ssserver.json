@@ -1,0 +1,20 @@
+{
+  "log" : {
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log",
+    "loglevel": "warning"
+  },
+  "inbound": {
+    "port": 8791,
+    "protocol": "shadowsocks",
+    "settings": {
+        "method": "aes-256-cfb",
+        "ota": true,
+        "password": "03084f3143c3fca3d7483ab4f4bef566"
+    }
+  },
+  "outbound": {
+    "protocol": "freedom",
+    "settings": { }
+   }
+}

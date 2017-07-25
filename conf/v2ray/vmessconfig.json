@@ -1,0 +1,54 @@
+{
+  "log" : {
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log",
+    "loglevel": "warning"
+  },
+  "inbound": {
+    "port": 1090,
+    "protocol": "socks",
+    "settings": {
+        "auth":"noauth"
+    }
+  },
+  "outbound": {
+    "protocol": "vmess",
+    "settings": {
+        "vnext":[
+            {
+                "address":"66.175.219.81",
+                "port": 8791,
+                "users":  [
+                    {
+                        "id":"289838e1-7148-443e-92b1-10cdd858add5",
+                        "alterId": 64
+                    }
+                ]
+            }
+        ]
+      }
+   },
+"outboundDetour": [
+    {
+      "protocol": "freedom",
+      "settings": {},
+      "tag": "direct" 
+    }
+  ],
+  "routing": {
+    "strategy": "rules"，
+    "settings": {
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "chinasites",
+          "outboundTag": "direct"
+        },
+        {
+          "type": "chinaip",
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  }
+}
