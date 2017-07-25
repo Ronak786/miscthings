@@ -1,0 +1,111 @@
+IO:
+	base: inputstream:read() read in one byte 
+		但是只能读一个字节，对于ｕｎｉｃｏｄｅ　使用继承自他的fileinputstream
+		in.available() 是否可读，检测　这样可以避免阻塞，
+	, outputstream
+
+	拥有read,,write方法，都是阻塞的
+	结束后要close()关闭
+	
+	对input， mark reset可以设标记，然后返回重读，不过要设置限定
+	  output, flush to flush
+
+	继承：
+		1, 处理字节的：datainputstream(binary data) ,zipinputstream
+		2, 处理字符的(Unicode): Reader Writer
+		可以使用try(赋值语句的方式进行自动关闭，和python的with一样）
+
+		这些类实现了closeable flushable readable appendable 等接口，所以有close, flush, read, append(Writer)方法
+
+	读写字节用 不管具体的意义的
+		Fileinputstream(filename) 用来字节读写
+		fileoutputstream(filename)
+			System.getProperty("user.dir")获取当前目录
+			System.getProperty("line.separator") 行分隔符
+			java.io.File.separator 获取路径分隔符
+
+	缓冲流用
+		Bufferedinputstream
+		Bufferedoutputstream
+	
+	二进制输出输入:
+		dataoutputstream
+		datainputstream
+			writeUTF 用于内部字节码的写入，外部不用
+			writechars 用于普通写 writechar, writebyte writeint/double/float/long....
+			readchar/int/short...
+	
+	randomaccessfile(filename):
+		用于随机读写文件的函数的实现
+
+	回退用
+		pushbackinputstream 可以有unread方法回退一个字节
+
+	编码解码用
+		inputstreamdreader(System.in) 可以选定存储的编码(叠加fileinputstream)
+		outputstreamdwriter 可以选定读取时解码的方式
+
+	字符读写：
+		Printwriter(filename) == printerwirte(new filewriter(filename)) can use print, println
+			第二个参数 autoflush boolean ,
+			filewriter return a File object
+		Scanner(new Fileinputstream(filename)) 文本读入
+
+	zipinputstream:
+		可以外接一个scanner方法，就可以在压缩文件里按照行读了
+			读的时候，还可以按照entry项目来读
+		写的时候，要entry项目来写
+			zipoutputstream zout = new zipoutputstream(new fileoutputstream("file"))
+			zipentry ze = new zipentry(the input filename)
+			zout.putnextentry(ze)
+			放入数据
+			zout.closeentry()
+		entry只是记录，真正的内容要从zin zout流动
+
+	对象流
+		objectoutputstream, out.writeobject
+		objectinputstream, in.readobject
+		对普通的数据使用writeInt等方法
+
+		对于需要回复的所有类，需要使用implements Serializable 这是一个标记接口
+		transient 这个修饰表示这个域不能序列化
+
+	流的叠加：
+		每个流都有不同的功能，可以组合所有流，把你想要的最外显的功能的类放在最外面，其他嵌套在里面
+
+	java文件都是字节高位在前的，所以跨平台
+
+
+	Path:方便的路径操作命令
+		路径对象，利用Paths.get(a,b) 可以组合一个路径
+		Path.getFilename, getParent, getRoot, resolve(q)组合两者的全路径，
+				relativize 相对路径化
+
+	Files:很方便的系统文件操作命令
+		静态方法可以方便的读取写入文件，而不用那些流
+		Files.readAllLines()
+		也可以生成流Files.newBufferedReader, .newInputStream
+		Files.copy/delete/move
+		Files.createFile
+		Files.exists, readAttribute ,isDirectory ...
+
+		遍历：
+			DirectoryStream<Path> entries = Files.newDirectoryStream(dir) ,然后处理每个path对象,可以通配路径
+
+		遍历深层次：
+			walkFileTree方法，接受一个FileVisotor对象，这个接口要自己实现，里面有
+				遇到每个文件时候的处理方法
+
+		Filesystem sys = Filesystem.newFileSystem(Path, null) 
+			这样创建一个文件系统，可以最这一个zip文件创建，那样文件里的目录层级就是一个文件系统的树形，
+				利用Files的方法可以组合起来拷贝。。遍历等等
+
+		FileChannel 
+			通道，用于创建文件的内存映射，channel.map可以设置如何映射，然后就是普通的buffer读写，
+				但是更快
+
+
+		正则表达
+			Pattern pattren = Pattern.compile(string)
+			Matcher ma = pattern.matcher(input) input是实现了CharSequence的类型
+			if (matcher.matches()) ...
