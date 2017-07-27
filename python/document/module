@@ -31,3 +31,53 @@ random
 statistics
     .mean
     variance
+
+
+urllib.request.urlopen
+requests
+smtplib  发邮件
+
+datetime
+    日期交互表示
+zlib
+    compress
+struct
+    可以用来解压zip的内容
+
+timeit, profile, pstats 
+    用来衡量性能指标
+
+doctest
+unittest 用来测试，前者是docstring里写就行了
+
+json, csv module
+sqlite3 use sqlite
+
+reprlib has repr
+pprint for nicely print
+textwrap to wrap long string auto
+locale  可以格式化字符串成各个地方的形式
+
+threading
+    继承，然后改写run方法，
+    生成对象，调用start， join
+
+logging
+    logging.info  用来日志
+
+weakref.WeakValueDirectory
+gc.collect  这两个用来建立弱引用，然后定向释放
+
+
+
+deque
+    optimize for insert and pop, but slower lookup in middle
+bisect:
+    用来搜索的，要有序 
+heapq
+    创建堆
+
+Decimal:
+    这个是精确浮点类型，只要Decimal('1.2') 就可以正常运算了，结果是浮点精确的，不会出现普通浮点的不精确问题
+    getcontext().prec = 12
+    然后除法，可以得到任意精度
