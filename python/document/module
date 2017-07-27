@@ -1,0 +1,33 @@
+os
+    os.getcwd()
+    os.open
+    os.chdir
+    os.system("shell command")
+shutil
+    shutil.copyfile
+    .move  这个方便
+
+glob
+    glob.glob('*.py') 返回本目录文件列表
+
+sys
+    sys.argv 包括自己
+    sys.stdin stdout stderr.write(xxx)
+    sys.exit
+getopt 
+    get option from sys.argv
+argparse
+    more powerful getopt
+
+re
+    re.findall
+    re.sub   字符串用r 开头，避免一堆\
+
+random
+    random.choice()
+    random.rample(range, number)
+    random.random
+    random.randrange() random integer
+statistics
+    .mean
+    variance

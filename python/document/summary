@@ -1,0 +1,38 @@
+class 有作用域
+    内部的变量可以用class。xxx访问，是class域的，所以如果设置了list类型，里面的添加操作对应
+    class的所有实例，
+    所以建议用self。xxx 创建实例自己的变量
+
+    class.method(self, args) == obj.method(args)
+
+    _  表示私有变量
+    __开头的会变成 _classname__xxxx 
+
+global
+    这个可以声明全局变量使用
+    否则只能只读使用全局，一写就是创建新变量
+
+isinstance(obj, int) 检测是否是实例，利用 __class__
+issubclass(bool, int)  检测是否是继承的子类
+
+multi inheritence:
+    depth-first
+
+
+module:
+    __init__.py  
+    设置 __all__: 列表变量来指示 import *的导入模块
+
+
+iterator 的使用：
+    def __iter__():
+        return self 就是返回一个包含__next__函数的对象
+    def __next__()
+        raise StopIteration 如果结束
+    解释器调用iter() 来获取迭代器，调用next（）来执行__next__()
+
+生成器：
+    yield ,自动 __iter__ __next__, 所以方便
+    sum( i*i for i in range(0,5))  也会产生生成器, 直接给函数用
+
+module.__dict__ 这个返回的是模块里所有的变量和值的字典

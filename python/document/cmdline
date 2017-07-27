@@ -18,3 +18,5 @@ coding:
 	而解码的意思是把byte转换成str，如果用错解码格式，有时候能解出来，有时候不能,因为
 		不符合对应的编码规则,所以string有encode方法，byte有decode方法
 	chr() ord() 分别进行单字符到unicode，unicode到单字符转换
+-
+ 表示上一个运算的结果，解释器里
