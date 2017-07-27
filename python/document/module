@@ -81,3 +81,12 @@ Decimal:
     这个是精确浮点类型，只要Decimal('1.2') 就可以正常运算了，结果是浮点精确的，不会出现普通浮点的不精确问题
     getcontext().prec = 12
     然后除法，可以得到任意精度
+
+venv
+    replace virtualenv  , python -m venv (only in >= python3.3)
+
+pip
+    pip install xx=version
+    pip install --upgrade xx
+    pip uninstall /show /list 
+    pip freeze > file,  pip install -r file
