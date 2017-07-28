@@ -27,3 +27,6 @@ dict:
 	copy O(n)
 	get set del contains O(1)
 	
+class:
+	__iter__, __next__要设置停止时raise StopIteration
+	__str__ 用于打印
