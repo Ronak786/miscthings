@@ -88,3 +88,27 @@ merge sort:
 稳定性：
    merge, insert 稳定
     selection shell 不稳定(select 这个如果某个被换到后面去，有可能就比原来的和自己一样的要往后了）
+
+
+快排：
+    和merge的不同，这个是在自己做完之后再递归，merge是之前
+    1 shuffle randomly
+    2 select  a index, make before less than that, after larger than that
+    you may choose the first(we have randomed), than make start and end from [1,n),
+        inc start and dec end until start > k, end < k, then switch, and inc, dec again,
+        until startn > end, then switch end and first one, over
+    do recursive call to the left and right subarray
+
+    use 2NlnN cmopares, 1/3NlnN exchanges:
+        Cn = N+1 + (C0 + Cn-1)/n + (C1 + Cn-1)/n + ..... (1/n is the rate of this combination)
+        then we can have a 递归式，就可以得到了
+    larger than mergesort, 
+    but use less move
+
+    注意重复key的时候，普通版的快排会有O(n^2)的时间
+    优化：
+        取三个数，然后取中位数，这样的方法，来尽量取到中间的数
+        小数组用insert
+
+quick select:
+    使用快排的思想进行快速查找，每次都在会有第k个数的分区进行
