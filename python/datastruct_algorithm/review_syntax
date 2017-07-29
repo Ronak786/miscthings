@@ -1,0 +1,32 @@
+print ("xxx", sep="自定义逗号间隔的字符串的分隔符", end="自定义末尾，默认是\n")
+	format:
+		%(name)d 然后用key=value来格式化
+
+if elif elif else
+
+算法 O(n)
+	有时和输入有关，需要考察best, average, worst case
+
+数据结构操作性能
+利用这样的方法来进行测试, 注意操作系统还有其他进程，所以要进行多次统计
+	t1 = Timer("test1()", "from __main__ import test1")
+	print("concat ",t1.timeit(number=1000), "milliseconds")
+	这里面有import的消耗，可以再做一个空函数执行，记录然后减去
+list： list可以相加
+	index  assign append  O（1）
+	extend  O(k) 
+	pop(i) insert del contains O(n) 
+	get slice O(k)
+	set slice O(n+k)
+	del slice O(n)
+	sort O(nlgn)
+	mul O(nk)
+	time : concat > append > list推导式 > list(range)
+
+dict:
+	copy O(n)
+	get set del contains O(1)
+	
+class:
+	__iter__, __next__要设置停止时raise StopIteration
+	__str__ 用于打印

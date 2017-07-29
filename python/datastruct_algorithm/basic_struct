@@ -1,0 +1,17 @@
+stack:
+	LIFO
+	application:
+		check brackets {[(  )]}
+		infix postfix prefix calculation
+		convert nubmer into base-2 (first push into stack,then pop and connect string,last is first
+
+	转换：
+		infix to postfix, prefix
+		1, 首先把所有子式全部加上括号，然后prefix就是把符号放到对应的左括号那边，
+										   postfix就是放到右括号那边
+		2,infix to postfix:
+			前括号一定压入栈，所有数全部如队列， 后括号出现，出栈直到前括号，
+			其他符号，入栈前出栈所有优先级比自己高以及和自己相等的
+
+queue:
+	FIFO
