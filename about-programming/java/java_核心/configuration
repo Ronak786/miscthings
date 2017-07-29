@@ -1,3 +1,6 @@
 source: /home/sora/git/java_src
 doc   : /home/sora/git/java_doc
 core-java code: /home/sora/git/java_algs4/core_java
+
+编写程序的时候，注意api输出的不可逆向改变第二次输出，这时规范
+    还有完成处理后，改变原先输入，不会影响到目前的的输出
