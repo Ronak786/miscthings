@@ -1,0 +1,35 @@
+基于二叉树，完全二叉树，永远是满的，而且从左往右增加，一层满了才下一层，
+    高度是floor(lgn) 高度从0开始算
+
+实现 array start from 1
+    parent is n/2, children is 2n, 2n+1
+
+insert:(swim up)
+    加在末尾，然后swim up ，就是不断和n/2地方的数交换如果不符合堆的规则的话
+    这个用于insert， 把最后的数往上
+
+swim down:
+    把父亲和儿子中最大的交换，再一直往下
+    这个用于delmax的时候，把最后的数交换，然后降下去
+
+使用final 标记在类上来防止类被继承修改，这样保证不可变性，不容易出问题
+
+
+heap sort:
+    bottom up:
+        找到最后面的非叶子节点，从数组的右往左，可选的和自己的儿子交换(这个过程需要到底，不是只有一次），如果小的话，直到头部，即可完成 list的heap化
+        完成后，不断的把头部的元素和当前堆大小的尾部交换，这样堆少了一个最大元素，排列找到了一个最大元素的位置，            执行n次后排序完成
+
+heapsort  compare:
+    heap construction  <= 2N compares and exchs
+    heapsort <= 2NlgN 
+    guarantee nlgn and in place(no extra memory !!)
+
+    but inner loop longer than qsort
+    use poor memory cache (always jump array)
+    no stable
+
+事件驱动模拟：
+    不是时间驱动，这样耗费大量时间检测，事件驱动，把会发生的时间
+    预测好放入优先队列，然后按序获取就行了
+    
