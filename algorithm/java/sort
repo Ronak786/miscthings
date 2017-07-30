@@ -112,3 +112,23 @@ merge sort:
 
 quick select:
     使用快排的思想进行快速查找，每次都在会有第k个数的分区进行
+
+duplicate key:
+    use usual method, take 1/2N^2 compare
+
+    dest: put dulicated one into their place
+    3 ptrs: 
+        i, lt, gt, 
+        lt i 首先指向第一个，就是分割数，gt指向最后一个，
+        1，碰到 == lo的数，i++
+        2，碰到小于的，和lt交换，碰到大于的，和gt交换，lt gt变动， i不变，交换来的还要审查
+        最后小于的在lt左边，大于的在gt右边，中间包括[lt i)都是等于的,i到gt是未审查
+    if no duplicate key  NlogN,
+    if dup, the linear !!(constant number of distinct key)
+
+optimize:
+    cutoff into insert sort
+    3-way partition
+    small arrays: middle entry:
+    medium array: median of three
+    large arrays tukey ninther

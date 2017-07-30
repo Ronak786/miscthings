@@ -1,0 +1,22 @@
+smtp 这个发送的用户名，密码要使用base64编码，qq不行，网易可以输入设置的授权码为密码，然后
+    就可以按照规范发送邮件了
+    telnet smtp.163.com 25
+    ehlo 163.com
+    auth login
+    username
+    password
+    mail from:<xxx>
+    rcpt to:<xxx>
+    data
+    这里可以 from:    to:    subject:   然后空行，然后输入正文，最后\n.\n
+    quit 就发送了
+pop 利用明文用户名，密码连接，
+    telnet pop.163.com 110
+    user xxx
+    pass xxx
+    list  
+    stat
+    retr num
+    dele num
+    top 1 0 这样可以看1号邮件的头部
+    quit 然后就会删除
