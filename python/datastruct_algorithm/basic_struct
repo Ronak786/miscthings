@@ -5,13 +5,20 @@ stack:
 		infix postfix prefix calculation
 		convert nubmer into base-2 (first push into stack,then pop and connect string,last is first
 
-	转换：
+	转换：其实可以使用一个中缀表达式的树（子是符号的两边）来各种遍历获取各种表达式,利用后缀表达式构造
 		infix to postfix, prefix
 		1, 首先把所有子式全部加上括号，然后prefix就是把符号放到对应的左括号那边，
 										   postfix就是放到右括号那边
 		2,infix to postfix:
 			前括号一定压入栈，所有数全部如队列， 后括号出现，出栈直到前括号，
 			其他符号，入栈前出栈所有优先级比自己高以及和自己相等的
+        3 infix to prefix:
+            括号一定入栈，前括号出栈，其他符号如果优先级比栈顶的大或者相等，直接压入，
+                这样后面弹出的时候先做这个大优先级的，相等也是先做靠左的符号，
+            其他情况弹出到不满足弹出条件为止
 
 queue:
 	FIFO
+
+deque:
+    两头队列
