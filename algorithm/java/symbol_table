@@ -1,0 +1,30 @@
+action:
+    insert with specified key
+    search with key
+
+    put, get ,del, contains
+
+    del: put(key, null)  for lazy deletion
+
+    equals:  自反，传递，对称， null相比返回false
+        default:  是否是同一个地址
+        
+        primitive type: use ==
+        object use equals
+        array : compare seperate member
+
+    compare:
+        和equals一致，
+        先比较容易不同的
+        不用比较受其他影响的
+
+symbol table:
+    使用数组实现，在少量插入，多查询的情况下好用
+
+binary search tree:
+    有顺序，大于左边，小于右边
+    insert:
+        利用递归，每次都会把利用x.left = insert(x.left, key, val)
+
+    一种bst对应一种qsort的找中间数的过程！！
+        so searchhit, insert  2lnN (在输入足够随机的情况下）
