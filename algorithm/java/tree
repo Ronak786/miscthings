@@ -1,0 +1,55 @@
+2-3 tree:
+    2-node:  one key, two child
+    3-node: two keys, three child
+    完全平衡
+
+    search: just like bst
+    insert:
+        into 2-node: merge into a 3-node
+        into 3-node: merget into a tmep  3-node, then select middle one
+            up to the upper layer, recursively up if upper is also 3-node,
+            at last, at root, if also 3-node, split and make tree height += 1
+
+
+由sedgweik 本人命名！！红黑树
+left leaning rb-tree:
+    an  implementation of 2-3tree
+    left-oriented-red-link to two nodes combine as a 3-node in 2-3tree
+
+    attr:
+        from root to leaf's path has same number of black link,
+        no two red link together
+        red link lean left
+        class node:
+            color : parent link's color 因为我们没有表示连接线的结构，所以用连着的下方的节点来表示颜色
+
+    search:
+        just the same as bst
+
+    rotate right:
+        过程中要保持对应上面的颜色不变，所以新root继承旧root的color，转过来的旧root颜色变为red
+    flip color:
+        用于提升一个4 node的中间点的时候,切换左右以及自己的节点的颜色
+
+    insert:
+        into 2-node: just insert as a red node, then do rotate if is right red
+        into root, if left, just ok as red node,
+                    if right, rightrotate
+
+        into 2 node:
+            if right, then 3-node, do flip
+            if left:
+                if left, rightrotate and flip
+                if right, leftrotate and rightrotate and flip
+
+        process step:
+            insert as bst,
+            rotate if needed,
+            flip
+            rotate if needed for upper
+
+            具体检验步骤：以这个顺序，因为情况会自动转化
+                right red left black ,rotate left
+                left red, left-left red, rotate right,
+                both red, flip
+            

@@ -28,3 +28,21 @@ binary search tree:
 
     一种bst对应一种qsort的找中间数的过程！！
         so searchhit, insert  2lnN (在输入足够随机的情况下）
+
+    floor of k:
+        the largest key that <= k
+        step:
+            start from root
+            if  current node == null: return null
+            if  current node == key, return key
+            if  current node > key, return search(x.left, key)
+            if current node < key, 
+                if search x.right , key != null, return that res,
+                else ,return node.key
+        count:
+            记住一个size在每个节点，保存当前结点及以下的所有数量
+
+    delete:
+       两个child， delete right child‘s min ，替换当前，然后递归向上更新size，
+            delmin中也要递归更新size，
+            复杂度由于只选择右边，导致树高度逐渐变为 根号N，变大了。。。
