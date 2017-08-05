@@ -53,3 +53,12 @@ left leaning rb-tree:
                 left red, left-left red, rotate right,
                 both red, flip
             
+
+
+B-tree:
+     all data in leaf, other internal nodes just guide
+    root at least two key-link
+    other node at least M/2 key-link pairs
+
+    根据所选则的M也就是每个节点最多的元素大小，可以保证最大的高度很小，
+        这样可以把root存在内存，其他存到磁盘，
