@@ -40,5 +40,18 @@ range search:
     flocking biods:
         每个点都在k个邻近点中心，方向是中心, 速度也是平均中心方向和速度
 
+kd-tree:
+     每一坐标都可以用来当作分割，轮询
+
+interval-tree:
+    store interval lines (lo, hi),
+    key is start point, also store the last end point of the subtree rooted at that node
+      
+    find one intersection:
+        if root intersects : return
+        if left null, search right
+        if left sub's max endpoint less that query start point, go right
+        else go left
+
 
     
