@@ -54,4 +54,6 @@ interval-tree:
         else go left
 
 
-    
+rectangle interval search:
+    查看方块的重叠。利用一条线从左到右扫，碰到的线段开头放入一维的重叠测试的interval tree，
+    同时检测是否重叠，有就是重叠了，右边用来删除线段
