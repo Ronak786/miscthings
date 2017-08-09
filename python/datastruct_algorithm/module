@@ -1,0 +1,4 @@
+turtle:
+    aa = turtle.Turtle()
+    aa.forward, aa.right  旋转
+
