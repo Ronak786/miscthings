@@ -1,0 +1,21 @@
+key:
+    计算高效， 平均分布
+
+java: 32bit
+    every class has a hashcode, 
+    require :if x equals y, then their hashcode equals
+    not require , if not equal, hashcode not equal
+    
+    default: memory addr  
+    内置类型如Integer String有内置的hashcode实现
+    String : Horner's rule
+        for i : n
+            hash = s[i] + (31*hash)
+
+    自定义的，
+        可以同样利用31乘方把所有属性的hashcode组合起来, 有一个初始的固定hashcode    
+
+    use array size of M (power of 2) to store mod M hash, 注意使用绝对值并且 & 0x7fffffff 
+        去掉负数最大的那个
+        
+    randomly, after M input, the most loaded 桶will have O(lg M / lg(lgM)) balls
