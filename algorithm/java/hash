@@ -19,3 +19,20 @@ java: 32bit
         去掉负数最大的那个
         
     randomly, after M input, the most loaded 桶will have O(lg M / lg(lgM)) balls
+
+chain list:
+    usually M = N / 5
+    实现方便， 空间占大
+
+linear probing:
+    hash， 如果存在 +1 +2...
+    空间占用小
+    
+    block:
+        聚集块, 最好是 一半的空闲, 这样平均search hi 3/2， miss  5/2
+
+hash function:
+    需要用上所有数据，不然可能不准确
+
+java.util.TreeMap/ TreeSet
+java.util.HashMap/ IdentityHashMap
