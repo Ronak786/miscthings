@@ -2,3 +2,5 @@ turtle:
     aa = turtle.Turtle()
     aa.forward, aa.right  旋转
 
+    setworldcoordinates 这个方法可以自定义坐标轴，很好用
+    toward 这个是定方向的，定向到某个点的方向， 我可用在forward之前
