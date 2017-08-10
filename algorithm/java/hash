@@ -36,3 +36,6 @@ hash function:
 
 java.util.TreeMap/ TreeSet
 java.util.HashMap/ IdentityHashMap
+
+application:
+    用来存储 字符串所在的文件的名称的索引， 字典索引 等
