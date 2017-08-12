@@ -1,0 +1,115 @@
+hash func:
+    input any length
+    output fix size(here 256bit
+    compute efficiently
+security property:
+    collision-free: 没有人可以找到不同的串产生同样的hash，
+            是说无法找到，不是说没有，人力成本极高(冲突一定会有，只要设法无法找到就行了，
+            因为256位总数固定，所有一定有,但是如果是基于随机的查找，
+            需要2^130次才能保证99.8%可能性 其中有两个同样的
+            accually no collision-free have found, but some are people now tried hard
+            and can not find collision, so we believe they are collision-free
+
+            usage: 完整性检验
+                if collision-free, then we can use this hash as 文件的完整性检验，因为
+                根据假设，只有相同的文件，hash才会一样,这样就不用去比较整个文件了
+
+    hiding:
+        从hash编码无法逆推出原来的信息
+        这个就需要不只是原来的信息，而是要加入一个随机值，这样整个信息就是随机的，
+        这样元数据就不是有限的选择了，就可以保证暴力破解无效了, 如果不知道随机钥匙，就不可能逆推或凑出来
+        这个随机钥匙必须做到非常随机
+
+        usage: commitment
+            就是加密的意思，加密，有密钥，无法通过加密信息找到对应的解密信息
+            也无法伪造拥有同样加密信息的解密信息（collision-free), 这样就保证了
+    binding: collision-free
+        用于验证信息，在加密或签名后，检验的时候，利用加密信息，不可能找到另外个
+        伪造信息能通过验证
+
+    puzzle_friendly:
+        for every hash output y, if k is chose from a random distribution, then
+        it is hard to find x  so H(k | x) == y, 所以根据一部分哈希源码，不可能找到
+        整个源码
+    
+        usage:
+            puzzle bit-coin related:
+            given a puzzle id k(random selected), given a set of output y,
+            we want to make sure it is hard to find x , H(id | x) belongs to y
+
+
+sha256: bit coin use
+    use a special 256bit as code
+    split data into 512bit block, padding 10000... at end block to make full block
+    C(code | data_split) = 256bit, then use this and second 512bit to make second hash,
+    continue... until end hash code 
+
+    if C() is collision-free, then all is collision-free
+
+
+
+hash pointer:
+    数据结构，包含指针指向数据，以及数据的哈希值
+
+    block chain:    
+        每个块有一些数据，头部有一个hash 指针，指向前一个这样的块，一直这样连接起来
+        只要某个块的数据被修改，后面指向它的校验就会被检测到不一致，除非也修改它，一直
+        修改到最顶的hash，但这个我们是拥有的，所以是不会被篡改的，所以我们能狗发现有人
+        篡改过了
+
+        usage:
+            tamper evident log: 修改了就很明显的日志，就是防篡改日志，只要修改一个地方，
+                马上可以校验出来
+        usage:
+            merkle tree 二叉树， 父节点是hash 指针，其他一样（需要左右两个）
+            优点，验证需要lgn 某个块
+
+
+数字签名：
+   要求：只能自己签名， 必须特定于某个文档 
+        must can be verified
+        must not be forged(others know pk, know sig, can not find another msg make
+            that verify function return true)
+
+    sk, pk = generatekey(size)  
+        sk: you used to sign
+        pk: others used to verify
+    sig: = sign(sk, message)
+    isvalid = verify(pk, sig, message)
+
+    注意：
+        生成算法必须充分随机，不然攻击者可以穷举
+        签名文档必须有限大小，因为算法需要，
+            这个可以通过先给文档hash，再签名
+        you can sign the hash pointer, so that means you signed the whole block chain
+
+    bit coin:
+        use signature schema  ECDSA
+        randomness is important
+
+
+    application:
+        public key is your identity(身份证明）,它的验证代表了东西经过了你的认证
+        bit coin addrss:
+            the identity of someone(the public key or its hash)
+
+
+
+a simple cryptocurrency X:
+    one can make a new coin:  a coin id and one's signature others can use pk to verify
+    one can pass coin to others:  an action msg signed by one, data is the pass statement and the
+                                        hashpoint of the creation statement block
+    problem:
+        double spending, 一个人可以花两次同一个货币，其他人无法分辨
+    solution:
+        record transcation in a block chain, every block can have some trade
+        so every one can check that chain to see if the coin has been given to others,
+        and if so, reject accepting
+        type of transcantion:
+            create: (id, value, key(pk who have that)) the world create it, no sign
+            paycoin: consume old ids then create new attached to others,and who pays, who sign at end
+                    you can use this op to split or aggregate coins
+
+    problem:
+        centrelization: this system has center, we do not trust him, so we need decenterize
+        let's go and study hard!!!
