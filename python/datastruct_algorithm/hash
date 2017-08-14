@@ -1,0 +1,13 @@
+hash func:
+    切割数字，然后等长段相加，最后模
+    平方，取中间几位，然后模
+    string:  ord(char) 获得ascii值
+        同时不同位置的字符应该有不同权重，*1 *2 *3 .。这样同字母组成的就可以不同hash了
+
+    冲突一定会有，建议冲突后skip一个距离，然后表长度要是prim number，因为这样
+        跳之后可以遍历所有各自，不然不行
+        线性skip， 平方skip都可以
+    链表也可以解决冲突
+
+    hash first do your hash 
+    then if confilct, do a rehash(oldhash vlaue) { return (oldhash + 1)%len}
