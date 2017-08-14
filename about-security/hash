@@ -113,3 +113,10 @@ a simple cryptocurrency X:
     problem:
         centrelization: this system has center, we do not trust him, so we need decenterize
         let's go and study hard!!!
+
+简单货币：
+    每个交易是一堆输入，一堆输出
+    每个数据链接着前面的某次输出，有前面交易的hash，交易内输出的index， 交易后货币拥有者公钥pk，当前作为输入的签名
+        在检验新交易的时候，要验证签名的合法，那么就是那个拥有者承认这次交易了，（签名由当前输出和这个输入共同参数构造）, 
+    还要维持一个当前可用货币的对照表，然后管理输入输出就是确定某次合法，然后减去输入,然后添加输出，这个表格永远
+        维持当前存在每个人手上拥有的货币
