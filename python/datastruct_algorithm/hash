@@ -11,3 +11,6 @@ hash func:
 
     hash first do your hash 
     then if confilct, do a rehash(oldhash vlaue) { return (oldhash + 1)%len}
+
+    del 方法
+        需要把后面直到遇到None或者开头那个位置位置的所有数全部拿出来，然后重新插入

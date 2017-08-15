@@ -118,11 +118,12 @@ duplicate key:
 
     dest: put dulicated one into their place
     3 ptrs: 
-        i, lt, gt, 
+        i, lt, gt, (i应该从第二个数开始，因为第一个一定等于）
         lt i 首先指向第一个，就是分割数，gt指向最后一个，
         1，碰到 == lo的数，i++
         2，碰到小于的，和lt交换，碰到大于的，和gt交换，lt gt变动， i不变，交换来的还要审查
         最后小于的在lt左边，大于的在gt右边，中间包括[lt i)都是等于的,i到gt是未审查
+        最终条件应该是i > gt这时候gt右边都是大的，lt左边都是小的[lt,gt]都是等于的
     if no duplicate key  NlogN,
     if dup, the linear !!(constant number of distinct key)
 
