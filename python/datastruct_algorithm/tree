@@ -5,3 +5,14 @@
                 leftmin.left,right = node.left, right,
                 node = leftmin
                 return node
+
+avl 平衡树：
+    这个就是在每个节点维护一个size表示当前点以及子树的总高度，
+    每次inesrt或delete后，都先计算当前节点总高度，然后判断左右平衡（差小于2）
+        然后递归向上左右旋转同时更新 size即可
+        这里有左右组合的4种旋转，都需要考虑，内旋需要旋转两次的
+
+    N(h) = 1 + N(h-1) + N(h-2) 最多的节点数量,如果尽量往一边倾斜的话
+    利用febonacci, 可得（不会。。。）搜索上限是1.44O(logN)
+
+
