@@ -1,0 +1,7 @@
+二叉搜索树：
+    利用递归，node.left = insert(left ,key, value) ....
+    delete 双子情况:  if node.key == deleteing_key, leftmin = findmin(node.right),
+                node.right = delmin(node.right)
+                leftmin.left,right = node.left, right,
+                node = leftmin
+                return node
