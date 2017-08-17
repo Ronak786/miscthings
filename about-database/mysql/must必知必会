@@ -16,6 +16,14 @@ where 子句
     between包括首尾
 as 子句：
     别名，特别是concat连接的时候，可以取个别名,字符串（有空格）要加引号
+
+group by: 后面使用with rollup 可以再得到一个汇总值, 可以没有where
+    会按照不同的指定列的值分别进行前面函数的计算,相当于多次执行，每次都where filed=xxx
+    select 子句中每列都必须出现在group中，聚集函数除外
+
+having: 在分组后过滤，where在分组前过滤
+    过滤分组，和where不同，但是内容都一样
+    select name, count(*) as order from orders group by name having count(*) >= 2;
 limit:
     限制显示几个数据 limit  num,  limit a,b 从a开始的b行 (行计数从0开始）
     limit num offset startline 也可以
@@ -92,3 +100,8 @@ limit:
 子句：
     select 中的from,  order by
 
+子查询：
+    select xx xform xxx  where aa in (select aa from xxx ...) 由内向外查询
+    in  = <> 这些可以使用
+    select anme, (select count(*) from other ) as other from table;
+        这样也可以，这个子计算是对于每个name去做的
