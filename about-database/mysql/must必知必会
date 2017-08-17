@@ -1,0 +1,94 @@
+语法
+show databases/tables/status/columns from table (== desc) 
+show create database/table
+show grants/errors/warnnings
+
+选择：
+    select xx,xx,xx from xx
+    也可以使用完全限定表名： select   table.field 
+order by: 应该是select 的最后一个子句
+    xxxxxxxxxxxxxxxxxxxxxxx order by name(可以是非选择列,或者用1,2,3表示选择列）
+    可以多个，第一个是主
+    可以对某个列指定DESC   order by name DESC, class DESC 默认是升序的
+where 子句
+    = <> != < <= > >= !<（不小于）, BETWEEN .. AND ... , IS NULL, is not null
+    引号：如果比较字符串，需要，数字不需要
+    between包括首尾
+as 子句：
+    别名，特别是concat连接的时候，可以取个别名,字符串（有空格）要加引号
+limit:
+    限制显示几个数据 limit  num,  limit a,b 从a开始的b行 (行计数从0开始）
+    limit num offset startline 也可以
+计算列：
+    select a*b as c from xxx;  可以使用 + - * /
+特殊操作符:
+    and, or, (使用括号可以避免优先级问题）
+    in , xxx in (aa,bb,cc)  需要括号，需要逗号, 这个比or要快
+    not 反条件，放在指定列前面
+    distinct 表示内容唯一，重复的只显示一个
+            他会作用于所有列，必须全部一样，才会去除
+
+    like: 匹配速度慢，慎用
+        通配符，只能用于字符串，不能数字
+        %  任意字符任意次(没有也可以）
+        _  一个字符 必须一个
+        [] 匹配其中一个
+        [^x] 不匹配其中任意一个
+
+    拼接字段：select里可以输出一个拼接后的字符串：
+        select aa || '(' || bb || ')' 
+        mysql 使用 select concat(aa, '(', bb, ')'), 而 || == or, && == and
+    trim() rtrim() ltrim():
+        各个字段在数据库里存储都是内部格式，有填充，所以取出需要去除左右空格
+
+正则表达式： mysql 不区分大小写，需要的话，使用 regexp  binary 'xxx'
+    不同与like
+    select xxx where name REGEXP  'xxx'  部分匹配，而like是一定整行匹配的
+    a|b|c  or的意思
+    [abc] 取其中一个 [^xxx] 反匹配
+    [a-z] [0-9]
+    . 任意一个
+    \\ 跳脱特殊, \\.  \\-  ,  \\n \\f  \\\ 匹配\ \\(
+    [:alnum:] [:blank:] [:space:]更广泛 [:print:][:digit:]
+    * + ? {n}指定重复n, {n,}指定至少重复n次 {n,m}
+    ^ $ 开头结尾  [[:<:]] [[:>:]] 词的开头结尾
+
+测试： 不加from
+    selct xx regexp 'xx' 会返回 0或者1表示匹配成功失败
+    select now() 返回当前时间
+    select trim('abc   ') 返回'abc'
+
+函数：
+    RTrim(), Upper() 
+    left() return the left char
+    length() locate(str) 返回子串
+    lower(), ltrim()
+    right()
+    substring()
+    soundex() 这个是找发音相同的字符串匹配，玄乎
+
+统计数据计算：
+        all distinct 前者是默认
+    avg() count() max() min() sum() 针对某列的所有值而言
+    avg(column) 不能算式，要多个avg组合才行,胡略null
+        avg(distinct xxx) 可以只看不同的列，
+    count(column)统计某列，忽略null
+        count(distinct xxx)
+    count(*) 不忽略null
+    sum(a*b) 里面可以计算的
+
+概念
+日期：
+    特殊格式，必须使用 yyyy-mm-dd
+    now()返回当前时间，更具体
+    curdate（）返回当前日期
+    date() 返回一个日期的日期部分
+    time() 返回当前时间部分 这两个用于匹配
+    select xx where date(xx) = '2015-01-02'  
+    xxxxxxxxxxxxxxxxxxxxxxxx between '2015-01-02' and '2015-01-03'
+    year() month() ..
+数值处理：
+    abs() cos() exp() mod() pi() rand() sin() sqrt() tan()
+子句：
+    select 中的from,  order by
+
