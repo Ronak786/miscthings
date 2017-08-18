@@ -1,0 +1,19 @@
+dual表：
+    这个是用于select xx  没有from的时候，加一个from dual，保持语法正确，mysql可以不用
+now（）
+curdate
+curtime 表示当前时间
+
+type:
+    char at most 255, varchar 65535
+    text 65535  排序分组只会使用前1024字节
+    int tinyint mediumint bigint
+    float(p,x) double(p,x) 精度和有效位数，
+        前者是综合，后者是小数点右边的位数
+    date, datetime, timestamp, year, time
+    yyyy-mm-dd, yyyy-mm-dd hh:mm:ss     yyyy, hhh:mm:ss
+        timestamp这个会自动产生
+
+create:
+    aa char(1) check (aa in ('a','b'))
+    或者 aa enum ('a', 'b') 这样只能取2者之一了
