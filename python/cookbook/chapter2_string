@@ -1,0 +1,29 @@
+any():
+    这个函数只要有一个迭代对象是true，就返回true
+split:
+    str.split(one_char)
+    re.split(r'[;,\s]\s*', str)  
+    re.split(r'(;|,|\s)\s*', str)   这个因为括号分组，所以匹配的同时括号里的匹配也会打印出来
+            r'(?:....) 是非捕获分组，这个就不会打印了
+
+find:
+    str.startswith()
+    str.endswith()
+        这两个可以输入tuple作为参数集合的，必须是tuple！！
+
+    fnmatch.fnmatch/fnmatchcase:
+        这两个用来匹配shell的方式的匹配，后者强调大小写敏感，前者平台依赖
+            fnmatch(str, '*.txt')
+
+    str.find()
+    a = re.compile() 注意使用 r''
+    a.match(), a.findall(str) 返回列表，a.finditer() 返回生成器
+        可以在返回的过程中直接解包
+        或者返回的元素obj.groups() .group(0) ... ,这个是匹配的分组,0是最大的那个，123其次
+        
+        match只检查开头部分，返回的是部分长度，精确匹配需要^$
+replace:
+    str.replace
+    re.sub(match, replace, string), \1 \2 \3 in replace表示前面捕获的组号
+    复杂的替换可以利用xx.sub(func, text) def func(m) 参数是match的对象，返回你利用group（）制造的结果即可
+

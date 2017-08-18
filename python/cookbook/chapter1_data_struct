@@ -4,3 +4,64 @@
     deque() 可以传定长参数,有队列效果，会排除最先进入的如果满的话
     heapq 可以产生堆，
         取少量最小最大元素才有用，不然直接sort，slice比较好，一个话直接min max
+        因为堆只有小堆，我们可以利用tuple比较的时候先比较第一个元素的特点，把要入堆的值组合成
+            tuple，第一个值表示优先级,可以再加入一个第二个元素的index，递增，这样
+            优先级相同的就可以按照入堆顺序出来,不然还是会对不能比较的元素出错的
+    dict:
+        d.setdefault('a', []).append()
+        or  d = collections.defaultdict(list)
+            d['a'].append()  这个自动帮你初始化了
+
+        Orderdict 顺序字典，不过占用2倍内存，注意
+
+        字典中的求最值，可以 minprice = min/max/sorted(zip(dict.items(), dict.keys()))反过来，利用tuple的比较
+
+        a.keys() -/&/| b.keys()
+        a.items() ... b.items()  不过values（）不支持，因为不唯一
+            这些都是集合操作，可以的
+        
+    函数参数是lambda的情况，内部直接pamra(key) 来应用函数即可
+
+
+slice切片对象，可以传给list用:
+    a = slice(20,22,1)
+    k = [xx,yy,zz][a]
+    a.start, a.stop, a.step
+    a.indices(newsize) 可以灵活修正返回新的在newsize范围内的切片，保证
+        切片范围在新范围内部，返回的tuple，利用*(a.indices(size))解压
+
+filter(func, list):
+    用来创建生成器，当匹配规则比较复杂的时候，(xxx for xx in xx) 不太好用的时候用这个
+
+推导式
+    [], (), {} 这个也可以的，{a:b for a,b in xxxxx},或者dict((a,b) for a,b in xxxx),前者更快
+
+collections:
+    Counter: 这个对象会计数当前的hashable对象序列，返回字典，可以继续update更新，也可以
+        两个+ -
+    nametuple:
+        s = nameTuple(tuplename, ['one', 'two'])
+        kk = s('1','2')
+        kk['one'] == '1'  这样元素就可以和字典一样访问了而且比字典快，
+        更改：
+            kk.replace(xx=xx) or b = dict(xxxxx), kk.replace(**b) ,不过更改就是创建新元素
+    ChainMap
+        创建一个虚拟的融合其他字典的字典，修改只影响第一个字典，
+            可以newChild()一个新的，继承旧的内容，子后new.parent返回后，新的内容没了，也就是
+                父亲见不到儿子
+
+operator 更快 比lambda
+    itemgetter（）这个用于函数要排序的地方，传入一个列表，内部元素本身不能排序，但是内部某个属性可以，
+        如果每个元素是字典，可以用这个通过字典的key获取排序的索引值 sorted(a, key=itemgetter(key))
+    attrgetter() 
+        和上面一样，但是用来获取排序元素（一个对象）的属性 key=attrgetter('user_id')
+
+itertools
+    groupby 这个用于合并连续的key相同的值，返回key， items 的tuple，可以迭代访问items
+        groupby(list, key=itemgetter('field'))
+    compress (list, boolean_list) 会返回bool为true的list中的元素的生成器，用于某个第二个list可以决定地一个list
+            元素的时候
+
+
+others:
+    min, max,sum 里面接受推导式的,不需要再加一个[] ()
