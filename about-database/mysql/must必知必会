@@ -3,51 +3,94 @@ show databases/tables/status/columns from table (== desc)
 show create database/table
 show grants/errors/warnnings
 
+insert:
+    insert into xxx (col, col...)  values (xx,xx,xx) 不想插入的列用null ，autoincrement的也用null也可以
+    允许忽略的列： 允许null 或有默认值
+
+    多条插入：
+        insert into xx(col) values (xx,xx), (yy,yy),(zz,zz)
+
+    insert select:
+        insert into xx(col) select newcol from yy where.....;
+            列名未必一样，mysql只管位置
+
+update:注意where不要忘了
+    update xxx  set aa = bb/null where xxxxx
+    update ignore xxxxxx 可以忽略过程中的错误，不然会全部恢复原值
+
+delete:
+    delete from xxx where xxx
+    如果要删空表，truncate table
+    
+
+create table xxx IF NOT IEXIST (col_name  type  null/not null default xxx  (auto_increment), ..., foreign key key_name references table (col_name) primary key  (colname)) engine=innodb;
+    primary key只能使用不允许null的lie，就是not null
+    每个表只能一个auto increment, 必须索引或者成为主键
+    select last_inesrt_id() 可以获取最后被插入的id
+
+    engine:
+        innodb:支持事务
+        memory 内存存储
+        myisam 全文搜索支持，无事务支持
+    外键不能跨引擎
+
+create index name on tablename (col [ASC|DESC], ..)
+
+alter table:
+    alter table name  add col_name type
+    alter table name drop   col_name
+    alter table add constant fk foreign key (xx) references ftable (fkey);
+
+drop table xxx;
+rename table aa to bb;
+
+
 选择：
     select xx,xx,xx from xx
     也可以使用完全限定表名： select   table.field 
-order by: 应该是select 的最后一个子句
-    xxxxxxxxxxxxxxxxxxxxxxx order by name(可以是非选择列,或者用1,2,3表示选择列）
-    可以多个，第一个是主
-    可以对某个列指定DESC   order by name DESC, class DESC 默认是升序的
-where 子句
-    = <> != < <= > >= !<（不小于）, BETWEEN .. AND ... , IS NULL, is not null
-    引号：如果比较字符串，需要，数字不需要
-    between包括首尾
-as 子句：
-    别名，特别是concat连接的时候，可以取个别名,字符串（有空格）要加引号
+    order by: 应该是select 的最后一个子句
+        xxxxxxxxxxxxxxxxxxxxxxx order by name(可以是非选择列,或者用1,2,3表示选择列）
+        可以多个，第一个是主
+        可以对某个列指定DESC   order by name DESC, class DESC 默认是升序的
+    where 子句
+        = <> != < <= > >= !<（不小于）, BETWEEN .. AND ... , IS NULL, is not null
+        引号：如果比较字符串，需要，数字不需要
+        between包括首尾
+    as 子句：
+        别名，特别是concat连接的时候，可以取个别名,字符串（有空格）要加引号
+        表名也可以别名的
 
-group by: 后面使用with rollup 可以再得到一个汇总值, 可以没有where
-    会按照不同的指定列的值分别进行前面函数的计算,相当于多次执行，每次都where filed=xxx
-    select 子句中每列都必须出现在group中，聚集函数除外
+    group by: 后面使用with rollup 可以再得到一个汇总值, 可以没有where
+        会按照不同的指定列的值分别进行前面函数的计算,相当于多次执行，每次都where filed=xxx
+        select 子句中每列都必须出现在group中，聚集函数除外
 
-having: 在分组后过滤，where在分组前过滤
-    过滤分组，和where不同，但是内容都一样
-    select name, count(*) as order from orders group by name having count(*) >= 2;
-limit:
-    限制显示几个数据 limit  num,  limit a,b 从a开始的b行 (行计数从0开始）
-    limit num offset startline 也可以
-计算列：
-    select a*b as c from xxx;  可以使用 + - * /
-特殊操作符:
-    and, or, (使用括号可以避免优先级问题）
-    in , xxx in (aa,bb,cc)  需要括号，需要逗号, 这个比or要快
-    not 反条件，放在指定列前面
-    distinct 表示内容唯一，重复的只显示一个
-            他会作用于所有列，必须全部一样，才会去除
+    having: 在分组后过滤，where在分组前过滤
+        过滤分组，和where不同，但是内容都一样
+        select name, count(*) as order from orders group by name having count(*) >= 2;
+    limit:
+        限制显示几个数据 limit  num,  limit a,b 从a开始的b行 (行计数从0开始）
+        limit num offset startline 也可以
+    计算列：
+        select a*b as c from xxx;  可以使用 + - * /
+    特殊操作符:
+        and, or, (使用括号可以避免优先级问题）
+        in , xxx in (aa,bb,cc)  需要括号，需要逗号, 这个比or要快
+        not 反条件，放在指定列前面
+        distinct 表示内容唯一，重复的只显示一个
+                他会作用于所有列，必须全部一样，才会去除
 
-    like: 匹配速度慢，慎用
-        通配符，只能用于字符串，不能数字
-        %  任意字符任意次(没有也可以）
-        _  一个字符 必须一个
-        [] 匹配其中一个
-        [^x] 不匹配其中任意一个
+        like: 匹配速度慢，慎用
+            通配符，只能用于字符串，不能数字
+            %  任意字符任意次(没有也可以）
+            _  一个字符 必须一个
+            [] 匹配其中一个
+            [^x] 不匹配其中任意一个
 
-    拼接字段：select里可以输出一个拼接后的字符串：
-        select aa || '(' || bb || ')' 
-        mysql 使用 select concat(aa, '(', bb, ')'), 而 || == or, && == and
-    trim() rtrim() ltrim():
-        各个字段在数据库里存储都是内部格式，有填充，所以取出需要去除左右空格
+        拼接字段：select里可以输出一个拼接后的字符串：
+            select aa || '(' || bb || ')' 
+            mysql 使用 select concat(aa, '(', bb, ')'), 而 || == or, && == and
+        trim() rtrim() ltrim():
+            各个字段在数据库里存储都是内部格式，有填充，所以取出需要去除左右空格
 
 正则表达式： mysql 不区分大小写，需要的话，使用 regexp  binary 'xxx'
     不同与like
@@ -60,6 +103,81 @@ limit:
     [:alnum:] [:blank:] [:space:]更广泛 [:print:][:digit:]
     * + ? {n}指定重复n, {n,}指定至少重复n次 {n,m}
     ^ $ 开头结尾  [[:<:]] [[:>:]] 词的开头结尾
+
+视图：
+    就是打包的select语句，包装成一个table
+    create view, drop view..  show create view xxx,   create or replace view xxx
+
+    create view as select xxxxxxx;
+
+存储过程：
+    show create procedure xxx 
+    show procedure status (like 'xxx') 显示所有过程
+    就是定义函数，可以一次性执行一堆命令
+        delimiter //
+        create procedure name(param, parma2)
+        begin
+            select xxx;
+            insert into xxx;
+        end//
+        delimiter ;
+        delimiter的用途是临时改变结尾符号，因为;是mysql命令行的结尾符号，内部定义的时候不能被占用
+    调用：
+        call name();
+    删除：
+        drop procedure if exists name;
+
+    参数  create procedure name ( IN  name1 int, out name2 decimal(8.2)) comment 'xxxxx'
+            begin
+                select xxx into name2 from xx where name1 = xxx;
+            end
+         call name(xxx, @var) 所有变量必须使用@
+
+         之后 select @var 就可以获取值了
+
+    高级逻辑：
+        if xxx then
+            select xxxxx
+        elseif xxx 
+        else 
+        end if;
+        declare name type;
+
+游标：
+    只能过程使用：
+    begin
+        declare done boolean default 0
+        declare continue handler for sqlstate '02000' set done=1;
+        declare name CURSOR 
+        for  select xxxxx;
+
+        open cursor
+        repeat
+            fetch cursor into var;
+        until done  end repeat;
+        close cursor
+    end;
+    sqlstate '02000'当没有更多的行出现的时候会成立
+    declare 要在cursor定义之前，handler要在cursor之后，这是规定
+
+触发器：
+    响应insert delete update
+    create trigger  name after/before insert/delete/update on table_name
+    for each row select 'xxxx'; 对每个插入的行在插入后/前执行对那些行的select操作
+    for each row 
+    begin 
+        xxxx 可多条语句
+    end;
+
+    不支持试图，触发器名字要唯一在数据库中，如果失败，后面也不执行了
+
+    drop trigger name;
+
+    对每个trigger，当前insert的都在一个NEW表中
+        可以在before中更新new的值，auto的列为0
+        可以利用after找到插入的行的auto值
+    对每个delte trigger，有一个old表可以引用,不可更改，可以保存
+    对每个update ，可以使用old 和new表
 
 测试： 不加from
     selct xx regexp 'xx' 会返回 0或者1表示匹配成功失败
@@ -85,6 +203,13 @@ limit:
     count(*) 不忽略null
     sum(a*b) 里面可以计算的
 
+注意：
+    有时候count 和groupby 这两个要一起用的，因为都是压缩，如果某列被压缩，但是是重复列，没用count
+    只会显示他的第一个值
+
+    insert low_priority into ... 这个 可以降低操作等级，避免同时执行的select等待过长
+    -- 是注释的开始
+
 概念
 日期：
     特殊格式，必须使用 yyyy-mm-dd
@@ -105,3 +230,115 @@ limit:
     in  = <> 这些可以使用
     select anme, (select count(*) from other ) as other from table;
         这样也可以，这个子计算是对于每个name去做的
+
+外键：
+    一个表中包含的另一个表的主键，用来联接
+联接查询：耗性能多
+    就是select ... from a, b where a.k = b.k 即可 
+    如果没有where，就是笛卡尔积，也就是总数是两边数量的积那么多，完全配对的结果，一般不对的
+    另一种表示：正式：
+        select xxx from  aa INNER JOIN bb ON aa.name = bb.name;
+        这种表示更加合法，等值联接又叫做内部联接
+自联接：
+    就是select p.xx,p.yy from aa as p, aa as q where p.name = q.name and q.id=xxxx;
+    这种方法可以在自己表里做二次查询，别名是必须的,比子查询高效
+自然联接：前面都是
+    就是某个表使用通配，其他使用明确的列，不太明白，好像没啥用
+外部联接：
+    作用是匹配两个表的时候，选择一个主表，这个里面所有都会列出，即使副表中没有对应的项目可链接，
+     显示null，  select xx,xx from  aa left outer join bb on xx = xx;
+union:
+    select aa from p UNION select aa from q
+    就是可以把多个select组合在一起，只要各个select的查询列或表达式一样就行了，过滤条件不同
+    默认去重，使用union all 保留
+
+    order by 只能出现在最最后
+
+全文索引：
+    create table xxx (....  fulltext(filed, filed..) ) engine=myisam; 这样就可以启动全文索引了，
+        搜索每个词的时候有索引快
+    导入数据的时候应该先导入，再索引
+    select xxx from xx where match(column) against('text') as brif_name;
+    select xxx from xx where match(column) against('text' with query expansion) as brif_name;
+    select xxx from xx where match(column) against('text' in bool mode) as brif_name;
+        match用来制定匹配列，可以多个，against用来指定匹配文本
+        查询扩展用来自动找到结果中的有用词语在进行查询
+        布尔模式有多个组合作用
+            + 包含， - 排除， >包含，提高等级  <包含降低等级
+            （）子表达式， -取消词 *通配词尾 “”匹配一个短语
+    这个有缺陷的，三个一下字符的词不算的，有非索引内置表，总行数《3就不返回了，
+        只能myisam使用
+    如果在select中直接用match against，没有where，会返回匹配的等级，这个根据有效词数量和位置计算出的，
+        一般过滤的时候返回的结果是高rank在前，比like的随机顺序好
+
+
+事务：
+    整体执行或不执行
+    start transaction;
+    roolback;
+        这个可以回退insert update delte， 不能回退create drop
+    commit:
+        提交，开始i执行， commit rollback之后事务自动结束
+    savepoint aaa;
+    rollback to aaa;
+    release savepoint aaa;
+
+    set autocommit = 0; 默认是自动提交的，事务除外，可以修改的
+
+字符集
+    show character set; 显示所有
+    show collation: 显示校对，这个用于字符的排序比较等，如大小写是否忽略 _ci 不区分大小写， _cs区分
+    show variables like 'character%';
+    show variables like 'collation%';
+
+    create table xxx (colname type character set xxx  collate yyy ) default character set xxx  collate xxx;
+    select xxx order by aa,bb collate xxx; 可以暂时选定
+
+访问控制：
+    mysql 数据库中的user表含有账户信息
+    create:
+        create user name identified by 'xxxx';
+        rename user name1 to name2;
+        drop user name;
+        默认账户要全名，是xxx@localhost, 没有的话就是创建的可以从任意地方登录的用户，xx@'%'
+            但是登录的时候要指定host,就是你要链接的那个host
+
+        set password for xxx = Password('xxxx')
+        set password = Password('xxx')  #for your self
+
+    权限
+        show grants for user@xx;
+        grant select on databasename.tablename(*.*表示全部） to user (identified by xxx);
+        revoke select on *.* for user; 撤销权限
+
+维护：
+    首先flush tables;
+    然后：
+        mysqldump
+        mysqlhotcopy
+        BACK TABLE / SELECT INTO OUTFILE??
+
+    analyze table name;检验表键
+    check table xxx 检查修复，有具体选项
+
+    mysqld --safe-mode 等修复时使用
+    错误日志
+    查询日志 记录活动
+    二进制日志
+    缓慢查询日志
+
+数据类型
+    char ,varchar, text, text不能索引，定长更快
+    编码一类应该是串，不然开始的0会被去掉
+
+    数值默认有符号unsigned 则无符号
+    bit float double int , decimal()可变精度, real, 
+    date, datetime, time , timestamp, year , datetime = date + time
+    blob 二进制
+
+性能：
+    show variables;
+    show status;检查状态
+    show processlist;显示当前正在处理的线程
+        KILL id
+
