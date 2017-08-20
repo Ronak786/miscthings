@@ -1,0 +1,94 @@
+review:
+    每一个交易块有一个hash，保存它前一个块的hash，由于 唯一性，保证了块的相连
+    每个一个小交易，有交易接收者的公钥，保证了接收者，交易货币自身当时被获取
+        时候的那笔交易的hash，唯一，  以及这整个当前交易被交易发起人的签名，唯一，
+        可以用发起人公钥和当前交易的内容进行验证，这样，就保证了交易的成功
+decentralization:
+    question: who maintain the ledger
+            who create new coin
+            who has authority over which transaction is valid
+
+    distribute consensus
+        当前所有正确的节点上（可能有错误的节点，这个不考虑）有相同的数据数值
+        这个数值必须是某个正确的节点上的值
+
+    交易完成条件：
+        所有节点拥有交易块，达成共识
+        每个节点上都有一些未完成的监听中的交易
+        问题：
+            如果依靠各个节点上当前未完成交易监听集合来选出下一个公认交易块，
+            1 nodes may crash
+            2 nodes may malicious
+            3 may fault in network
+            4 high latency  导致全局时间戳不能作为一个块顺序的参考
+        导致的理论上不可解问题：
+            byzantine generals problem
+            Fischer-lynch-paterson consednsus impossible with a single faulty node
+        bitcoine:
+            work better in pracital than theory
+            just in context of currency 因为货币的特性，可以保持一致
+            非一致性的保持随时间的增长而指数降低
+
+feature:
+    bitcon  has no  identify id
+    accept a block:
+        new transaction broadcast into network
+        each node collect its received block
+        in each round (we want to choose a new block)
+        choose randomly a node, accept its collected unadmitted block,
+        broadcast its block
+        other nodes validate the transaction in node,
+        other nodes express acceptance of block by including the hash 
+        in next block they create
+            accept :下一个块开头包含这个接受的块的hash
+            reject： 下一个块开头包含上一个块的hash
+    如果有多个矛盾块，总是扩展当前最长的那个已承认块链
+    对于矛盾节点：
+        一般等待6个新节点创建的时间，如果6个都是在它之上扩展的，那么它就是
+        被认为合法的,然后当前交易才会被承认，如果你是交易者，你也应该是这个时候
+        才去承认交易，判定交易到账，可以发货了
+
+    对于非法交易完全由密码学技术保证不被接受
+    对于恶意重复交易，则由大多数节点是诚实的这一共识来随着时间增加保证可能性
+        
+
+    attack: 
+        如果某人被枚举，但是提供了一个残缺的交易列表，其他人只要等待下次枚举，
+        就能获得好的列表，今后哪个增长的多，哪个就是真的概率大，因为个人能力小，
+        不可能从今往后一直伪造所有今后的hash
+
+激励：
+    每个区块的创建者可以获得创建25btc的权利，以及写出给予者的pk
+        这个获取生效仅当当前交易块已经进入长期链的时候
+    每笔交易都有交易费，如果块的创建者收入这些有交易费的交易，最后创建块的时候
+        还可以同时拥有这些交易费，而交易人员提高交易费，其他人就更加可能把自己这个交易
+        包括到正常交易链里面去，这样促进了比特币的循环，避免枯竭
+        (可是这时基于输入的，输入总是优先的，这个并不会增加总数呀？是的，这个激励是
+            上一个激励不同的，上一个通过增加新的来激励人们趋向于正常交易，
+            这个通过交易费的流通占有来激励人们去包括正常的交易
+
+如何选择提供候选块的节点：
+    工作量证明:
+        提议新的块的节点并不是由某个权威中心去选择的，而是所有人都在目前的接受交易的基础上
+        寻找一串数字，和prev hash 以及未承认交易所有组成的序列做hash后，hash编码符合进入
+        某个hash子集，然后这个人就向其他人声明这个块的合法，谁快就是谁声明，这就是工作量证明
+    参数化cost：
+        节点自动重算目标每两周，这样找到新数值的时间又会变多，变难，通过这样控制
+        每10分钟找到一个新块
+        公式证明某个人赢得下个块的几率同比于它的算力占总算力的比重
+
+    概率：
+        根据概率论，伯努利实验。泊松分布，一个块被找到后，下一个块被立刻或者很久后才能找到
+            的概率都很低
+
+        对于某个特定的节点，可以找到一个块的时间是10min / 算力比例
+
+    这样伪造的代价很大，你需要不断用大算力去比拼不伪造的人的算力，这样你伪造的区块才会被不断承认，
+        还要比他们块，块6次，代价打过你拥有的比特币数量，不值得
+
+挖矿：
+    比特币的拥有指的是其他节点通过区块链可以查到属于我的比特币总数
+
+    bitcoin is bootstrapped 自举
+        健康的挖矿生态-》节点诚实，区块链安全-》比特币价值稳定，可靠，可以换美元，因为美元用来
+            买算力了-》生态环境健康
