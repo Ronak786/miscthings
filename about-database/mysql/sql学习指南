@@ -26,3 +26,105 @@ foreign key:
 
 distinct:
     这个会先排序，比较耗时
+
+字符串：
+    默认插入过长报错mysql， 可以 select @@session.sql_mode 查看， set sql_mode='ansi'修改，这样
+            之后截断而不是报错
+    quote() 给字符串加引号，并且中间适当跳脱
+
+    char:
+        char(xx,xx,xx) 通过数字来构造不常见字符组成字符串
+        concat，结合char，组合字符串
+        ascii 根据字符返回对应的数字， 这些都和选择的字符集有关 show character set;
+    find:
+        position ('xxx' in field)  返回位置，从1开始
+        locate('xx', field, startpos)
+        strcmp 只有mysql有 忽略大小写
+        在select中 xx like xx 返回的是bool
+        concat(链接，可以多个）
+        insert（原始串，开始位置，需要替换字符数（0就是插入）， 替换串）
+        substring(string, start, count)
+    calculate:
+        mod,sin cos, exp pow
+        ceil, floor(这两个取整）
+        round(num, bit)  truncate简单去掉 可以指定负数，表示要截掉的位数
+        sign() 返回 -1 0 1 表示负数， 0, 正数
+        abs（） 返回绝对值
+    时区：
+        select @@global.time_zone, @@session.time_zone;
+            这两个表示时区的选择 可以更改set time_zone=....
+            一般是system，就是随着mysql的服务器的位置的时间来的
+
+        datetime 如果列并非这种类型，可以使用select cast('xxxx' as datetime)转为时间类型存入
+        str_to_date('string' , % % %) 这个根据你的字符串，后面制定的你的字符串中的格式，来转换
+            返回datetime认识的值
+        current_date(), current_time(), current_timestamp()
+        date_add(date_type, INTERVAL num  单位(Day,Hour...))
+        convert_tz(time, zone, 'utc') 转换时区
+        extract(pattern(YEAR) from 'xxxtime')
+        datediff(a,b)
+    cast:
+        cast( 'xxx' as signed integer) 转为整数
+        cast('xxx' as datetime) 转为datetime类型
+
+groupby:
+    这个配合count可以分组计数，在where之后take effect，所以使用having过滤
+    配合函数
+        max ,min, avg, sum, count
+    分组还可以是表示式的值
+
+子查询：
+    where a not in (select xxx)
+    where a < all( select ....) 这种表示小于里面的所有的。。。
+    where (a,b) in (select c,d from ....) 多列也是可以的
+    exits:
+        where exits  这个表示存在，只关心存在与否
+
+join:
+    inner join
+    left outer join
+    corss join叉积
+    natural join 自然链接 让服务器判断，有外键时会判断准确
+
+条件：
+    case
+        when
+        then
+        when
+        then
+        else
+    end 返回类型必须一样
+
+
+事务：
+    每次登录后set commit=0
+    然后每次手动提交，这样避免误删数据
+    commit , alter table, start transaction都会自动提交的
+    alter table可以改变引擎
+    savepoint xx;
+    rollback to savepoint xx;
+
+index:
+    alter table xx add index  name (col);
+    alter table xx add unique  name (col); 唯一索引，不仅索引，还可以检验是否唯一
+    show index from tablename;
+    多列索引要考虑最前面的那列一定要用到，只用后面的不行
+    对于低基数，使用bitmap更好
+        create bitmap index ...
+    drop index name;
+    索引多了会因为更新托慢，需要维护磁盘空间，所以所以要适当
+
+    约束：
+        alter table xxx add constraint name primary key (xxx) 约束的目的是不满足就报错 
+        alter table  修改外键 on update cascade/ on delete cascade 这样可以传播更新原来的表
+
+view:
+    create view name (newcol_name....) as select xxxxx;
+
+information schema:
+    特殊数据库里面有各种元信息
+    表：
+        tables 各种表，视图
+        views  all views
+        statistics 索引信息
+        table_constrains 各种约束信息
