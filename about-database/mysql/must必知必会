@@ -47,6 +47,7 @@ rename table aa to bb;
 
 选择：
     select xx,xx,xx from xx
+        select 可以colname, string(会在每行显示）, 计算式子， 函数
     也可以使用完全限定表名： select   table.field 
     order by: 应该是select 的最后一个子句
         xxxxxxxxxxxxxxxxxxxxxxx order by name(可以是非选择列,或者用1,2,3表示选择列）
@@ -186,7 +187,7 @@ rename table aa to bb;
 
 函数：
     RTrim(), Upper() 
-    left() return the left char
+    right/left(field, number) return the left char
     length() locate(str) 返回子串
     lower(), ltrim()
     right()
@@ -202,13 +203,6 @@ rename table aa to bb;
         count(distinct xxx)
     count(*) 不忽略null
     sum(a*b) 里面可以计算的
-
-注意：
-    有时候count 和groupby 这两个要一起用的，因为都是压缩，如果某列被压缩，但是是重复列，没用count
-    只会显示他的第一个值
-
-    insert low_priority into ... 这个 可以降低操作等级，避免同时执行的select等待过长
-    -- 是注释的开始
 
 概念
 日期：
@@ -236,9 +230,13 @@ rename table aa to bb;
 联接查询：耗性能多
     就是select ... from a, b where a.k = b.k 即可 
     如果没有where，就是笛卡尔积，也就是总数是两边数量的积那么多，完全配对的结果，一般不对的
+        或者where  a JOIN b,就是没有具体过滤的时候
     另一种表示：正式：
         select xxx from  aa INNER JOIN bb ON aa.name = bb.name;
-        这种表示更加合法，等值联接又叫做内部联接
+        这种表示更加合法，等值联接又叫做内部联接 如果两个表列名一样，可以直接 xx inner join bb USING(field_name)
+        可以多个表相连：
+            select xx from aa inner join bb on aa.xx = bb.xxx inner join cc on bb.xxx/aa.xxx = cc.xxx;
+            一个innerjoin 对应一个on
 自联接：
     就是select p.xx,p.yy from aa as p, aa as q where p.name = q.name and q.id=xxxx;
     这种方法可以在自己表里做二次查询，别名是必须的,比子查询高效
@@ -252,7 +250,7 @@ union:
     就是可以把多个select组合在一起，只要各个select的查询列或表达式一样就行了，过滤条件不同
     默认去重，使用union all 保留
 
-    order by 只能出现在最最后
+    order by 只能出现在最最后, 而且只对第一个查询的列名可以指定
 
 全文索引：
     create table xxx (....  fulltext(filed, filed..) ) engine=myisam; 这样就可以启动全文索引了，
@@ -341,4 +339,12 @@ union:
     show status;检查状态
     show processlist;显示当前正在处理的线程
         KILL id
+
+注意：
+    有时候count 和groupby 这两个要一起用的，因为都是压缩，如果某列被压缩，但是是重复列，没用count
+    只会显示他的第一个值
+
+    insert low_priority into ... 这个 可以降低操作等级，避免同时执行的select等待过长
+    -- 是注释的开始
+    union连接应该用on 符合规范而不是where
 

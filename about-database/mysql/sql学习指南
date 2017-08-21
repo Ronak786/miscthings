@@ -1,3 +1,6 @@
+启动：
+    mysql -uxxx -pxxx  --xml 这样结果会全部是xml格式的
+
 dual表：
     这个是用于select xx  没有from的时候，加一个from dual，保持语法正确，mysql可以不用
 now（）
@@ -17,3 +20,9 @@ type:
 create:
     aa char(1) check (aa in ('a','b'))
     或者 aa enum ('a', 'b') 这样只能取2者之一了
+
+foreign key:
+    只有创建innodb的时候才有用，
+
+distinct:
+    这个会先排序，比较耗时
