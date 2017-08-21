@@ -249,6 +249,7 @@ union:
     select aa from p UNION select aa from q
     就是可以把多个select组合在一起，只要各个select的查询列或表达式一样就行了，过滤条件不同
     默认去重，使用union all 保留
+        多个union 和 all 重叠，非mysql可以使用括号，mysql总是自定向下执行的
 
     order by 只能出现在最最后, 而且只对第一个查询的列名可以指定
 
