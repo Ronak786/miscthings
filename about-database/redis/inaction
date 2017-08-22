@@ -13,6 +13,7 @@ string:
     set key word
         will return True if success
     get key
+    mget key
         will return the value and will return None if not exist
     del key 
         python will return deleted number, and if not exist ,will return 0
@@ -114,6 +115,30 @@ sort: used on set, list , string, hash
     expireat key  someunix_time
     pttl pexpire pexpireat  毫秒级设定
 
-system:
-    del
-    
+持久化：
+    快照
+        这个某点开始创建的话，就是这个点之前所有数据的，开始创建之后到完毕之前操作不会记录，
+        如果创建完成前崩溃，丢失这次的快照，只能回复到上次快照的数据
+        redis-cli: bgsave 后台创建fork
+                    save 这个前台创建
+                    配置文件里 save 50 100 表示50秒内100次写入，就开始bgsave
+                    主服务器sync的时候也会save
+        延时：
+            标准硬件，kvm vmware  1GB  10-20毫秒左右
+            xen(amazon ec2) 200-400ms
+            bgsave 要创建子进程，这个过程有时候如果内存不够也会很慢 ，save反倒快，
+                大数据可以取消自动，可以每次手动执行
+
+    aof:
+        appendonly yes, 将操作添加到文件尾部，出错直接重新执行
+        appendfsync always 每个命令都sync
+                    everysec 每秒 recommend
+                    no  让os决定 sync就是确保落盘而不是在某个缓存里
+        缺点：
+            体积变大，可以gbrewriteaof优化写入的命令
+        auto-aof-rewrite-perentage 100 只有当前体积是上次重写之后至少100%大的时候才启动重写
+        时常保留到其他地方去
+
+
+    主从服务器：
+        可以加速读取，写入总是主，并且会传给从
