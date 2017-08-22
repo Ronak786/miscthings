@@ -1,0 +1,119 @@
+5 data type:
+    string, list, set, hash, zset(有序集合）
+    string: 字符串，整数，浮点，可以加减数
+    list  链表，放入取出string
+    set  集合操作
+    hash  散列键值对
+    zset，根据浮点的分数grade来排序字符串
+
+string:
+    数的操作：
+        redis识别存为数的串，可以
+            incr decr incrby, decrby  , incrbyfloat
+    set key word
+        will return True if success
+    get key
+        will return the value and will return None if not exist
+    del key 
+        python will return deleted number, and if not exist ,will return 0
+    append
+    getrange
+    setrange
+    getbit 
+    setbit 二进制位从高到底
+    bitop and/or/xor/not   dest, a, b
+    bitcount 给出选定的范围内的1bit数量
+
+list:
+    lpush 
+        return list length,
+    lindex, lrange, rpop
+    ltrim
+    rpoplpush
+    lpoprpush src dest
+    brpush
+    blpop  key key2 timeout 这个如果某些为空，可以阻塞等待一个timeout
+        这个可以接受多个key的，会选择能够pop的第一个，返回的是一个pythontuple，包括了
+            选定了list以及元素
+
+set:
+    sadd,       
+        return 1 success, 0 already exist
+    srem, 
+        return removed number but in python, return bool
+    smembers(list all members), 
+        return a python set
+    sismember
+        return bool
+    srandmember key [count] 随机返回元素，count正不重复，负重复
+    spop 随机删除一个并返回
+    smove from to item  如果存在item，从from转移到to集合，返回0 1
+    sinter sinterstore
+    sunion sunionstore
+    sdiff sdiffstore 后者可以存储差集结果
+
+hash:
+    hset hash-key  sub-key1  value1
+        return if already exist or not  ,0, 1
+    hgetall hash-key
+        return will converted into python dict
+    hdel hash-key sub-key sub-key ...
+        return 1 or 0
+    hget hash-key sub-key
+    hincrby
+    hlen key return count of hash in map
+    hmget key subkey subkey ...
+    hmset key skey sval skey sval .... in python ,use {'xx':'xx',....}
+    hgetall key
+    hkeys key
+    hvals key
+    hincrby key subkey val (default is 0)
+    hexists key subkey
+    hincrbyfloat ....
+
+zset:
+    zadd name score key score key ...
+    zrem name key key...
+    zremrangebyrank
+    zremrangebyscore
+    zcard name
+    zincrby name value key
+    zcount name key min max return score [min,max]'s member
+    zrank name key    return key's rank 1 2 3 ...
+    zscore name key
+    zrange name start end  withscore 这个可以显示分数 这个根据的是位置显示的
+    zrangebyscore name start end withscore 这个根据的是分数
+    zrevrangebyscore
+    zrevrank name key 返回从大到小的分数情况下的key排名
+    zrevrange name start stop withscore  反向排名
+    zinterstore 这个交集合并集合以及有序集合，集合的分数固定一份，然后结果分数
+        可以是最大，最小，或和
+    zunionstore destkey  count  key1 key2 ..   weights xx xx xx (可以指定乘法因子） aggregate min/max/sum
+
+publish/subscribe
+    publish channel message
+    subscribe channel channel
+    unsubscribe channel
+    psubscribe pattern ...
+    punsubscribe pattern ..
+
+sort: used on set, list , string, hash
+    sort key [alpha按照字符顺序排序而不是数值顺序] by x-*->field
+        这样根据key d-xx 中的subkey field的权重，对元素xx进行排序
+    sort key [alpha按照字符顺序排序而不是数值顺序] by x-*->field get x-*->field
+        这样会返回权重本身，排过序的
+
+事务：
+    python里是创建pipeline对象实现的
+    redis-cli: multi  ... exec 这之间的命令会在exec的时候一起执行，一开始只是在队列里
+
+超时：
+    persist 取消超时
+    ｔｔｌ　查看超时
+    expire key seconds
+    expireat key  someunix_time
+    pttl pexpire pexpireat  毫秒级设定
+
+system:
+    del
+    
