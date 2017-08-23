@@ -1,3 +1,7 @@
+system:
+    info 用来查看系统运行信息
+    exists
+
 5 data type:
     string, list, set, hash, zset(有序集合）
     string: 字符串，整数，浮点，可以加减数
@@ -24,12 +28,20 @@ string:
     setbit 二进制位从高到底
     bitop and/or/xor/not   dest, a, b
     bitcount 给出选定的范围内的1bit数量
+    实现锁
+        setnx key val 不存在时才设置，存在返回0,false
+            用这个实现锁，而不是是使用watch，可以提高效率
+            应该给加上的锁设置expire，并且其他获取失败的人应该检验
+            是否存在ttl，不然可能程序释放前或者加expire前崩溃
 
 list:
+    lrem  key count val  count = 0 all
+                        count 》 0   from start， 移除count个
+                        count 《 0  from end 移除count个
     lpush 
         return list length,
     lindex, lrange, rpop
-    ltrim
+    ltrim key start end 截断
     rpoplpush
     lpoprpush src dest
     brpush
@@ -73,6 +85,9 @@ hash:
     hincrbyfloat ....
 
 zset:
+    所有分值相同的时候，会按照名字的二进制顺序排序
+        利用这个，如果想要按照字符顺序排序，先分数置0,按照名字排序，
+        然后利用首先插入想要获取元素之前和之后的元素,利用ascii构造，然后利用zrank获取他们排名zrange就行了
     zadd name score key score key ...
     zrem name key key...
     zremrangebyrank
@@ -90,6 +105,14 @@ zset:
     zinterstore 这个交集合并集合以及有序集合，集合的分数固定一份，然后结果分数
         可以是最大，最小，或和
     zunionstore destkey  count  key1 key2 ..   weights xx xx xx (可以指定乘法因子） aggregate min/max/sum
+        in python we can use conn.zinterstore(dest, {set1:weight1, set2:weight2})作为乘法因子，这样可以乘0
+        屏蔽其中一个权重
+
+    实现信号量：
+        利用时间为分数，进程唯一随机标记为值创建，每次一个进程首先删除过期的，
+            然后加入自己，如果发现自己在信号量最大位之后，删除自己，不然就获取了
+        加入的操作需要使用另外一个count计数，因为可能各个系统的时间不一致
+        最后还需要另外加一个锁，这样保证没有漏洞
 
 publish/subscribe
     publish channel message
@@ -122,7 +145,7 @@ sort: used on set, list , string, hash
         redis-cli: bgsave 后台创建fork
                     save 这个前台创建
                     配置文件里 save 50 100 表示50秒内100次写入，就开始bgsave
-                    主服务器sync的时候也会save
+                    主服务器链接复制时候sync的时候也会save
         延时：
             标准硬件，kvm vmware  1GB  10-20毫秒左右
             xen(amazon ec2) 200-400ms
@@ -142,3 +165,50 @@ sort: used on set, list , string, hash
 
     主从服务器：
         可以加速读取，写入总是主，并且会传给从
+        从服务器： 从是只读的
+            配置 slaveof host post
+            命令也可以: slaveof no one   控制停止接受主
+                        slaveof host port  控制开始接受主
+            具体流程：
+                一旦决定开始接受，客户端发送sync，
+                主执行快照，然后发送给从，期间操作缓存起来，
+                从接受期间根据配置决定如何回应从自己的操作，
+                接受时删除所有旧数据，主发送缓存操作，从全部接受，
+                现在开始同步完成，以后每个主写命令都发送到从
+
+                尽量主服务器只使用50到60内存
+
+                如果有多个从如果连接的时候gbsave还未完成，那么主会同时复制到从
+                    如果已经完成，对新的机器重新做一遍
+                为了保存多个备份，防止硬盘损坏，可以
+                    在多台从上实现aof，主也可以
+                
+                等待同步：
+                    从上的info()['master_link_status']这个表示是否从链接了猪
+                    具体的同步判断可以写一个虚拟值到从上，然后去读这个值
+                    aof_pending_bio_fsync 表示是否aof到了硬盘，
+                        
+
+            修复：
+                redis-check-aof --fix 会删除错误之后的所有命令
+                redis-check-dump 这个不能回复，所以要多备份, 用sha256校验备份
+
+            故障回复：
+                如果某个服务器挂了，在好的从上面save, copy dump 到新的主，
+                    启动新主，然后指定从为新主的从
+
+        事务：
+            其中watch放在multi前面，unwatch放在中间，
+            watch就是把key和客户端绑定，如果改变，就修改客户端对应标记，exec的时候会失败的
+            事务就是统一到队列里面一起执行
+
+            python像事务一样执行：
+                pip = conn.pipeline(False) 
+                pip.sadd(xxxx)
+                pip.execute() 这样所有操作会像事务一样累计起来一起执行
+        性能：
+            redis-benchmark -c 1 -q 可以测试单客户端性能，也就是1s执行命令数量，
+                不过有所简化，实际非事务性能在50%左右
+            mget hmget 之类可以提高效率
+
+

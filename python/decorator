@@ -1,0 +1,16 @@
+装饰器
+    就是这个函数本身接受一个函数，然后输出包装之后的函数
+    可以多个从外到内，从上到下
+    @decorator_function
+    def origin function(param): 这里的参数就是包装内的函数的参数
+        pass
+    之后调用的origin_function 就会调用包装过的函数
+
+    装饰器只接受函数作为参数，所以如果想传入额外参数，需要再包一层，然后
+        @outmost(param)
+
+    from functools import wraps
+        在最内层的实际返回的函数包装前使用@wraps(func) 就可以保留原来函数的信息了，比如__name__ ..
+    contextlib.contextmanager
+        这个在函数前使用，那么这个函数可以放在with xxx as xx:里使用 as后面的值是内部yield后面的值，如果
+            有的话也没关系tensorflow里有这样的用法
