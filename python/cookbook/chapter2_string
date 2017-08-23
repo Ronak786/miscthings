@@ -4,7 +4,7 @@ split:
     str.split(one_char)
     re.split(r'[;,\s]\s*', str)  
     re.split(r'(;|,|\s)\s*', str)   这个因为括号分组，所以匹配的同时括号里的匹配也会打印出来
-            r'(?:....) 是非捕获分组，这个就不会打印了
+            r'(?:....) 是非捕获分组，这个就不会打印了,只会匹配
 
 find:
     str.startswith()
@@ -26,4 +26,19 @@ replace:
     str.replace
     re.sub(match, replace, string), \1 \2 \3 in replace表示前面捕获的组号
     复杂的替换可以利用xx.sub(func, text) def func(m) 参数是match的对象，返回你利用group（）制造的结果即可
+    re.sub(match, replace_func(), string, flags=re.IGNORECASE)
+        replacefunc这个是一个返回一个函数的函数调用，这个返回的函数以分组对象为参数，这样
+        可以对匹配到的分组对象进行处理，返回的就是要替换的值
+        IGNORECASE可以忽略大小写
 
+最短匹配：
+    在具体的组后一个匹配符号后面加上? 就行了  re.compile(\"(.*?)\")
+
+匹配多行：
+    . 不能匹配换行符号
+    r'((?:.|\n)*?) 这样就可以匹配了
+    或者re.compile(xxx, re.DOTALL) 不过不建议
+
+unicodedata.normalize:
+    用于标准化字符串，然后比较，避免编码导致的失败
+    正则表达式支持\uxxx的unicode匹配
