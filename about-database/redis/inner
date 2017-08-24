@@ -1,0 +1,24 @@
+use C language
+
+store string(including key and value):
+    sds.h/structure sdshdr,  
+        use free, len to mark how many in buff used and can be used
+        buf is a buf[], so rellocate just reallocate the whole structure, not buf
+        use this can make string together with structure, not another buff with a pointer
+        二进制安全，因为字符串尾部用length而不是空字符判断，所以可以存储二进制数据
+            但是字符串存储一定会存储一个末尾\0,这样可以重用一些函数
+    sdcat: 
+        append string, and double length to extend free len ,decrease remaining memory alloca
+    sdtrim:
+        just add to free and not free accually
+
+link list:
+    adlist.h/listNode 节点， list 对象结构 
+    使用一系列的双链表操作来实现的链表操作
+
+dict:
+    redis本身就是dict实现的
+    有两个hash表，第二个永远用来rehash，
+        当不在bgsave的时候，如果负载因子（总数除以hashslot数）》1,开始rehash，总是取》=当前size*2的最小2的幂级数，
+        当正在bgsave，》5,开始
+        当《0.1,开始缩减，缩到>=当前size的最小2的幂级数
