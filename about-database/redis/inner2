@@ -1,0 +1,5 @@
+数据库内部整体：
+    整个数据库redisServer, redisDb, redisClient 
+    server中是多个db，
+    每个db中是一个字典,key是字符串对象，val是5中对象之一
+    client可以切换多个db中的一个

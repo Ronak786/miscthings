@@ -1,6 +1,18 @@
 use C language
 command 
-    object encoding profile 会或者当前使用的类型信息
+    object encoding xxx 会或者当前使用的类型信息
+    object refcount xx 引用计数
+    object idletime xxx  返回空转时长，如果打开maxmemory设置，超过上限后，会优先释放空转长的key
+        用作缓存的时候有用
+    type xxx
+    expire xx
+    rename xx xx
+    del xx
+    多态命令，会根据当前在redisObjet中记录的类型和使用的内部编码（子类型）来确定如何具体操作的
+
+    select num 选择数据库，默认16个
+        但是没有显示当前是第几个数据库的命令，所以执行flushdb等危险命令前手动选择一下数据库，防止
+        误操作
 
 store string(including key and value):
     sds.h/structure sdshdr,  
@@ -48,3 +60,84 @@ intset:
     当集合内元素不多且都为整数，用这个
     内部使用一个类型编码表示整数的比特位数，然后数量，然后是内容，就是数组
     增加，减少元素都可以使用不断的类型转换以及memmove来完成，因为移动一个就是所有元素移动一次即可
+    这个主要用于存储少量整数
+
+ziplist
+    压缩列表，这个使用一块空间来保存一个列表，每个节点空间变长，用于存储少量的各种
+        数据，包括列表，hash等，减少内存消耗,每个节点都会有前一个节点的长度信息，这样可以
+        从tail到head遍历，但是这个信息有1和5字节两种格式，对于数据长度有不同针对，有时候更新某个会
+        引起之后所有的更新，这个几率比较小，放心使用
+    实际操作中，每个节点保有前节点的长度，本节点总长利用这些信息实时计算出来
+
+    这个没有细看，都是关于字节移动的操作，掺杂各种字节的增长，移动利用memmove，由于需要变换1 2 5 字节的
+        不同表示长度，表示类型，所以有很多情况要考虑，而且整个表被放在了一个char指针里面,内部字节内容也是
+        节点memcopy放到里面去的，整个都在一块连续内存里面
+
+redisObject:
+    redis的key是一个对象，但总是内部的类型总是字符串
+    redis的value是一个对象，内部可以是list hash set string zset
+    引用计数：
+        这个主要是判定当前有没有对象在引用当前结构，释放的时候减1,最后确定释放
+    command:
+        TYPE 命令可以返回对应key的对象
+        object encoding: 返回内部表示方法
+
+    structure redisObject {
+        type 如上的类型
+        encoding 内部每个值的编码方式
+        ptr 内部数据结构
+        }
+    string:  int , embstr, raw
+    list: ziplist, linkdlist
+    hash: ziplist, ht
+    set: intset, ht
+    zset: ziplist, skiplist
+
+    string:
+        long 以内使用强制转换的指针保存
+        32byte以内，使用redisobject和sdshdr一起分配内存，这样只要分配一次
+        否则，长字符串，或者很长的double类型（本身短的话使用embsr字符串保存），使用raw也就是普通的
+            redisobject+sdshdr两部分保存
+        转换：
+            int 如果append会转成raw
+            embstr如果修改也专成raw, 
+            反正一修改就会变成raw
+        op:
+            set 
+            get: always return string type
+            append: allways turn into raw type
+            incrbyfloat: always try get value and cast into float and calculate, if error, fail
+            incrby/decrby: only int can do this , otherwise fail
+            strlen: always tmply turn into string first, then count string length
+            setrange: turn into raw and set range
+            getrange: tmply cast into raw and do range get
+
+    list:
+        ziplist直接内部保存数据串，长度由头部控制，所以不用担心二进制安全
+        linklist 保存字符串对象，字符串对象保存具体的字符串对象
+            链表对象使用linklist，linklist使用链表节点，节点里是字符串对象，这个里面是真正的字符串结构
+            （所有的字符串对象xxx对象都是redisobject)
+        ziplist条件：
+            元素长度都小于64字节 可以设置
+            元素数量小于512
+            所以在使用list的时候，ziplist不会出现很大的超长导致头部更新重新分配的情况
+
+    hash:
+        键值先后推入ziplist，先进的在前面
+        和list的限制一样，作用于key和value，
+        这些都可以在conf里修改
+
+    set:
+        intset:都是整数且<=512 个的时候使用这个
+        hashtable， key保存， value为null
+
+    zset:
+        ziplist 需要连续插入两个节点
+        skiplist + hash hash主要用来实现通过成员找分数，用hash可以加快
+        转换：
+            count < 128
+            all members' size < 64
+
+对象共享：
+    系统默认创建10000个整数对象，如果有引用，直接共享，其他的如果有相同也共享key
+    只共享整数值的字符串对象，因为验证不方便
