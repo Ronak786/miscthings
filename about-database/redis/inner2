@@ -3,3 +3,13 @@
     server中是多个db，
     每个db中是一个字典,key是字符串对象，val是5中对象之一
     client可以切换多个db中的一个
+
+监控事件
+    subscribe __keyspace@0__:key_name 这样 可以监控某个key上的所有操作
+    subscribe __keyevent@0__:del 这样可以监控某个数据库里的所有的del操作
+        在config里设置notify-keyspace-events 即可
+
+    具体在某些可订阅操作里面，一旦执行成功了，
+        就会判断时候允许发通知，是的话就把空间，事件两种都发一边，
+        notifyKeyspaceEvent=》pubsubPublishdMessage 发送
+

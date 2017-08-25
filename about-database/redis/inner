@@ -5,14 +5,45 @@ command
     object idletime xxx  返回空转时长，如果打开maxmemory设置，超过上限后，会优先释放空转长的key
         用作缓存的时候有用
     type xxx
-    expire xx
     rename xx xx
     del xx
     多态命令，会根据当前在redisObjet中记录的类型和使用的内部编码（子类型）来确定如何具体操作的
+    foushdb  清空数据库
+    randomkey 随机返回一个key
+    dbsize 返回数量
+    exists rename keys  都是处理key-value空间的
 
     select num 选择数据库，默认16个
         但是没有显示当前是第几个数据库的命令，所以执行flushdb等危险命令前手动选择一下数据库，防止
         误操作
+    过期：
+        pexpire/expire xx
+            多少时间后过时（p表示毫秒）
+        expireat/pexpireat  在什么时间过时
+        time 返回当前时间
+        ttl /pttl 返回剩余时间
+        persist xx 取消过期
+        过期的删除：
+            每个key设置定时器，这样cpu消耗大 这个不用
+            每次实际访问才删除，这样cpu小，但是如果不访问永远占位，相当于泄漏
+                expireIfNeeded(xxxx)
+            定期删除
+                activeExpireCycle:
+                    一个不断循环每次处理一些数据哭中过期dict字典，
+                    每次都处理一个限定时间内，这样分多次不断循环周期处理删除
+        rbd的处理：
+            bgsave的时候，会检查，过期的不会保存，其他的会，
+            载入的时候，主不会载入过期，从会，从过后要同步主，所以无所谓
+        aof:
+            只有在确实执行了定期删除和懒惰删除之后，才会向aof加入一个del语句
+            aof重写会检验过期
+        复制：
+            从服务器只接受来自主服务器的del，不然就像没有过期一样,
+            也就是说，就算设定了过期，没有在主服务器上查看，也不会删除
+
+全局结构体
+    一个大字典，会维护key的命中率，以及读的时候更新idletime, info stats 命令查看
+        过期：设置时间，如果读的时候发现过期，就地删除（所以应该算soft 删除）
 
 store string(including key and value):
     sds.h/structure sdshdr,  
@@ -103,6 +134,8 @@ redisObject:
             embstr如果修改也专成raw, 
             反正一修改就会变成raw
         op:
+            setnx 存在则不设置
+            setex 同时设置过期
             set 
             get: always return string type
             append: allways turn into raw type
@@ -141,3 +174,4 @@ redisObject:
 对象共享：
     系统默认创建10000个整数对象，如果有引用，直接共享，其他的如果有相同也共享key
     只共享整数值的字符串对象，因为验证不方便
+
