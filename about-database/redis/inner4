@@ -1,0 +1,25 @@
+publish
+subscribe
+    实现是对一个字典的操作，key是频道，value是client的list这个接受一个匹配模式，相当与通配
+psubscribe     
+    模式的匹配使用的是模式-客户端为节点的一个list
+pubsub channels [pattern]
+    返回服务器里当前被订阅的频道
+pubsub numsub xx xx 
+    返回这些频道的订阅数量
+pubsub numpat 
+    返回模式的数量
+
+
+multi:
+    之后只有exec discard watch mult会立即执行，其他存起来
+    这些都在服务器上：redisClient->multiState->commands 存储命令 exec 执行
+
+    watch
+        watched_keys dict 这个value是监控自己的client，每次修改命令都会打开对应客户端的redis dirty cas标记，
+        exec会判断这个标记
+
+    不回滚：
+        执行时候出错也继续下一条
+
+    no-append-on-rewrite 这个用于bgsave bgrewriteaof时不aof操作，这个会影响持久化的always的有效性

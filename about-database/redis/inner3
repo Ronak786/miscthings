@@ -25,3 +25,87 @@
     masterauth如果设置，客户端要验证
          主检验requirepass 的值
     info replication 这个master发送，客户端监听使用的，报告从状态
+    然后请求并处理同步，然后是传播
+
+    从每秒会向主心跳发送
+    min-slaves-to-write
+    min-slaves-max-lag 会检测只有从服务器数量至少3个，以及延时小于这个数值才允许写入，这是保证安全
+
+    心跳还有一个作用，如果传送丢失，主检验心跳里的偏移，发现问题，可以重新发送的
+
+sentinel:哨兵 这个用于监控，可以在server down的情况下把一个从变成主，回复后把原来的变成从
+    这个是个特殊的服务器，redis-sentinel xxx.conf  / redis-server xx.conf --sentinel  启动
+        只能执行ping sentinel info subscript unsubscripb psubscribe punsubscribe 这些命令
+
+    根据它的配置，可以初始化结构体给需要监控的节点，需要publish 和 发命令的socket两个链接
+
+    默认10秒通信一次主，获取info信息
+        主服务器这个要另外起的，从的信息也是从它那里通过info得到的
+
+    __sentinel__:hello:
+        这个频道用于向主从发送sentinel的监控到的主的信息
+        同时它也订阅从的这个频道，接受他的信息
+        所有的sentinel都会接受到发到同一个node的信息
+        有有sentinel都有互相的信息，也要保存更新
+            相互之间建立命令链接
+
+    主观下线：
+        down-after-milliseconds 这个是sentinel 每秒ping之后去检验的，对所有master slave，其他sentinel都
+            有效，如果限定时间内无相应，就在结构体里设置flag
+    客观下线
+        主观之后，会向其他监视者询问，不同的监视者有不同的设置，如果超过了配置里设置的数量，
+        那么本sentinel就判定他下线，客观下线，设置另一个flag
+    选举主sentinel：sentinel is-master-down-by-addr epoch runid(epoch每轮加1,runid用于选举）
+        每一轮切换主从都是通过选举产生的sentinel来做的，这个产生通过再次发送检测信息，但是包括自己的id，
+        每个接受者sentinel只会相应第一个发送给自己的，发送者收到反馈，如果反馈数量多余一半，自己就是主，就可以
+        开始故障转移了
+    故障转移：
+        根据优先级选出一台从，让他slave of no one变成主，然后其他都变成他的从，包括原来的主
+
+
+集群：
+    cluster nodes 显示集群中的服务器
+    cluster meet ip port 在当前集群中加入新的server
+        两者握手成功后，通过gossip协议传播给集群其他人
+
+    conf： cluster-enabled 选项决定是否开启集群模式 
+    集群里servercron会调用clustercron完成日常工作
+
+    clusterNode结构体用于记录每个节点自己以及其他联系到的节点的信息
+    clusterState 用于保存集群的状态
+
+    cluster meet
+    cluster info 这时候还是未上线状态，必须把16384个槽位分配出去才上线
+    cluster addslots <slot> 处理的节点上运行这个命令即可,同时会告诉其他人
+        这个信息同时记录在clusternode和clusterstate中间前者按照node记录slot数组，后者按照slot数组记录对应的node，
+        使用的方法不同
+
+        在执行一个命令的时候，如果命令是当前server管理的slot处理的，就本地处理，否则发送moved转向其他服务器处理
+    cluster keyslot <key> 可以查看当前key属于哪个slot
+        出错时moved信息不会返回，但是转向后的信息会打出，
+        只有集群客户端才认识moved错误 redis-cli -c
+
+        slots_to_keys 跳跃表，这个用于cluster getkeysinslot slot count 命令返回多个属于slot的key,每个key是
+            skip list的key ，score就是slot
+
+    重新分片：
+        加入新机器后使用
+        redis-trib 会分别通知源，目标机器，然后利用条表获取key，然后migrate 进行转移,最后把这些信息发送给任意节点
+        扩张到整个集群更新状态
+            转移中的状态中如果产生操作，原机器如果已经转移掉了，会返回ask命令让客户端重新询问
+            这个从当前节点的migrating_slots_to数组里查看
+
+            如果client获得ask错误，会自动在新server访问前发送asking，这样打开自己的标记，server看到访问的客户端
+            有这个标记，即使自己node结构体没有，也会执行这个命令，这样就解决了移动中的访问问题，之后自动删除flag
+
+    从节点：
+        cluster replicate node_id 这样就成了node的从节点，会自动替换，自动选举
+
+    节点定期联络，如果没哟回应，会加入当前节点的疑似下线节点结构提的一个list疑似下线列表，如果超过半数主节点都认定
+        下线，就广播下线通知
+    故障转移
+        使用raft算法，从节点向其他住节点要求投票回应，每个主只能一次，超过半数的票的那个从自动成为主，获取主的
+        slot，然后广播
+
+    clusterMsg:
+        所有集群消息都通过这个结构体来通信，ping pong meet， fail publish还可以更新各自的信息
