@@ -23,3 +23,46 @@ multi:
         执行时候出错也继续下一条
 
     no-append-on-rewrite 这个用于bgsave bgrewriteaof时不aof操作，这个会影响持久化的always的有效性
+
+
+lua:
+    C实现的脚本语言，不熟悉
+
+sort： 这个是暂时的，不会改变原结构（后台使用指针数组排序）
+    对list set zset排序
+    sort list
+    sort zset by *_patern 可以实现设定这些key对应的字符串数值，然后这样，可以通过这个对zset排序
+
+    sort xx alpha desc  对字符串排序，降序
+        by *-xx 这个会查找对应key的key-xx 形式的key对应的值作为weight
+        limit offset count 限制返回数量
+        get *-xx 也是同样的，就是返回的时候返回的是对应的key的这个模式的keyname的value
+            这个option有顺序的
+
+
+bit operation:
+    setbit xx offset value
+    getbit xx offset
+    bitop and/or/xor  dest aa  ddd
+    bitop not dest aa
+
+    在sdshdr里是反向保存的8个bit为一组，从最小的bit开始到最大的
+
+    bitcount:
+        swar算法：
+            汉明重量
+        查表 8位的所有可能的形式中的1的数量的表
+            这两个会在》128bit长度或小于的情况下使用
+
+慢查询日志：
+    slowlog-log-slower-than config 10^-6s
+    slowlog-max-len give max stored logs
+
+    structure
+        slowlogentry 放到一张链表里面去的
+    command: slowlog get
+
+        store xxx 保存结果
+
+monitor:
+    这个命令可以实时监控server当前的处理的所有名ing
