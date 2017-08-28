@@ -13,3 +13,97 @@
         就会判断时候允许发通知，是的话就把空间，事件两种都发一边，
         notifyKeyspaceEvent=》pubsubPublishdMessage 发送
 
+
+rbd:
+    save  bgsave用于保存，载入在启动的时候自动检测进行,优先使用aof，然后才是rbd
+    bgsave bgrewriteaof 这两个不能同时进行，会延后另一个
+        bgsave进行期间save bgsave都会被拒绝
+
+    redisServer中有save的参数结构体，有修改次数以及时间，用于判断是否应该save
+    serverCron 100ms执行一次，用于判断是否应该执行bgsave
+    rbd文件：
+        REDIS字符串，0006版本号，每个数据库的数据，EOF， 校验和
+        数据部分：
+            selectdb, dbnum, key-value-pairs
+        key-value-pairs:
+            (expiretime_ms, 过期毫秒的unix时间戳)， value类型， key value
+
+        字符串：
+            每个value都是一个具体编码类型加上对象，如果有压缩，也有压缩的格式
+        list：
+            list长度，然后是i每个元素长度，元素本身。。。
+        set
+            同上
+        hash
+            内部还有一个key value的pair，都是字符串，只要分别长度，和本体就行了
+        zset:
+            size, member1(len, string), score1(len, string), .....
+        intset, ziplist:
+            这里两个都是转换成字符串存储的，拿出来的时候根据类型相应转换
+
+        使用od -cx xxx 可以分析文件的
+            注意od的格式，十六进制时，每个链接的字节都是从达到小的，但是分开的双字节，如果一起表示一个数的话，
+                是从小到大的，所以最高位在最后
+
+        book：
+            redis rdb 文件格式
+    
+    aof文件：
+        打开功能后，每次一个命令都会以aof格式首先写入aof缓冲
+        每个事件循环里会处理一个写入事件，一个时间事件，然后调用是否flush，
+            如果flushappendonlyfile，那么everysec每秒，always每个命令，
+            no则是由os决定刷入硬盘
+            回复就是直接读取重新执行
+
+        重写：
+            实际上是查看内存，直接利用当前结构重新构造aof文件，尽量一条命令产生一个key的所有数据，
+                太多的情况分开，边界是redis_aof_rewrite_items_per_cmd
+            重写期间的aof新动作添加到另一个aof重写缓冲区，完成后把这个缓冲区添加到原来的文件后面
+
+事件处理：
+    就是C/S通信，利用io复用技术，首先是客户端发起链接，服务端记录，
+        然后客户端可以发送读，服务端返回写，这就是一个完成了
+
+时间处理：
+    周期时间：根据一次执行的返回值确定下次的执行时间
+    serverCron,
+        通过hz选项改变周期
+
+    具体的处理：
+        依据当前距离最近的定时时间，等待poll，到期后，处理文件事件，处理时间事件
+        两者不会抢占，因为是按顺序执行的,过长的时间也会自动中断，留到下次循环
+
+    lrulock 这个利用redis内部时间周期更新的时间作为时间更新，
+        每个redis对象也会有一个依据这个的最后访问时间，空闲时间由这两个的差组成
+
+    内存信息，处理命令信息等 info server 可以得到的信息的统计, 客户端缓存长度检验，
+        过期键删除，bgwriteaof的延迟（bgsave正在进行），备份的完成后处理都在这个里面
+    信号的拦截处理也在这个里面
+
+客户端结构：
+    对于aof还原使用的fake client ， fd = -1, 其他就是socket
+    client list  命令列出所有客户端
+        age 表示通信时间
+        client setname xx 可以设置名字
+        命令到来后，首先保存在输入缓冲区，
+        然后是解析到argc argv 字段，然后寻找对应的命令函数，然后执行
+
+        输出缓冲用于利用固定或者变长的链表来存储字符串
+
+    客户端的关闭：
+        如果输入输出限制到达，如果已经退出，或者超时（pubscribe或者brpop之类的不算），会被关闭
+        client-output-buffer-limit normal hard soft soft-timeout
+
+auth认证：
+    requirepass 属性配置，如果设置了， 没哟auth，就不能通信
+
+命令的处理：
+    客户端链接
+    发送命令
+    服务端接受到buff，分析到argv
+    利用hash根据argv[0]找到对应的redisCommand 结构体，里面有命令以及这个命令的属性
+        然后是预先的检测，是否当前可以执行，然后执行，然后写入结果，记录执行时间等
+
+初始化服务器：
+    首先创建初始结构，然后初始化config的内容，然后创建数据结构，还原数据库,最后执行事件循环，
+        接受客户端事件以及时间事件，更新操作 ，不断循环
