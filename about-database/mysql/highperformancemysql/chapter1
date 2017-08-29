@@ -1,0 +1,85 @@
+阅读：
+    文档中 innodb 事务模型和锁
+
+lock:
+    读写锁， 
+    mysql层有表锁，也可以选择忽略engine层的锁
+    engine层是行级锁，innodb，这个mysql是不管的，engine自己把控
+
+acid:事务
+    原子 操作全部或者全不
+    一致 不能只执行一半的状态出现 
+    隔离 其他人在事务结束前 不知道
+    持久 事务提交则改变生效永久
+
+隔离级别：
+    脏读，所有未提交也能直接读到
+    提交读，只要提交了就能读到，即使当前事务还在进行中，所以可能两次读取不一样
+    可重复读：mysql， 当前事务的读取永远是一样的，即使其他事务在这个过程中提交了
+    串行化：所有动作串行，太消耗
+
+死锁：
+    无法避免，一般检测超时就回滚拥有最小锁的那个事务
+
+autocommit:
+    set autocommit = 0; innodb ndb cluster 支持
+    强制执行： alter table ， lock tables
+    设置隔离级别： ansi共有4个
+        set (session) transaction isolation level  read committed;  
+
+混合engine
+    不好，非事务的engine的表不能回滚，会不一致
+
+lock:
+    lock tables, unlock tables mysql本身支持的功能，这个没必要用，有innodb的行级锁
+    innodb支持现式的select ... lock in share mode, select ... for update 加锁
+
+mvcc:
+    多版本并发控制，innodb实现这个，每行后面加两列，创建和删除时间，（时间是从mysql启动开始的一个计数,一个事务
+        增1), 任何操作包括select都会查看对应时间，保证读取的数据是一致的
+        当然还有数据的修改，所以还会为修改的数据保存时间点的快照
+
+获取表的信息：
+    show table status like 'table_name_pattern';
+    or select * from information_schema where table_name = 'xxx'; 也可以
+
+概览：
+    innodb使用mvcc，间隙锁锁定中间的索引
+    索引对主key高性能，二级索引必须 包含主key，
+        表和索引文件独立，平台独立
+        支持热备
+
+    myisam:
+        崩溃不安全，不支持事务，有全文索引，小表可用.myd .myi两个文件保存数据和所in
+            需要条件maxrow来条件最大行数,但是时间长
+        check table xxx
+        repair table xxx
+        myisamchk command
+
+        性能：
+            可以压缩表，这样只读的情况下占空间小，索引可以缓冲，但是表锁很
+            影响性能
+
+    archive:
+        insert, select, 仅有的操作，针对这个高速优化的，适合全表处理的应用，数据分析
+    csv:
+        读取写入csv文件用的
+    memory：
+        内部使用的临时表，内存中的，和temporary table 不一样
+        用于查找映射等
+    ndb:
+        集群用
+
+    infobright infinidb
+        面向列的引擎，
+
+    建议：
+        一般用innodb，如果全文搜索，使用innodb +sphinx
+
+    切换引擎：
+        alter table xxx engine = xx;
+        mysqldump导出导入
+        或者可以创建新表，分段
+        create table xxx like old_table;
+        alter table xx yyyyyy;
+        insert into xx  select xxx from where id between aa and bb;
