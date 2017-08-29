@@ -1,2 +1,47 @@
 基准测试：
     用于压力测试，展现某种系统状态下的应用的行为，sysbench工具
+    吞吐量， 延迟， 并发性(多大的并发性下性能下降了多少）， 扩展性（增加新工作得到线性增长的性能提升）
+
+错误：  
+    使用数据的小子集来模拟大数据
+    错误的数据分布情况
+    缓存预热要做好
+    模仿真是用户行为要做好
+    测试时间不能太短
+        长时间预热有必要，不然比较不准确，如果没时间，干脆相信别人的结果
+
+    调参：
+        2分法来达到需要的目的
+
+    配置：
+        默认配置基于小内存消耗，需要调节！  
+
+    使用脚本自动化测试，自动化解析
+    使用图形gunplot等显示结果曲线，可以发现新结果
+
+    工具：
+        ab  apache web请求压力测试
+        http load
+            同上，可以多个url
+        mmeter
+            同上，更复杂精确
+
+        mysqlslap
+        mysql benchmark suite
+            这个单线程，只能测试单cpu能力，而且有不稳定结果
+        super smack
+            复杂强大
+        database test suite (dbt2 tpc-c)
+        percona tpcc-mysql tool  percona-toolkit
+            这两个都是事务处理测试
+
+        sysbench 要熟悉
+            多线程压力测试，支持lua，学一下， 灵活
+
+        set @inputvalue := xxx
+        select benchmark(count, func(@inputvalue));
+            这样可以在mysql里面测试某个函数的运行次数下的时间
+
+
+    学习sysbench
+    学习gnuplot 以及matplotlib 前者重性能，后者重python的融合
