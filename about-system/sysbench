@@ -1,0 +1,24 @@
+sysbench:
+    system:
+        --max-requests
+        --max-time 这个不指定只有10秒
+
+    95% percentile
+        这个表示的是95%的数量都小于这个指定的值，用于消除一些突发状况的统计方法
+    total time taken by execution:
+        这个是所有线程的执行的wall time的总和，所以会很大
+
+    sysbench cpu --cpu-max-prime=xx run
+    sysbench fileio  prepare 通过help看选项，默认2G文件，当前目录创建，默认分为128个文件，这些都可以用参数改
+            然后run, 也要指定文件数量的
+    sysbench fileio --file-test-mode=xxx   --max-requests  请求最大数目 0无限
+    sysbench fileio cleanup
+
+    关于数据库oltp 在线事务的测试，这个要使用lua脚本的路径作为参数才行的,安装的时候能找到，
+        然后后面加help就可以看到选项了，除了这些，还需要数据库的选项
+
+tpcc load/start:
+    这个工具在https://github.com/Percona-Lab/tpcc-mysql
+    上面，主要用来测试数据库的事务执行效率的,模拟真实的随机操作
+    就是先利用warehouse选项当作插入条目数，实际是一个倍数，是50000的倍数
+        然后执行测试，注意制定的-w要一样，不然报错
