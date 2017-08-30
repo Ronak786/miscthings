@@ -2,3 +2,17 @@
     就是用查询的响应时间来度量，每个查询的响应时间表示性能的标准
         所以性能优化第一步是测量时间花费的位置
     优化有执行时间，等待时间，找到可以优化的，对系统影响大的子任务，这个很重要
+
+合理利用
+    new relic, xhprof lfp这些性能监控工具，在代码里插入监控，获得的性能提升要多余
+        性能消耗
+
+慢查询日志： 建议打开慢查询
+    这个设置long query time之后可以有效捕获较慢的语句
+    pt-query-digest --processlist h=localhost --interval=0.01 --output slowlog 这样
+        可以实时监控语句的执行
+    或者tcpdump记录，然后--type=tcpdump来解析日志，这个精度更高
+    这个在pt-query-digest手册里有，不过注意本地使用的时候，
+        mysql启动要加上--protocol=tcp -h 127.0.0.1 不然解析的时候会出错
+
+
