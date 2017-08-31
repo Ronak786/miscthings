@@ -1,3 +1,6 @@
+内存：
+    rss 包括了真正在内存里的部分，包括share lib
+    vss 包括了虚拟空间的占用部分，包括swap以及未load部分
 性能：
     就是用查询的响应时间来度量，每个查询的响应时间表示性能的标准
         所以性能优化第一步是测量时间花费的位置
@@ -11,8 +14,72 @@
     这个设置long query time之后可以有效捕获较慢的语句
     pt-query-digest --processlist h=localhost --interval=0.01 --output slowlog 这样
         可以实时监控语句的执行
+
     或者tcpdump记录，然后--type=tcpdump来解析日志，这个精度更高
-    这个在pt-query-digest手册里有，不过注意本地使用的时候，
-        mysql启动要加上--protocol=tcp -h 127.0.0.1 不然解析的时候会出错
+        这个在pt-query-digest手册里有，不过注意本地使用的时候，
+            mysql启动要加上--protocol=tcp -h 127.0.0.1 不然解析的时候会出错
+
+    分析慢查询日志：
+        long_query_time = 0 (这个可以是任意整数，记录的时候会精确到微秒级别）
+        slow_query_log=1
+        slow_query_log_file="/var/lib/mysql/log-slow-queries.log"
+        使用pt-query-digest --explain xxx.log 可以分析日志,注意启动mysql的时候使用加host的语句不然解释粗错
+            --limit --outliers 这两个选项可以放开更多的日志解析，默认只解析部分最坏的
+
+        具体的报告参数可以看man手册，离差比的意思是接近0表示越接近平均分布，大的化就是出现了聚块
+
+    使用profiling 选项，可以在mysql里设置变量，之后操作一段时间后，
+        show profiles 可以看到每个动作的执行次数和时间，
+        也可以看information_schema.profiling 表中的信息，然后自己选择计算group by等
+
+        information_schema 这个数据库里的表可以研究一下，都是数据库的运行信息之类的数据
+
+    show variables;
+    show status/show global status:
+        queries 这个变量记录全局的查询次数，这个是内部查询，包括非select语句
+        show status where xxx xxx 可以过滤的，handler， 临时文件 计数器之类是有用的变量
+        show tables from information_schema like xxx 也是支持的
 
 
+问题解决
+    出现间歇性问题，这个有时候是数据库外的问题，有时候不是
+    1判断是不是整个服务的问题，还是单个语句的问题，或者缓存的问题
+
+        show innodb status 这个可以给出当前查询队列和正在执行的信息
+        show global status 利用 
+            mysqladmin ext -i1 可以每秒一次打印这些信息利用awk整理
+            其中和查询相关的有Queries, threads_running, threads_connected
+            然后画图输出趋势，判断有没有尖刺
+        mysql -e "show processlist\G"(这个可以垂直输出，便于筛选） | grep xx 
+            状态statistics 表示优化中决定语句顺序中，不可能经常出现
+                unauthorized user 表示建立链接中
+                free items 正在查询结束中，  这些状态经常出现，表示问题中
+
+        利用查询日志找到某个时间段的查询数量，然后统计是否有大的变动，
+            原因可能是某个时间段某个服务器出现了某个问题
+
+    触发器：
+        判定合适的时间开始收集数据，这个需要检测 某些值达到阈值，如processlist的state等
+        threads connected 150左右
+        threads running 20左右
+        还要设置持续时间，一瞬间的不算的
+
+        使用pt-stalk 可以监控变量
+
+    数据收集：
+        尽可能所有
+        oprofile, strace , tcpdump + pt-query-digest,  pt-pmp用于获取阻塞的堆栈信息
+        pt-stalk 可以设置mysql变量的监控，然后发现到达阈值就启动收集程序
+            收集后，查看一场的查询事务行为
+        pt-pmp  穷人剖析器
+            可以解析gdb的stack trace信息, 可以自己调用gdb收集信息，还可以制定不同的程序
+        pt-ioprofile 
+            利用lsof  strace监控mysql等进程的行为，收集需要的数据，io的次数大小等
+
+    实战：
+        问题是什么，做过什么措施
+        pt-summary  pt-mysql-summary 这两个可以获取有效的状态信息
+
+        mysql写磁盘： 数据，日志，排序文件，磁盘临时表
+        分析信息，这里是磁盘写过量，但是脏数据很少，查询队列很长，ssd这一款处理不快，
+            最后发现是查询使用的磁盘表过多,select语句的问题,导致缓存失效
