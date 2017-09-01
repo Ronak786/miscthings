@@ -1,3 +1,8 @@
+variables, status:
+    table_open_cache 代表打开的表的缓存数量，到顶就开始缓存失败，不会增加，
+    open file limit 这个代表可打开的文件数量，cache要比这个小才行，
+        具体lsof -p 找对应的进程查看，以及 proc pid底下查看对应允许的文件总数
+
 performance_schema:取代 show profiles
     这个数据库里有很多表格，用来监控性能的，设置 performance_schema = on 来开启
     table:
@@ -9,3 +14,10 @@ performance_schema:取代 show profiles
         events_waits_current
         events_stages_current
         events_statement_current 这三个用于数据库中当前处理的命令
+
+        events_waits_history
+        events_waits_history_long  最近的事件
+
+        events_waits_summary_global_by_event_name  all events 信息
+
+        file_instances当前利用到文件的事件
