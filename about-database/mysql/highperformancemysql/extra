@@ -1,0 +1,11 @@
+performance_schema:取代 show profiles
+    这个数据库里有很多表格，用来监控性能的，设置 performance_schema = on 来开启
+    table:
+        events_waits_current: 当前正在执行的线程的信息
+        performance_timers, setup_timers 这两个表分表表示支持的计时以及各种操作使用的计时
+        setup_instruments 指定记录内部动作的命令以及记录时间的命令
+            设置完了，使用truncate table消除表格的原有统计数据
+
+        events_waits_current
+        events_stages_current
+        events_statement_current 这三个用于数据库中当前处理的命令
