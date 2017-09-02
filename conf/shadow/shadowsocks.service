@@ -1,0 +1,9 @@
+[Unit]
+Description=Shadowsocks
+
+[Service]
+TimeoutStartSec=0
+ExecStart=/root/anaconda3/bin/sslocal -c /etc/shadowsocks.json
+
+[Install]
+WantedBy=multi-user.target
