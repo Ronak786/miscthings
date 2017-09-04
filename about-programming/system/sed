@@ -44,6 +44,7 @@ sed 's/old/new/' < orig >newfile 可以不用标准输入，直接作为参数, 
 
 sed -e 'xxx' -e 'xx':
     接连执行多个sed,每个是前一个的后果
+    sed -e 's/#.*//' -e 's/[ ^I]*$//' -e '/^$/ d'  删除所有的空格，注释和行尾的tab
 
 sed xxx  f1 f2 f3  可以多个文件
 
@@ -76,9 +77,256 @@ combine with here document:
     sed 'xxxxx' <<eof
     sldkjfldsf
     eof
+    记住sed以外的变量要用引号引用，不然可能报错
+
     
 匹配：
     sed  '/ / p' 没有p的话会报错，好像其他的d什么也可以，反正一定要有一个动作
         最好加一个空格，这样区分更加清楚匹配和打印
 
+    ! 这个 sed '// !p 这个用于打印不匹配的，要结合-n， 相反的意思
+        !p 和 d， !d 和 p拥有相似的意思，前提是-n和p结合使用，-d不用-n，不让一边打印两遍，另一边不打印
 
+    d
+        这个用于删除，用法和p一样
+
+    q
+        这个放在地址匹配的后面，用来阻止：
+            不能加范围，当到达对应的行，匹配停止
+            这个可以作为一组命令中的第一个或最后一个
+
+地址匹配：
+    每个sed命令前都可以有匹配行或行段，利用正则来找也可以
+
+    sed '3 s/xxx/xxx/' <i >o 匹配第三行
+    sed '/^#/ s/xxxx' 匹配开始是#的行
+    切换 地址匹配的匹配符号：
+        不同于替换，这里要用\显式子指定：
+            sed '\_^g_  s?g?p?' 这里使用_ 作为地址匹配
+    sed 'start,end s/xxxxx/'
+        可以使用 $指定最后一行
+
+    sed '/xxx/,/xyyy/ s/xxxx/' 
+        这里可以用正则模式匹配，省略结尾导致匹配到结束，因为这里的匹配相当与修改的开关
+        这里是包含匹配行本身的
+
+多命令{}模式：
+sed -n '
+	1,100 {
+		/begin/,/end/ !{
+		     s/#.*//
+		     s/[ ^I]*$//
+		     /^$/ d
+		     p
+		}
+	}
+
+    地址可以嵌套， ！表示除这个范围以外
+
+取消匹配到的那两行：
+#!/bin/sh
+sed '
+    /begin/,/end/ {
+      /begin/n # skip over the line that has "begin" on it
+      /end/ !{ #这里表示end这一行不参与
+        s/old/new/
+      }  
+    }
+'
+   
+
+插入文件：
+    sed '$r end' < in > out 
+        插入文件end 到读出来的文件后面
+    sed '/pattern/ r file' <in >out
+    sed '/INCLUDE/ {
+        r file
+            d
+    }' 插入并删除原行，因为插入到输出缓冲区，不影响d，而d如果先执行，那么就没有可以给
+        r用来读入的匹配位置了
+        这个相当于一个文件替换一行，cpp会使用类似这种东西
+
+		% include 'sys/param.h' <file.c >file.c.new
+		A shell script to do this would be:
+
+		#!/bin/sh
+		# watch out for a '/' in the parameter
+		# use alternate search delimiter
+		sed -e '\_#INCLUDE <'"$1"'>_{
+			r '"$1"'
+			d
+		}'
+
+a:
+	append 一行after the pattern line： 所以必须放在一行上面要用到 \\n
+	#!/bin/sh
+	sed '/WORD/ a\ #这里不能有空格
+	Add this line after every line with WORD
+	'
+i:
+	insert before that pattern line 同上
+c:
+	change line
+#!/bin/sh
+sed '
+/WORD/ {
+i\
+Add this line before
+a\
+Add this line after
+c\
+Change the line to this one
+}'
+可以后面\继续加下一行
+不同版本会不保留开头的空格，使用 \     sentence 可以强制保留,
+
+
+y
+	y/xxx/xxx/ 用于字符替换的，前后对应，和tr一样
+
+l
+	放在p的位置，打印模式匹配空间，debug
+
+多行匹配
+	n 打印当前行，清空缓冲区，读下一行
+	N 紧接着读下一行，加入一个\n以及下一行到当前区域
+		由于整个处理完到最后一句命令后，当前缓冲区会没有，所以只有一个N的语句只会两两
+		连接每两句话
+	d 清空缓冲区，放弃当前循环 ，读入下一行，从第一个-e开始
+	D 清空缓冲区中的第一行，从头开始执行命令，如果有{}，执行下一个{}，如果空了，才从头开始重新读一行
+	p 打印整个缓冲区
+	P 打印到第一个行为止
+
+	基本上用到{}会比较清晰
+		#!/bin/sh
+		sed '
+		/ONE/ {
+		# append a line
+			N
+		# search for TWO on the second line	
+			/\n.*TWO/ {
+		# found it - now edit making one line
+				s/ONE.*\n.*TWO/ONE TWO/
+			}
+		}' file
+
+
+pattern space:
+	a,i,r,q 不能作用于多行
+	c可以
+	d, n会导致sed返回loop开头
+	q 导致sed停止
+	其他情况继续下一条命令
+	
+= 用于打印当前的行数，位置和p d 一样
+	sed '$=' file  可以打印文件的行数
+    seds '=' file 会打印在不同行
+        #!/bin/sh
+        sed '=' file | \
+        sed '{
+            N
+            s/\n/ /
+        }' 可以正确标行
+
+换行：
+    匹配换行可以使用\n因为属于正则，但是替换的地方需要使用\(回车）这里需要真正的空格
+
+
+hold 空间：
+    sed 'x' file 这个命令交换两个空间，所以这样会在开头加一行blank
+        但是最后一行没有了，因为留在了hold space
+        利用这个可以无限保存下一行
+
+#!/bin/sh
+# grep3 version b - another version using the hold commands
+# if there is only one argument, exit
+
+case $# in 
+	1);;
+	*) echo "Usage: $0 pattern";exit;;
+esac;
+
+# again - I hope the argument doesn't contain a /
+
+# use sed -n to disable printing 
+
+sed -n '
+'/$1/' !{
+	# put the non-matching line in the hold buffer
+	h
+}
+'/$1/' {
+	# found a line that matches
+	# append it to the hold buffer
+	H
+	# the hold buffer contains 2 lines
+	# get the next line
+	n
+	# and add it to the hold buffer
+	H
+	# now print it back to the pattern space
+	x
+	# and print it.
+	p
+	# add the three hyphens as a marker
+	a\
+---
+}'
+
+这个脚本输出指定行以及上下行
+
+x 用于交换
+h用于 copy from pattern into hold space
+H 用于把当前的复制添加到hold space
+g G 用于把hold复制到patter空间中
+
+
+flow contorl：
+
+#!/bin/sh
+sed -n '
+# if an empty line, check the paragraph
+/^$/ b para
+# else add it to the hold buffer
+H
+# at end of file, check paragraph
+$ b para
+# now branch to end of script
+b
+# this is where a paragraph is checked for the pattern
+:para
+# return the entire paragraph
+# into the pattern space
+x
+# look for the pattern, if there - print
+/'$1'/ p
+'
+段落检查
+
+分支
+	:string  这个表示段落的开始 branch_marker
+	address  label  branch_marker 表示匹配就跳到分支
+	b  表示跳到脚本结尾
+
+	t 如果最近一条替换成功了，就跳到label
+;
+	这个可以分隔命令到同一行
+
+
+tip:
+	s/ .* / / 删除这个模式空间（肯能有多行）中除了第一以及最后一个词
+    跳脱如arg=`echo "$1" | sed 's:[]\[\^\$\.\*\/]:\\\\&:g'` 这里要\\\\因为
+        替换区替换完成后的\n实际上会被转义,而\nsed里的替换部分不会转义成回车，
+        所以就会变成平常的n，所以\\n 就是n，所以\\\\n才是\n，所以如果想要打印\n,就要\\\\n
+    二进制修改，利用tr修改后保存进变量，然后sed直接使用，不要直接敲二进制
+    --posix 可以测试你的sed是否是可移植的，gnu版本有自己的功能
+    -s 使用后，每个输入文件会分别处理，否则炼成一个大文件处理
+        sed -s -n '$=' $files
+        sed -n '$=' $files 会返回总长度
+
+    -i.tmp  'xxx'  file  这样可以修改并取代原文件，  .tmp可以让源文件变成备份这样保险
+    --follow-symlinks 会保住符号链接 ,不然符号你改的就成新文件了
+        但是hard link会无效
+    -b \r\n作为分行
+    -u 如果定向文件，一般会buffer部分时间，所以这个选项用于立刻输出到文件
+    -z 使用null字符分隔，用于grep -Z产生的以null分割的字符串
