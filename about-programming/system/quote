@@ -1,0 +1,14 @@
+\? 防止shell解释？ 这个和 *一样会被通配
+\! 可有可无，解释一样
+''全部不解释
+“” 变量替换，以及命令替换`` 解释，其他不解释, \也会被“”解释的
+
+debug:
+    echo
+    set -v  运行前显示
+    set -x  运行后显示 set +x set +v close
+
+here document
+<<eof
+dslfjsdlfj
+eof  这个作为一种input存在，如果<<\eof 那么就不解释变量
