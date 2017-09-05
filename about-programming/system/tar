@@ -1,0 +1,15 @@
+tar cf output/- dir > file
+    可以输出到stdout
+
+tar cf - . | (cd todir;tar xfBp -)
+    tar没有 -m 的解压可以保存修改时间对make重要，所以可以这样复制
+tar cvfFF 
+    FF保证core aout等文件不会被包含
+tar xxx -X excludefile -I includefile
+    这里的文件的意思是文件的的内容是文件列表这些文件需要排除或包含
+    tar cvfX /dev/null Exclude project
+-C 
+    tar xxx xx -C basedir  dirs
+    这样包含进来的就没有绝对路径了，不会在restore的时候出问题
+
+结合输入输出可以转移

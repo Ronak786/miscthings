@@ -1,0 +1,77 @@
+接受标准输入
+#!/bin/sh
+awk '
+BEGIN {print "File\tOwner"}
+{print $8, "\t", $3}
+END {print " -Done-"}
+'
+
+或者awk -f file 里面直接就是{} {} {}
+或者#!/usr/bin/awk -f ..... 也可以 
+    一般用最后一种，除非你要传参数，这是用第一种
+"\n" 双引号里的\是认识的特殊字符，和shell不一样，那边不认识
+$1 $2 表示分隔的一行中的某一列
+    但是！ 这些不能放在引号里面，
+    x=1 $x  和上面一样的
+    $0 整行
+    print $0 == print
+
+#!/bin/sh
+column=${1:-1}
+awk '{print $'$column'}'
+    awk不认识shell的变量，所以要在语句中间跳脱，加入shell变量，本身的$不要忘了
+    同样还可以这样写 awk '{print $c}' c=${1:-1}  不太好，要记住
+
+操作符号：
+    + - * / % <space> 
+    7 3 会变成73 因为space是连接的作用,这个会在值的衡量之后执行,这个优先级最低，只有无法计算的额时候才链接
+    print /会浮点，其他操作整形
+        int to string 直接
+        string to int 会变成0如果非法
+    ++ -- 
+    +=
+    && || !
+judge:
+    0, 未定义都是 false
+    == != > < >= <=
+regular:
+    ~  !~  match not match
+    word !~ /(a|b|c)/
+
+flow:
+    if (xxx) statement else xxxx
+    while () xxx
+    for (xx;xx;xx) statement
+    for (xx in xx) statement
+    break
+    continue
+    {statment,xx,xx,}
+    variable=xxx
+    print xxx > xxx
+    printf format,xxx > xxx
+        print "string", a, b, c; 可以多个string
+    next ??
+    exit
+
+tip:
+    可选筛除打印
+    $1="";$3="";print 这样消掉两项
+
+awk -F: 改变域间隔标记 这个只能设置一个标记
+或者命令内部 FS=":"; 这个可以多个标记
+    
+FS改变时机：
+    如果在当前行的处理代码里面想改变，
+    首先应当FS=“XXX”然后 $0=$0 然后就可以按照新格式获取$1 $2
+OFS:
+    改变输出间隔符号 即时生效
+NF:
+    域的个数 $NF打印最后一列
+NR:
+    当前行数
+RS:
+    读行的分隔符，""表示读全文，限定100行
+ORS:
+    输出行分割
+FILENAME
+    文件名

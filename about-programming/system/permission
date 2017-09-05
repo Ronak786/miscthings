@@ -1,0 +1,8 @@
+x permission:
+    脚本需要读权限，二进制不需要
+chmod =r 会一起改变ugo的属性
+    权限作用，先user，在group 在other，一旦某个拒绝，不会搜索下一个
+newgrp
+    改变当前user的group
+    setuid gid tid  4000 2000 1000 u+s g+s u+t
+chmod a+X * 给予执行权限如果允许的话

@@ -1,0 +1,22 @@
+extended awk, egrep perl emacs
+basic  vi sed grep csplit dbx more expr ed lex
+
+anchor:
+    ^ $ in sed or cat -e $ can be the last line
+    \< \> 单词首尾，字母数字下划线
+    \( \) \1 \2 用于组
+.
+    any except end-of-line
+[]
+    []本身匹配[] ,没哟特殊意义
+    [0] 匹配0
+    [-0-9] [0-9-] 必须放在边上，
+    不行的话用\条脱就好了
+
+() <> {}
+    在basic的re中，这些前面如果没有\,表示的字符匹配本身
+    如果有\, 就相当于扩展re里面没有\的那些
+
+* \{ \} 这些如果放在行首，没有意义，就是普通的匹配
+[[:alpha:]] == [a-zA-Z]
+[:blank:] > [:space:] (just ' ')

@@ -48,6 +48,16 @@ subshell:
             真正执行的时候才会生效，如果条件到不了，不会执行, 里面如果有命令，效果发生在
                 当前shell， echo的效果在子shell
 
+        字符串截取：
+            ${var#*/} 第一个/及左边去掉
+            ${var##*/} 最后一个/及左边去掉
+            ${var%/*} 从右边开始第一个位置去掉
+            %% 直到最左边
+            ${var:a:b} 从第几个开始的几个
+            ${var:a} 从第几个开始
+            ${var:0-a:b} 从右边第几个开始的几个
+            ${var:0-a} 右边第几个开始（然后往右边）
+
         特殊变量：
             $1 .. $9, 其他的可以 shift num; 来移位获得 $0 是脚本名
             $* $@ 如果没有“”包围，是一样的
@@ -156,3 +166,79 @@ mailcheck:
     how many time period mail checked
 USER TERM TZ LOGNAME
     这些都是可以获取的默认设置，非当前设置
+
+flow control:
+    复合：
+        if while 等后面可以跟一大串语句，还可以分行，最后的then会根据if的最后状态决定是否执行
+        内部必须有语句，可以有一个;来填充
+        cat xx | while read 也可以 ,两边还可以都是subshell ，输入输出都会获取到的
+        整个while可以在一个subshell里面供给输出
+        也可以 while xxx
+                do
+                done < file
+
+        注意：
+            echo 1 2 3 | read a 读不到的
+            echo 1 2 3 | (read a) 才可以读到,而且传不出来。。。）
+            但是echo 1 2 3 | while read a,  if read a 可以读到
+
+        read 的参数如果不够，置空，如果多了，放到最后一个
+
+        while true == while ;
+
+        until true 执行直到为真
+        do
+        done
+
+        for xx in xxx  ,如果后面使用 "$a" 那么当作一个值，否则当作空格分开的值
+        set 可以用在for里面，然后$1 $2 引用每次循环的多个变量，如果用了引号
+        case xxx in xx|xx) list;;
+                    yy|yy) list;;
+                    *) xxx;
+        esac
+        可以使用文件匹配的[xy]* 来同陪
+        只能有一个在case判断里
+
+        break continue 可以加数字 2表示更外面一层
+
+    expr:
+        +-*/%=> >= < <= != = | & : 最后是与 或以及匹配
+
+        expr 2 + 2 需要空格！！
+        还要注意 > < * 这些有特殊含义，单个字符用‘’起来
+        exprt '2+2' 是一个字符串，不会衡量值
+        expr $a = '2+2'
+        expr no  会直接打印非衡量值
+        可以接受负数
+        expr $a \& $b 这个如果为真，打印的是第一个数的值！！
+
+        expr string : pattern   ,注意跳脱， : 优先级最高
+            只能从开头匹配, 打印的是匹配的数量
+            如果后面有匹配组，和sed的非增强模式没有-r一样用，则会打印匹配组
+            可以用来模式匹配以及判断
+
+function:
+    func() {
+    } 即可
+    函数内部的参数是想对于函数的
+    inc() { eval $1=`expr \$$1 + 1`; } 
+    eval 可以让第一遍执行的字符串第二遍执行
+
+    in shell , exist status of a function of 0 is true!! used in while/if
+
+    利用$! 获取刚刚创建的子shelljob的id，可以在另一个子shell里几时kill
+#!/bin/sh
+	MYPID=$$
+	done=0
+	trap "done=1" USR1
+	(prog1;echo prog1 done;kill -USR1 $$) & pid1=$!
+	trap "done=1" USR2
+	(prog2;echo prog2 done;kill -USR2 $$) & pid2=$!
+	trap "kill -1 $pid1 $pid2" 1 15
+	
+	while [ "$done" -eq  0  ]
+	do
+		prog3
+	done
+
+"" 里面\n是没有意义的， 不认识

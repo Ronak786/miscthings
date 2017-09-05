@@ -1,0 +1,28 @@
+find . -name '[a-z]*]'  -print
+    shell格式的通配，匹配的是文件部分，不是目录部分
+-type b c d f p(pipe) l(link) s
+-size +100c -200c
+    c表示字节，不然是block但是这个不同实现不一样，不用
+    +超过，-不到
+-mtime 7 +6 -8 修改时间
+    +表示超过，-表示不到，这里都是从现在之前的天数
+-atime find will modify it !
+    访问时间
+-ctime meta data change
+-links  number of links
+-perm 777  -20
+    -表示至少具有
+-user root -group staff
+find . -ls 会ls
+find .xxxxx -exec  cmd {}\; 分号也是要的，跳脱一下，这一切用来对匹配的文件分别执行命令
+
+删除恶性文件
+ls -li getinode
+find . -inum xxx -exec rm {}';'
+
+-newer xxx 比。。新
+-a 默认
+-o 要添加
+() 可以提高优先级
+-prune
+    find * -type f -print -o -type d -prune 阻止目录的搜索
