@@ -34,7 +34,7 @@ awk '{print $'$column'}'
 judge:
     0, 未定义都是 false
     == != > < >= <=
-regular:
+regular: 匹配
     ~  !~  match not match
     word !~ /(a|b|c)/
 
@@ -75,3 +75,99 @@ ORS:
     输出行分割
 FILENAME
     文件名
+
+associate array:
+    就是字典，默认值是0，可以直接加值，a['hehe'] ++ 就行了
+    for (i in a) {
+        xxxx a[i] , i
+    }
+
+    tip:
+        初始化所有字典的一项：a[""] = 0防止出现空文件的时候的报错
+        使用一种形式 username_to_dir[username] = dir 这样不容易忘记
+        记住测试col的数量，防止错误
+        if (NF != 0) {
+            ignore
+        } else {
+            xxxx }
+
+printf:
+    printf (xxxxx);  括号是可选的 , 自己加换行
+    print  use ORS OFS 来end每个逗号以及每行
+    %d %c e f s x o  和c的printf差不多
+    %-20
+    小数点后：
+        %e %f表示小数点后的位数
+        %g表示所有的数字，
+        %d %o %x表示最少的位数，少了补0
+        %s最多打印的字符数量
+        %020d  同样会加0 ，如果位数不够
+
+    printf () > xxx  
+                >> xxx  这两种其实都只会在第一次运行的时候指定模式，
+        也就是如果运行前文件里有内容，前一种会清空，后面运行中所有的都会写进去，
+        因为文件只打开了一次
+
+exit num
+next 相当于continue， 会转入下一行的工作
+math:
+    cos, exp, int, log, sin, sqrt, atan2, rand, srand
+    int( truncate) 
+    rand() return (0,1)
+string:
+    index(str, search) > 0 if found
+    length(string)
+    split(string, array, separator) 返回值是分片数，array存内容，分隔符只能接受第一个字符
+    substr(string, posotino) 分别是字符串，开始的位置，第三个是长度，没有就是到最后
+    substr(str, pos, max)
+    sub(regex, replacement)
+    sub(regex, replacement, string)
+    gsub(regexp, replacement)
+    gsub(regext, replacement, string)
+        这四个函数第一个参数是sed形式的匹配/xx/如果不是这样，默认是一个变量，包含这样的形式的值，
+        第二个参数是替换值，第三个字符串，如果没有，默认是$0
+        gsub版本替换所有，sub提花第一个, 提还成功返回1，否则0
+    match(string, regext)
+        before = substr($0,1,RSTART-1);
+        pattern = substr($0,RSTART,RLENGTH);
+        after = substr($0,RSTART+RLENGTH);  利用这些特殊变量获取，会改变字符串
+    tolower(string)
+    toupper(string)
+    asort(string, [d])
+    asorti(string, [d])
+
+misc:
+    getline  读下一行
+    getline < file
+    getline var
+    getline var < file
+    "cmd" | getline
+    "cmd" | getline var
+    system(cmd)
+    close(cmd) 只能打开一个pipe，所以之前的额要close
+    systime()
+    strftime(str)
+    strftime(str, timestamp)
+        同date这个命令的man
+
+自定义函数：
+    function error (mesg) {
+    }
+    gensub(r,s,h[,t])
+    strtonum(string)
+
+模式：
+    /xx/ { }
+    /xx/,/xx/ {]
+    NF != 0 { }  同意于 if (NF != 0) {} 但是更简洁
+    (NR==20), (NR == 49) {} 也是between
+
+ARGC
+ARGV 实测再看
+FILENAME = ARGV[ARGIND]
+FNR  当前文件中的行数位置， NR是所有文件的
+OFMT 默认的输出数字格式
+a[x,y] 可以指定为二维数组元素
+ENVIRON['PATH']  这个是环境变量数组
+ERRNO getline后的错误记录
+FILEDWIDTHS 用来指定固定宽度，$1 $2 可以直接按照这个宽度提取
