@@ -1,0 +1,26 @@
+sock = socket.socket()
+sock.connect()
+socket.gethostbyname() get hostname's ip
+
+special addr:
+127.*.*.* 只用于本地，绝不发出的包 localhost
+    一般经常用127.0.0.1
+10.*
+172.16-32.*.*
+192.168.*.* 用于私有网络，公网不会使用
+
+根据地址：
+    如果本地，直接cpy
+    如果私有网络，直接网内发送
+    如果外面，发给路由器
+
+帧：
+    flag DF: don't fragment
+        不允许分段，如果设置，某一个局域网内段大小不够
+        就会丢弃，发送icmp给主机
+    一般os设置，udp 允许分段（不设置）tcp不分段，因为
+        不然容易经常大量重传
+    以前发生的事情：
+        pppoe在ip中传送，占用了mtu中的字节，发送者不知道，
+        发送大数据的时候，检出设置df，而且不监听icmp，
+        结果大数据发送一直出错，小流量没问题

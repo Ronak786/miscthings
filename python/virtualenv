@@ -1,0 +1,13 @@
+这个比python3的venv要知名，
+直接用这个
+virtualenv3 这个是跟着python3装的，所以默认是
+    启动的python3环境，里面有pip setuptool，所以直接用
+virtualenv3 myenv 创建
+cd myenv
+source bin/avtivate
+deactivte 即可
+
+tip:
+ #/usr/bin/env python3  比/usr/bin/python好
+前者更可移植，保证启动的是path中第一个python3,
+    后者硬编码

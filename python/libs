@@ -32,3 +32,7 @@ eval('xxx')
 assert xxxxx
 
 repr 用来获取对象的内容的整个的字符串表示形式
+
+pygeocoder.Geocoder.geocode
+    google的api通过地址，逗号分割，从细到广，
+    可以返回经纬度，要翻墙

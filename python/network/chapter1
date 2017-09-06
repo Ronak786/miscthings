@@ -1,0 +1,40 @@
+以pygeocode为例子：
+1直接调用库可以远程获取结果
+2使用requests，可以构造需要的url获取结果
+    通过respnose.json的字典获取
+3使用http client以及urllib的parse的quote工具
+    后者用于跳脱参数里含有的url特殊字符
+    plus跳脱会把本来用于普通跳脱空格的改掉
+    这样作为单个参数了
+    urlencode 用来编码字典
+    quote quote plus这两个基本一样
+        后者用+代替空格，前者用%20,还有后者
+        默认/也会被替换，前者不会，在safe参数修改
+
+    连接方式：
+        conn = http.client.HTTPConnection(mainUrl)
+        conn.request('GET', path) (主url下的路径加编码后的参数)
+        (path 手动构造 quote_plus(/subpath?name=val&nam=val))
+        rawreply = conn.getresponse().read()
+        reply = json.loads(rawreply.decode('utf-8'))
+        就可以从utf8编码解析到内存的unicode，然后
+            json加载成字典
+
+4 socket:
+    同样要手工添加内容，自己encode数据成可以发送的byte类型
+    一般是utf8,或ascii，数据里面的内容同样需要quote plus
+    前面的encode用于http传送，后面的quote用于url编码
+
+结果:
+    越是底层，越需要硬编码，最好还是用库
+
+encode decode:
+    encode => byte b'xxx'
+    decode => character string 'xxxx'
+open 的时候可以选择编码
+    如果是wb形式的，不能选择，否则就可以选择写入或者读出
+    时候的编码,不选择的话文本形式使用默认编码解码（读的时候
+    ），如果不对可以自己修改
+tip：
+    实际像cat，vim等从文件读取的时候，都会检测默认的编码
+    模式，返回给你的都是正确的字符
