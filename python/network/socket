@@ -1,4 +1,5 @@
 sock = socket.socket()
+sock.fileno()  sock描述符
 sock.connect()
 socket.gethostbyname() get hostname's ip
 
@@ -24,3 +25,16 @@ special addr:
         pppoe在ip中传送，占用了mtu中的字节，发送者不知道，
         发送大数据的时候，检出设置df，而且不监听icmp，
         结果大数据发送一直出错，小流量没问题
+
+端口分配：
+    0-1023 system
+    1024-49151 多数可用，部分已注册
+    -65535 自由使用
+    /etc/services
+    socket.getservbyname / socket.getaddrinfo
+
+udp使用：
+    服务端 bind 然后recvfrom等待（可用于tcp）
+    客户端直接sendto,注意数据的encode和decode
+    通过getsockname获得自己，
+    通过recvfrom的返回tuple获得对方

@@ -1,0 +1,70 @@
+string format:
+    支持 {!r}  repr
+        {!s}  str
+        {!a} ascii
+
+argparse:
+    parser =argparse.ArgumentParser(description=xx)
+        这个有很多可选参数，控制输出的格式以及参数
+        的区分符号
+    parser.add_argument
+        两种：引用的时候没有-，直接用名字
+            optional ，"-a", "--b"
+            positional, "name", "version" 直接制定在
+                位子上就行了,这个一定要有
+            action=:
+                store: just store, default
+                store_const:
+                    store the value const=xxx specified
+                    if flag is set
+                store_true/store_false:
+                    like above, but store True False
+                append:
+                    每次指定都加到已有的上面，返回list
+                append_const:
+                    just liek above
+                count:
+                    返回出现的次数,可以-vvv这样制定
+                help:
+                    default, show help
+                version:
+                    version=xxx 加这个参数之后，如果
+                    调用了--version,会显示，然后推出
+            nargs:
+                N 数字，接受这么多
+                ？接受一个或0个，位置参数0个的话用default
+                    optinal参数用const,没有的话None
+                * 任意多个，有多个位置参数没啥意思，合到
+                一起去了
+                + 一个或多个
+                argparse.REMAINDER 剩下所有
+            default:
+                没有的话会使用
+                argparse.SUPRESS
+                    如果没有给参数，就不解析
+            type:
+                可以用于检验，int float还有文件类型
+            choices=[] 
+                用于限定范围
+
+            required=True:
+                默认-参数是可选的，加这个强制
+            help:
+                string,内部可以使用之前参数对应的值，
+                %(default)s, %(prog)s
+            metavar:
+                默认是参数名字，可以在这里改，help里显示
+                多参数可以tuple
+            dest:
+                这个是后面parse后的字典的key名字，
+                默认是去掉-后的第一个长选项或短，
+                可以改,所有内部-变成_
+
+        parse_args:
+            长参数可以 用=连接变量
+            短参数可以直接加变量没空格
+            可以多个没有值的参数链接起来
+    parser.parse_args([xxx], namespace=xx)
+        如果有参数，就是他们，没有就是sys.argvs
+        如果有负数参数，那么负数会被解释成参数，不然不会
+        namespace 参数可以让函数把值赋进入字典
