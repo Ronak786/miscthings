@@ -1,0 +1,41 @@
+tcp:
+    计数的是传输的字节而不是包的个数
+    由于setup close 加起来至少6个包，所以短信息连接还是udp好
+    tcp connect() 不同于udp，需要发送到对方，对方也可能拒绝
+
+    tcp socket pair(host,port, remote,port) 标记一个，被动socket永远接受新的socket请求
+        生成一个主动socket
+
+    设置sockopt  sol_socket, so_reuseaddr 防止中断后不能立刻继续使用
+
+    和udp一样，accept或者recvfrom的时候会返回
+        recv返回的是数据， accept返回的是socket以及对面的socket的名字
+        recvfrom 返回的是数据+地址
+
+    数据的接受发送
+        sendall 发送所有的数据
+        接收的时候要循环直到返回值为0
+        send 可能返回部分，如果系统缓存不空或者卡缓存不空。所以send需要循环，
+            直接sendall就行了
+            如果完全不空，那么会阻塞的
+        recv
+            空，阻塞
+            有数据不管满没满，都直接返回，给你数量
+            没有recvall因为recv的数量不固定，有时候需要查看内容本身的meta来决定，
+            留给实现者较好
+
+    SO_REUSEADDR:
+        如果已经建立过链接，close之后，大概4min os不会立刻放弃地址使用，因为可能自己发送的ack对方没收到，
+        对方会冲传，所有这个是超时时间，加上后，可以无视这个超时时间
+
+step:
+    socket=>bind=>listen=>accept
+    listen决定了这是一个tcp的被动监听者
+    close() 告知os刷出数据，然后fin
+
+deadlock：
+    如果两边都是完全输入之后再处理输出，那么可能导致缓冲区满的情形，
+    导致无法发送，对面也接受的(因为要发完才接，逻辑漏洞），注意死锁，可以nonblock, select 等
+
+sockrecv:
+    空串如果到末尾

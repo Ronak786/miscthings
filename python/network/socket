@@ -1,9 +1,49 @@
 sock = socket.socket()
 sock.fileno()  sock描述符
-sock.connect()
+sock.bind() host或者ip， 这里的必须是本地可解析的host, 这个必须是本地地址， 可以用host设定
+        这个不能作为安全措施，因为系统可能会从其他接口同样获取当前接口的信息，再传过来，具体
+        看os和卡如何设置
+sock.connect()  可以hostname， 可以ip, 这个绑定的可以dns可解析到的所有
+        对udp这样之后，client就不用每次制定server地址了,send, recv,不指定地址，使用绑定的
+        如果绑定，可以netstat看到和tcp一样，指定socket pair才可以通信，其他人不能通信
+        这个操作不会传输到网上，仅仅是记录在os里，作为过滤使用，不能抗伪造信息
 socket.gethostbyname() get hostname's ip
+sock.settimetout()可以设置超时，返回socket.timeout
+    善于利用指数回退算法,记住设置一个上限
+sock.getsockname get self's sock
+sock.getpeername  : after connection, get peer's name, call only after connect!
+
+探查mtu（link layer无需分段的情况下可传的最大ip报文）PMTUD
+    因为这样，大的udp包到了ip层后，为了放入link层，会在ip层分段如果必须
+    setsockopt(socket.IPPROTO_IP, IP_MTU_DISCOVER, IP_PTMUDISC_DO) 设置后可以用来探查路径上的mtu，(后面的数字自己设定，自己查include底下）
+    然后发包，没通过的话,通过getsockopt IP_MTU 可以查看对应的mtu，自己include里找对应的数字
+    udp默认分片，如果设置了，不允许，那data > mtu -20- 8(head of udp + ip) then will return emsgsize
+
+    tcp会按需自己发送这样的标记，udp这种无连接的要手动设置
+
+    但是，再分片，原长最多mss 65536总长,包括协议本身
+
+socket option:
+    man 7 udp, tcp, socket, ip 来查看
+
+SO_BROADCAST 
+    这个默认udp不能广播，需要开一下才可以
+    怪现象，只有127.0.0.1以及0.0.0.0 “” 可以接收广播，192.168.103.sss的地址不能接受广播，
+        客户端可以使用python特定的"<broadcast>"标记表示广播地址
+
+sock.shutdown() 可以用来关掉自己的读或者写的一边，权限控制吧
+    发送后记得sys.stdout.flush 这个和sock无关，是刷stdout给print的
+    这个和close不同，这个单方面关掉，可以表示一个对面读取到的EOF，
+    input关掉，对面的output会error
+    如果全部关掉，这个和close不一样
+        如果多进程共享socket，close不会影响其他，shutdown会直接影响所有
+
+sock.makefile()  sock.fileno()
+    用于创建文件对象，这样sock对象可以用于文件的模块了,不然只能recv send, 不像C都可以
+
 
 special addr:
+0.0.0.0 或者空"" 用于监听从任意一个接口进来的包 bind的时候如果指定了这个，其他的单独制定的接口都会失败（同端口）
 127.*.*.* 只用于本地，绝不发出的包 localhost
     一般经常用127.0.0.1
 10.*
