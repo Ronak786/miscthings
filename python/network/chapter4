@@ -1,0 +1,11 @@
+domain dns
+
+socket params: 5 部分
+    AF_INET ,AF_UNIX AF_INET6 ....
+    SOCK_DGRAM SOCK_STREAM 这两个在多个地址族里面都是可以用的
+    主协议，这个一般就是0,默认的
+    地址
+    端口
+
+ipv6:
+    socket.has_ipv6  True  support is in os
