@@ -14,3 +14,44 @@ byte order marker BOM 放在开头用来识别编码以及大小端
 encode ,decode都会出错，前者如果字符集不够，后者如果用错了
     有选项replace ,ignore  如果确认是编码，但是然过出错
     module codecs
+
+module struct
+struct.pack('<i', xxx) 显示小端存储的样式
+struct.pack('>i', xxx) 显示大端存储的样式
+    自己的应用要自己做转换，如果使用网络传输了多字节，且是在不同架构机器上
+
+网络客户端：
+    使用shutdown通知另一端结束，另一端会读到空字节
+
+tcp分段的问题，底层会在你的数据基础上分的，所以如果需要对面知道你的一条消息的长度
+    可以struct.Struct('!I') 获得的对象使用size表示字段长度，
+    unpack表示从数据中获取前面的每个size单位的值
+
+    为了保证数据的完整，可以使用结尾字符，或者使用每个包头部放上当前的大小等方法，
+        struct的pack就是这种
+
+pickle:
+    这个也可以用于网络传输，主要使用makefile（），然后pickle load，
+    不能直接对socket进行pickle的读，因为不晓得读的大小
+    from io import BytesIO 这个可以用来构造比特流给pickle用
+
+json xml
+    通用的结构，json会变成string，然后utf8编码到对面
+    json.loads(从string载入的意思）
+
+zlib:
+    这个是自解释的，可以接受多少解压多少，还可以后面加其他数据，可以
+    解压后找到d.unused_data未解压对象
+
+error:
+    OSError 
+        常发生，比如传输中出现reset等
+    gaierror
+        getaddrinfo 's error
+    timeout:
+        sock.settimeout()
+
+    except xxx as e:
+        raise xxxx from e 这样内部的，module自己的except都有了
+    然后在顶层函数捕获，这样总收集方便
+        可以在一个大的函数外捕获里面的各个调用的所有异常
