@@ -9,3 +9,37 @@ socket params: 5 部分
 
 ipv6:
     socket.has_ipv6  True  support is in os
+
+getaddrinfo('host'/'ip', 'prot'/service_name(www,smtp), 0, SOCK_DGRAM/STREAM, 0, flag(AI_ADDRCONFIG/AI_V4MAPPED/
+    AI_CANONNAME))
+        这些参数还可以是sock.family sock.type, sock.proto, 
+return ==> addr, type, proto, "reverse dns's name", (ip, port) 可以直接用于sock和bind 或connect的时候
+    flag: AI_ALL  show all addr can search, AI_NUMERICHOST 只允许使用ip，不能host更快一点
+            ai_numericserv  服务不能名字
+
+failure:
+    错误返回socket.gaierror,
+    普通的socket链接错误返回socket.error, 
+        可以打印e.args[1] 错误信息
+            unicode的非正常字符的转化python自动完成，不用管，变成idna编码
+    使用反向dns的时候，需要核对查到的hostname，可能故意不一样的
+
+过时的函数：
+    hostname:
+        gethostname, getfqdn() 
+        gethostbyname, gethostbyaddr  
+            both return addr
+        getprotobyname, getservbyname getservbyport
+
+dns:
+    local dns will start find from root server recursivly
+    whois can tell you some info from dns servers
+    dnspython3 获取记录
+        dns.resovler(hostname, qtype('A','AAAA','CNAME','MX','NS'), raise_on_no_answer)
+        返回记录
+        www.baidu.com 33 in cname www.a.shifen.com  
+        查询地址    可缓存时间  internet地址， alias名字， 名字的数据
+        如果返回ns，说明如果你要查看这个域名地下的其他子名，要访问这个dns
+        mx记录，记录了邮箱的地址，
+            访问顺序，从低优先级的邮箱开始，如果没有mx记录可以访问A，如果也拒绝，
+                找cname尝试

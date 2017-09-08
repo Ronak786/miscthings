@@ -1,0 +1,16 @@
+字节顺序python表示方法：
+    0b00000001, 0o123, 23, 0x22
+bytes([xxx])拥有转换成byte，
+    但是显示的时候如果ascii可以显示，显示的是ascii形式
+    chr 可以用来打印指定值的ascii字符
+
+内存，总是unicode,格式一致，
+外部存储发送：
+    定长utf-32, ascii, latin1, latin2, 
+    变长 utf-8
+
+byte order marker BOM 放在开头用来识别编码以及大小端
+
+encode ,decode都会出错，前者如果字符集不够，后者如果用错了
+    有选项replace ,ignore  如果确认是编码，但是然过出错
+    module codecs
