@@ -1,0 +1,23 @@
+server:
+    两种服务方法，一种是自己处理fork以及日志等各种问题，程序知道自己要成为服务
+    另一种是当作普通前台程序使用，而包装进入一个平台，如docker， supervisord也可以的
+
+    内核的优化，tcp我握手最后阶段就开始发送数据了，send的时候立刻返回，但只有继续listen的时候
+        才能保证真的发送了
+
+
+    线程：
+        如果thread。Thread 使用这个开线程，那么主线程执行到底的话不会停止，
+        因为子线程还在阻塞中，ps -eLf可以看到
+        multiprocessing.Process也行，这个可以控制更多的ram和文件使用，不过os消耗更大
+
+    异步io：
+        这个比线程好，因为线程有固定开销，这个是按需的开销，而且可以避免阻塞等待
+        使用select 或者poll
+        poll 需要register对应的事件，然后监听，
+            对于获取的事件可以判断。做出对应的动作，比如读，写
+            注意使用 sock.setblocking(False)防止阻塞
+        asyncio:
+            这个模块包装了底层的poll，只要继承，覆盖一些类就行了
+        @asyncio.coroutine
+            另外一种利用yield的方法

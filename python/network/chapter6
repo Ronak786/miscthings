@@ -23,3 +23,21 @@ tls:
                 其他人承认它可信并用它的公钥来验证其他证书，
             证书链，你提供你的证书以及一系列直到root为止，好处是
             不同一直去麻烦root，因为你可以自己改
+
+    使用：
+        创建一个ssl环境，create default context, wrap_socket就可以用了，
+        指定的时候可以指定使用cafile，这样就不会载入默认的ca
+        执行的时候，客户端要指定ca机构，服务端不用因为服务端提供证书
+
+        手动环境，ssl.SSLContext(xxx) 这样可以自己选择加密方法以及各种选项，
+            不符合的客户端不会连接 
+        pfs:
+             前向安全保障，就是以前的密码破解不会产生影响，需要定期更换密钥，
+            这个是有保证的 默认的环境，用自己的环境需要时常注意是否过期
+
+支持：
+    http.client可以传入ssl环境，urllib。request  requests不可以
+    smtplib poplib imaplib 都可以
+    nntp ftp也可以
+
+加密算法的等级允许在server这边，所有server要限制不能用弱算法，默认context就可以限制
