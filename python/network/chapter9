@@ -1,0 +1,47 @@
+http:
+    开头一行 GET /xxx   HTTP/1.1
+            key:val(key不分大小写）
+            key:val
+
+            body(optional)
+
+        关于长度 content-length 可以指定，但是
+        有时候动态页面无法指定，可以利用connection：closed发送玩直接关闭，不过有
+        网络故障风险，还可以制定transfer-encoding:chuncked 
+            这样数据会以小块形式发送，最后一块指定长度0
+            
+    方法：
+        get ,post 主要使用， get不会改变内容， post会，不可执行多次
+        urllib没有get post区分，如果提供data参数，就是post，否则get这个没有requests好
+        Host: 一般要加，否则可能返回400
+        200 ok
+        301 重定向永久
+        303 暂时重定向，post使用，这样返回的页面就是一个暂时的get了
+        304 not modifyed 不需要改变页面
+        307 暂时重定向用于服务器down
+        400 not a valid request
+        403 no permission 
+        404 no specifed data 
+        405 method not allowed
+        500  server something error
+        501 not implemented you http request
+        502 you are connecting to a gateway,but it can not reach the true server
+
+    httplib 不会帮你重定向
+    urlopen 会
+    requests 会，而且history 属性里有记录 还可以关闭动作 requests.get(xxxx, allow_redirects=False)
+    通过requests的对象的url可以找到官方名字，减少一个重定向
+
+    requests 检查status code获得返回值raise for status对出错获取raise异常
+    urllib 对于错误会直接异常，需要捕获urllib.error.HTTPError
+
+
+    选项：
+        cache-control : no-store  do not store
+        expires: thu, 01 dec 1994 12:00:00 gmt 这样过期时间设置
+        cache-control: max-age=3600 这个更好利用时钟而不是会被修改的时间
+
+        可选传送：
+            last-modifyed: xxx  服务端传这个
+            客户端请求的时候制定这个时间，服务端如果自那以后未修改，返回304,
+                这样客户端就知道直接使用本地页面了

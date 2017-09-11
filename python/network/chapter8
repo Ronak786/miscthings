@@ -1,0 +1,17 @@
+memcached 使用
+    mc = memcache.Client(['127.0.0.1:port'])
+    mc.get
+    mc.set 即可，用来加快计算密集型结果的获取
+
+    key < 250bytes ,can use hash as help
+    value < 1MB
+
+    多机器分布：
+        built-in  hash()
+        hashlib.md5().digest()[-1]%module digest是byte类型的，获取最后一字节作为输入
+
+消息队列
+    pyzmq 这个用于消息队列，好处是可以序列化cs结构的访问，减少复杂度
+    python:
+        bin (显示二进制模式）
+        zfill  左边添加0使得位数总为固定的
