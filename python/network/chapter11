@@ -1,0 +1,14 @@
+urllib.parse.urlsplit
+    这个可以把url且分开来，每部分有不同的名字
+    通过返回的对象的属性获取，对象本身还能被tuple()
+
+    unquote 用来解析路径中的跳脱，不包括？后面的部分
+    urllib.parse.parse_qsl用来解析？后面的部分，默认变成tuple因为key可能制定多次dict不合适
+
+    组合的时候path 用quote(safe=''(这样会注意所有字符
+        包括'/',因为有的path里可能有这个）， query用urlencode, 最后一起用urlunsplit组合起来
+        urlencode([(xx,xx),(xx,xx)])  <==> parse_qsl('xxxxxx')
+        quote('xxxxx') <==> unquote('xxx')
+
+    urljoin:
+        可以组合base以及你提供的一个部分路径，绝对路径也没是，不会出错

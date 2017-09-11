@@ -43,5 +43,62 @@ http:
 
         可选传送：
             last-modifyed: xxx  服务端传这个
-            客户端请求的时候制定这个时间，服务端如果自那以后未修改，返回304,
+            客户端请求的时候制定这个时间，if-modified-since xxx 服务端如果自那以后未修改，返回304,
                 这样客户端就知道直接使用本地页面了
+            或者 server etag :xxx
+                 client if-none-match: xxx
+                这个也可以匹配数据，是否更新，这些都需要一个http来回，虽然不需要传数据
+
+    client:
+        accept-encoding: client可以接受的传输的编码，可以gzip，
+        返回transfer-encoding: gzip requests会检测然后解压，urllib不会，要你自己动手
+
+        Accept : client的类型要求，第一个优先级最高，默认q=1,后面要自己加，分号隔开
+            requests:
+                s = requests.Session()
+                s.headers.update({'zzz':'xxx'}) 可以更新 
+
+        content-type: 返回的类型，有时候会是 类型; 编码；需要你自己来解码
+
+        auth:
+            requests auth=(xxx,xxx) 这个是http的auth头部，可以用于验证的，当然必须服务端识别这个
+                头部才行 这个一般用于api调用方式的认证
+
+        cookie:
+            set-cookie: xxxxx; xxx
+            使用：
+                get xxx
+                cookie: xxxx
+
+        connection: close 如果不指定，就是长链接
+            urllib没有这个支持，总是短， httplib直接用可以，requests的sesison也可以
+
+    server:
+        import wsgiref.simple.make_server 然后写一个app函数按照参数规则用来处理对应到来的链接
+            可以在里面向stdout打印需要发送的内容（需要编码好）
+
+        代理：
+            正常的代理需要浏览器设置，然后你就是通过这个访问对象
+        反向代理：
+            就是服务器那边出个机器做代理，负责分发收到的请求到内部某台机器上，
+            客户端只要往服务ip发请求就行了
+
+        apache + wsgi 这个利用wsgi模块持久链接到python进程来处理动态的内容,必须是同机器上的服务
+        pure python server or nginx as reverse proxy to python server:
+            这样有灵活性，不再同一台机器上也可以，替换单个服务也可以
+        缺陷：
+            即使内容纯动态，最好有个ｎｇｉｎｘ，ａｐａｃｈｅ当作反向代理，可以处理链接上的一些阻塞
+            和恶意攻击情况
+
+        paas:
+            platform as a service:
+                提供需要的负载均衡，数据管理等功能，然后你提供应用程序，配置，这样部署服务更加方便
+
+        restful:
+            资源表现层状态转换：
+                资源＝＝ｕｒｉ
+                表现层　＝＝　接受到的实际的资源（某几种格式之一）
+                状态转换　＝＝　利用内容来进行资源的更新
+
+        what is a web server:
+            可以自己处理监听，接受socket，解析http协议，还会自主400 500 状态返回
