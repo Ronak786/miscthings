@@ -1,0 +1,25 @@
+现代利用web，这些协议已经不可见了
+smtp:
+    2 sort:
+        1, client to server, need auth
+        2, server to server, no need auth
+
+    smtplib:
+        conn = smtplib.SMTP(server)
+        conn.sendmail(from ,to ,msg)
+        conn.quit()   这里from to要指定，msg里面还有完整的包括头部的所有内容
+        conn.set_debuglevel(1) 会打印debug
+        conn.login(user, pass)
+            使用tls会话之后再传，否则是明文
+
+poplib:
+    poplib.POP3_SSL(hostname)
+    p.user()
+    p.pass()
+        p.apop(user, pass) 这个可以隐藏密码，更好
+    p.stat()
+    p.list() 返回所有信件信息
+    p.retr, p.dele, p.top 用来查阅指定信件
+
+imaplib
+imapclient 这个更方便

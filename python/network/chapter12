@@ -29,3 +29,6 @@ example:
                     options: cet='quoted-printable' 只跳脱非ascii字符
                     cid 用来引用外部资源
                     filename=xxx 附件
+
+    解析：
+        emial.message_from_binary_file(file, policy=email.policy.SMTP)
