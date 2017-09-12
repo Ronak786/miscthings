@@ -12,3 +12,21 @@ urllib.parse.urlsplit
 
     urljoin:
         可以组合base以及你提供的一个部分路径，绝对路径也没是，不会出错
+
+    xss跨站攻击：
+        两种一种在flash里注入， 另一种利用输入的地方执行脚本，
+            本质上就是利用诱导你自己点击隐藏的非法内容来让非法脚本执行
+    csrf: 
+        跨站请求伪造：
+            不是单纯执行一段脚本，而是在你的请求制造处利用注释，然后构造新的请求发送到指定站点
+    cookie:
+        这个如果设置的过于浅显易懂或者没有认证，会被其他人利用
+
+    scrape:
+        会被javascript动态改动的页面，如果想要在浏览器看到python抓到的样子，
+        要先关掉javascript的渲染
+        print(soup.prettify())
+        from lxml import etree
+
+        print(etree.tostring(root, pretty_print=True).decode('ascii'))
+        这两个都可以美化html的环境，修正语法问题

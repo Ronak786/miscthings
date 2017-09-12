@@ -1,0 +1,31 @@
+email format:
+    use ascii, 所以非ascii字符需要编码
+    行结尾\r\n
+    头部和body中间空行
+    头部key: val 格式
+
+    from  来自
+    reply to  回复的时候的对象，如果不是from的话
+    to 直接对象
+    cc 抄送对象
+    bcc 秘密抄送，其他人不知道你抄送给他了
+    subject date message-id
+    in-reply-to  作为指定的message的回复
+    received 中继smtp的时候的记录
+
+    
+example:
+    import email.message, email.policy
+    msg = email.message.EmailMessage(email.policy.SMTP)
+    msg['To'] = ...
+    msg['Date'] = email.utils.formatdate(localtime=True)
+    msg['Message-ID'] = email.utils.make_msgid()
+    msg.set_content(text.as_bytes()) 这个asbytes可以保证换行正常
+
+    method:
+        set_content, add_related, add_alternative, add_attachment
+        这些格式 method('xxxx', subtype='html') 默认是text/plain
+                method(b'xxx', type, subtype) byte类型需要全制定
+                    options: cet='quoted-printable' 只跳脱非ascii字符
+                    cid 用来引用外部资源
+                    filename=xxx 附件
