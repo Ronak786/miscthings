@@ -1,0 +1,3 @@
+yum repolist all
+yum list all
+yum info/install/reinstall/update/remove/clean alla/check-update

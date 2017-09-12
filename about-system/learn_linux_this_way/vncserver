@@ -1,0 +1,7 @@
+vnc 的配置
+    install tigervnc
+    启动 vncserver  这里会在当前用户下.vnc文件夹里有一些设置同时让你设置密码
+        在xstartup文件里需要自己写对应的X窗口的图形软件，我是startxfce4 &
+    vncserver 这样就启动了窗口可供链接，在config里配置监听地址，默认127.0.0.1,只能本地
+
+    vncviewer 登录，ip:number 就是窗口号，就成了

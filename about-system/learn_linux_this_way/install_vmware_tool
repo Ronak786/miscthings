@@ -1,0 +1,3 @@
+cp to your home
+tar xf ...
+./vmware-install.pl -d  (default install)

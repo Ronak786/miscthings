@@ -1,0 +1,79 @@
+date '+xxx'
+    可以控制格式， ‘’用于防止shell解释
+
+wget
+    -b backgroud
+    -O directory
+    -t maxtimes
+    -c continue
+    -p 下载页面内的其他链接 
+    -r recursive default 5
+    -l 递归的层数，0表示无限
+
+watch:
+    watch -n 1 command 每秒会更新命令执行，而且在统一位置
+
+uptime/ip a/uname -a/free -m/-g/who/last
+history -c 清空命令历史  HISTSIZE 命令保存大小调整
+
+cat -n 显示行号 -b同样但是不含空行 -A不可见字符显示
+head, tail -n 10 -10最后10行
+od -t a/c/o/d/x/f
+cat xx | tr [a-z] [A-Z]
+wc -l/w/c
+cut -d':' -f1
+grep 'pattern' xxx
+diff --brief xx yy   -c 上下文格式
+touch -a  atime
+        -m mtime
+        -d -a and -m time
+        -t 要修改成的时间
+mkdir -m 755 -p -v
+cp -p(reserve attr) -d (reserve link) -r (recursive) -a == -pdr
+rm -rf
+dd conv=ucase/lcase 小写转大写或相反
+useradd -d homedir -D show default 
+        -e deadline
+        -g initial group
+        -G optinal group
+        -N not create user's defaultname group
+        -s shell
+        -u uid
+passwd -s -u lock or unlock user
+        -d clear passwd
+        -e force modify passwd next time login
+        -S show status 
+userdel 
+    -r del home's file too
+usermod
+    -d -m 迁移家目录数据到新的位置
+    -g -G 变更组
+    -L -U lock
+    -s  -u change shell uid
+    -e change time
+    -c comment
+groupadd
+    create group
+
+tar
+    -p 保留权限和属性
+    -P 绝对路径
+    -C 制定解压目录
+grep
+    -c count
+    -o 打印匹配的部分，统计用
+/sbin/nologin
+    指定后不许登录
+find 
+    -name
+    -perm
+    -user
+    -group
+    -mtime -n +n
+    -nouser
+    -nogroup 匹配无名人士
+    -newer f1 !f2 可以一起
+    -prune ignore dir xxx
+    -exec {] \;
+
+
