@@ -1,0 +1,13 @@
+subprocess:
+    subprocess.call(['echo', 'xxx','yy'])  *在这里当作一个普通的字符
+    os.system(xxx) 像shell一样，， 利用from pipes import quote
+        可以对命令进行适当的跳脱，取消所有特殊字符的含义，包括空格
+
+stty -icanon 取消规范输入 不缓冲
+    -ixon -ixoff 需小 ctrl-s ctrl-q的暂停作用
+
+telnet:
+    telnetlib 注意全明文，完全的单纯传bit
+paramiok:
+    ssh's lib
+    防止出现密钥确认的prompt，可以实现拷贝公钥，同时自己的known hosts里加上这个公钥
