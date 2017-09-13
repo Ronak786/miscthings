@@ -1,0 +1,35 @@
+问题解决：
+    当ping不通的时候，查看对应的网址ip，mask， 还有注意路由表是否有不对的项目，
+        可以利用wireshark在不同的可路由网口查找，
+        一般发包的时候比对机器上所有ip，属于的那个就会接受这个任务，但是路由表配置的优先级更高
+
+filter 
+    host xxxx 可以指定对象的过滤
+    注意nat的转换
+    默认的seq number是相对值，所以从0开始，记住每次增长的是字节数，不是包数
+
+    有两个filter， capture->options 里的capture filter是抓的时候的过滤，表示抓捕抓，
+        界面上的filter是抓下来之后的过滤，这个更强大，
+        可以 ip.addr eq xx && tcp.port eq xx
+        可以使用协议名称 portmap || mount 协议过滤要考虑协议间的依赖，一起过滤
+        可以单击包，右击选择follow tcp/udp stream
+            可以在statistics => conversions 里查找
+            可以在包右键找apply as filter 会自动生成过滤并应用，不然prepare as filter比较好
+        save 之后可以可以再读取，利用wireshark
+        analyze->expert info 
+            简单的一些分析数据，包括冲传等
+        statistics->service response time
+                    summary
+                    tcp stream graph
+
+        ctrl-f 
+            可以搜寻，选择为string就行了,如error
+
+mtu:可以理解为frame里可以装载的data部分的最大大小，
+    所以需要 握手的时候mss -20 -20 减去 ip tcp头部得到可以放入的数据，
+
+注意wireshark里tcp的len不包含头部的，只有实际数据
+
+tcp:握手：
+    第三次用于防止请求包延迟严重后至的情况，这样即使请求最后到了，server的第二次确认加请求会被第三次确认可以被client否决
+    一般tcp为防止分片，主动会分开给ip
