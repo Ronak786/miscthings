@@ -3,6 +3,23 @@
         可以利用wireshark在不同的可路由网口查找，
         一般发包的时候比对机器上所有ip，属于的那个就会接受这个任务，但是路由表配置的优先级更高
 
+    首先查看statistics-summary  平均流量
+        statistics->service response time 响应时间
+        analyze expert info 是否有异常的包
+
+        注意发包无响应的时候可能的防火墙问题，或者nat转换ip的问题
+
+    工具高级：
+        tshark  -r 读取分析日志
+        capinfos summary 信息
+        service response time:
+            tshark -n -q -r xxx.cap -z "rpc.programs' nfs
+            tshark -n -q -r xxx.cap -z "smb.rtt'  cifs
+            tshark -n -q -r xxx.cap -z "tcp.analysis.retransmission'/'out_of_order 重传, 乱序
+            tshark -n -q -r xxx.cap -z "conv, tcp/udp/eth/ip ' 统计包里的对话
+
+        editcap 切分大的dump包成小的，分割以时间间隔为限制
+
 filter 
     host xxxx 可以指定对象的过滤
     注意nat的转换

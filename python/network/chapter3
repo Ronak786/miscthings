@@ -14,6 +14,9 @@ tcp:
         reuseport：
             这个是允许重复绑定，内部有一个负载均衡的，会均匀分布到两个sock，可能有用
 
+    tcp 的timewait只有主动断的一方会出现，然后这一方下次连接如果在timewait之内，只能选择其他端口
+        或者server只能用reuseaddr
+
 
     和udp一样，accept或者recvfrom的时候会返回
         recv返回的是数据， accept返回的是socket以及对面的socket的名字
