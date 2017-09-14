@@ -7,6 +7,13 @@ tcp:
         生成一个主动socket
 
     设置sockopt  sol_socket, so_reuseaddr 防止中断后不能立刻继续使用
+        reuseaddr :
+            这个实际就是在timewait状态的时候，允许你绑定第二个sock在上面，只要在server上设置就行了。
+            需要这个是因为，结束的时候，可能还有data在你的buffer里，需要时间来传送，这是一个可以
+            设置的linger time超时，过了还是会强制结束的
+        reuseport：
+            这个是允许重复绑定，内部有一个负载均衡的，会均匀分布到两个sock，可能有用
+
 
     和udp一样，accept或者recvfrom的时候会返回
         recv返回的是数据， accept返回的是socket以及对面的socket的名字
