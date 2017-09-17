@@ -1,0 +1,68 @@
+django-admin startproject xxx
+python manager runserver port(8000) or  0:8000(listen specific addr)
+    reload auto:
+        when processing request, but adding file will not, so manually
+        restart
+
+    urlpattern:
+        python manager startapp xxx to create a new app,
+        in it, you create a urls.py, in which
+            urlpatterns=[],
+        in origin site's urls, use include()
+            this will strip the matched partition, so make flex
+
+        only search path, do not match params
+
+        passparam:
+            url(r'?P<varname>xxxx, module, name)  can be enough
+            eg. r'^(?P<question_id>[0-9]+)/vote/$', 
+
+    python manage.py migrate 
+        handle database processing
+        will look app in settings.installed_apps
+
+    ADD APP: activate model
+        in settings.installed_app:
+            add, a pollsconfig class from apps.py
+            run python manage.py makemigrations polls
+            python manage.py sqlmigrate appname 0001 
+                    python manage.py check
+                to see which migrate operation use
+    view:
+        这个只要保证函数返回异常或者httpresponse object,
+            其他随意
+         记住末尾的/是浏览器自己加的，只要没有.xx结尾，一定是会加/
+
+    model:
+        foreign key  被foreign的一方对象有一个另一方的记录的
+            set，这样可以找到所有引用自己的另一方
+        对象.objects.filter(table__attr__部分）
+            双横线用于区分
+                
+
+shell:
+    python manage.py shell, 
+        help you import some env, good
+
+admin:
+    admin.site.register(xxx(model class))
+        then they will be shown under admin page
+
+template:
+    django.template.loader
+    loader.get_template('xxx.html')
+        由于开了appdir选项，所以会在每个app目录里搜索template，
+            放在一个内部的app目录里是爬按顺序所有搜索的时候
+            找到不对的结果，
+            return httprespnose(load_res.render(dict, resquest)) 
+    django.shortcuts.render, get_object_or_404, get_list_or_404
+            return render(request, 'templatedir', context_dir)
+            后两个使用单个或者list返回
+
+    url:
+        in urls.py:
+            app_name = xxx
+        href="{% url 'app_name:detail' xxxx %}" 这种方法
+            会在urlpattern里找detail name，然后提起被ship掉的部分，
+            就是会添加金俩的部分，然后后面是变量
+
