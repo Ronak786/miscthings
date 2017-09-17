@@ -32,6 +32,10 @@ python manager runserver port(8000) or  0:8000(listen specific addr)
         这个只要保证函数返回异常或者httpresponse object,
             其他随意
          记住末尾的/是浏览器自己加的，只要没有.xx结尾，一定是会加/
+        
+        generic view:
+            就是一些方便的重复使用的方法，listview detailview
+            
 
     model:
         foreign key  被foreign的一方对象有一个另一方的记录的
@@ -66,3 +70,16 @@ template:
             会在urlpattern里找detail name，然后提起被ship掉的部分，
             就是会添加金俩的部分，然后后面是变量
 
+post:
+    httpresponseredirect(reverse('polls:results', args=(xxx,)))
+        这样可以让post的页面被本地back后不至于post第二边
+        reverse
+            反向用来利用urlpatter, 这样会再一次调用某个函数，然后
+            内部选择渲染
+
+test:
+    in app dir, tests.py, any function begin with test
+        inherit class django.text.TestCase
+            implement function startswith test
+    django.test.Client()
+        这个模拟client行为，还可以看到变量，结果
