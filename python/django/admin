@@ -83,3 +83,15 @@ test:
             implement function startswith test
     django.test.Client()
         这个模拟client行为，还可以看到变量，结果
+
+static file: js css img
+    appdirectoriesfinder ->installed_app/static 这个默认位置
+    {% load static %}
+    href="{% static 'xxx/xxx' %}"
+
+admin
+    admin.ModelAdmin class:
+        fields = []
+        fieldsets = [(a,{xx:xx},),]
+
+    对于有foreignkey'的，会显示未选项，
