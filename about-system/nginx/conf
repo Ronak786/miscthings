@@ -1,0 +1,141 @@
+worker process 
+    这个是指定的用户权限的，master这个是root启动的，只用于管理启动停止，以及
+        启动恢复worker等
+    建议每个绑定一个cpu core 利用affinity
+        每个可以处理多个请求，比apache高校
+
+配置块
+xxx {  }  有时候xxx后面有参数，这个由解析的模块决定
+    events, http, server,
+    可以嵌套继承,冲突由模块决定
+配置项：
+    name  value value value... ;
+        如果value里有语法符号要用' ' "" 包住$xxxx
+# comment
+单位：
+    K,k,M,m   时间m s y ms h d (day) w(week) M (month) y(year)
+变量：
+    $xxx 有些模块支持
+
+模块的启动依赖于这些配置项，没有的话不会启动，如http
+
+基本配置：
+    启动时默认一定要启动的核心模块的配置项
+    调试，运行，优化，事件
+
+调试：
+    item            default
+    daemon on|off; default on
+    master_process on|off  default on  off表示用master处理所有东西，debug用
+    error_log  path(logs/error.log)  error;  默认error级别
+            debug, info notice warn error crit alert emerg, 要放在大磁盘上
+            debug need configure --with-debug
+    debug_points stop|abort 调试用，内置调试点，两种选项代表进入调试还是coredump
+    debug_connection ip|CIDR
+        对指定ip范围的客户端才debug输出放在events里面 need --with-debug
+    worker_rlimit_core  size;  
+        限制coredump大小
+    worker_directory path;
+        coredump 's path, makesure have write permission in that dir
+
+running:
+    env xx or xx = xxx;  
+        设置linux环境变量
+    include xxx 
+        包含文件可以通配，相对路径也可以
+    pid xx/xx;
+        pid file
+    user username [groupname]  
+        can also configure --user= --group=
+    worker_rlimit_nofile limit;
+        max open fds per worker process
+    worker_rlimit_sigpending limit;
+        limit number of queued signals
+
+optimize:
+    worker_process  num;
+        应该和cpu数量一样，如果读盘过多，也可以稍稍增加，因为有阻塞
+    worker_cpu_affinity 1000 0100 0010 0001; 
+        如果有4核的话，可以绑定
+    ssl_engine device
+        ssl硬件加速 openssl engine -t to check
+    timer_resolution t;
+        调用gettimeofday更新时钟的频率 eg. 100ms
+    worker_priority nice_value; [-20, 19] >= -5 recommend
+        优先级
+
+event:
+    accept_mutex on; 
+        负载均衡锁，有优先级设置的，保证均衡
+    accept_mutex_delay xxms;
+        获取失败后的重试延迟
+    lock_file xxx;
+        只有不支持原子锁的cpu采用，一般都支持
+    multi_accept off;
+        开的话尽可能一次调度多个客户端
+    use epoll/selecct poll/kqueue
+        默认自动
+    worker_connections num;
+        each worker can simul process at most num requests;
+
+
+http module:  ngx_http_core_module:
+    all must in http {}
+    内部可以嵌套 server{} location{} upstream{} if {}
+
+    server {} : 代表一个host域名的处理
+        listen  ip:port default_server|default  backlog=num(511default) rcvbuf sndbuf accept_filter(only freebsd)
+                deferred 
+            default_server: 所有host无法匹配，就进入这个server，否则地一个
+            deferred: only truly have recved data ,will wake up worker process,否则不调度给worker
+            ssl: establish ssl
+            bind: 用于绑定同时监听多个地址的情况,让单独的listen不至于被这个同陪代替
+        server_name 可以多个
+            会根据http头部选择，
+                优先级，完全匹配， 前通配，后通配，正则（~xxxx
+            都不匹配选择listen的default， 或者地一个同端口的块
+            server_name "" 代表没有这项
+
+            server_names_hash_bucket_size 32|64|128 default
+            server_names_hash_max_size  512 default
+                这两个hash servername，可以放在http server location里，越大越少冲突
+            server_name_in_direct on:
+                http server location
+                重定向的时候使用原来servername的第一个主机名 off表示请求本身的
+
+            location: 在server里面,代表一个匹配路径的处理
+               param: url:
+                    匹配：
+                        location = / {} 完全匹配
+                                ~ case sensitive 可以用正则
+                                ~* case insensitive
+                                ^~ 匹配前半部分即可
+                                @ 只重定向
+                                /  用在最后，表示默认的匹配项
+
+            root: in  http server location if
+                root html; default  具体的页面的根目录，会和匹配进来的路径组合
+            alias: in location
+                这个和root不一样，他会把匹配的部分全部用alias的value替换掉
+                    ,而root只是加上前缀
+                    可以使用正则匹配
+            index : in http server location
+                如果访问dir路径，默认的index页面
+
+            重定向： error_page in http server location
+                error_page 404  404.html;
+                error_page 502 503  http://xxx.xx/xxx.html;
+                error_page 404  =404  xx.xx; 可以修改转向的error code
+                error_page 404  = xx.html; 可以不填，按照默认的error返回
+                error_page 404 @fallbakc {}
+                location @fallbakc {
+                    proxy_pass http://xxx
+                } 转交到另一个location
+
+            recursive_error_page on|off 
+                    default off
+
+            try_files: in server, location
+                try_files xxx yyy zz (@xxx)|(=404); 这个可以raise error 如果找不到
+                location @xxx {}  这个用于匹配后的尝试，最后一个要是uri，这样就可以重定向
+

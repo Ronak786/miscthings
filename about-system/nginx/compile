@@ -1,0 +1,18 @@
+./configure,  ssl需要另外加选项才会加入
+                default prefix is /usr/local/nginx
+
+startup:
+    nginx -c xxx 可以另行指定conf文件
+            -p  制定另外的prefix
+            -g 'xx xxxx;' 就像conf里的配置项一样，但是不能和conf里的冲突
+                停止的时候也要带上这个，不然配置不匹配 nginx -g 'xxx'  -s stop (signal)
+            -t test
+            -q quet
+            -s 发送信号 quit(kill -s SIGQUIT) 是合理的停止方式
+                -s reload == kill -s SIGHUP
+                -s reopen == kill -s SIGUSR1 用来轮转日志
+
+                平滑升级：
+                    -s SIGUSR2 rename pid file
+                    start new nginx
+                    kill -s SIGQUIT oldnginx
