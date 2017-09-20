@@ -1,0 +1,75 @@
+/_cat/health?v  健康状态
+/_cat/nodes?v 查看其他节点，同组，默认启动的都在一个elastic组里
+/_cat/indices?v show indices
+
+put /customer?pretty  put indices: and show pretty format
+put /customer/type/id?pretty
+    curl -XPUT url  -H 'Content-Type:application/json' -d '{"name":"xxx"}'
+    获取直接curl 就可以获得到对应的了
+    如果要缺省id， 那么使用post而不是put
+
+    post：
+        如果要更新的话，使用post，put代表替换，
+            /xxxx/id/_update?pretty  
+            内容两种
+            1 "doc":{"field":"value"}
+            2 "script":"ctx._source.field += xxxx"
+
+    type , indices
+        type的好处是一个indice底下的多个type搜索和单个不会消耗更多资源，
+        坏处是要结构相似，不然不同结构的type会在其他type里占用同类型资源
+            还有同名必须同类型
+
+    delete /index/type/id?pretty
+    delete /index  这个更有效率
+
+    bulk 操作：
+        /index/type/_bulk?pretty
+        {"index":{"_id":"1"}} 重新索引也就是重新创建，删除之前的
+        {xx:xx,xx:xx}
+        {"update":{"_id":"2"}} 更新,保持已有部分不变，其实内部也是重新索引
+        {"doc": {"xx":"xx"}}
+        {"delete":{"_id":"3"}}
+
+        检查错误得到返回
+
+    search:注意json最后一项后面没有逗号！！
+        /index/_serach?q=*&field:asc&pretty
+        /index/_search
+        {
+            "query":{"match_all":{}}, or "query":{"match":{"xxx":"aa" "bb"(多个或者关系}}
+                    match_phrase " {"xxx": "xx xx"} 匹配整个短语
+            "sort":[
+            {"field":"asc"} or {"field":{"order":"desc"}}
+            ]
+            "size":1 (default 10)
+            "from":10 (default 0)
+            "_source": ["xxx", "yy"]   显示的field
+        }
+            "query": {
+                bool: {
+                    "must/should":[   must == AND , should == OR , match是匹配内部的关系，不是全等的关系
+                    "must not"
+                        {"match":{"address":"xx"}},
+                        {"match":{"xxx":"xxx"}},
+                    ]
+
+            filter匹配：
+                bool:{
+                    must:{match_all :{}},
+                    "filter": {
+                        range: {
+                            field: {
+                                "gte":xxx, greater than equal
+                                "lte":xxxa less than equal
+                                }
+
+            group:
+                "size":0,
+                "aggs":{
+                    "group_by_state": {
+                        "terms": {
+                            "field": "state.field"
+                            }
+                            }
+                            }
