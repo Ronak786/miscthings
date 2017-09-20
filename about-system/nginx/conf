@@ -139,3 +139,125 @@ http module:  ngx_http_core_module:
                 try_files xxx yyy zz (@xxx)|(=404); 这个可以raise error 如果找不到
                 location @xxx {}  这个用于匹配后的尝试，最后一个要是uri，这样就可以重定向
 
+mem and store:
+    client_body_in_file_only on|clean|off
+        in http server location
+        on， clean表示http body只存储在磁盘上，clean会删除文件，on不会
+    client_body_in_single_buffer on|off
+        store in mem
+    client_header_buffer_size size 
+    large_client_header_buffers num size (default 48k)
+        这两个上面一个表示存储头部的buffer大小，过大则使用下面的，
+        每个请求行不能超过单个行，总长不能超过num×size大小 
+    client_body_buffer_size 8k/16k
+        content-length 会被识别并适当减少buffer的分配
+    client_body_temp path  path  1 2 3
+        包体tmp路径，1 2 3 可选三个参数，表示三级目录，防止过多的单个目录文件
+
+    connection_pool_size size; 256
+        http, server 初始内存分配大小 为每个tcp分配的
+    request_pool_size 4k
+        http， server
+            每个http请求使用的pool，这个和tcp不同，可能多个复用一个tcp
+
+    client_header_timeout 60;
+        http, server, location
+        read timeout after connect
+    send_timeout 60
+    client_body_timeout 60;
+    reset_timeout_connection off|on off default
+        超时后发送reset而不是握手关闭，避免处于fin wait等状态
+
+    lingering_close:
+        always  关闭前坚持处理完链接上的数据
+        on  尽量处理需要的
+        off 
+    lingering_time  坚持的时间
+    lingering_timeout:
+        close 之后timeout之内没有数据，那么直接关闭
+
+    keepalive_disable safari  
+        默认对这个浏览器关闭
+
+    keepalive_timeout 75
+        闲置超过后关闭
+    keepalive_requets n; 
+        max requests can be on one keep alive connect
+    tcp_nodelay 
+        use on keepalive
+
+mime:
+    types { xxxx   xxx;}  http, server, location
+    default_type text/plain;
+    types_hash_bucket_size size;
+    types_hash_max_size size
+
+limit_except get {  不允许的请求
+    allow ip/cidr;
+    deny all;
+    }
+    in location
+
+client_max_body_size size;
+    与content length比对，过大就直接拒绝
+
+limit_rate speed; default 0
+    限速客户端
+limit_rate_after  xxx 
+    超过多少时间才限速
+
+file:
+    sendfile  off|on in httpserverlocation, 
+        直接sendfile系统调用到网卡更快
+    aio off|on
+        conflict with sendfile
+    directio size|off
+        conflict with sendfile
+    directoio_aligment 512B;
+        xfs need 4K
+    open_file_cache max=N inactive=20s off
+        缓存部分打开的文件信息
+    open_file_cache_errors on|off
+        cache error or not
+    open_file_cache_min_uses 1;
+        不被淘汰的最少使用次数
+    open_file_cache_valid time
+        检测时间
+
+client special:
+    ignore_invalid_headers on|off
+underscores_in_headers on|off
+    下划线是否允许在里面
+if-modified_since off |exact|before
+log_not_found on|off 是否记录未找到文件log
+merge_slashes on|off
+    多个//合并成一个 
+resolver address address 
+    解析服务器的地址
+resolver_timeout
+server_tokens on|off
+    返回的错误是否注明nginx版本
+        http server location
+
+
+反向代理
+    负载均衡多个上有服务器，
+    先接受完整到nginx上，再选择上游发送，返回的时候边接受边给client
+
+upstream backend {
+    server url; 指定一个上游服务器url
+    server url params;
+    ip hash; 设置了这个后，不能擅自删除已有的配置，要设置down在param里面
+} in http
+    定义一个上游服务器集群
+
+    proxy_pass: in location
+        proxy_pass http://backend;   (upstream backend {})
+                    或直接的ip
+    proxy_set_header Host $host; 
+        转发同时转发头部
+    proxy_method (http server location)
+    proxy_hide_header Cache-Control;
+        不转发这个字段
+    proxy_pass_header
+         允许转发
