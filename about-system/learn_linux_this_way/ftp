@@ -16,3 +16,4 @@ anonymous:
         ftp并不认识上传后的目录，好像不能create
 
     
+        permission deny 注意selinux  getbool
