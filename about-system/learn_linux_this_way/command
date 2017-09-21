@@ -77,3 +77,114 @@ find
     -exec {] \;
 
 
+pipeline:
+    echo "xxx" | mail -s "Subject" user
+    mail -s "Subject" user <<over
+xxxx
+xxxx
+over
+
+env:
+    HOME HISTSIZE MAIL SHELL LANG RANDOM EDITOR HISTFILESIZE 
+type xxx
+    see which type this command belongs to
+sudo file:
+    /etc/sudoers.d  insert a line just as in the same as in sudoer
+
+net card:
+    TYPE BOOTPROTO NAME ONBOOT IPADDR NETMASK GATEWAY DNS1
+    filename ifcfg-name
+
+yum:
+    [name]
+    name=
+    baseurl=file:///root
+    enabled=
+    gpgcheck=
+
+num compare:
+    1 -eq 2
+str compare
+    x = y
+    -z x   blank or not
+
+if ;then  elif; then  else  ;
+while true
+do
+done
+case xxx in 
+    xx ) ;;
+    *);;
+esac
+
+timer:
+    at  time
+    >> command
+    >> ctrl-D  
+    echo xxx | at time
+    atq to check
+    atrm to remove
+    
+    crontab -e [-u user]
+    crontab -r ...
+    crontab -l
+        format:
+        min hour day month week
+        时间可以 1,3,4  1-4 
+
+suid sgid
+chown chmod    -R  recursive
+
+chattr +i xx
+lsattr -l xxx
+
+sudo -l list
+    -k  clear safe time (5min)
+    -b background doing
+    -u uid   use this user to do
+    sudoer:
+    user ALL=(ALL) ALL
+        host  user  command
+
+acl
+    setfacl -R 
+            -m set
+            -b remove
+    setfacl -Rm u:sora:rwx  file/path
+    getfacl filename
+
+raid:
+    raid 10   小的1 大的0
+    mdadm -Cv /dev/md0 -a yes(check name) -l 10 -x 1 (spare one) /dev/sd.. .. .. . 
+    mdadm -D /dev/md0  detail info
+    mdadm /dev/md0 -f /dev/sdx   故意模拟坏盘
+    mdadm /dev/md0 -a /dev/sdb   add a disk
+    mdadm -S /dev/md0 stop
+
+lvm:
+    pvscan
+    pvcreate
+    pvdisplay
+    pvremoe    vg  lv
+                vgextend lvextend
+
+    pvcreate /dev/sdx
+    vgcreate  xxx /dev/sdx
+    lvcreate -n xx -l num_of_lv_units vgname
+    extend:
+        lvextend -L xxxM  /dev/vg/xx
+            e2fsck -f /dev/vg/x
+    reduce:
+        e2fsck -f xxx
+        resize2fs /xxxx  size
+        lvreduce -L xxM  /dev/xxx
+    snap:
+        lvcreate -L xxM  -s -n snap /dev/...
+        lvs show detail
+        umount ...   ; lvconvert --merge /dev/....  恢复并删除快照
+
+quota:
+    dmesg | grep quote
+    rpm -q quota
+    mount option userquota, grpquota
+    edquota -u user bsort 4m bhard 8m isoft 2 ihard 4
