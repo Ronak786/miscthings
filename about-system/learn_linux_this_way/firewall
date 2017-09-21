@@ -74,3 +74,30 @@ iptables -P INPUT drop|accept 由于每个链在不同阶段调用，这个用�
         accept:
             这个会停止当前chain以及当前表中的匹配，但是其他表里面还是会的，
                 后续其他链好像也会的
+
+        负载均衡 man iptables-extensions (8)
+            iptables -A xxx   -m nth --counter 0 --every 3 --packet 0 -j DNAT --to-destination xx
+            iptables -A xxx   -m nth --counter 0 --every 3 --packet 1
+            iptables -A xxx   -m nth --counter 0 --every 3 --packet 2
+                counter 这个是计数器，0-15
+                    https://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO-3.html
+
+firewall-cmd:
+    --permanent  只有重启服务才有用，如果要runtime，那就再运行一边除掉这个选项
+            或者使用--reload 让permanent的立刻生效
+    firewall-cmd --permanent --zone=public --add-forward-port=port=xxx:proto=xx:toport=xx:toaddr=xx
+
+    zone 就是默认的一套规则集合，开箱即用，也可以创建新的
+    --panic-on 断开所有链接，包，紧急断网模式
+
+    firewall-cmd --zone=public --add-service=https /--remove-service=http
+                            --add-port=1111-2222/tcp
+                            --list-ports
+                            --change-interface=xxx  改变网口到这个zone
+                            --add-rich-rule='xxxxxxx'  man firewalld.richlanguage
+                         eg --add-rich-rule='rule family="ipv4" source address="xxx/xx" service name="xx" reject'
+
+etc/hosts.allow
+etc/hosts.deny
+    前者先查看，最后默认全部允许如果全不匹配
+

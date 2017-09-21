@@ -1,0 +1,25 @@
+/etc/httpd/conf/httpd.conf
+    找到默认路径，改变如果不能访问，查一下防火墙以及selinux
+        getenforce   ls -Zl  看目录权限
+        semanage修改
+        restorecon 执行修改
+
+        getbool -a,
+        setbool -P xxx=on|off httpdenable_homedir默认不能用户目录
+
+    http://localhost/~username/xxxx就可以访问了
+
+    htpasswd -c filepath user
+        给用户的页面访问增加密码
+
+    VirtualHost 
+        这个可以用来指定不同的ip访问转向不同的服务
+        同样可以同ip 不同servername 
+        以及不同的port也可以，
+            注意selinux
+
+    访问控制：
+        order 决定allow deny顺序
+        allow
+        deny
+        satisfy

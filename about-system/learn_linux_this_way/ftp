@@ -1,0 +1,18 @@
+vsftp
+    20 data
+    21 ctl
+
+anonymous:
+    anon_root=
+    chroot_list_enable=YES
+    chroot_list_file=xxx 这个存储允许的的用户名字
+        还哟u必须保证可用的用户对根目录没有写权限 匿名用户
+        chmod -w xxx
+        anon_umask
+        anon_upload_enable
+        anon_mkdir_write_enable
+        anon_other_write_enable
+        还有，上传的文件你必须在那个目录里面，因为你在ftp客户端里索引系统目录
+        ftp并不认识上传后的目录，好像不能create
+
+    

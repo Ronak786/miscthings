@@ -1,0 +1,43 @@
+systemctl list-unit-files --type=service
+    查看某个种类的所有服务当前级别的启动情况
+
+pidof  
+    show pid of daemon
+
+bond:
+    slave card :
+        first second 一样
+            xxx
+            bootproto=no  不用设置地址等
+            USERCTL=no
+            MASTER=bond0
+            SLAVE=yes
+        bond0:
+            userctl=no
+            device=bond0
+            ipaddr
+            prefix
+            dns
+            nm_controlled=no
+        modprobe bonding
+            options bonding mode=6
+
+ss:
+    -a all
+    -l all listened sock
+    -e detail
+    -m mem cost
+    -p process name pid ...
+    -4 ipv4
+    -6
+    -t tcp 
+    -u
+    -n not resolve hostname
+    -s summary info
+tracepath
+    route 信息
+            
+screen
+    -S create
+    -d detach
+    -r recovery
