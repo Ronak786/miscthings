@@ -17,3 +17,28 @@ anonymous:
 
     
         permission deny 注意selinux  getbool
+
+local user
+    local_enable
+    write_enable
+    local_mask
+    userlist_deny
+    userlist_enable
+    userlist_file   man vsftpd.conf
+
+virtual user
+    useradd a virtual user,
+    touch a file vuser.list , oneline user, another line password
+    db_load -T -t hash -f vuser.list vuser.db
+    chmod 600 vuser.db
+    etc/pam.d/vsftp.vu
+        auth required pam_userdb.so db=xxx/vuser.db
+        account required pam_userdb.so db=xxx/vuser.db
+    in config:
+        user_config_dir=xxxx
+        in xxxx, vim username, add:
+            anon_upload_enable=yes
+            anon_mkdir_write_enable=yes
+            anon_other_write_enable=yes
+        guest_enable=yes
+        guest_username=virtual

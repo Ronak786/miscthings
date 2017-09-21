@@ -1,0 +1,27 @@
+samba:
+    创建目录文件
+    useradd smbuser
+    pdbedit -a -u smbuser
+        然后windows用这个登陆即可
+
+cifs to mount sambda:
+    vim auth.smb
+        username=
+        passowrd=
+        domain=xx(smb SERVER)
+    chmod 600
+    mount -t cifs //ip/dir  /dir -o credential=auth.smb   即可
+
+nfs:
+    etc/export:
+        dir  ip/cidr/192.168.0.*  (rw,sync/async,root_squash(all_squash))
+    showmount -e ip to show
+    showmount -a  to show loca mounted
+    mount -t nfs ip:dir  dir
+
+autofs:
+    etc/auto.master:
+    dir  another_dir
+    conf2:  another_dir
+    aa  option   :mount_point
+    然后 cd dir/aa  就会激活挂载
