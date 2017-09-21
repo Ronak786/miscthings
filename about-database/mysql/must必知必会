@@ -308,7 +308,8 @@ union:
     权限
         show grants for user@xx;
         grant select on databasename.tablename(*.*表示全部） to user (identified by xxx);
-        revoke select on *.* for user; 撤销权限
+        revoke select on *.* from user; 撤销权限
+        drop user xxx
 
 维护：
     首先flush tables;
