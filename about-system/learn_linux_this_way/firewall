@@ -1,0 +1,76 @@
+action:
+    accept 允许通过
+    log 记录并传给下一个规则
+    reject 拒绝,给出提示
+    drop 丢弃
+
+规则链：
+    prerouting 路由选择前匹配
+    input 入站处理
+    output 出站处理
+    forward 转发处理
+    postrouting 路由选择后处理
+        入 prerouting->input
+        out  output->postrouting
+        forward  prerouting->forward->postrouting
+规则表： 默认状态与规则连的作用效果相反，比如这里全面禁止，链用来开口
+    raw: 是否跟踪
+    mangle 是否设置标记
+    nat 是否修改地址端口
+    filter 是否过滤 default table 
+        匹配则停止
+
+    实际是这样的，各个表对应各个内核模块功能，然后过滤是根据包的流向来的，就是上面说的三种，进出转发，
+        在其中每种动作的时候，都会按照表的顺序，把里面对应的拥有的链的部分（和当前链一样的部分）按顺序
+        添加进来匹配就是这样
+       其实每个表都可以随意设置规则，但是不同流向的包只会经过不同的链，所以只会在某些相关的表里面，
+        所以规则要特定设置，不要随便在任何表里设置，nat包含的就是地址修改的，mangle包含的就是包中标记等修改，
+            filter包含的就是过滤是否drop还是acept的
+
+iptables -P INPUT drop|accept 由于每个链在不同阶段调用，这个用于阶段结尾的默认其他行为，accept的话继续
+                走，接着在其他阶段遇到其他链
+        -F  clean
+        -L check
+        -A add new rule
+        -I num insert at head new rule
+        -D num delete
+        -s source ip
+        -d dest ip
+        -i interface input
+        -o interface output
+        -p protcol
+        -dport  dest port
+        -sport src port
+
+        iptables -P INPUT DROP  默认拒绝INPUT收到的包，除非匹配某个规则
+        iptables -I INPUT -p icmp -j ACCEPT
+        iptables -t filter(default) -A INPUT -j ACCEPT
+        iptables -D INPUT 2
+
+        allow ssh from 192.168.10.0/24
+            iptables -I INPUT -s 192.168.10.0/24 -p tcp -dport 22 -j ACCEPT
+            iptables -A INPUT -p tcp -dport 22 -j REJECT
+        deny all accessing to 12345
+            iptables -I INPUT -p udp -dport 12345 -j REJECT
+            iptables -I INPUT -p tcp -dport 12345 -j REJECT
+        deny from eno1234 access host's http:
+            iptables -I INPUT -i eno1234 -p tcp -dport 80 -j REJECT
+        reject access url
+            iptables -I FORWARD -d www.baidu.com -j DROP
+        reject user from 192.168.10.0 use net
+            iptables -I FORWARD -s 192.168.10.0 -j DROP
+
+        nat:
+            iptables -t nat -A POSTROUTING -s 192.168.10.0/24 -o enoxxx -j SNAT --to-source xxxxxx
+                内网ip转外网匹配部分两个，一个是元地址，一个是发送出去的对应网口，用于内部往外发送
+                    这个网口没关系，因为外网地址没改，所以还是那个网口发出
+            iptables -t nat -A PREROUTING -d xxxx -i enoxxx -p tcp -dport 80 -j DNAT --to-destination 10.0.0.2:22
+                    这个里prerouting改，因为该了地址之后要路由的
+            一般可以两条一起作用一个包，放在pre post里面，
+                pre用来改变dest，路由之后，post用来改变source
+            本地转发
+                redirect --to-ports xxx
+
+        accept:
+            这个会停止当前chain以及当前表中的匹配，但是其他表里面还是会的，
+                后续其他链好像也会的
