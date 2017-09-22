@@ -1,0 +1,9 @@
+mariadb:
+    install
+    mysql_install_db
+    mysql_secure_installation
+
+php
+    install 要很多参数，包括配置文件位置
+    然后nginx里面 fastcgi pass param等设置
+    即可
