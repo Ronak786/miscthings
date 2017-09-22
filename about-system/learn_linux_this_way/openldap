@@ -1,0 +1,6 @@
+目录信息协议：
+    把目录作为数据库的协议
+
+slapd  program
+openldap  server
+    太复杂了。。。

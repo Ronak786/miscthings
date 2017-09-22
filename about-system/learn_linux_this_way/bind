@@ -1,0 +1,11 @@
+dns
+    bind tool---> named
+        使用就是配置好对应的zone，放到制定目录里面，启动服务，
+            然后本机dns设置到对应ip，就可以nsloopkup查询了
+        从服务器可以复制主的配置，但是本配置里要allow update （主ip）
+            或者可以利用加密方法
+        缓存服务器
+            就是配置里面forawarder即可
+        分离技术：
+            就是对不同位置返回不同ip
+            利用view， acl技术 ，具体在linux应该这样学里面

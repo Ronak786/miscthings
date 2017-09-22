@@ -1,0 +1,7 @@
+targetd targetcli
+    可以命令行创建，在各个目录里
+
+iscsi-initiator-utils
+
+iscsiadm -m discovery -t st -p xxx
+iscsiadm -m node -T iqnname -p xx  -l  to login

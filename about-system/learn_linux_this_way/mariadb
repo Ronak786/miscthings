@@ -1,0 +1,25 @@
+比mysql有更多的功能
+
+mysql_secure_installation 安装好后用来设置密码，关闭测试，匿名等问题
+
+set password = password('xxx')
+create user name@host identified by 'xxxx';
+grant 权限,xx(all privileges)  on db.table to user@host
+revoke xx  on db.table from xx@yy
+    权限：
+        select, delete, update, insert
+    check:
+        show grants for  xx@xx
+
+db:
+    mysql:  store infos of user
+
+
+mysqldump
+    --no-data
+        only backup desc structure not data
+    --lock-all-tables
+        备份完后不许修改
+
+    mysqldump -u xx -p  db > xxx.dump
+    mysqldump -u xx -p  db2 < xx.dump (备份的数据库的表，所以库名不一样不要紧）
