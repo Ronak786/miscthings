@@ -1,0 +1,5 @@
+url case sensitive in-sensitive:
+    http == HTTP == HtTP 不敏感
+    域名 ： 大小写不敏感！！！
+    具体页面路径 win不敏感 ，linux敏感，要测试一下 不一定
+    参数，这个不一定
