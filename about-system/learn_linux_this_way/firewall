@@ -29,18 +29,35 @@ action:
 
 iptables -P INPUT drop|accept 由于每个链在不同阶段调用，这个用于阶段结尾的默认其他行为，accept的话继续
                 走，接着在其他阶段遇到其他链
-        -F  clean
-        -L check
+        -F  clean 后面可以加链名
+        -L check 后面可以加链名
         -A add new rule
+        -R link_name  num  后面还要匹配的部分，不能省略，注意改的是动作
         -I num insert at head new rule
-        -D num delete
-        -s source ip
+        -t table -D  链名 num delete
+        -s source ip  ip,ip,ip,ip/mask,!ip(取反)不能同时使用这个 -d -s多个条件是与的关系
         -d dest ip
-        -i interface input
-        -o interface output
+        -i interface input   INPUT PREROUTING  FORWARD
+        -o interface output  POSTROUTING OUTPUT FORWARD
         -p protcol
-        -dport  dest port
-        -sport src port
+        --dport  dest port  需要先指定使用的模块-m，这个是扩展匹配
+            -p tcp  -m tcp  -dport xx 没有-m默认对应-p xxx
+            range:
+                -dport 22:25  :90 100:  以后或者以前所有
+
+            -p tcp/udp -m multiport --dports 11,22,33 可以匹配多个离散port，使用--,用multiport模块
+        --sport src port
+        -v 显示更多的信息
+        -n 不进行名称解析
+        --line-number 行号
+        -x 计算接受的包数量更精确
+        -N  自定义链
+            引用 -j 自定义链
+        -E old new_chain_name
+        -X 必须没有引用，没有规则
+
+        iptables-save > /etc/sysconfig/iptables
+        iptables-restore < xxxx  恢复，会覆盖
 
         iptables -P INPUT DROP  默认拒绝INPUT收到的包，除非匹配某个规则
         iptables -I INPUT -p icmp -j ACCEPT
@@ -81,6 +98,49 @@ iptables -P INPUT drop|accept 由于每个链在不同阶段调用，这个用�
             iptables -A xxx   -m nth --counter 0 --every 3 --packet 2
                 counter 这个是计数器，0-15
                     https://www.netfilter.org/documentation/HOWTO/netfilter-extensions-HOWTO-3.html
+
+    扩展：
+        -m multiport  多个离散端口 --dports --sports
+        -m tcp/udp 默认对应-p tcp udp
+        -m iprange --src-range --dst-range !xxx-xxx
+        -m string --algo bm (使用bm字符串匹配算法） --string  "xxxx"  
+            匹配到报文里有字符串。。。
+        -m time
+            匹配时间，具体看iptables-extensions , 多个条件是与的关系，所以可以用来取出含逗号的可选
+                项目中的一个
+        -m connlimit
+            限制单ip链接的数量
+            --connlimit-above 2 超过两个
+            --connlimit-mask 24 掩码为24 ,组合上面，就变成限制某个ip区间了
+        -m limit:
+            limit rate
+            注意不匹配的会一直往下走，所以后面还要增加一个拒绝规则 --limit 10/minit(也就是6秒钟一个）
+            --limit-burst 初始的已经存在的令牌，每个limit单位之间产出一个令牌，也就是允许进入，
+                这个是一开始允许的令牌数量，默认是5,所以相当于不设置的话，一开始默认可以放行5个包，然后
+                才会进入匹配
+        -m tcp --tcp-flags xx,xx,xx  yy,yy
+            第一部分是用来匹配的部分的列表，可以all，第二部分是必须设置的位，没写出的必须不设置
+            --syn 省略写法
+        -m icmp  -h 这样可以查看所有名字
+            --icmp-type 8/0(or  8) 或者type-name  这个是type/code  每个type有多个code细分的 
+                
+                8/0代表ping echo
+                0/0代表ping back
+        -m state
+            --state  RELATED 表示ftp一样的数据端口
+                    ESTABLISHED 表示new之后的所有包
+                    new 表示往来的地一个包，包括udp， icmp等 
+                    iptables -t filter -I INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+                    iptables -t filter -A INPUT -j REJECT
+                        这样就只允许本机发起的链接了
+
+        网络防火墙：
+            过滤转发，所以功能定义在forward链里面
+                /proc/sys/net/ipv4/ip_forward = 1
+            放行响应报文，同时允许内部发出请求报文：
+                iptables -t filter -m state --state RELATED,ESTABLISHED -j ACCEPT
+                iptables -t filter -s xx -p tcp --dport 80 -j ACCEPT
+                iptables -t filter -j REJECT
 
 firewall-cmd:
     --permanent  只有重启服务才有用，如果要runtime，那就再运行一边除掉这个选项
