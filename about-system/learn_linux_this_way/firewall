@@ -1,3 +1,4 @@
+watch command is good !!
 action:
     accept 允许通过
     log 记录并传给下一个规则
@@ -141,6 +142,31 @@ iptables -P INPUT drop|accept 由于每个链在不同阶段调用，这个用�
                 iptables -t filter -m state --state RELATED,ESTABLISHED -j ACCEPT
                 iptables -t filter -s xx -p tcp --dport 80 -j ACCEPT
                 iptables -t filter -j REJECT
+
+        扩展动作
+            REJECT：
+                --reject-with  不同的信息，看man
+            LOG 
+                --log-level
+                --log-prefix 通过var/log/message查看
+
+            nat:
+                具体是napt ，nat的一种，映射port和ip
+                dnat snat 名字取决于整个传输第一阶段是dnat还是snat
+            SNAT
+                -t nat -A POSTROUTING/input --to-source xxx
+            MASQUERADE 
+                自动转化
+            DNAT 
+                -t nat -A PREROUTING/output --to-destination xxx:xx 用于想外面提供服务
+                    要在查看本机路由表之前修改，不然不就错了嘛
+                这两个其中一个就可以双向了，内部会维护映射表
+                注：实际只有snat是双向的，dnat要配合一个snat才行
+            REDIRECT
+                --do-ports 本地端口转换 PREROUTING/OURPUT
+
+            注意nat和普通网关不同，nat作用于地址是自己但实际上要进入私有网络的包，所以匹配的dest地址都是自己
+            而网关在forward里面作用，用于转发，双方都可以正确制定对方地址的，不在input/output里面设置
 
 firewall-cmd:
     --permanent  只有重启服务才有用，如果要runtime，那就再运行一边除掉这个选项
