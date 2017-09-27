@@ -3,7 +3,7 @@ basic  vi sed grep csplit dbx more expr ed lex
 
 anchor:
     ^ $ in sed or cat -e $ can be the last line
-    \< \> 单词首尾，字母数字下划线
+    \< \> 单词首尾，字母数字下划线 \b(单词首尾皆可） \B (非单词首尾）
     \( \) \1 \2 用于组
 .
     any except end-of-line

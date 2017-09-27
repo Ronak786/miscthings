@@ -1,0 +1,11 @@
+负载均衡装备：
+    ipvsadm
+    ipvs 
+    第一个是工具，第二个是内核部分，
+    echo 1 > ip_forward
+    ipvsadm -A -t outer_ip -s rr
+    ipvsadm -a -t outer_ip  -r inner_service_ip -m (-m used in nat)
+    ipvsadm -a -t outeor_ip  -r inner_service_ip2 -m (-m used in nat)
+    ipvsadm -S -n > ...
+    ipvsadm -R < xxx
+    即可
