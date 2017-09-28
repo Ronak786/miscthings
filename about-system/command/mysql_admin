@@ -109,3 +109,21 @@ variables:
         set @@session.commit=1;
         set global commit=1;
         set comit = 1; 从会话级别开始找
+
+create database [if not exists]:
+    first show character set; 看一下可以设定的值
+        默认继承status里服务器级别的字符集，使用defalt会让所有里面的表继承这个设定
+    show collation;
+        一个字符集对应多个排序，制订了排序就不用指定字符集了
+
+    当前db下使用 status
+        显示当前连接上的所有信息
+
+    alter database db_name  [default] character set xxx  [default] collate = xxx;
+        show variables like character%  to check
+
+    drop database if exists  xxx;
+
+table:
+    show table staus [like 'xxx'] \G;
+    create table xxx [if not exists] .....
