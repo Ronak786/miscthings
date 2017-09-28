@@ -1,0 +1,111 @@
+mysqld_safe & to start 
+    in systemd, use type=simple, so do not need &
+
+mysqladmin -uroot -p  shutdown
+    可以关闭
+
+连接：
+    mysql -u root -p -S socker_file 
+    mysql -u root -p  -D database -C (compress)
+    mysql -h host -P port
+
+    直接运行命令
+    mysql -uroot -p -E -e 'xxx;xxx;xxx;'
+        -e 如果非输出到stdin的话格式会好一点注意用个管道一下
+        -E vertical show
+        --protocol  TCP PIPE SOCKET MEMORY
+
+    create
+        create database if not exist xxxx; show database;
+
+login:
+    usename@host   
+        host ip或者域名对于mysql是两个不同过的账号
+        可用统配：
+            root@'10.0.%._'   % any length ,  _ just one
+    mysql.user  
+        table has all users
+
+    create user:
+        create user 'xxx'@'host' [identified by 'xxx']
+        insert into mysql.user (user,xxx,xxx) values (xxx,xxx,password('xxx'))
+            this will fail when sql_mode is traditional
+        grant all on xx.xx to xx@xx identified by xxxx;
+            create auto if not exist
+    delete user:
+        delete from mysql.user xxxxx  
+            这个如果有授权在Mysql.db里的话以后创建会出错，需要删除里面的权限或者
+                grant 给这个新用户所有权限，以后再缩小
+        drop user xxx
+    rename 
+        rename user a to b;
+
+password:
+    mysqladmin -uroot -p(初创的时候不用）    password xxxxx
+    set password for name@host = password('xxx')
+    update mysql.user  set password=password('xx') where user='xx';
+    remember to flush privileges; !!
+
+grant:
+    注意host里的统配是% _
+    grant all privileges on xx.xx to xx@'%' identified by xxx
+    flush privileges
+    
+    grant select(field, filed) on db.table xxxx
+    
+    grant execute on function db.func_name to xxxx 允许运行函数在db中
+    grant execute on procedure db.procedure_name to xxxx
+
+    grant usage on *.* to xx require ssl/none;  usage用于登录限制，这里限制使用ssl或取消
+    grant xxxxxx  with grant option;
+        那么被授予的人也可以授予别人
+                    with max_queries_per_hour 20  
+
+    show:
+        show grants for user
+        select * from mysql.db where db="your db_name" 从数据库角度看
+
+    revoke:
+        revoke all on *.* from xxxxx;
+
+    
+    完全忘记:
+        mysqld_safe --skip-grant-tables  to start service
+        mysql -uroot to login
+        update .......
+        flush privileges
+        stop server and restart normally
+
+
+
+help:
+    help
+    help create
+    help create database
+    help contents:
+        show categories, 
+        chose one, eg.  help 'data type' ,
+            then you will see detailed help !!
+
+variables:
+    system var : run enviromment
+        global  can set   mysql show global variables like 'xxx'\G  垂直显示
+                                            where variable_name like xxx and xxx
+        session  can set  show session variables
+                    inherit from global and have more @!!!
+                    默认查看的是这个
+
+        单独查找  select @@global.var_name;
+                    select @@var_name 优先查找session，然后global
+    status var: runtime changable vars
+        global
+        session  can not set
+            show [global|session] status  其他同上
+
+    修改：
+        全局：今后启动有效 重启配置后又没了
+        配置： 重启服务有效
+        回话：当前运行有效
+        set @@session.commit=1;
+        set global commit=1;
+        set comit = 1; 从会话级别开始找
