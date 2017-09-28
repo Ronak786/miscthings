@@ -32,15 +32,23 @@ awk '{print $'$column'}'
     ++ -- 
     +=
     && || !
+    ? : 三元
 judge:
     0, 未定义都是 false
     == != > < >= <=
 regular: 匹配
     ~  !~  match not match
     word !~ /(a|b|c)/ 这之后才是 {} ，这个匹配本身不再{}里面！！
+    模式匹配有很多
+        awk 'NF==2 {xxxx}'
+        正则模式 awk '/xxx/ {}' 扩展正则，好像不需要--posix就可以直接利用{}
+            默认没有则空模式就是全匹配 
+        awk '/xx/,/xxx/ '行范围匹配
+            行号匹配需要nr > nr < 格式
 
-flow:
-    if (xxx) statement else xxxx
+
+flow: {} {} 这种是语句组合的块，可以多个的，没问题,就像C一样
+    if (xxx) statement else xxxx else if ()
     while () xxx
     for (xx;xx;xx) statement
     for (xx in xx) statement
@@ -51,8 +59,9 @@ flow:
     print xxx > xxx
     printf format,xxx > xxx
         print "string", a, b, c; 可以多个string
-    next ??
-    exit
+    next  结束当前行处理
+    exit 会执行END中的部分
+    do {} while;
 
 tip:
     可选筛除打印
@@ -78,6 +87,13 @@ ORS:
     输出行分割
 FILENAME
     文件名
+
+数组：
+    数组默认1开始(使用split的话），可以赋从0开始，可以赋值空"",而且引用是不存在会自动创建，
+        需要用 if (x in arr) 来判断某个下标有没有被赋值
+    delete arry[10]
+    delete ayy 可以删除
+    字符串 运算默认变成0 ,所以可以直接引用不存在的数组项目++，就变成计数1了
 
 associate array:
     就是字典，默认值是0，可以直接加值，a['hehe'] ++ 就行了
@@ -106,6 +122,7 @@ printf:
         %s最多打印的字符数量
         %020d  同样会加0 ，如果位数不够
 
+    printf ("xx", a,a,a)
     printf () > xxx  
                 >> xxx  这两种其实都只会在第一次运行的时候指定模式，
         也就是如果运行前文件里有内容，前一种会清空，后面运行中所有的都会写进去，
@@ -119,15 +136,15 @@ math:
     rand() return (0,1)
 string:
     index(str, search) > 0 if found
-    length(string)
-    split(string, array, separator) 返回值是分片数，array存内容，分隔符只能接受第一个字符
+    length(string) default $0
+    split(string, array, separator) 返回值是分片数，array存内容，分隔符只能接受第一个字符, default start index 1
     substr(string, posotino) 分别是字符串，开始的位置，第三个是长度，没有就是到最后
     substr(str, pos, max)
     sub(regex, replacement)
     sub(regex, replacement, string)
-    gsub(regexp, replacement)
+    gsub(regexp, replacement) 替换全部， sub替换地一个
     gsub(regext, replacement, string)
-        这四个函数第一个参数是sed形式的匹配/xx/如果不是这样，默认是一个变量，包含这样的形式的值，
+        这四个函数第一个参数是sed形式的匹配,也就是正则，如果不是这样，默认是一个变量，包含这样的形式的值，
         第二个参数是替换值，第三个字符串，如果没有，默认是$0
         gsub版本替换所有，sub提花第一个, 提还成功返回1，否则0
     match(string, regext) 就是match之后产生的变量
@@ -136,8 +153,11 @@ string:
         after = substr($0,RSTART+RLENGTH);  利用这些特殊变量获取，会改变字符串
     tolower(string)
     toupper(string)
-    asort(string, [d])
-    asorti(string, [d])
+    asort(string, [d]) 排序，有第二个元素就不会改动第一个，而是将排序结果存入第二个, return length
+            排序后下表变成数字
+    asorti(string, d)
+        按照index排序，而不是内容,然后把排序后的下标放入新数组
+            可以利用这个数组去打印老数组
 
 misc:
     getline  读下一行
@@ -174,3 +194,12 @@ a[x,y] 可以指定为二维数组元素
 ENVIRON['PATH']  这个是环境变量数组
 ERRNO getline后的错误记录
 FILEDWIDTHS 用来指定固定宽度，$1 $2 可以直接按照这个宽度提取
+
+
+技巧
+    打印奇偶行
+        awk 'i=!i' file 打印奇数行
+            '!(i=!i)' 偶数
+            因为匹配中非0表示真，默认打印全行，
+            "" 也是空 假
+                        0表示假，默认不打印

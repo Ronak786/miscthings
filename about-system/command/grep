@@ -1,0 +1,7 @@
+-C == -A -B 同时操作
+-w  match a word
+-e 匹配其中之一，多次指定
+-q quite
+-E 扩展正则 == egrep
+fgrep == fastgrep 只能固定字符串，但是速度快
+-P 兼容perl 正则

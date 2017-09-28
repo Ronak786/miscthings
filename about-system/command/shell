@@ -57,8 +57,24 @@ subshell:
             ${var:a} 从第几个开始
             ${var:0-a:b} 从右边第几个开始的几个
             ${var:0-a} 右边第几个开始（然后往右边）
+            ${var: -a}也可以是任意字符包括空格
+            ${xxx/aa/bb} xxx中替换aa为bb
+            ${xxx//aa/bb} xxx中替换所有aa为bb
+            ${xxx/#aa/bb} xxx中替换行首aa为bb
+            ${xxx/%aa/bb} xxx中替换行尾aa为bb
+            删除
+                ${xxx/aa} 模式同上面的替换
+
+                对于本身匹配项里有/的，\跳脱
+                ${xxx/\#} 删除地一个#
+
+            大小写转换：
+                ${aaa^^}
+                ${aaa,,} 
+            ${#xxxx} 获取长度
 
         特殊变量：
+            ${@:2} 从第二个参数开始返回所有的，从0开始数
             $1 .. $9, 其他的可以 shift num; 来移位获得 $0 是脚本名
             $* $@ 如果没有“”包围，是一样的
                 如果有“”的空参数$@也会保留，所以 ${1:"$@"} 这样可以保证输出参数可用
@@ -96,6 +112,7 @@ subshell:
                 (grep MATCH /tmp/file >/dev/null && cat header - || cat - trailer )
                 /bin/rm /tmp/file
                 同一个子shell获得的是一个标准输入
+            {} 这个也可以执行多个命令，但是本地shell，所以小心exit，以及每个命令后要空格和分好！！）
                     
             flag:
                 x:
@@ -144,12 +161,23 @@ set:
     set a b c 可以设置当前的命令行参数，这个可以用于给当前参数基础上增加一些默认参数，屏蔽内外
 unset:
     cancel
+    unset -f  unset a function
 
+local:
+    used in func define var
+
+readonly var:
+    only read
 export:
     标记当前变量作为全局，可以被child继承
 
 exec:
     这个命令用来本地执行，而不是子shell，这样可
+
+declare
+    -i num
+    -x environment var
+    -r readonly
 
 PATH:
      empty means current dir
@@ -206,7 +234,7 @@ flow control:
 
         expr 2 + 2 需要空格！！
         还要注意 > < * 这些有特殊含义，单个字符用‘’起来
-        exprt '2+2' 是一个字符串，不会衡量值
+        expr '2+2' 是一个字符串，不会衡量值
         expr $a = '2+2'
         expr no  会直接打印非衡量值
         可以接受负数
@@ -216,7 +244,20 @@ flow control:
             只能从开头匹配, 打印的是匹配的数量
             如果后面有匹配组，和sed的非增强模式没有-r一样用，则会打印匹配组
             可以用来模式匹配以及判断
+        a=$(expr xxxxxx) 赋值
 
+        let:
+            let d=$a+$b  可以的，只能整数
+
+        bc: support 小数
+            echo "xxx" | bc
+            bc <<< "xxxxx"
+        $[]:
+            d=$[$a+$b]
+        $():
+            $(($a+$b))
+        declare -i s
+        s=(1+9)/2
 function:
     func() {
     } 即可
@@ -242,3 +283,19 @@ function:
 	done
 
 "" 里面\n是没有意义的， 不认识
+
+运行：
+    普通运行会启动一个shell 名字就是你的脚本名字，然后里面运行你的某句命令，这样本地变量没用，设置的也会不来
+    使用source可以本地执行
+
+&& || 可短路 -a -o 用于test
+[ ] 比较的时候为真其实是内部返回0的，和$?一样， 和 && || 不一样
+    内部 -a -o ，之间 && ||
+[[ ]] 用于字符比较，而且 > < 不用加\> \< 不然要的！！ 也可以数字的,不过只会按字符串方式比较
+    这个是字符串空间，所以不用shell中的引号之类的就能判断空了, 
+    内部或者之间都可以使用 && || 不能-a -o
+        -ge -le 用于数字
+
+    正则匹配，只能[[ ]] 
+        =~  后面直接，不用引号
+
