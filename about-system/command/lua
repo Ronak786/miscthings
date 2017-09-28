@@ -1,0 +1,122 @@
+#!/usr/bin/lua
+
+comment:
+    --[[  multi line
+    --]] 
+    -- single line
+syntax:
+    print("xxx")
+    不需要赋值，直接使用
+        默认值为nil
+
+    delele:
+        var=nil
+    
+    type:
+        nil:  nil
+        boolean: true false
+        number: 双精度
+        string  "" ''
+        function
+        userdata
+        thread 独立执行的路线
+        table  关联数组
+
+    type()  
+        return type
+
+    array: 可多维
+        tbl = {xx=xx,xx=xx} 赋值table, 没有key默认从1开始
+        tbl = {}
+        tbl.key = nil 就是删除
+        pairs(tbl) 返回key-vale pair  , used in   for k,v in pairs(tbl) do xxx end
+
+    string:
+        "" ''  or   [[   ]] 可多行
+        .. 用于字符串链接,数字链接
+    number:
+        如果数字和字符串相加，可加的话返回数字结果，不然报错
+    #var:
+        length of var
+
+    [local] function xxx(x)
+        xxxxxxx
+        return xx; 可多个值
+    end 定义 ， 可以附给变量的
+        可以把函数作为变量传给函数
+
+    可变参数：
+        function xx(...)
+        local arg={...}
+        #arg  数目
+        ipairs(arg) 返回 index,value pair
+
+    算数：
+        + - * / % & -
+        == ~=(不等于！！） >= <= 
+        and or not
+        ..  lianjie
+        #  length  ^ 优先级高于 not
+
+    变量
+        不管哪边的，只要没有local声明，都是全局
+        a,b = c,d
+            变量多则nil
+            值多则drop
+        table 变量
+            tbl[i], tbl.i
+
+    string
+        \ 跳脱 \ddd  \xhh \0 和nil不一样
+        string.upper lower  gsub(main,find,replace, num/default all)
+        string.find(str,substr, [init, [end]])  return  start,end pair
+        string.format("xxx",arg,arg)
+        string.char(num,num,num) 转换为ascii并链接
+        string.byte("xxx", num) 转换为数字,默认地一个
+        string.len()
+        string.rep(xx,num) 返回拷贝 ab-> ababababab
+        string.gmatch(str, pattern)
+        string.match(str, pattern, init) 搜索起点自定义
+            %d digit
+            %a alpha
+            %c control \n ...
+            %l lower
+            %p punctuation
+            %s space
+            %u upper
+            %w alnum
+            %x hex
+            %z anything represent 0
+            %% %$ %^ 等用来跳脱
+                $^()+?-*[].   -和*一样，不过匹配最短的
+            [] single char
+            [^] not   
+                以上大写表示非此类
+        string.reverse
+
+    flow
+        while ()
+        do
+        end
+
+        for var=exp1, exp2,exp3 do
+        end     exp3是增量的值，默认1,
+                exp2 是var到达的值，这里填函数也行
+                三部分开始前求值一次，之后就不了！！
+
+        for xx in xx
+        do
+        end  可以写在一行
+
+        repeat
+            xxx
+        until (xxx)
+
+        if () 
+        then
+        elseif ()
+        then
+        else
+        end
+
+
