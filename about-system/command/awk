@@ -15,6 +15,7 @@ $1 $2 表示分隔的一行中的某一列
     x=1 $x  和上面一样的
     $0 整行
     print $0 == print
+    print $0,$1 默认空格
 
 #!/bin/sh
 column=${1:-1}
@@ -36,7 +37,7 @@ judge:
     == != > < >= <=
 regular: 匹配
     ~  !~  match not match
-    word !~ /(a|b|c)/
+    word !~ /(a|b|c)/ 这之后才是 {} ，这个匹配本身不再{}里面！！
 
 flow:
     if (xxx) statement else xxxx
@@ -59,6 +60,8 @@ tip:
 
 awk -F: 改变域间隔标记 这个只能设置一个标记
 或者命令内部 FS=":"; 这个可以多个标记
+    awk -v FS="xx" 也可以
+    -v 可以事先自定义变量的
     
 FS改变时机：
     如果在当前行的处理代码里面想改变，
@@ -127,7 +130,7 @@ string:
         这四个函数第一个参数是sed形式的匹配/xx/如果不是这样，默认是一个变量，包含这样的形式的值，
         第二个参数是替换值，第三个字符串，如果没有，默认是$0
         gsub版本替换所有，sub提花第一个, 提还成功返回1，否则0
-    match(string, regext)
+    match(string, regext) 就是match之后产生的变量
         before = substr($0,1,RSTART-1);
         pattern = substr($0,RSTART,RLENGTH);
         after = substr($0,RSTART+RLENGTH);  利用这些特殊变量获取，会改变字符串
@@ -163,7 +166,7 @@ misc:
     (NR==20), (NR == 49) {} 也是between
 
 ARGC
-ARGV 实测再看
+ARGV 实测再看 , 实际就是命令行参数，地一个是awk 后面是添加在后面的参数，不包括-xx 以及 {}的匹配部分
 FILENAME = ARGV[ARGIND]
 FNR  当前文件中的行数位置， NR是所有文件的
 OFMT 默认的输出数字格式

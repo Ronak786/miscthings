@@ -1,0 +1,8 @@
+seq 1 5
+seq 1 2 10:  1 3 5 7 9
+seq -s 分割副 default \n
+-w wide 所有数字位数相同
+-f format  default %g
+    -f "dir%8.6f" 这种也可以
+    
+seq -s "`echo -e "\t"`" 1 2 10 否则\t 不会解释
