@@ -1,0 +1,6 @@
+优化系统
+etc/securities/limit.conf
+* - nofile 163824  increate open files, relogin
+sysctl -w vm.swappiness=1  disable swap, because swap is old and inefficient
+filesystem mount : noatime
+    better  xfs ext4 btrfs
