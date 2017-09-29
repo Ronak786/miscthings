@@ -126,4 +126,171 @@ create database [if not exists]:
 
 table:
     show table staus [like 'xxx'] \G;
-    create table xxx [if not exists] .....
+    create table xxx [if not exists] .....(); 具体看help
+        column definition:
+            not null | null 不可为空或者可以
+            default xxx  默认值设置
+            autoincrement 这个一般就是主键，一个表只能有一个这个，
+            unique （key）  表示设置唯一属性，
+            [primary] key 设置主键，如果想设置多列主键，不能在这里设置
+                这里primary可省略，标记别不可以
+            comment  string  设置注释
+            表级别：
+                primary key (xx,xx,xx) 联合
+                unique key (xx,xx) 设置多个唯一的key
+                foreign key (xxx) references tbl (name) 外键
+                check(expr) 检查
+                创建key就是创建index
+                index index_name(col_name) xx,xx 创建索引
+                    or  key index_name(col_name) 都可以
+
+        注意
+            表级别key的设定需要放在括号里面，外面可以有可选的名字，但是不是用引号，
+                而是用反引号！！
+
+      create table xx select xxx from xxx;
+           也可以的，这种方法不会复制任何约束，只有数据，索引都没有
+
+      create table xx like xxx;
+            可以复制表的结构！！
+
+        option: after ()
+            engine=Innodb auto_increment=2(start from 2) default charset=utf8
+
+    delete:
+        drop table if exists  xxx,yy,zz; 多个
+
+    alter table xx 
+        rename as xxx;
+        add [column] name type [first| after col_name]
+        add primary key (xxx)
+        add unique key(dd)
+        add constrant name foreign key(xx) references tbl(name); 
+            加约束的好处是名字可以在information_schema.KEY_COLUMN_USAGE里查到对应的外键，用来删除
+        drop xxx;
+        change origname  newname newtype; 这个类型必须写出的
+        modify cool_name  type 只能改类型，不能改名字
+
+    key:
+        主键不能空，要唯一，可以多个组合
+        ｕｎｉｑｕｅ可以空，要唯一
+        修改约束的方法就是modify然后重新设置类型,属性...
+
+        删除空约束： 直接modify
+        删除自动增长，直接modify        
+        删除主键，  alter table xx drop primary key;(需要先删除自动增长以及外键）
+                                    drop index xxx;(不是drop unique （xxx）
+                                        这里的xxx是添加的时候的index nam
+
+        information_schema.key_column_usage 
+            这个表中可以找到表对那个的外键引用表以及引用列还有主键信息
+
+        约束/索引：
+            单纯的索引只能通过show index from tblname 查看
+            create index name  on tbl(col(length) desc)
+                可以创建索引，指定使用的列中的长度，对应的顺序，这里是纯索引
+        repair table xxx quick;
+            用来修复长期使用后的索引，mariadb不行
+
+
+view:
+    权限在mysql。user里面查看
+    create algorithm=merge | temptable view xxx as  select .....
+        merge 就是普通的执行时运行sql   
+        temptable创建时运行，获取结果，以后直接用，所i一只能读
+    drop view [if exists] xxx;
+
+    check:
+        infomation_schem.views 可以查找
+    alter view as select xxxxx;
+        更新数据限制太多，一般只查看
+
+insert:
+    insert into tabname (xx,xx) values (xx,xx),(xx,xx)
+    insert into tabname set xx=xx,yy=yy;
+
+sql_mode:
+    默认过于宽松，不符合规矩的模式也可以进入，字符串可能截断
+    ansi default
+    strict_trans_tables: only strict in transaction engine table
+    strict_all_tables;
+    traditional:
+        过于严格，某些情况下可能出现部分陈宫的现象
+
+delete:
+    delete from tble where xxx order by xx limit 1;
+        只会delete最后筛选的结果
+update
+    update xx set yyyyy where xxxx;
+
+select:
+    like, rlike 这个可以正则
+    order by xx asc/desc, yyy desc 可以多个
+    select name as alias
+
+    group by:
+        这个是分组的功能，但是不会聚合除分组field外的其他列，只会显示对应第一行，
+            所以要聚合函数，count min max avg sum group_concat()最后这个是对应列
+            的元素逗号分隔放在一起
+        group 之后的过滤使用having，可以对select出来的field过滤，where在group之前操作
+    create or replace xxx(a,b,c) as select (xxxxx) 
+        这样可以改名
+
+join:
+    select * from a,b
+    select * from a corss join b corss join b;
+        这种叉积，很不好
+    select * from a inner join b on a.xx=b.yy;
+    select * from a ,b on a.xx=b.yy;
+        内积，其实和叉积是一样的，不过多了限制，建议用inner join的那种
+    自联结:
+        其实就是内连接，不过select * from a as p1 join a as p2 xxxxxx
+        需要两个as来分别假装两张表，
+        inner join 可以写成join
+
+    外连接：
+        select * from a left outer join b on xx where xxxx;
+            where最后处理，这个表示左边不匹配的也会显示
+            可以写成 left join
+
+    union:
+        select * from a  union select * from b
+            需要两边列数量相同，用来接起两张表，重复的会折叠掉，用union all 可以全部显示
+    full union
+        就是左右连接，显示两边的满足条件以及两边各自的部分，
+        这个不支持，手动使用select * from a left join b  union
+                            select * from a right join b  来模拟
+
+query cache: 缓存，小压力才开,或者多读少写
+    这个利用你的输入命令作hash来标记缓存的命令结果，如果修改过，就失效，所以在高并发写的情况下
+        不要开， show variable like '%query_cache%' 查看
+    query_cache_limit  max cache size byte per command
+    query_cache_min_res_unit  最小的分配单元，就像page一样
+    query_cache_size    最大缓存总和限制
+    have_query_cache   yes|no 数据库支持与否
+    query_cache_type on|off|demand
+        yes 的话通过select sql_no_cache xxx from xxx 来暂时关闭缓存
+        demand 通过select sql_cache xx from yyy 来暂时开启缓存
+    query_cache_wlock_invalidate off|on
+        off 在命中缓存的命令作用的表正在写锁定时不会失效缓存，直接读
+
+    检查运行结果：
+        show status like '%Qcache%'
+            Qcache_free_blocks 已分配中的空闲块（就是碎片）
+            free memory 缓存空闲空间
+            hits 命中次数（不包括第一次的写入）
+            queries_in_cache  缓存的命令数
+            Qcache_inserts 未命中后的写入 次数
+            lowmem_prunes  因为缓存总大小不够导致的筛选取出，写入新的的次数
+            not cached  为缓存的 数量语句
+            total blocks 总块数
+
+            freemem / total block 碎片率过高就要调小最小单元大小
+            cachesize - freemem   / cachesize 缓存利用率，过高就可以减小了
+                flush query cache 可以清理碎片
+            参考最小单元是  已经使用的大小 除以 存在的命令数量
+            命中率是 hits / Com_select  show status like '%Com_select%'
+
+            flush query cache
+            reset query cache
+                前者整理碎片，后者清空缓存
