@@ -294,3 +294,48 @@ query cache: 缓存，小压力才开,或者多读少写
             flush query cache
             reset query cache
                 前者整理碎片，后者清空缓存
+
+engine:
+    show engines
+    show table status [like  'xxx'];
+    show create table xxx;
+
+    innodb_file_per_table default on
+        开启这个后，新建的表使用每个表一个目录，里面单独的数据文件,这样其实可能
+            因为要维持多个文件的更新而降低效率
+
+事务
+    redo log:
+        redo log buffer 
+        redo log file
+            这个会在事务开始前记录，先内存，再到文件，然后才是开始执行操作
+            innodb_flush_log_at_trx_commit 影响刷入log到文件的操作
+        log group
+            多个redolog文件轮流使用
+
+    undo log
+        逻辑日志，如果出错，就把对应的操作全部undo
+
+    bin log
+        修改数据库都会记录
+
+    show global variables like '%innodb%log%';
+    innodb_log_file_size 每个redo log file大小
+        log_files_in_group 组中file数量
+    innodb_flush_log_at_trx_commit
+        这个1 表示每次写事务都会到文件，效率低，完全acid
+        0表示每秒进一次文件，高，但是危险
+        2表示写入osbuffer的文件，每秒进一次磁盘，这个
+            中庸稳妥，数据库挂了，但是os没挂不会有任何问题
+
+    autocommit:
+        默认开启可以关闭，
+        启动事务 start transaction/begin(存储事务中只能使用前者） autocommit=1里也可以正常使用
+                commit
+                rollbakc
+                rollback to savepoint xxx
+                savepoint xxx
+                release savepoint xxx
+
+        if autocommot == 0, you must do commit yourself, 不然exit之后修改缺失
+
