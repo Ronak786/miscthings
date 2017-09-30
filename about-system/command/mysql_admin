@@ -338,4 +338,67 @@ engine:
                 release savepoint xxx
 
         if autocommot == 0, you must do commit yourself, 不然exit之后修改缺失
+    tx_isolation:
+        in optionfile is  transcation_isolation=READ-COMMITTED REPEATABLE-READ SERIAL READ-UNCOMMITTED
+            串行如果有其他人在修改锁定行，会阻塞直到对方提交，这个一般不用，然后可以看到对方的修改，提交后的
+            读未提交最快，看到飘忽的脏数据
+            读提交是提交后可看到
+            重复读是可以永远看到自己的一份
+                后两个有时候出现幻读，也就是如果己方的修改导致改掉了另一个进行中的事物添加或删除的东西，
+                那么会把另一方的commit之后的已经成立的影响被自己修改过的部分带进来，无法避免
 
+    错误日志;
+        log_error a file record  error
+        log_warning >1的话链接错误也包含
+    查询日志：
+        general_log  filename 所有操作都有
+        log_output 输出方式，可以file table 或者了两者皆有一般file就行了
+        表的话就是mysql.general_log
+    慢查询
+        所有操作超过时限
+        slow_query_log on
+        log_output 记录形式table file
+        long_query_time  
+            select sleep(5)  可以测试函数
+        show global status like '%slow_queries%' 可以查看本次服务启动之后的慢查询
+        
+        mysqldumpslow -s t -g 'select \*' file  可以分析慢查询日志，
+                percona工具也可以哦
+    bin log
+        记录所有的修改,用于主从复制
+        binlog format: 
+            statement 只记录操作语句
+            row 记录修改的数据 这个可完整回复，但是慢
+            mixed两者兼有自我调节
+        show variables like '%logbin%' 查看开关设置
+        show variables like '%binlog%' 查看某些设置
+            这个开关只能在配置文件里设置
+        log_bin  mycnf里设置直接写文件名不用on
+        sql_log_bin on 这个只是会话变量只能动态设置，用于控制当前会话是否记录
+        binlog_format 记录格式
+        max_binlog_size 但文件大小会自动加1名字如果超过的话
+        sync_binlog 
+            0表示写内存，由os自主刷文件
+            1表示严格flush文件
+            n＞１表示经过n个事务后提交一次文件
+            0的性能很高，最好备用电源然后0
+
+        show master logs
+        show binary logs 查看文件列表
+        show master status 当前正在使用的log文件
+        show binlog events in 'xxx'  from 234 limit 1,2 这里的from是内部记录的某个事件的开始位置（文件内的位置）
+                查看内部的记录的命令
+                如果设置了autocommit，每个命令就是三个事件start transaction, select xxxx, commit
+                每个事件都记录开始结束位置
+
+                tip  select xxx  limit 3,4  从第3行开始的4行
+        flush logs 或者重启服务
+            都会重新用新的log文件
+        command:
+            mysqlbinlog file
+                用于分析binlog
+
+    备份：
+        完全备份：全部的
+        差量备份：
+            这个是针对最后一次全量之后的差别备份，所以只有最新的备份有用
