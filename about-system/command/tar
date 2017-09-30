@@ -13,3 +13,24 @@ tar xxx -X excludefile -I includefile
     这样包含进来的就没有绝对路径了，不会在restore的时候出问题
 
 结合输入输出可以转移
+
+不要前面加-， 这样可以f不是最后一个选项
+    tar cvfz cvfj  xvfz xvfj
+    list:
+        tvfz tvfj tvf
+
+    file extrace:
+        tar xvf xxxx.tar  /path/to/file  这一样会创造直到path为止的目录到当前目录下，然后那个文件
+                        --wildcards  '*.py' 匹配的是全部路径
+        tar rvf ...tar  xxx
+            添加文件，只能对tar文件，不能对压缩的
+
+        tar tvfW **.tar  这个用于验证当前文件系统中的文件是否与tar中一样，当然你要管好路径处理
+        tar dfz/dfj  **.tgz **.tar.bz2这个可以比较压缩后的文件是否与当前系统中的一样，是否改动过
+
+    tar -cf - xxxx/  | wc -c
+    tar -cfz/-cfj/-cfJ(xz) xxx/ | wc -c
+        这个可以用来打包传送到另一个目录
+    --perserve 
+        保留权限
+    --xattrs extend attr preserve

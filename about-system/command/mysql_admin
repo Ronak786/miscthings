@@ -69,7 +69,7 @@ grant:
         revoke all on *.* from xxxxx;
 
     
-    完全忘记:
+    完全忘记: 密码
         mysqld_safe --skip-grant-tables  to start service
         mysql -uroot to login
         update .......
@@ -404,3 +404,84 @@ engine:
             这个是针对最后一次全量之后的差别备份，所以只有最新的备份有用
         增量备份
             针对上一次备份
+        热备
+            读写中备份 innodb
+        温备
+            备份中只能读 myisam
+        冷备
+            不能读写
+        物理备份
+            备份底层文件
+        逻辑备份
+            mysqldump  备份的实际是执行语句
+
+    开始事务，如果想要精确到当前开始时刻的快照，
+        就要使用start transaction with consistent snapshot,
+        不然直到开始第一句读取位置都不会真正快照
+
+    mysqldump       
+        这个逻辑备份，日常语句
+        mysqldump -uroot -p -h xx  --single-transcation(这个自动开启可重读事务，不管当前设置是否是可重读的隔离模式）  --routines --trigger --events(这三个是同事备份一些函数，过程，触发器） --databases(这样会产生创建数据库的语句） xxx  -p > xx.sql
+        开启二进制log时加上 --flush-logs  --master-data=2 参数，
+            前者表示从当前备份开始使用一个新bin文件，后者表示以注释的方式记录当前binlog中的位置，
+            这样热备的时候，恢复完了这个.sql可以查看位置值，找到应该从哪边开始继续恢复binlog
+        --all-databases 备份所有数据库
+        --master-data =1 是给从机器用的，会直接记录binlog里的位置，从机器会向主从这个位置继续请求的
+
+        恢复的时候注意set sql_bin_log=off 不然无谓的记录太多，这个取消当前session的binglog
+
+    xtrabackup
+        percona系列中的工具，属于物理备份，可以全量，增量，备份的是innodb中的底层的单元，还有
+            事务日志，因为备份瞬间可能有事务正在或者完成了，要重放或者回滚，
+            增量备份 存在的时候，只需要对最后一份增量prepare整理，其他的都会被整合到整个全量
+                备份里恢复
+
+        myisam      
+            需要 --lock-tables  --lock-all-tables 参数，因为myisam只支持温备
+
+        这个工具有两个命令，本身是一样的，但是运行不同的名字参数不同
+        innobackex --defaults-file=/etc/my.cnf  --host -u -p backup_basedir
+            就可以备份了，如果要备份单表，需要innodb_file_per_table
+        恢复
+            innobackex  --apply-log --use-memory=xx  backupdir
+                apply transcation's log into backup files
+            innobackex --datadir=xxx  --copy-bak /backdir
+            chown mysql:mysql -R datadir/*
+            然后启动mysql（当然配置文件要是先存在
+        
+        stop mysql
+        增量：
+            innobackupex -p  --incremental /backupdir --incrementtal-basedir=last_bakcupdir
+        恢复；
+            innobackupex --apply-log --redo-only --use-memory=xx backdir
+                这个用来恢复最开始的全量，但是rollbakc的部分不用做，只要做已经提交进redolog，但是
+                    还没有进文件的已经提交事务
+            innobackupex --apply-log --redo-only --use-memory=xx backdir  --incremental-basedir=incredir
+                用来增量恢复到全量，除了最后一个，都是不用rollback的
+            innobackupex --apply-log --use-memory=xx backdir  --incremental-basedir=incredir
+                 最后一个增量，这个需要roll back
+            之后重启msyql就行了
+                
+
+        option:
+            --parallel=8 增加线程，会增加io
+            --throttle=200 限制io次数每秒，节流如果资源不够
+            --compress 压缩备份
+            --compress-threads  压缩的线程
+                如果使用了这个，恢复前必须使用qpress 解压，或者使用--decompress解压
+                这个是手动的，这些文件不会影响回复
+            
+            流式打包备份
+                innobackupex -pxxx --stream=tar  /badkupdir > backup.tar
+                tar -ixvf xx.tar
+                    需要-i
+                can be remote:
+                    innobackupex -pxxx --stream=tar  /badkupdir | gzip | ssh xxxx " cat - > backup.tgz"
+
+            xbstream备份：
+                innobackupex -p --stream=xbstream --compress backdir > xx.xbstream
+                xbstream -x -C extrace_dir < xx.sbstream
+                    需要安装xbstream
+                innobackupex -p --stream=xbstream --compress backdir | ssh xxx " xbstream -x -C backdir"
+
+                

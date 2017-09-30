@@ -1,0 +1,17 @@
+find . -iname(ignore case) '*.c' -print  | cpio -ov > xxx
+cpio -idv < xxx  extract into cur dir
+cpio -ov -H tar -F (if create archive , -F give the file name)  xxxxx.tar
+cpio -idv -F xxx.tar
+-i 解包
+    -d make dirs if necessary
+-o 压缩成包
+    -m 保留修改时间
+-L 赋值链接的真实文件
+
+
+view:
+    cpio -it(list) -F xxx.tar
+    gzip -cd  (-c == ouput to stdout ,used in pipline)
+
+find . -depth | cpio -pmdv > xxx
+    copypass mode， 保持目录，保持修改时间，
