@@ -1,0 +1,6 @@
+base64
+    encode based on 64 characters (so base16 是16进制)
+    echo -n 'xxxx' | openssl base64 -e 
+        注意-n， 因为echo会附加回车，这个要注意
+        数字，字符 加号 斜杠，
+            等号用来补足4的倍数，所以最多三个，而且不会参与编码，仍然显示减号
