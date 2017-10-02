@@ -1,0 +1,63 @@
+安装， 有源puppetlabs
+
+本地测试执行
+    puppet apply --verbose  <file path> --noop(用于测试）
+        file:  xx.pp
+        定义：
+            user{'xxx':
+                name => xxx,
+                ensure => present,
+            } 就会确保这个用户存在，不存在就创建
+
+    puppet describe -l 
+            show all resource supported (user file ....)
+    puppet describe resource [-s] [-m](meta attr]
+        可以具体查看某个资源的内部属性支持
+
+    特殊变量
+        namevar属性的变量，一般就是name变量，有的不是，名字不一样，但是只要这个属性的变量没指定，默认
+        都使用title变量
+
+        ensure 
+            in user,  present , absent
+            in service , stopped, running
+        meta:
+            before, require
+            用来跳帧不同资源之间的顺序
+
+    user:
+        groups => [xx,xx,xx] 不用引号，不用加自己组，这个是附加
+        managehome 这个没有的话不会实际创建home目录
+        password => pw_hash('password', 'SHA-512', 'mysalt'),
+           mod 'puppetlabs-stdlib'
+            puppet module install puppetlabs-stdlib --version 4.20.0 
+            或者
+            password => generate('/usr/bin/perl', '-e', 'print crypt("123456",q($6$salt$));')
+            即可
+
+    group
+    cron:
+        command
+        minute
+        hour
+        monthday
+        month
+        weekday
+        user
+        ensure  absent == delete
+    package
+    service
+    file
+    exec
+    yumrepo
+    
+
+    requier => Group['xxxxname']  第一个字幕大写
+    before => Group['xxxxname']  第一个字幕大写
+    subscribe => File['xxx']
+    refreshonly => true, 这两个结合，就是只有订阅的资源发生了刷新的请款下才执行本条里的命令
+    notify => Exec[xxxx] 也可以从另一个方向去修改脚本`1
+
+    通知依赖：
+    group[] -> user[xx] 依赖 要大写
+    file[] ~> exec[] 通知

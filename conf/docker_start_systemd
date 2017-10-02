@@ -1,0 +1,1 @@
+docker run -v /etc/yum.repos.d:/etc/yum.repos.d:ro -v /sys/fs/cgroup:/sys/fs/cgroup:ro --cap-add=SYS_ADMIN  --cap-add=NET_ADMIN --cap-add=NET_RAW --tmpfs /run -d --name c1 local/c7-systemd 
