@@ -15,3 +15,8 @@ setdefault
 get(k,default)
 defaultdict(list)
     when not exist, return a list()
+
+set 
+    集合也可以推导
+    {xx for xxxx}
+    空集合赋值需要 set(), 其他可以 {1,2,3}
