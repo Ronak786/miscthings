@@ -1,0 +1,17 @@
+python 会忽略() {} []里的回车
+map(func, sequence) 返回列表包含函数作用过的每一个元素
+filter（func， sequence）返回bool为真的元素组合
+
+生成表达式：
+    利用（），但是如果这个表达式是唯一参数，可以没有括号的
+
+tuple assigment:
+    aa,bb,*cc = (11,2,3,4,5,6) 解包赋值
+
+字典推导
+    {xxx: xx for xxxxx}
+
+setdefault
+get(k,default)
+defaultdict(list)
+    when not exist, return a list()
