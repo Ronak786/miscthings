@@ -75,6 +75,7 @@ char本身的符号与否取决于编译器
 
 const: const 属于basetype ，也就是可以可type一样放在左边影响右边声明的整个 列表的！！
 
+    const 可以直接对字面值进行绑定引用
     const int xxx;
     多文件如果要共享const变量，所有声明定义地方都要使用extern
     不然会被当作每个文件内部的const值，每个文件里面都要初始化
@@ -107,3 +108,9 @@ const: const 属于basetype ，也就是可以可type一样放在左边影响右
     using bias = orig;
         eg. typedef char *   chs;
             const chs aa;  这个aa是常量指针注意，因为合理chs是一个整体，成为常量
+
+auto
+    这个就是自动设置作为表达式结果的值的类型，一般顶层const会被去掉
+    如果需要，需要const auto xxx
+    还有，const auto &j = 32 这个是可以的
+        如果是引用，是可以继承顶层的const的,指针或其他变量不可以
