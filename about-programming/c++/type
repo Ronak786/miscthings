@@ -1,0 +1,109 @@
+bool int float short long longlong long double double 
+
+赋予无符号数超出范围的数，取模，
+给有符号数超出范围的赋值，未定义，可能出错的
+
+char本身的符号与否取决于编译器
+
+算数转换：
+    有符号转换成无符号，如果和无符号在一起的时候
+    不能用无符号数来做循环判断，因为永远大于0的
+
+字面值：
+    对应一种类型，整数默认是int， long longlong中最小的那个，只要能放下
+                    8 16进制则在这里面穿插了无符号数，还是选最小的额那个
+                    浮点使用double默认
+    string:
+        两个空格，换行组成的string其实是一个
+    转义：
+        \n \r  \x123a5   \123(8进制, 只能1到3个字符）
+    L'a' wide char  wchar_t
+    u8"hi!"  utf-8  string 只能用于字符串字面常量
+    42ULL  unsigned long long
+    1E-3F float
+    3.14L  long double
+    u'xxx'  unicode 16 char16_t
+    U'xxx'  unicode 32 char32_t
+
+    123u/U  unsigned (至于是int long longlong取决于指定的数多大）
+    123l/L  long
+    123ll/LL  long long  / unsigned longlong
+    123f float
+    123.3l/L long double
+        这里的类型都是至少的取值，不是一定的取值
+
+初始化与赋值 -std=c++11
+    这连个不同，初始化是创建的时候给予初始值，赋值是擦除旧值，给新值
+    int a(10), int a=10 
+        这两种用小括号或者普通复制到方法不会在损失信息的时候报错
+    int a{10} int a = {10}  这种花括号的方法会在损失精度的时候报错
+        列表初始化
+    类的初始值由类自己决定
+    函数体内的内置类型不初始化就未定义
+
+声明与定义
+    extern 声明，没有的话定义，会分配空间，
+        如果extern包含初始值，那么也成为定义
+        另：函数内不能初始化全局值，记住是初始化
+标识符：
+    用户定义不要双下划线，不要下滑+大写，全局变量不要下划线
+作用于嵌套作用
+    如果要用全局作用域的值，使用 ::xxxx
+
+复合声明：
+    引用，指针都是复合，基本类型放在前面，声明符包括& *等放在每个声明对象
+    前面
+
+引用
+    必须类型相符，必须初始化，一旦成功不能改变，
+    可以为引用继续创建引用个，但是不能引用的引用，int &&c =    error
+    不能对字面常量或者表达式引用
+
+指针
+    nullptr 0  or  include cstdlib  NULL
+        这些都可以为空指针， 使用方法和C一样
+
+    区别
+        指针可以赋新值，是一个对象，引用不是对象，绑定的
+    指针的值可以是某个对象或者是对象之后紧邻的地址
+    void *  可以被赋予任意的类型指针
+    指针只能指向对象，引用不是对象，所以指针不能指向引用
+
+    int *p;
+    int *&r = p;  r是p指针的引用, 从右向左读
+        但是没有指向引用的指针 int &*p   error
+
+const: const 属于basetype ，也就是可以可type一样放在左边影响右边声明的整个 列表的！！
+
+    const int xxx;
+    多文件如果要共享const变量，所有声明定义地方都要使用extern
+    不然会被当作每个文件内部的const值，每个文件里面都要初始化
+    
+    对const也可以引用，当然也要const
+    也可以用const引用非常量
+
+    注：可以使用const 类型初始化引用的时候赋予一个不是对应类型的值，
+        这样获得的是强制转换之后的值，
+        不用const的时候不能这样赋值引用,因为不能修改，修改的是临时量，会报错
+
+    int * const ptr  ptr本身是const的
+    const int * ptr  ptr指向的内容不允许通过ptr修改
+
+    修饰最外层的是顶层const这个通常不影响赋值，除非是常量赋给非常量
+    修饰对应值的是底层const
+
+常量表达式
+    那些可以在编译的时候就计算出来的const的值就是常量表达式，
+    初始化的过程中当然不能使用函数
+    判断有困难，
+        使用constexpr 而不是const，编译器会帮你判断，保证是常量表达式
+            这种constexpr定义的指针只能是0或者是有固定地址的指针，比如
+            在所有函数外，或者静态指针
+        constexpr int * np = nullptr
+            这个注意定义的是指针是常量，constexpr作用于顶层，而不是内部变量！！
+
+别名；
+    typedef xxx xxx;
+    using bias = orig;
+        eg. typedef char *   chs;
+            const chs aa;  这个aa是常量指针注意，因为合理chs是一个整体，成为常量
