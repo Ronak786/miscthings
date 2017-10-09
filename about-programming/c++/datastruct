@@ -1,0 +1,70 @@
+using namespace::name 
+    的形式可以直接写name，不用加空间 using std::cin
+    cin >> xxx xxx 就行了， 每个类名字都要这么写，注意头文件里不要搞
+
+#include <string>
+    string: 默认初始化为空串
+        初始话： s("hhhe"0)  s(10, 'c') s = "hehehe",  s = q, s(q)
+        s1=s2是赋值，给的是副本，不是引用
+        os << s
+        is >> s
+        getline(is, s)
+            读取丢弃换行
+        s.empty()
+        s.size()
+        s[n]
+        s1 + s2
+            s1 + "hehe" + s2 + '\n'
+            可以混加，条件按顺序加的符号两边至少一个是string类型，“xxx” 不是string类型注意，不一样
+        s1 = s2
+        s1 == s2
+        s1 != s2
+        < <= > >=
+        string::size_type size（）返回的类型，可以用auto定义出来，适合存储
+            注意有size的地方就全部使用无符号型，因为size（）本身返回无符号
+
+        遍历：
+            范围for   for (var : expr)
+            for (auto c : str)
+            for (auto &c : str) 可以使用引用，可以实时修改
+                cout << c << endl;
+            for (decltype(s.size()) index = 0; index < s.size(); index++)
+                or string::size_type index = 0; 使用这类型保证了非负，这样只要检验是否超额就行了
+
+            for 下标（size_type 类型的）
+
+    cctype 
+        头文件，ctype一样的，有isnum之类的
+        c++的头文件中标准库的部分都是c的头文件 xx.h =>  cxx 没有h,而且都在std：：里面
+
+
+    cin
+        这个会跳过空白字符
+
+#include <vector> 容纳同类型的多个变量
+    类模板，和java类似的通用类
+    能包含多数对象，但引用不是对象，不行, 内置也可以
+    vector<vector<int> > 也可以，老式编译器需要右边的空格
+    vector<T> ivec{1,2,3,4}   = {1,2,3,4}
+                ivec(10, -1) 10个-1
+                ivec(10) 那么初始化10个默认初始化的元素,注意不能ivec = 10
+                用话括号表示初始的是元素
+                用袁括号表示创建的元素数量
+                    当然使用花括号，出现类型不匹配的情况，会自动尝试圆括号的行为
+        所有的拷贝初始化只能初始化一个值，列表需要用花括号，而且不拷贝
+
+    添加元素：
+        s.push_back(xx) 
+            这个比预先设定大小好，除非具有默认值,而且量一定
+        注意，范围for里面不应该添加vector，不然不能用
+        s.empty()
+        s.size()
+        s[n]
+        s1 = s2 
+            s1 = {1,2,3,4,5} 
+            拷贝替换
+        s1 == s2 s1 != s2  > >= < <=
+        vector<int>::size_type 要这样使用
+            这里的大小和等于关系和字符串一样，要考虑顺序和长短, 需要元素可比较才能比较
+        
+        下标只能用来访问，不能添加元素
