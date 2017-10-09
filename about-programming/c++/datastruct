@@ -68,3 +68,42 @@ using namespace::name
             这里的大小和等于关系和字符串一样，要考虑顺序和长短, 需要元素可比较才能比较
         
         下标只能用来访问，不能添加元素
+
+迭代器 使用中不能添加元素！！
+    string vector都支持迭代器操作，
+    auto b = s.begin(),  auto e = s.end() 
+            s.cbegin  cend() 这两个返回常量类型，固定
+        end是尾部元素的后面一个地址，用于判断结尾的
+        迭代器的操作和指针类似：
+            *iter,  iter->mem, ++iter --iter iter == end iter!=end
+            *iter 返回的是引用，可以就地修改
+                注意 == ！= 的判断比大于小于要好，因为不是所有容器的迭代都支持
+                大于小于的
+                如果要访问元素的成员，可以直接iter->mem  (*iter).mem
+        一般这种不知道的类型，比如size，比如迭代器都用auto，，其实他们都是
+            vector<string>::iterator or  string::iterator              
+            const_iterator ,iterator, 如果对象是常量返回的就是const_iterator
+                const vector<int> xxxx
+
+    string vector 的迭代器运算
+        iter +n  iter -n
+        it1 < it2,  距离的类型是difference_type ,都在各自定义了
+
+数组
+    数量必须是常量表达式或者constexpr
+    数量固定，不能使用auto， 元素不能使引用
+    int a[] = {xx,xx,xx,xx}
+    char a[] = "xxxx" 注意空字符也存储进去了
+    数组不能拷贝赋值
+    int (*arr) [10]  
+    int (&arr) [10]  数组的引用，数组的指针
+        解释的时候由内向外
+
+    下标的类型是size_t, in cstddef
+    for (auto xx: arr) 遍历
+
+    指针与数组
+        如果使用auto 那么用来拷贝的对象是数组的话，得到的类型是个指针
+        decltype得到的则是完成的同样类型同样成员数量的数组
+        可以迭代
+            int *e = &arr[end] 可以i获取最后之后一个位置的地址作为迭代结尾
