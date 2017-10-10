@@ -1,0 +1,32 @@
+switch
+    后面是表达式
+    case 后面是能是常量整形需要break
+    在case中的变量定义会出错，因为会被跳过，最好是用{}块包围，这样不会出现跨作用域为定义的情况
+
+while
+    条件或内部的创建变量每次迭代都经历了创建销毁 
+
+for范围
+    带有序列功能的都能放在后面，也可以直接 {1,2,3,4,5}
+    其实使用了iterator, begin() end()
+do..while(xxx)
+    变量必须定义在循环外面！！
+
+goto
+    跳转限于函数内
+    回跳意味这创建的变量会重新创建销毁
+
+异常：
+    stdexcept, exception, new type_info这几个头文件里有定义异常类
+        一般要提供初始字符串值string 或者C字符串
+    throw runtime_error("xxxx");
+
+    try {...}
+    catch (runtime_error err) {
+        err.what()就是初始化的字符串
+    }
+    catch () {}
+
+    可以没有try直接throw，会按照函数调用栈往上找，直到推出terminate 函数最后推出
+
+    divide by 0 is not a except, can not be catched, you should check yourself!!

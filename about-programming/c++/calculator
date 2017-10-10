@@ -35,3 +35,44 @@ sizeof
     这个是常量，可以用来声明数组大小
     sizeof vector
         返回固定部分，没有后面的每个元素的部分
+
+整形提升
+    小的提升到int 或者unsigned  如果int不够的话
+    转换中小的变成大的，有符号变成无符号如果无符号范围够大，否则无符号转成带符号(如long => unsigned, 如果
+        机器上两个一样大）
+
+    隐式
+        数组赋值给指针，会转成指针
+        decltype 引用  sizeof不会转化
+    强制
+        static_cast<double*>p  就是明确的去转换
+        const_cast ... 去掉常量const因素
+        reinterpert_cast 位模式上的转化
+            也就是并非只是赋值一个新的，而是在以前地址上
+            重新解释，这个和前面两个不一样
+            ，int *ip, char *pc = reinterpert_cast<char*>pc  不太好
+
+优先级
+1  ::xxx  class::xxx  namespace::xxx  作用域
+2 . -> [] ()
+3 a++ a--(右结合，如果多个同样的符号，从右向左结合） typeid() 显示转换
+4 ++a --a - ! ~ + - & ()  sizeof new delete 
+5 ->*  .* 指向成员的指针？？
+6 * / %
+7 + -  
+8 << >>
+9 < > 
+10 == != 
+11 &
+12 ^  抑或
+13 |
+14 &&
+15 ||
+16 ? :
+17 =
+18 *= ....
+19 throw
+20 ,
+
+
+
