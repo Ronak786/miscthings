@@ -41,3 +41,18 @@ return
     返回值的类型必须和声明的一样或者可以转换
     返回的时候会在调用点创建临时变量收容，所以不要返回局部变量的指针或者引用！！
         字面值如果是函数内定义的，也会是局部临时的，也不可以引用！！但可以直接传值
+
+    返回值，如果是个引用，那就是左值，这个时候可以直接func(xx.,xx) = xxxxx;赋值
+        不是引用就不行,因为引用可以改变本身嘛
+
+        可以返回列表，如果返回值的定义类型是例如vector<int>之类的，return {1,2,3,4};
+
+    int main;  include <cstdlib>  return EXIT_SUCCESS EXIT_FAILURE;
+
+    返回数组的指针
+        int (*funcname(paramlist))[arr维度，不能省略]
+        这个复杂了，返回的是一个数组的指针，有另外一种生命方法
+        auto func(param) -> int(*)[10]  这个方便 尾置返回类型
+        or  
+            int a[10];
+            decltype(a) * func(param);
