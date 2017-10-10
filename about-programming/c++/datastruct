@@ -107,3 +107,54 @@ using namespace::name
         decltype得到的则是完成的同样类型同样成员数量的数组
         可以迭代
             int *e = &arr[end] 可以i获取最后之后一个位置的地址作为迭代结尾
+        对一个数组对象赋值给一个指针，获得是对数组地一个元素的指针，
+            这个想法可以扩展到多维数组
+        数组也可以迭代
+            int a[] = xxxx
+            int * = begin(a) int * = end(a) 即可
+            指针相减结果是ptrdiff_t类型的 in cstddef,  size_t also in that
+
+    cstring
+        string.h 的c++版本，
+        string对象可以用char数组0结尾的初始化
+        string s,  s.c_str() 可以获得对应的char数组
+        vector<int> a(begin(arr), end(arr)), 可以利用数组迭代来初始化vector，
+                这里可以直接用数组指针
+
+    多维数组‘
+        int (*arr)[4]  这个获得是指向二维数组地一个元素的指针
+        遍历
+            for (auto &j: arr2) 范围for要注意
+                for(auto &i: j)
+                    可以在这里对每个元素操作，  最外层的引用一定要，不然auto会把
+                    一维数组对象解释为一个指针
+                    如果使用begin end的话要简洁一些
+                    for(auto p = begin(arr2); p != end(arr2); ++p)
+                    for (auto q = begin(*p); q != end(*p) ; ++q)
+                        *q ....
+            int ia[3][4]
+            int (*p)[4]
+            p = &ia[2]  因为p是指向一维数组对象的指针，所以要一维对象取址
+
+        别名
+            using int_array = int[4];
+            typedef int  int_array[4] 这种都可以简化的
+
+        多维的遍历：
+            １传统便利，第一层的对象应该声明指向第二层数组的指针，然后条件结尾是最后一个数组后面的那个的地址
+                第二层循环是数组元素的指针，然后结尾是最后一个元素的地址
+                   for (int (*p)[3] = ia; p != &ia[2]; p++)  {
+                       for (int *q = *p; q != &(*p)[3]; q++) {
+                           cout << *q << " ";
+                       }
+                using int_arr = int[3] 这个可以省略一点，用for(int_arr &k : ia)即可j
+            2 使用范围for
+                第一层是对第二层数组的引用，第二层是对每个数值，可以不引用，地一层一定要引用，不引用的话，
+                就退化成数组地一个元素的指针了，也就是普通int*
+                    for (int (&p)[3] : ia){
+                        for (int  q : p) {
+                            cout << q << " ";
+                        }
+                    }
+
+
