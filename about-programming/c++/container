@@ -1,0 +1,60 @@
+顺序容器
+    vector 尾部之外插入删除慢，地址连续，随机访问快
+    deque  头尾查删快，中间很慢，随机快
+    list   双向link list 
+    forward_list 单向link list  这两个空间消耗大，单向的没有size功能
+            致力于达到手写link list速度
+    array  就是抽象的数组，更安全
+    string 中间慢，地址连续和vector一样
+
+    选择：
+        默认用vecotr，
+            如果中间插入多用list
+            开销要求高不要用list
+            头尾改动多用deque
+            如果有中间插入又有随机访问
+                看哪边比重大，又或者可以先添加末尾再排序，最后放入vector
+                或者先list再copy到vector
+
+
+    头文件
+        每个容器在自己的头文件里
+        初始化，因为类型可以是容器，或者类，所以某些必须初始化的，你要
+            提供初始化值
+
+    通用操作：
+        类型名称：
+            iterator, const_iterator
+            size_type, difference_type
+            value_type, reference const_reference 这三个表示内部值的类型，值的引用类型，常量引用类型
+        构造：
+            C c; C c(d); C c(begin, end);(using iterator)(这个array不行）
+            C c{a,b,c,d,e}
+        赋值
+            c1 = c2
+            c1 = {xxx,xx,xx,xx}
+            a.swap(b)
+            swap(a,b) 神奇
+        size:
+            c.size()  forward_list not support
+            c.max_size() 最大可容纳数目
+            c.empty()
+        insert/del:
+            c.insert c.emplace, c.erase , c.clear()  这几个不太明白
+        == != < > 
+        c.begin c.end c.cbegin c.cend
+        c.rbegin c.rend c.crbegin c.crend
+            非c开头的版本对于常量对象仍然返回const类型的迭代其
+        reverse_iterator
+        const_reverse_iterator 反向，  单向链表不支持
+
+    迭代器
+        * -> ++ --  == != 是都支持的，除了单项链表不支持--
+        +n -n  > < >= <= 这些链表不支持，其他支持
+        注意，这些是 标准库才有的东西
+
+    const:
+        如果需要const容器，就在最外面加const，在里面加的话会编译不过去，好像也不能初始化和修改
+
+    初始化：
+        string没有 C seq(n) 这种操作，其他的除了array都有

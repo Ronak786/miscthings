@@ -1,0 +1,92 @@
+iostream istream, ostream
+fstream  ifstream, ofstream
+sstream  istream ostream
+
+cin cout cerr
+>> <<
+getline(istream &, string)
+    还有wchar_t 版本的所有这些对象,所有用法都是一样的
+
+copy：
+    不用copy，所以传的都是引用，
+    读写都会改变，所以不使用const
+
+流有状态
+    xxstream::iostate
+            ::badbit goodbit eofbit failbit
+    xxstrea::eof() bad() good() tail() clear() clear(flags) setstate(flags), rdstate()
+                clear表示的是用来设置的新状态
+        返回的和设置的状态都是iostate类型
+        一旦错误，后续操作都会失败 一般检查fail就行了，相当与之前的if (cin >> xxx)
+        if bad  没法用 bad()  fail() reutrn true
+        if fail   can clear()   fail() return true
+        if eof    fail() eof() return true
+        if good   none of above three return true  and goodbit set to 0
+            可以使用cin.clear(cin.rdstate() & ~cin.failbit & ~cin.eofbit) 复位fail and eof
+
+输出缓冲
+    flush:
+        end of process
+        buffer is full
+        endl  to flush
+        unitbuf 状态设置了就是立刻输出
+        关联：
+            cin cerr related to cout
+            所以读写cin cerr 会导致cout刷新(已尝试）
+
+        手动刷新
+            endl  append a '\n'
+            ends  append a '\0'
+            flush  just flush out
+        强制每次输出
+            ostream << unitbuf; 今后这个流都是直接输出的
+            ostream << nounitbuf; 开始缓存
+
+    注意：崩溃后不会刷新buffer
+
+        stream.tie()
+            如果有参数(指针），set动作，用来关联, 同时返回之前关联的流指针
+            如果没有参数，返回已经关联的刘的指针或空指针
+
+            每次只能关联一个流, 取关使用nullptr
+
+    fstream:
+        ifstream ofstream fstream(可读写）
+        fstream st;
+        fstream st(string/char*) 一个字符串就是一个指针
+        fstream st(s, mode)
+                这两个提供了名字，所以自动打开
+        st.open(s) 只能open 不能创建
+            一个刘一次只能打开一个文件，要记得关闭
+            可以使用if (stream)来判断打开成功与否，或者fail（）
+        st.close()
+            如果放在循环里作为自动变量，到末尾会自动销毁，开头又自动创建，好用
+        st.is_open()
+
+        这个继承iostream，所有以iostream& 为参数的地方都能使用fstream的流输入
+
+        read:
+            getline() 全局有一个，输入类每个也有一个，全局的好用省心
+            或者直接<< >> 真是超级方便啊
+        mode:
+            如果输出，默认是截断和创建
+            如果输入，是不会创建的
+            app 这个隐含out，不会截断，
+            trunc和app不能同时，out隐含trunc
+            ate 定位到末尾
+            binary二进制 这两个可以任意设置
+            istream 或者ostream::in ::out ::app ::trunc ::binary  都可以的
+
+            每次初始化或者open的时候都可以i设置，利用bit or链接
+
+
+    sstream:
+        istringstream ostringstream  stringstream 
+            初始化的时候绑定，只能是string类型
+        stringstream strm(string);
+        strm.str(s) 把对象靠近去
+        strm.str() 去的对象
+
+    注意：
+        不管哪个流，特别是string的，读到当前结束之后，会出发fail和eof置位，需要
+            手动clear（）之后，才能继续xx.str()装入进的字符串，不然会失败！！
