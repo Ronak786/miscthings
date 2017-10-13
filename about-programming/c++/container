@@ -244,7 +244,9 @@
                 priority queu:front push_back popback随机访问
                     vector, deque 不能list因为不能随机访问
 
-            stack: default deque
+            include <stack>  <queue>
+                using std::stack
+            stack: default deque 
                 push pop emplace top
             queue default deque / list, vector 尾部进头部出
             priority: default vector / deque 

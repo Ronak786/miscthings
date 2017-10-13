@@ -1,0 +1,6 @@
+泛型算法
+    find(begin,end, val)  
+        sucess return iter
+        fail return end
+    cout (begin ,end ,val)
+        return cout of val appearred
