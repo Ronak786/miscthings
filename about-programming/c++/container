@@ -48,6 +48,52 @@
         reverse_iterator
         const_reverse_iterator 反向，  单向链表不支持
 
+    顺序容器特有操作
+        forwardlist have no: 这个只能头上操作。。。。
+            insert, emplace, push_back emplace_back, pop_back, erase
+        vector, string have no:
+            push_front, emplace_front,pop_front
+
+        push_back, emplace_back   list deque vector string
+        push_front .....  list deque  forward list
+        insert(p,t), emplace
+        insert(p, n ,t)
+        insert(p,begin, end)
+        insert(p, {....})  在迭代其之前插入，返回新的第一个元素，空返回原来的，
+            插入后deque vector string迭代其立刻失效（新返回的失效吗, 不会的，可以一直用） 因为这些可能重新分配位置的
+            insert(begin()) == push_front,
+            insert(end()) == push_back
+            注意插入的不能和被插之相同一个容器
+        emplace() 
+            这个传入元素的构造函数需要的参数，可以可变长度的
+
+        pop_back, pop_front 注意检查空，return void
+        erase(p) 如果p是end，有问题,不然删除当前所在元素，返回后一个
+        erase(begin, end)  返回被删元素之后的元素iter，如果end是end（），返回也是end（）
+            vector string 当前位置之后会失效, 返回最后删除之后的那个的那个
+                gcc里面好像有保护，尝试了一下如果仍然用原来的话后面访问都是同一个最后值，
+                    所以最好还是实时更新vi.end()  ,可以在循环头里这么干
+                看到的是没删除一个，vector都会把end提前一些说明在复制
+        clear()删除所有，
+            dequee 会失效
+
+
+        front  == *begin() 需要先判断empty！！
+        back 这个forwardlist 没有 == *(--end()) auto &v = c.back() 注意了，不然v不能修改
+        c.[n], c.at(n) 
+            这两个后面的越界会安全报错out of range
+
+                这里返回的都是引用，可以改值的
+
+        forward_list特殊操作
+            before_begin() cbefore_begin()  返回开头之前的一个迭代器用于插入地一个元素
+            insert_after(p, t) (p, n , t)  (p, begin, end) (p, {xxxxx})
+                返回指向最后插入元素的迭代, end()的话未定义不能用
+            emplace_after(p, args) 返回插入
+            erase_after(p)  (b,e) p不能是end()
+                返回之后的元素,可以用来循环end作为判断
+
+
     迭代器
         * -> ++ --  == != 是都支持的，除了单项链表不支持--
         +n -n  > < >= <= 这些链表不支持，其他支持
@@ -58,3 +104,44 @@
 
     初始化：
         string没有 C seq(n) 这种操作，其他的除了array都有
+            这个只有顺序容器有，关联容器没有的
+        array 没有 c(begin, end)这种
+        列表初始化array不会指定数量，因为确定了
+
+            如果使用赋值匹配，那么容器的类型必须匹配，元素也要匹配
+            如果使用迭代其，那么只要元素类型可以转换就行了
+        eg.
+               vector<int> vs = {1,2,3,4,5,6};
+               vector<int> vi1(vs);
+               vector<int> vi2 = vs; 
+               vector<int> vi3{1,2,3,4,5};
+               vector<int> vi4 = {1,2,3,4,5};
+               vector<int> vi5(vs.cbegin(), vs.cend());
+               vector<int> vi6(20);
+               vector<int> vi7(20, 222);
+
+
+    array:
+        array<type, number>:;size_type 记住需要number制定
+            这个好处是可以赋值拷贝，比内置数组好,只要类型完全一样,当然是指array赋值array
+            不能赋值初始化列表，只能在初始化的时候这个干
+            不能begin end
+
+    swap: 建议用全局的swap
+        这个比赋值快，可以a.swap(b)  swap(a,b) ,除了array和string，其他都不会导致引用，指针。迭代器失效
+            string会失效，array则因为swap会完全复制移动，所以指向的元素不对头了,而且慢
+    seq.assign(begin,end)
+    seq.assign(n)
+    seq.assign(n,default)  用来赋值和初始化的时候一样，会导致引用指针迭代失效，array和关联容器不能用
+                                可以用来执行不同类型的赋值,
+                            const char *  => string, 而不是char *
+
+    size forward_list no support of this
+    maxsize
+    empty
+
+    容器比较
+        相同类型的可以== ！= < > <= >=
+            前提是元素必须支持 ==  < 这两个操作
+
+
