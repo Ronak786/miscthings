@@ -85,14 +85,83 @@
 
                 这里返回的都是引用，可以改值的
 
+        resize(n[, default])
+            array不行，用来resize可大可小，大了默认值，小了删掉，不会影响没被改动的值
+                vector string deque可能会导致失效，因为可能移动内存
+                其他的删除的地方会失效
+
         forward_list特殊操作
             before_begin() cbefore_begin()  返回开头之前的一个迭代器用于插入地一个元素
             insert_after(p, t) (p, n , t)  (p, begin, end) (p, {xxxxx})
                 返回指向最后插入元素的迭代, end()的话未定义不能用
+                插入是按照顺序批量插入的，返回的是你插入列表里的最后一个
             emplace_after(p, args) 返回插入
             erase_after(p)  (b,e) p不能是end()
                 返回之后的元素,可以用来循环end作为判断
 
+        vector string deque
+            shrink_to_fit()  保留的内存减小到正好size,这个是请求，不是必须
+        vector string:
+            capacity 当前预留的内存一共可以放多少个
+            reverse  通知至少预留的内存,如果当前很大，不会做什么
+                resize 只改变数量，不会减少容量
+
+        string 特殊操作 这些记不住记得看书p324
+            init:
+                string s(char pointer, number) 指针开始的多少个字符,不然到\0
+                string s(s2, start_index)
+                string s(s2, start_index, length) length不管多大，最多到结尾
+            s.substr(start [,length])  
+                最多到结尾 ,默认是全部长度
+            insert(insert_index, number, char)
+            erase(del index, number)
+            assign(char ptr, number)
+            insert(index, charptr)  这些都是可以的，比较宽泛
+            insert(index, char ptr, start, len)
+            insert(iter, n, c)  insert(iter, begin, end)  
+            append(添加字符串)
+                这个添加char ptr，返回引用
+            replace(start, len, 字符串）
+                对于操作下标的，返回的是原string的新引用
+                这里字符串的地方是arg可以是：
+                    string
+                    string, pos, len
+                    char ptr
+                    charptr, len
+                    n, char
+                    begin, end
+                    {xxxxxx.,xx,x,,xx,,}
+
+            注：
+                assign, append 无须制定替换的地方
+
+            注意
+                似乎这里所有的所说的引用失效指的都是元素的引用，对象本身的引用和地址更换无关的
+
+            搜索：
+                name.find(char ptr) return pos string::size_type , if not found , return string::npos, it si unsigned
+                find ,rfind , find_first_of  find_last_of find_first_not_of find_last_not_of
+                args:
+                    char, pos
+                    string, pos
+                    charptr, pos
+                    charptr, pos, len 这里pos都是stirng的pos len是chaptr里的开头的len
+                        注意判断条件是npos ,不是默认的非0！！
+
+                compare
+                    s2
+                    pos, n1, s2  from s1's pos's n1 chars to compare with s2
+                    pos1, n1, s2, pos2, n2
+                    char ptr
+                    pos1, n1, cptr
+                    pos1, n1, cptr, n2
+
+                转换
+                    to_string(val)
+                    stoi(s, size_t * pos , base)
+                        base 基数， pos可选，默认0,保存非可转换字符的位置，
+                        如果一开始就不行，会报错
+                    stol stoul stoll stoull  stof stod stold
 
     迭代器
         * -> ++ --  == != 是都支持的，除了单项链表不支持--
@@ -144,4 +213,42 @@
         相同类型的可以== ！= < > <= >=
             前提是元素必须支持 ==  < 这两个操作
 
+    容器失效：
+        添加元素
+            vector string 如果重新分配位置那么全部失效，不然动作之前的位置不失效
+            deque 不是首尾动作都会失效，否则迭代其还是失效，但是引用指针没事
+            list forward list没事
+        删除元素
+            list forward 没事
+            deque 首尾以外的动了全失效，不然动头头迭代失效，动尾尾部失效
+            vector string这两个删除之前位置的没事
+        建议每次修改后重新管理迭代器
+            end() 每次获取这个比较快没事，不然删改end会变
 
+
+    适配器：
+        就是利用容器的高层实现功能
+        通用操作
+            size_type value_type container_type
+            A a A a(container) == != >= <=  a.empty() a.size() swap(a,b) a.swap(b)
+            stack<string, vector<string>> str(deq)
+                初始化一个栈，要求哦那个vector实现，拷贝deq里面的元素
+                每个适配器有默认的实现方案，也可以自己定义
+
+            各种request:
+                array 不行
+                stack: push_back pop_back back
+                    support: except forward_list, array
+                queue: front back pushback push front
+                    deque, list
+                priority queu:front push_back popback随机访问
+                    vector, deque 不能list因为不能随机访问
+
+            stack: default deque
+                push pop emplace top
+            queue default deque / list, vector 尾部进头部出
+            priority: default vector / deque 
+                pop, front(), back()(only queue)
+                top() (only pq)
+                push()
+                emplace
