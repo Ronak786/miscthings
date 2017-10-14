@@ -1,6 +1,58 @@
-泛型算法
+泛型算法 算法不会自己去利用容器的元素
+只读
     find(begin,end, val)  
         sucess return iter
         fail return end
     cout (begin ,end ,val)
         return cout of val appearred
+
+    accumulate:
+        in <numeric>
+        求和 （begin， end， 初值）
+            通过初值决定使用哪种运算符，哪种返回值
+            所以通过第三个元素设定最后的返回类型，可以使内部进行转换
+    std::equal
+        接受三个iter  第一个对象的头尾，第二个对象的头，
+            所以默认第二个对象一定要比第一个对象数量多 
+写：
+   fill (begin, end, val) 写入值 
+    fill_n(begin, size, val) 从begin开始连续写入size个元素
+
+    back_inserter(vector) 
+        返回一个迭代器，把这个传给算法函数，就可以
+        动态插入元素了，而不是只能在固定长度的容器上操作，
+            不够的话会自动插入新位置
+
+    copy(begin, end, 2begin) 返回2begin的copy后面的位置上的元素
+    replace(beign, end, old, new)
+    replace_copy(beigin , end, newbegin, old, new)
+    
+
+    sort(begin, end)
+        利用 <, 元素要有这个实现
+        重载版本，接受一个函数，返回bool，为真代表原来的<
+        stable_sort 表示的是不会改变想等元素的顺序
+    auto a = unique(begin, end)
+        返回的序列中，不重复在前，重复在后，返回的是最后一个不重复之后的迭代器，
+        可以利用这个可erase进行删除
+
+    partition
+    stable_partition
+        根据第三个参数的函数判断，满足的排前面
+        返回最后一个满足的之后的那个iter
+
+    find_if
+        接受第三个参数表示bool的判断，返回第一个第一个符合的迭代器
+            那个函数是一个单参数函数
+
+    lambda:
+        auto f = [capture list] (param,list) -> return type { } 定义
+        auto f = [] {reutrn 22;} 
+            如果忽略返回，自动判断，没有retyurn就是void
+        f() 可以直接调用
+        可以忽略参数列表 以及returntype
+            补货列表表示使用的上层函数中的局部变量,逗号分割
+                只需要局部变量，static以及非函数之外的变量可以直接使用，如cout
+    foreach(begin, end, 可调用对象，可以是lambda）
+        对每个对象进行这样的操作
+
