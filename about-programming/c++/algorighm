@@ -5,6 +5,8 @@
         fail return end
     cout (begin ,end ,val)
         return cout of val appearred
+    count_if(begin, end, func)
+        return numof true if func
 
     accumulate:
         in <numeric>
@@ -35,6 +37,7 @@
     auto a = unique(begin, end)
         返回的序列中，不重复在前，重复在后，返回的是最后一个不重复之后的迭代器，
         可以利用这个可erase进行删除
+        unique_copy(beign, end, second begin)
 
     partition
     stable_partition
@@ -44,8 +47,12 @@
     find_if
         接受第三个参数表示bool的判断，返回第一个第一个符合的迭代器
             那个函数是一个单参数函数
+    transform(begin, end, begin, func)  
+        从开始到结束对每个进行函数处理，把值写入begin开始的地方，可以重叠区域
 
-    lambda:
+    lambda: 一般用于需要捕获本地变量的地方，然后又只可以传递固定参数的地方
+            如内部固有算法里面， 
+            不然还不如写个函数
         auto f = [capture list] (param,list) -> return type { } 定义
         auto f = [] {reutrn 22;} 
             如果忽略返回，自动判断，没有retyurn就是void
@@ -53,6 +60,58 @@
         可以忽略参数列表 以及returntype
             补货列表表示使用的上层函数中的局部变量,逗号分割
                 只需要局部变量，static以及非函数之外的变量可以直接使用，如cout
-    foreach(begin, end, 可调用对象，可以是lambda）
+    for_each(begin, end, 可调用对象，可以是lambda）
         对每个对象进行这样的操作
 
+        捕获：
+            一般值传递，在创建lambda的时候就确定了，而不是执行的时候
+                可以[]() mutable -> xxx  {} 这样可以改变值传递的变量
+            引用传递，这个必须保证创建前引用存在
+                这个使用得到时候必须保证引用一直有效，所以不太好，还是值传递好一点
+            隐式捕获，让编译器推断
+             [=] [&]  [=, &os] [&,=os]  
+                可以默认某一种，值或者引用，然后混合搭配特定的例外
+
+        自动返回推断
+            只有在函数体只有一句返回的时候才能自动推断，不然一定要指定，默认void
+
+    bind:
+        这个返回一个函数，绑定另一个函数，这样可以和lambda一样，在某个函数里面
+            传入一个参数，然后bind出一个没有这个参数的函数
+            bind(func, _1, defaultargs)  
+                using std::placehoders  里面有_1 _2 这些是bind之后的函数传入的参数
+                放入原函数的位置
+            注意也是绑定的时候就传值了
+
+        值 引用
+            bind默认都是传值的，如果要传引用，首先内部函数要接受引用，
+                然后传给bind的需要 bind(func,  ref(arg)) 这样传递
+                using std::ref
+                    好像只可以对参数，不能对需要传入的_1之类的只用
+                    不过传给内部参数的好像默认就是_1, _2自动判断引用的
+                    只要非——1 ——2 这些变量使用ref就行了
+
+            一旦穿了引用，就是使用的额时候再求值了
+
+    插入器：：
+        back_inserter front_inserter inserter
+            第三个接受一个iter每次插入都是在当前iter之前一个位置插入，
+            所以插入逆序，这些需要底层支持对应操作才行的，
+            作用都是赋值iter的时候做对应插入操作，当然只能用来插入，
+            ++ --这些操作都是无效的，目的是给算法函数使用兼容
+
+    流迭代：
+        include <iterator> std::istream_iterator
+
+        istream_iterator<int> aa(cin); 注意得到的是迭代器，不是流
+        istream_iterator<int> eof;  没有初始值就是尾后迭代器，用来判断
+        可以vector<int> vi(aa, eof)直接赋值，或者
+            利用 *aa, aa++  然后自己pushback进去
+        举例：
+            accumulate(aa, eof, 0) 
+
+        允许懒惰求值，就是绑定瞬间并不一定取得一个值
+        ostream_iterator<int> =   oi(cout, "xxx");(char*)
+            这个直接 oi = aaa 直接输出,必须绑定，每个输出之后
+                会输出那个字符串，可选的参数
+                *io io++之类没用，用来兼容
