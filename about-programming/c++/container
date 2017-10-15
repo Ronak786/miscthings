@@ -91,7 +91,7 @@
                 其他的删除的地方会失效
 
         forward_list特殊操作
-            before_begin() cbefore_begin()  返回开头之前的一个迭代器用于插入地一个元素
+            before_begin() cbefore_begin() 首前 返回开头之前的一个迭代器用于插入地一个元素
             insert_after(p, t) (p, n , t)  (p, begin, end) (p, {xxxxx})
                 返回指向最后插入元素的迭代, end()的话未定义不能用
                 插入是按照顺序批量插入的，返回的是你插入列表里的最后一个

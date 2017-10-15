@@ -38,9 +38,6 @@
         返回的序列中，不重复在前，重复在后，返回的是最后一个不重复之后的迭代器，
         可以利用这个可erase进行删除
         unique_copy(beign, end, second begin)
-        
-        注意，gnu的实现里面似乎并不是移动，反正后面的额元素不对了，只能保证
-            unique内的元素是unique的，后面好像元素奇怪了，不要去访问，直接erase就行了
 
     partition
     stable_partition
@@ -128,54 +125,3 @@
     种类：
         输入，输出，前向，双向，随机访问迭代器
             前两个只需要递增功能实现
-            中间两个要求可以多遍扫描
-        不同的算法的最低要求不一样 
-
-        一个比一个范围广
-        输入：只读
-            可++ == ！=  * -》，只过滤一遍
-        输出 只写
-            ++ *（作为左值），每个元素只能赋值一次
-        前向 forward_list
-            可读写，多遍扫面
-            forwardlist  repalce需要
-        双向 list, 
-            reverse  支持--
-        随机访问 array deque string vector  int[]
-            《 》 +=  -得到距离 下表运算（随机访问
-    
-
-    算法参数类型
-        alg(b,e,b,e,arg)
-        alg(b,e,dst,arg） dst是写入的地方
-        alg(b,e,b,arg)
-        alg(b,e,arg)
-
-        func()
-        func_if()
-        func_copy()
-        func_copy_if()
-            eg.remove_copy_if()
-
-    特殊类型
-        这些会直接改变容器，和通用版本不一样
-        list forwardlist 因为连接的特殊性，sort merge remove reverse unique这些
-            都有特殊的版本，尽量使用这些
-        list.merge(l2)
-        list.merge(l2,.comp) 删除从l2，加入l1，默认用《，可以使用函数
-
-        list.remove(val)
-        list.remove_if(func)  删除==或者函数为真的
-
-        list.reverse()
-        list.sort()
-        list.sort(comp) 默认用《
-        list.unique()
-        list.unique(func)二元谓词
-
-        lst.splice(args)
-        lst.splice_after(args)
-            args:
-                (p,list2) 将lst2的元素移动到p之前或者之后的位置
-                （p,lst2,p2)将一个元素移动过去，可以同链表
-                (p, lst2, b, e)讲一个范围内的元素移动过去，p不能指向那个范围）
