@@ -63,3 +63,79 @@ set:
 
         方法：
             一般自带的算法如find， inserter插入器也可以用的，不过字典不是默认可插入的吗？？
+
+        添加
+            insert
+                set:
+                    插入可以 set.insert(begin, end) , set.insert({xxx,xx,xx,xx})
+                map
+                    map.insert({xx,xx}) map.insert(make_pair(xx,xx)) map.insert(pair<xx,xx>(xx,xx))
+                            map.insert(map<xx,xx>::value_type(xx,xx));
+                c.insert(v) 返回pair<iter, bool>iter表示新值的位置，bool表示陈宫与否
+                c.emplace(xx)  
+
+                c.insert(b,e)
+                c.insert({xx,xx,xx})  return void
+
+                c.insert(iter, v)
+                    emplace(iiter, v) 提示具体插在哪里 return插入的位置
+                        这样就可以不按照顺序了
+
+                    multimap 
+                        插入，返回新的迭代器，没有bool因为总是成功
+                erase(key) 删除所有匹配key的元素，返回数量multi会大于1
+                erase(iter) 必须是一个存在的元素
+                erase(begin, end) 这两个返回删除之后的一个元素或者end
+
+                index: multi版本没有下标
+                    c[k] 返回或者创建初始化一个
+                    c.at(k) 没有的返回out_of_range异常
+                    下标和at只适用于非const的map和unorderedmap 其他都不行
+
+                map, set:
+                    find(k) return the iter or end() 所以比单纯下标索引好，因为不会不小心插入或者异常
+                        找到第一个
+                    cout(k) return cout numbers 0 or xxx
+                    lower_bound()
+                    upper_bound() 返回地一个不小于或者不大于制定元素的迭代其pair
+                    equal range（）返回等于关键字k的元素的范围
+                        如果不存在，返回的位置上下界是一样的，都是可以用来插入的位置
+
+                    如果在multi里寻找：（默认是i排序版本的）: 注意返回的是元素类型，就是一个pair对于map
+                        find找到地一个的迭代其，
+                        cout找到数量，
+                        然后循环递增打印
+
+                        或者：
+                        lower_bound() 起点
+                        upper_bound() 终点
+                            如果不存在，会返回end如果过大，或者相等只想某个位置，可以用来插入的位置
+
+                        或者
+                        equal_range() 直接返回pair of 迭代器，直接使用
+            无序关联容器
+                使用hash
+                unorderd map可以用下标
+                接口
+                    bucket_cout() 桶数量
+                    max_bucket_count
+                    bucket_size(n) 第n个桶的元素数量
+                    bucket(k) key 在几号桶
+                    local_iterator
+                    const_local_iterator 桶中元素迭代其
+                    c.begin(n) c.end(n) n号桶的迭代
+                        cbeing cend
+
+                    c.load_factor 平均元素数量
+                    c.max_load_factor 最大大小，超出会调整桶
+                    c.rehash(n)
+                        重新分桶，是的大于n并且 bucketcout < size / max_load_factor
+                    c.reserve(n)
+                        保留的桶足够n个元素而不用hash
+
+                unordered_multiset<class, decltype(hashfunc)*, decltype(eqOp)*>
+                    需要两个函数，一个返回size_t, 一个返回bool，
+                    前者是hash值，可以利用对于内置类型的hash<string>()(xxx) 这里产生一个函数，然后
+                        利用这个函数对string操作，返回hash值
+                    然后声明的地方放入2个指针就行了
+                        如果有类有等于的实现,可以没有eqop
