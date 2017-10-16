@@ -47,6 +47,7 @@ using namespace::name
     vector<vector<int> > 也可以，老式编译器需要右边的空格
     vector<T> ivec{1,2,3,4}   = {1,2,3,4}
                 ivec(10, -1) 10个-1
+                ivec(initializer_list<xxx>) 类型也可以
                 ivec(10) 那么初始化10个默认初始化的元素,注意不能ivec = 10
                 用话括号表示初始的是元素
                 用袁括号表示创建的元素数量

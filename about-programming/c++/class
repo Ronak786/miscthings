@@ -80,7 +80,7 @@ const
             func(b); 可以的，但是不能填20,那样就转了2次了，先int再构造
             explicit one::one(int a) 
                 可以声明组织隐式转换,类外定义的时候不要重复这个声明
-                而且这个函数今后只能直接初始化，不能拷贝初始化
+            注意：：    而且这个函数今后只能直接初始化，不能拷贝初始化
                     但是我们可以static_cast<classname>(fieldname)强制转换
                 标准库中
                     string 有一个char*的构造函数，没有explicit,所以可以直接赋值string给他如果在莫个函数里

@@ -1,0 +1,68 @@
+new delete
+    分配释放
+
+智能指针 in <memory> 这个指针搞出来的和new出来的一样，默认就是不会自动销毁的了，记住不需要再new了，也没有delete了
+    unique_ptr
+    shared_ptr
+    weak_ptr 三种指针，表示独占，共享以及弱指针
+    和容器一样的模板声明
+        unique_ptr<string> sptr;
+
+    操作
+        通用
+            p, *p p->mem  像指针一样使用
+            p.get()返回指针本体 
+                这个是用来给不能接受share的函数传递指针用的，注意不要被释放，不要被再次变为share
+            p.swap(q)
+            swap(q,p)交换指针
+        share独有
+            make_shared<T>(args) 初始化并返回一个指针, args就是构造的时候的参数，直接写
+            shared_ptr<T> p(q) copy并增加q的引用计数
+            p = q 减少p的，增加q的计数如果p的引用为0 就自动释放,(这里的p说的额是p原来的值）
+            p.unique() 是否只有自己咋引用
+            p.use_count() 返回引用总数 较慢
+        引用
+            无论何时产生引用，包括函数参数，return 返回值，都会增加引用计数
+            为0的时候会自动调用析构函数
+
+目的是让单个内存位置共享
+
+手动管理方式
+    new delete
+    type * xx = new type(初始化的地方，留空就是默认初始化，最好有括号不然值未定义）
+    type *xx = new type{initializer_list}
+    const type *xx = new const type() 必须初始化，不然就默认了
+    you can
+        auto p = new auto(obj) 
+            限制是括号里只能有一个对象，这样编译器自动判断你要的类型
+
+    分配失败， in <new>
+        throw  bad_alloc
+        可以 type *xx = new (nothrow) type() 来抑制异常，这样返回空指针 叫定位new
+    释放
+        delete只能释放一次，释放null没问题
+        delete后养成习惯重置为nullptr这样更安全
+
+    结合shareptr
+        shared_ptr<int> p2(new int(42)); 只能直接初始化，不能赋值，因为这个是explicit
+            所以不能在返回shareptr的函数中返回new xxx, 要shared_ptr<int>(new xxxx) 这样返回
+        shared_ptr<T> p(q) (new的q指针传给p）
+        sahred_ptr<T> p(u) pass unque_ptr to shared_ptr and null the unque
+        shared_ptr<T> p(q, d) use d as the 析构函数
+        shared_ptr<T> p(p2,d) 拷贝p2,用d系够函数
+        p.reset()
+        p.reset(q) 这个接受一个new出来的指针，而不是share指针，不然直接赋值就行了
+        p.reset(p.d)  这三个如果p是唯一的，就释放，然后把q复制给p，然后析构函数用q
+                主要是用来重新给shareptr分配指针值的
+            自己编写系够delete
+                void xxx(type *ptr) { }
+
+    优点：
+        如果异常发生，在当前函数产生的new出来的会自己释放，很好的
+    注意
+        不要初始化多个智能指针到同一个指针上
+        不要delete get返回的
+        不要reset一个get返回的
+        注意get使用时只能智能指针不能无效
+        如果使用只能指针管理非new资源，要传递delete函数！！
+            可以lambda,方便
