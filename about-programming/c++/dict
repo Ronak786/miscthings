@@ -5,3 +5,61 @@ set multiset  in <set>
 unordered_map unordered_set  以及multi版本在 unordered_map  unordered_set
 
 unorder代表无序，multi代表；关键字可以重复
+
+map:
+    map<string, size_t> xxx;
+    xxx[string] = aaa;  每个值会有默认值，如果不存在，获取的时候就是默认值
+    for(xxx:xxxxx) 
+        获得的对象是一个pair对象，first保存key second保存value
+
+set:
+    set<xxx> = {xx,xx,xx,xx} 
+    set.find(xxx) == set.end()表示不存在 或者返回一个指向的迭代其
+
+关联容器i
+    支持普通容器的操作于295页，swap 赋值，初始化，iterator begin end等
+        map = { {xx,xx},{xx,xx}}
+        set = {xx,xx,xx,xx} (beg, end)
+        但是不支持insert，构造等函数,push_xxx
+        迭代其双向的
+        支持传递比较操作，和算法一样
+    关键字
+        必须支持<运算符 所以传入vector容器的iter做key可以，传入list的不可以，不支持《
+            但是可以利用函数初始化
+        如果双方都不满足，视为等于，而等于在关联容器里指向同一个位置元素
+
+        使用函数初始化
+        define func(xxx)
+        multiset<class_type, decltype(func) *>  name(func) / name(&func)
+            首先声明里是函数指针类型的声明，那里只放类型记住，后面指定用特定的函数指针赋值过去
+        
+    pair类型
+        in <utility>
+        pair<type, type> 创建两个类型 成员public直接访问first, second
+        pair<type ,tyep>p(v1,v2)  p{v1,v2}
+        make_pair(v1,v2) 自动推断类型，返回pair
+        p1 < > >= <= p2
+        p1 == p2 
+        p1!= p2
+
+        创建pair的方法
+            可以利用{}初始化作为返回，而返回类型定义为pair，新标准可以的
+            make_pair()
+            pair<xx,xx> aaa(xxx,xxx)
+        pair<string, int> func { return {string("xxx"), 20};}
+
+        类类型 类名类型
+            key_type mapped_type 两种类型
+            value_type 这个set和keytype一样 map是 pair<const keytype, mapped_type> 类型
+                所有只有map类型有mappedtype
+            对于迭代解引用的到的是引用
+                注意key是不能变的
+        set不能改变值是const
+
+        遍历：
+            iter迭代器使用，直接用就行了，注意map的对象是pair的指针，set的对象是对应对象的指针
+                说指针其实就是迭代其，不一定是指针的
+            默认是字典升序
+
+        方法：
+            一般自带的算法如find， inserter插入器也可以用的，不过字典不是默认可插入的吗？？
