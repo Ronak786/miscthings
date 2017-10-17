@@ -1,3 +1,6 @@
+注意：
+    设计的时候，对于需要共享的在某个类中额成员，使用new或者shareptr表示，这样
+    可以自动进行计算引用,即使本类被销毁，但是这个额外分配的指针还是可以被其他人正常引用，就要保证这一点
 new delete
     分配释放
 
@@ -66,3 +69,62 @@ new delete
         注意get使用时只能智能指针不能无效
         如果使用只能指针管理非new资源，要传递delete函数！！
             可以lambda,方便
+
+unique_ptr
+    初始化 unique_ptr<type> p1(new int(42)) 这样，只能这样
+    因为唯一所以不能拷贝
+    unique_ptr<int[]> up(new int[10]) 动态数组分配，释放只需要release
+    unique_ptr<T> u(p)
+    unique_ptr<T,D> u
+    unique_ptr<T,D> u(d) 设定d为D类型的系够使用
+        这里和share不一样，和关联容器重载hash，等于符号一样，需要在尖括号声明的
+    u.release()  取消控制，返回指针本身
+    u.reset() 释放指针
+    u.reset(q)
+    u.reset(nullptr)
+        eg. u.reset(u2.release())
+    例外
+        可以拷贝即将销毁的对象，如函数的返回值可以是unique_ptr,因为返回后原来的就销毁了
+
+weak_ptr
+    指向一个shareptr，但是不增加引用引用共用
+    weak_ptr<T> w(share_ptr)
+    w = p
+    w.reset()
+    w.use_count() 
+    w.expired() 对应的share是否已经释放
+    w.lock  如果释放了，返回空，不然返回share 
+        正确的访问方法
+
+动态数组
+    type * xx = new type[size()];
+    new type[]() 默认初始化0
+    new type[]{xxx,xx,xx} 初始化列表
+        throw bad_array_new_length in <new>
+        只能使用值初始化，不能迭代其，返回的仅仅是一个指针，你要自己管理删除所有空间
+        new int[0]也是可以的，的到的就是尾后迭代其--一个指针，不能deref
+    delete [] p 即使使用了类型别名分配，还是需要[]额释放
+
+    使用unique的时候里面的元素需要用下标直接访问指针，不能解引用进去，
+
+    shared_ptr<int> sp(new int[20], [](int *p) (delete [] p;));
+    shared_ptr不支持自动管理删除动态数组，所以要传入删除函数 
+        访问元素 *(sp.get() +i) = i 这样访问，因为不支持动态数组，获得的是一个指针
+
+allocator in <memory>
+    分离内存分配和对象初始化，等需要的时候再初始化
+    vector之类的应该更好，除非需要分离初始化和分配内存
+
+    allocator<T> a
+    a.allocate(n)  返回实际的指针
+    a.deallocate(p,n)  这个和malloc free一样用注意对象本省的desctory要先调用
+    a.destroy(p) 
+    a.construct(p, args) 在p指向的区域用args构造一个对象
+        这里分配的位置都是未构造的位置，所以要一个一个去construct以及destroy
+
+    批量copy fill
+        uninitialized_copy(b,e,b2) copy到b2迭代其的地方
+        uninitialized_copy_n(b,n,b2)
+        uninitialized_fill(b,e,t)
+        uninitialized_fill_n(b,n,t)
+            返回的是接下来的位置
