@@ -89,7 +89,7 @@ unique_ptr
 weak_ptr
     指向一个shareptr，但是不增加引用引用共用
     weak_ptr<T> w(share_ptr)
-    w = p
+    w = p (share or weak)
     w.reset()
     w.use_count() 
     w.expired() 对应的share是否已经释放
@@ -120,6 +120,7 @@ allocator in <memory>
     a.deallocate(p,n)  这个和malloc free一样用注意对象本省的desctory要先调用
     a.destroy(p) 
     a.construct(p, args) 在p指向的区域用args构造一个对象
+        construct(p, std::move(oldelem))  表示旧的元素的移动，使用std的版本对标准类型操作
         这里分配的位置都是未构造的位置，所以要一个一个去construct以及destroy
 
     批量copy fill
