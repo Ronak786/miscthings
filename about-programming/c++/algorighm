@@ -63,7 +63,7 @@
         可以忽略参数列表 以及returntype
             补货列表表示使用的上层函数中的局部变量,逗号分割
                 只需要局部变量，static以及非函数之外的变量可以直接使用，如cout
-    for_each(begin, end, 可调用对象，可以是lambda）
+    for_each(begin, end, 可调用对象，可以是lambda）;
         对每个对象进行这样的操作
 
         捕获：
