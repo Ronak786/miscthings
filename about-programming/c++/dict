@@ -133,7 +133,7 @@ set:
                     c.reserve(n)
                         保留的桶足够n个元素而不用hash
 
-                unordered_multiset<class, decltype(hashfunc)*, decltype(eqOp)*>
+                unordered_multiset<class, decltype(hashfunc)*, decltype(eqOp)*> xxx(aa,bb)
                     需要两个函数，一个返回size_t, 一个返回bool，
                     前者是hash值，可以利用对于内置类型的hash<string>()(xxx) 这里产生一个函数，然后
                         利用这个函数对string操作，返回hash值
