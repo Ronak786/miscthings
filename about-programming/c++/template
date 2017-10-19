@@ -1,0 +1,6 @@
+template <typename/class T, typename U> T clc(const T& const U&)
+非类型模板参数，必须是常量表达式, 指针必须静态生存其
+    template <unsigned N, unsigned M>
+            int compare(const char (&p)[N], const char (&q)[M]);
+    compare("hi", "mom") ==> compare(3,4);
+        
