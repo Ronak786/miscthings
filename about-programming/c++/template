@@ -1,6 +1,120 @@
 template <typename/class T, typename U> T clc(const T& const U&)
-非类型模板参数，必须是常量表达式, 指针必须静态生存其
+非类型模板参数，必须是常量表达式, 指针必须静态生存其 (共同点，必须是可见的）
     template <unsigned N, unsigned M>
             int compare(const char (&p)[N], const char (&q)[M]);
     compare("hi", "mom") ==> compare(3,4);
         
+inline constexpr 之类的在template <typename T> 之后
+    小于大于可以使用less<T>() 获得动态生成的函数
+
+模板的声明定义一般放在一起，放在开头
+
+编译
+    模板编译的时候只会检查本身，实例化的时候才会检查实例，
+        而且是用到部分实例化部分的，不一定会实例化整个模板的所有函数
+
+类模板
+    template <typename T> class xxx {}
+    作用域
+        在外部定义的时候，返回值需要xxx<T>, 但是到了类作用与内也就是定义的地方，只要XXX作为类名就行了
+    实例化xxx<int> 就表示一个真正的类了
+
+    类模板为参数的类模板
+        如 shared_ptr<vector<int>>
+    成员函数 注意这个是可以只声明不定义的
+        外部定义：
+            template <typename X> class<X> func(xx,xx) 返回值要用X定义一下的，因为属于作用域外
+            构造函数一样的
+        由于未使用的函数不会实例化,所以模板可以实例化某些只有部分模板功能的函数而不会错误
+
+    friend:
+        如果是模板并且实例化了，那么可以让模板和友元一一对应
+        同样也可以让友元对所有模板都可用
+        关于声明(听复杂的，就是如果对方是个模板，而且你要一一对应，就要实现声明，不然不要）
+            如果友元类或函数是实例化的，那么实现声明那个模板友元类或函数
+            如果一个模板的所有实例类或函数都是当前类的友元，不需要前置声明，只需要template<typename> firend class xx
+            对于模板类，友元如果是非模板的，也不需要前置声明
+        friend T;
+            这个放在类里面，可以用来对内置类型声明友元这样可以用内置类型实例化类
+
+    别名：
+        typedef classname<type> xxx; 
+            可以i这样定义一个具体类型的别名，但是不能对模板类型这样做
+        template <typename T> using twin = pair<T,T> 
+            可以这样定义模板的别名！！
+
+    static:
+        正常定义
+        每个具体类都会有一个static出现，可以用对象名，可以i用class<type>::func 调用
+
+参数
+    模板内不能重新定义模板参数的名字
+    但是可以隐藏模板外定义过的同名
+    类型与参数：
+        template <typename T>  typename T::value_type func(xxx)
+            这样写，valuetype就会被认为是类型，而不是某个static变量
+            不然T::xxx 默认指的是静态变量引用
+
+    默认参数
+        模板，函数，类都可以使用模板参数
+        template <typename T, typename F=less<T>>
+         int comp(const T&v1, const T&v2, F f = F())
+         当然只能靠右边默认参数
+            如果全部有默认实参，那么调用的时候xxx<> 这样空括号
+
+成员模板
+    不管类是不是模板成员都可以是模板函数
+        如果在外部定义，那么需要先类模板再成员模板的前缀都要完整写
+        注意不同类型的iterator sizetype之类的类型都是不一样的，此处可以模板
+
+实例化定义：
+    这个和普通的类模板实例化不一样，普通的就是定义一次产生一次
+    这个形式是
+        extern template class Blob<string> 声明
+        template class Blob<string> 定义 这个必须出现在某个文件中，而且表示全部成员函数都实例化
+            这样可以只出现一次定义，其他地方编译器不会定义
+        所以如果想分离，就得知道使用的具体类必须支持所有的成员函数功能
+
+举例：
+    sharedptr使用的应该是内部指针保存del函数，而不是模板，因为函数可以通过reset重新绑定
+    uniqueptr则是在《》里面传入的，应该是用的模板，这样效率更高，但是一旦设定。类型不能动态改变
+        
+
+参数转换
+    形参是模板的时候：
+        只有const转换，数组到指针，函数名到指针的转换会发生，其他的都会直接应用模板产生新的而不是转换实参去适应
+        注意如果是引用，使用T的类型必须一样，两个不一样长的数组的引用类型是不同的，传入的数字是int，如果另一边
+        传入long，也会不一样导致错误
+
+        非模板类型参数自动正常转换
+
+    显式模板参数
+        有些参数无法推断的出，只能制定，这时候要早模板里写明
+            template<typename T1, typename T2, typename T3> T1 sum(T1&, T3&);
+            调用：sum<long>(1,2) 这样就指明了T1是long，可以多个的，但是必须是
+            从左边开始的，剩下不指明表示可以从内部推理的到
+        所以在参数足够的情况下其实我们也可以手动指定，这样避免了默认推导
+    如果不知道具体的返回类型，
+        可以使用尾置返回类型template <typename T> auto fcn() -> decltype(*beg) 这里的beg是下面函数定义里的内容
+        注意decltype的到的指针解引用的到的是引用类型
+        如果想使用原类型
+            <type_traits> 里面的remove_reference<int&> 会返回int类型，
+            这个库用于元编程的
+            auto fcn() -> typename remove_reference<decltype*>::type 声明返回类型
+                typename用于告知这里是个类型，不是成员变量
+
+    <type_traits>
+        add_const<X&>::type 的到X类型标识，可用于声明
+
+    函数指针的模板实参：
+        template <typename T> int compare(const T&, const T&);
+        int (*pf)(const int &, const int&) = compare 就可以实例化并赋予指针了
+            当然需要满足唯一性，如果有个函数重载了两种接受都可以从模板实例化来的不同类型的函数参数，
+            那么就实例不出来了
+
+    实参引用类型
+        如果是模板类型的引用，&这个表示你传进去的必须是左值，这样就不能传递常量了
+        如果是const T&, 那么可以传
+        &&表示应该传右值
+            如果一个函数参数是右值，我们可以传左值的这个情况下，左值被当作引用类型，然后多个引用
+            特殊规则间接的产生引用的引用会折叠成单个引用，结果这个函数变成了返回和参数都是单左值引用的实例化了

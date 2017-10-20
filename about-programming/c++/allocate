@@ -77,6 +77,7 @@ unique_ptr
     unique_ptr<T> u(p)
     unique_ptr<T,D> u
     unique_ptr<T,D> u(d) 设定d为D类型的系够使用
+        这个如果用于类重载的函数调用符号，则D是类类型，d是classname（）这个样子的
         这里和share不一样，和关联容器重载hash，等于符号一样，需要在尖括号声明的
     u.release()  取消控制，返回指针本身
     u.reset() 释放指针
