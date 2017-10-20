@@ -127,6 +127,7 @@ inline constexpr 之类的在template <typename T> 之后
                 这个就是利用remove_reference 可以接受左值，可以接受右值，最后返回的一定是右值，接受左右的时候
                     根据情况和引用折叠会具体化成相应的函数
     参数转发： 重要！！
+        forward<Type>:: 保持类型
         模板内部调用了函数
             当在模板的函数中使用右值引用的时候，传过来的参数的左右值属性，const属性都会保持 ！！
             但是再传给内部函数的时候，还是会变成指向左值的右值引用，折叠成左值，
@@ -145,3 +146,31 @@ inline constexpr 之类的在template <typename T> 之后
 可变参数包
     typename .... args 定义了args 参数类
     func(xxx, args ... aa) 定义了aa参数包
+    sizeof... (args) 类型参数的数目
+    sizeof... (aa)  函数参数的数目
+
+    typename... Args 放在类型名后面表示扩展
+    Args... rest 这个表示rest里面是打包的各种类型以及变量的声明
+    rest... 这个放在函数声明里表示列表的扩展, ...表示的是扩张列表，这样匹配到的就是带有Args... 的函数
+        扩展的时候会把类型的模式（比如有没有引用const）加到每个扩展的类型上
+        其中咋i其他函数调用rest的地方， func(xxx,rest...) 传入可变参数的地方，可以f(rest)...这样写
+            这样对于扩展的每个参数都会调用函数f
+
+    转发可变参数：
+        首先函数声明 template <typename... Args> void func(Args&& ...args){}
+        然后内部 func2(std::forward<Args>(args)...) 这样子内部函数就可以接受扩展出来的多个参数了，
+            如果它也是接受可变数量参数的话
+
+模板特例化
+    定义完一个模板后，如果想要定一个一个特别版本，让它取代元版本中的某一种参数u匹配情况，
+    可以在定义玩元版本后
+    template<>
+        int func(xxx,xxx) 定义一个特殊版本，
+        但是参数必须完全符合，特别的，原来是const T&， 如果要特殊化 const char *,
+            就要 const char * const &p2 这样，后面的const代表的是const T的const，前面的是
+            T == const char * 
+        特例化版本对于函数匹配搜索没影响，不参与，匹配完成了才会选择他，
+        如果是定义了一个普通函数，则会参与挑选
+
+    规范：
+        模板和特例要放在一起，不然找不到也不会报错，但是调用又不对，容易出问题
