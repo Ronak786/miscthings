@@ -174,3 +174,18 @@ inline constexpr 之类的在template <typename T> 之后
 
     规范：
         模板和特例要放在一起，不然找不到也不会报错，但是调用又不对，容易出问题
+
+类模板特例化
+    所有特例话要和元模板在同一个名字空间，所以如果要特例话标准类，需要打开标准空间
+    向标准空间添加函数
+    namespace std { } 无分号
+
+    在里面 template<>  struct name<you special type> { }
+        然后定义result_type, argument_type  用typedef
+        然后是重载的运算符等函数
+
+    部分特例化：只能类
+        这个是在类名后面加上<xxx> 把特定的实参类型加上
+
+    特例话一个成员函数
+        template<> void classname<type>::function() {} 然后特例话

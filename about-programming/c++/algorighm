@@ -1,5 +1,6 @@
 泛型算法 算法不会自己去利用容器的元素
 只读
+    equal_range(begin, end, match_name, your_function)  -> pair(match_begin, match_end)
     find(begin,end, val)  
         sucess return iter
         fail return end

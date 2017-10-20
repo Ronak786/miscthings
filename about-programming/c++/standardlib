@@ -1,0 +1,26 @@
+tuple 
+    tuple<t1,t2,t3> name
+    tuple<t1,t2,t3> name(n1,n2,n3) 初始化 必须直接初始化，是explicit类型的
+    make_tuple(v1,v2,v3)
+    t1 == t2  !=
+    t1 < t2 t1 > t2 用字典顺序比较
+    get<i>(t) 获取第i个数据的引用 (模板函数） 返回的是引用
+    tuple_size<tupletype>::value  tuple内容数量
+    tuple_element<i,tupletype>::type 第i个元素的类型
+        tupletype 可以decltype(tuplename)获得
+
+    关系运算符要求成员之间要合法,包括数量要相同 !!
+
+bitset  in<bitset>
+    bitset<n>
+    bitset<n> b(u)  最多初始化ull大小的位数，64位，太多的会截断置0
+    bitset<n> b(string, pos, count, '0','1') count 默认npos 也就是最大的可表示数，实际是-1
+    bitset<n> b(char_array, pos, count, '0','1')
+        后两个的意思是string("1100") 第一个是最高位记住，符合人类感觉，one zero是没有的只有前3项
+
+    操作
+        any all none count size(位数）
+        os << b
+        is >> b 
+        可以输入输出，可以set unset flip  to_ulong to_string等，具体见书p643
+            to_ullong to_ulong如果过大放不进去会出错overflow_error
