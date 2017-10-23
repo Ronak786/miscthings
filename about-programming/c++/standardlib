@@ -24,3 +24,129 @@ bitset  in<bitset>
         is >> b 
         可以输入输出，可以set unset flip  to_ulong to_string等，具体见书p643
             to_ullong to_ulong如果过大放不进去会出错overflow_error
+
+regex:
+    特殊字符 ( ) + * . 注意\在c++里特殊， \{d} 表示数字 {n} 表示次数 [] ?
+    include regex 
+    using namespace std
+
+    regex r("string"); 注意跳脱\
+    smatch(对应string的结果）
+    regex_match(string, smatch, r,flag(regex::icase))  这个必须匹配整个文本， 不然失败，
+        失败返回的就是false，作为if的判断
+    regex_search
+
+    smatch, ssub_match对象属性
+        size() 子表达式数量，算上总的
+        empty()
+        ready() 是否已经调用match和search在这个上面用过了
+        prefix()
+        postfix() 这两个是ssub_match 类型的前后缀
+    smatch独有
+        m.length(n) 第n个匹配的长度
+        m.position(n)
+        m.str(n)
+        m[n] 第n个对象
+        m.begin() m.end() 
+        m.cbegin() m.cend() 获得其冲submatch的迭代器,注意使用i->str()获取string
+    ssubmatch独有
+        matched 这个匹配组是否匹配
+        first second 迭代其首尾
+        length() 大小
+        str() 字符串
+        s = ssub 把这个对象赋值给string类型
+    regex_replace(string, regex, format[, flag]) return formatted string
+    regex_replace(back_inserter(dest), seq.begin(), seq.end(), regex, format[, flag])  return into dest iterator
+
+    sregex_iterator it(str.begin(), str.end(), r); it != sregex_iterator end; it++);
+
+    flag:
+        using namespace std:;regex_constants;
+        format_no_copy 不输出为匹配内容部分
+        format_first_only 只替换第一次出现
+
+        默认replace会修改并输出整个输入，可以用nocopy控制输出相关部分
+
+随机数：
+    随机数引擎
+    随机数分布，利用引擎
+
+    default_random_engine e, e() 返回随机数
+        编译器会决定使用哪个stl标准的随机数引擎
+            engine e;
+            engine e(s) 使用整形构造
+            e.seed(s) 重置
+            e.min
+            e.max
+            Engine::result_type 结果类型
+            e.discard(u) 推进u步
+    有了引擎，还要有具体的分布，也就是你想在哪个范围产生数
+
+    随机整数
+        uniform_int_distribution<unsigned> u(0,9);
+        default_random_engine e;
+        u(e) 的到随机数
+    随机实数：
+        uniform_real_distribution<double> u(0,1); 可以<>表示默认参数
+        u(e)
+        u.min
+        u.max
+        u.reset() 重置状态，这样生成的不依赖于上次生成的了
+    正太分布
+        normal_distribution<> n(均值，标准差）
+        <cmath> lround 舍入到最接近整数
+    bernoulli_distribution b(0.45) 这个表示返回ｔｒｕｅ的概率，默认一半一半
+        返回ｂｏｏｌ，因为是二想分布
+
+    注意：
+        给定的生成器生成的数总是一样的
+        所以需要种子设定
+        in <ctime>  time(0) 返回的是秒级别的不同的数字
+
+io 格式
+    控制格式和ｅｎｄｌ一样都是有专门意思的，而且改变后永远生效除非取消
+    << boolalpha   output  "true" false  instead of 0 1
+        << noboolalpha  cancle
+    << hex <<oct << dec <<setbase(n)  进制转换 只对整数游泳
+        << showbase   show  0x  0  for hex and oct
+        << uppercase   output  0X 
+    精度
+        cout.precision() 返回当前精度
+        cout.precision(12) 设置精度为１２位数字
+        << setprecision(3) 设置３为精度，另一种方法
+        << showpoint 不包含小数部分的时候也显示小数点
+        << showpos 正数显示＋
+        setw(12) 指定紧接着的下一个输出的宽度
+        setfill() 设定代替默认空白
+        left right internal 填充左右还是符号和数字中间
+        fixed scientific 默认浮点显示方法，默认是择优 使用这个和下面第一个后，精度指的是小数点后的位数
+        hexfloat defaultfloat  浮点的格式
+
+        unitbuf 每次输出都刷新
+        
+    cin>> noskipws 不跳过空白
+
+    为格式化ｉｏ
+        is.get(ch)
+        is.get() -> int
+        os.put(ch)
+        is.putback(ch) 必须是最后那个值
+        is.unget() putback what ever last got
+        is.peek() get but not delet
+            只保证连续的一次可以
+        EOF: in <cstdio>
+
+        is.get(char*, size, delim(字符)) 读到ｓｉｚｅ－１个后或者遇到停止字符就结束，停止符号不读出来
+        is.getline停止会读出来丢弃
+        is.read(char *, size)
+        is.gcount() 上次未格式化ｉｏ的数量，如果调用过ｕｎｇｅｔ，ｐｅｅｋ　putback，会=0
+        os.write(source, size)
+        is.ignore(size, delim) 读取包括ｄｅｌｉｍ在内的ｓｉｚｅ个并取消
+
+    随机访问
+        io 不支持 文件，string可以
+        tellg() tellp       g输入 p输出
+        seekg(pos) seekp     记住在读写流里标记是同一个，读了，写了都要切换
+        seekg(beg/cur/end, from)
+        seekp(beg/cur/end, from)
+            pos: pos_type   off: off_type
