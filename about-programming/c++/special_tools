@@ -1,0 +1,35 @@
+new delete 重载
+    自己控制内存，如果new的对象是类，首先查找类和基类，然后是全局空间，然后才是标准空间
+    ::new ::delete 跳过类空间
+
+    void * operator new (size_t)
+    void * operator new[] (size_t)
+    void   operator delete (void*) noexcept
+    void   operator delete[] (void*) noexcept
+        size_t 是字节数
+        这个不是重载，而是重新定义分配内存的过程，但是构造修改的过程是不能动的
+
+    还有4个nothrow版本，第二个参数是new::nothrow 传进去就行了 
+    前提自定义的版本必须在类或者全局空间
+
+    cstdlib:
+        malloc free  可以使用来实现自己的new， 然后throw bad_alloc
+
+    定位new
+        new (addr)  type{initialize} 使用这个可以在甚至非动态内存上构造对象
+            在指定的addr上构造对象，并不分配内存，需要在调用前分配好
+        调用析构函数，会销毁对象，但是不会回收空间，因为不是delete
+
+rtti
+    运行时类型识别
+    typeid
+    dynamic_cast
+        必须是public 基类与派生类之间的双向或者自我转换才行，
+            如果失败，指针转换为0,引用抛出bad_cast in <typeinfo>
+
+    typeid:
+        返回类型，一般用于比较
+            typeid(*bp) == typeid(Classname)  
+            记住比较的是对象，如果用于指针，返回的是静态编译类型
+            只有类型有虚函数，才会去求值找动态类型，不然直接找静态类型
+                所以如果是非动态类型，完全可以放一个非法指针
