@@ -131,7 +131,6 @@
                     n, char
                     begin, end
                     {xxxxxx.,xx,x,,xx,,}
-
             注：
                 assign, append 无须制定替换的地方
 
