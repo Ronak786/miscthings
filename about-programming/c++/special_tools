@@ -28,8 +28,107 @@ rtti
             如果失败，指针转换为0,引用抛出bad_cast in <typeinfo>
 
     typeid:
-        返回类型，一般用于比较
+        返回类型，一般用于比较 返回type_info(in <typeinfo>对象
             typeid(*bp) == typeid(Classname)  
             记住比较的是对象，如果用于指针，返回的是静态编译类型
             只有类型有虚函数，才会去求值找动态类型，不然直接找静态类型
                 所以如果是非动态类型，完全可以放一个非法指针
+            空指针解引用typeid --> bad_typeid
+
+        关于equal的设计：
+            首先要使用虚函数，因为真正比较的时候需要比较基类以及派生类的所有成员，
+                所以应该先比较typeid，一样之后，利用动态绑定（所以必须传引用进来，参数比较对象也要引用），
+                调用派生的equal函数，然后执行dynamic cast再进行所有成员的比较
+        type_info
+            这个对象用于比较
+            t1 == t2 t1 != t2 t1.before(t2)  t.name()
+            只能通过typeid 创建
+
+枚举
+    和类一样，每个枚举都是一个独立的类型
+    限定作用域：
+        enum class/struct name {xx,xx,xx};
+    不限定作用域
+        enum name {xx,xx,xx};
+        enum {xx=1,xx=2}; 未命名，这个要设置好，因为没名字后面不能设置
+            name var = xx; 这样使用，
+            name var1 = name::xx; 这个用于限定作用与的，这个好处是可以定义多套同名的
+                不限定的话就是和定义位置同作用与
+        默认值从0开始
+        必须是常量表达式，可以用于switch, 可以搭配constexpr 声明变量
+
+    定义变量：
+        的时候要使用成员，不能是直接数字
+
+    转换 提升
+        不限定作用与的可以自动转换为整形的，限定的不行
+
+    默认类型
+        enum name : type {};可以设定
+        默认限定的是int， 不限定的编译器自定
+    前置声明
+        不限定作用域必须制定类型如果声明的话enum name : type;, 限定的可以不用
+
+成员指针 ->*  .*
+    一开始声明的时候指向的是类的成员，然后利用具体的对象解引用
+        const string classname::*ptr; ?? 为啥string
+        或者直接auto pdata = &classname::field; 绑定到某个成员上
+        然后具体的obj：
+            objname.*pdata
+            objptr->*pdata 就可以访问到绑定到类上的对应成员了
+            函数 (objptr->*pdata)(xxxx,xx)
+
+    权限
+        使用必须位于友元或者成员内private
+
+    函数返回成员指针
+        static const std::string classname::*data() {return &classname::contents;}
+    作为形参：
+        正常使用，同样可以默认参数
+    
+    使用：
+        可以定义一个函数指针成员的数组，利用下标或者枚举值（非限定的，放在类里面，就是i类的作用域，可以
+            转换int）
+    绑定：
+        绑定的时候如果有重载函数，需要制定形参列表，注意class:: 这个要跟在每个参数上
+
+    mem_fn <functional>
+        可以对一个成员函数指针生成一个可调用对象  --||| 太高级，以后看
+
+嵌套类：
+    outerclass::innterclass::func(xx,xx,xx,xx) 定义
+        类本省是相互独立的，对于外界，相当与一个成员，权限看类声明的地方
+        外层可以使用内层类的类名字，内曾类是个成员，所以可以自由使用外层类的东西，成员间相互使用
+
+union
+    union name {};
+        初始化赋值默认是给地一个成员赋值
+        匿名union可以在当前作用域直接使用内部值，当然注意一次之哟一个值游泳
+
+局部类
+    函数内部的类 。。。。。 以后看
+
+固有特性：
+    位域
+        class File {
+            unsigned int a:2;
+            unsigned int b:2;
+        }; 这个就是说每个成员是2bit，C的特性，不能& 可以有成员函数
+    volatile
+        和const一样的赋值规则，可以一起使用，不冲突
+        需要自定义合成靠陪移动赋值运算符和构造函数
+
+    extern声明
+        extern "C" func...
+        extern "C" {
+            func
+            func 声明
+        }
+        如果要给cpp传入c函数指针，要typedef 
+            extern "C" typedef funcxxx
+            void f2(funcxxx*);
+
+        c++编译时候的宏
+            __cplusplus 这个对c c++编译同一个文件的时候最有用
+
+        重载可以是某个C其他C++
