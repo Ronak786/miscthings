@@ -98,3 +98,56 @@
     解决方法是先利用copy构造复制一份，或者直接passby value而不是引用 然后：
         1 swap， 返回，临时变量会自己销毁
         2 手动new 赋值完毕后再delete 旧的 ， 推荐1
+
+12 copy的时候
+    记住要复制每个元素，新加元素的时候要注意，使用基类的时候，记住可以在初始化列表
+        手动调用基类的复制构造函数
+
+13 资源管理
+    把资源管理的放到对象里面，delete放在析构函数里面，然后利用share_ptr uniq_ptr来管理
+    是比较妥当的，而不是让客户调用这手动delete
+    share可以传入delete函数的
+        对于需要实现创建，后面赋值，但是析构函数早就定下来的，可以初始化nullptr
+    可以在复制的时候管理引用数量，可以自己定制delete的动作
+        不过对于动态数组，不能使用默认的shareptr的析构函数
+        有了这个传入的delete，建造的类可能不需要delete函数了，就让他利用默认的就行了
+
+15隐式转换
+    operator type() {} 这样的成员函数返回type类型，但是赋值的时候容易出问题，比如建错对象竟然能正常赋值，
+        所以显式的使用。get之类的比较好
+
+16 new delete new[] delete []
+    形式不要弄混，特别是使用typedef的时候
+
+17 func(share_ptr<type>(new xxx), call())
+    这种可能造成泄漏，因为内部new和外部构造，以及call三者顺序不一定，如果先new，在call，然后异常了，那么就没有
+        构造了，就泄漏了，所以最好在外部new完了变成shareptr之后传入，
+            或者可以make_shared<>(xx,xx,xx) 这样构造
+
+18 让接口易用，不被误用
+    如果传入的多个参数容易误用，错值或者位置颠倒，一个办法是给每个参数包装一个类型
+        内部做检查，而且类型本身也可以防止错位，
+
+        还可以利用某些静态成员函数来返回类型的对象，这样就限制了类型类型可以返回的值
+    接口的一致性
+        和类似的对象的用法一致，让客户少记住东西
+
+19 考虑你设计的type/class
+    如何创建和销毁（operator new operator new[] ...)
+    初始化和赋值的差别
+        后者涉及销毁以前的对象
+    const 和非const版本的共用
+    pass value or pass ref
+    约束合法值以及i异常的处理
+    继承与被继承的处理 virtual。。
+    类型转换的允许与否
+        operator type() ,  explicit声明
+    应该使用的member以及重载的操作符，应该拒绝的操作=delete or private 并且不定义
+    权限控制private public friend
+    定义新type 还是新模板更合适？ 如果想要的其实是一个族的类
+    定义新的type或者仅仅需要一些新功能，定义几个nonmember函数即可？
+
+20 pass by const ref instead of value
+    ref 保证不会产生对象切割如果传给base class
+    const保证不会被修改
+    对于pass value的不昂贵可行的只有内置类型以及stl的迭代其和函数对象
