@@ -341,3 +341,10 @@
         template实参推导的过程中不会隐式转换，一个办法就是将函数声明为friend函数，这样只要地一个参数确定了
             就可以根据friend的特性知道具体的类，第二个类型就确定了。
             但是链接失败，还必须把定义写在类里面
+
+47 编译时获取类型 std::iterator_traits<type>::iterator_category()  == typeid(std::random_access_iterator_tag)
+    有几种iterator，输入输出，forward bidirection randomaccess ，
+   traits 类函数有特殊作用，后面看。
+
+   函数的重载可以作为编译时期的if else分支作用
+
