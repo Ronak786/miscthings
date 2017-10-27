@@ -86,6 +86,13 @@
                 using std::placehoders  里面有_1 _2 这些是bind之后的函数传入的参数
                 放入原函数的位置
             注意也是绑定的时候就传值了
+            如果是类函数，或者类成员，第一个参数是那个成员的地址引用（&classname::field),
+                后面是具体的对象，然后才是内部的参数
+
+            三种：
+                1 外部函数 bind(func, param1, param2)
+                2 重载函数符号的类 bind(classname(), param1, param2)
+                3 member func: bind(&classname::func, objname, param1, parma2)
 
         值 引用
             bind默认都是传值的，如果要传引用，首先内部函数要接受引用，
