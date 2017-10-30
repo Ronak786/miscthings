@@ -104,3 +104,27 @@
         这个要明确，不要到需要理解匹配顺序的地步
         可以的话可以细化函数的名字来写新函数
         记住subclass的同名可能覆盖baseclass的函数
+
+19 默认参数，这个可以代替重载函数
+    但是由于是静态绑定的，所以不要在virtual函数上使用默认参数，或者函数指针的函数
+    如果有疑问，使用重载
+
+20 尾置返回值
+    func(xxx) -> decltype(a+b);
+    lambda中或者非常复杂的返回值的时候使用
+
+21 unique_ptr shared_ptr
+    管理分配的内存使用这些比较好，一般用uniqueptr，有需要再sharedptr
+        保持拥有者的心里有数，还要防止循环引用的情况
+
+22 cpplint
+    https://raw.githubusercontent.com/google/styleguide/gh-pages/cpplint/cpplint.py
+    这个用于查看cpp文件的一些检查
+
+23 rvalue 右值引用
+    只应该用在move构造，赋值函数上，或者是完美转发（右值加上std::forward函数）
+
+24 friend
+    只应该用在一个函数/类需要操作构造一个类的的情况,用来突破private，其他情况应该都是给出函数public接口使用
+
+25 google代码不用except
