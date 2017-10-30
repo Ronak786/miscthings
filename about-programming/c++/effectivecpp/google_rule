@@ -128,3 +128,42 @@
     只应该用在一个函数/类需要操作构造一个类的的情况,用来突破private，其他情况应该都是给出函数public接口使用
 
 25 google代码不用except
+26 不要使用rtti 运行时类型转换，这个代表你的设计问题，
+    如typeid  dynamic_cast, 特别是在switch里面
+
+    一般都可以用virutal函数解决
+
+27 cast:
+    int64{1} 这种转换算术
+    static_case<xxx> 这种
+    const_case<>
+    reinterpret_case<>
+
+    不要用int(a)
+
+28 stream
+    只用于调试测试和少量的输出，因为这个耗资源
+    重载只有当type具体就代表某个值的时候，一般可以写个output函数调用即可
+
+29 使用 ++i --i  而不是i++ i-- 这个更耗时特别是对iterator
+
+30 const mutable
+    尽量使用const 对成员， 函数，
+    mutable在多线程要注意竞争
+    const type xxxx, 这种更加通顺而不是 type const xxx;
+    constexpr 对于保证const的项目可以用，一般不用也可以
+
+31 int
+    stdint。h 里的int64_t 之类的在你需要明确长度的时候用，
+    一般用signed的版本，不要随便用unsigned版本，不然判断不了非负，
+    一般循环用int即可，一般是32位的
+
+32 关于打印
+    在intypes里有，打印不同长度使用的标志符号，用那个而不是ll ld之类的
+       intptr_t 这个是可以容纳void*的长度的int/uint类型
+       %p 是指针
+       %PRIdS PRIxS 表示size_t and ptrdiff_t
+        一般数字使用 LL 表示这个是int64_t
+
+33 macro
+    尽量不要用，有const inline 可以用，要用也不要放在头文件里或者类构造里或者##用来粘连
