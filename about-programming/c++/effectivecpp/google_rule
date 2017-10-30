@@ -167,3 +167,10 @@
 
 33 macro
     尽量不要用，有const inline 可以用，要用也不要放在头文件里或者类构造里或者##用来粘连
+
+34 nullptr for pointer
+    0 for int
+    0.0 for double
+    '\0' for char
+35 sizeof(varname) 而不是siseof(type) 
+    因为var可能后期会改类型
