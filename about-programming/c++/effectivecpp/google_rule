@@ -1,0 +1,106 @@
+1 headers self contained
+    同时每个cc文件应该都配一个h文件
+    内敛，模板的定义放在头文件里，包含在每个cc文件中
+
+2 every header have a macro define PATH_TO_FILE_H_
+
+3 前向声明尽量放在头文件里然后include，这样和放在cc文件里不一样，会强制编译器打开文件找到声明，不然
+    可能会调错函数
+
+4 inline used for less than 10 lines func
+    注意构造系够有内部代码，其实很大的，不要内敛
+    virtual 递归，有函数指针的那些函数不会被允许内敛，因为需要地址
+
+5 头文件的包含
+    首先是当前cc的关联同名头文件或者目的关联头文件
+
+    然后是c
+    然后c++ 系统头文件
+
+    然后其他project的头文件
+    然后你自己project的其他头文件
+
+    最后是放条件编译的内容
+
+6 namespace
+    不要使用inline namespace xxx ， 这个不用
+    不要使用using namespace xxx;
+
+    在h文件中，在namespace中声明，在cc文件中，在namespace中定义
+        include语句放在namespace外部使用
+        对std内的不要声明
+        using ::xx::xx; 对于gobal外的其他空间的变量，有时候需要的话可以在嵌套的namesapce内部使用
+        不要随意使用namespace别名
+        写的时候不需要为了namespace额外空一个tab
+        记住最后没有分号
+        注释放在后括号的后面 // xxx
+
+    匿名namespace
+        这个和static一样，用于保持内部声明的东西不能被其他文件访问，注意不要用于头文件
+        namespace {}
+7 非成员函数static函数
+    对于没有特定class相关的static函数，尽量放在一个内部的namespace里面，这样保证外部文件访问不到，
+    非成员函数也是这样，一般放在namespace，不要引用全局成员
+
+8尽量在使用的地方定义变量
+    可以在循环头里定义，
+    注意对象的构造系够问题每次循环都会调用
+
+9静态和全局变量不允许类类型包括string vector
+    struct只允许内部只有old plain data的类型，就是普通的int float 。。。
+    因为类的构造的顺序是未定义的，所以多个静态的构造会乱套，所以不要用
+    如果要传，在main里面弄个指针（普通指针）然后处理
+        exit return的时候会顺序调用系够，这个可以跳过，使用quick_exit(),
+            然后注册你自己的函数at_quick_exit()
+
+10 不要在构造系够里调用virtual
+11 explicit
+    对于单个非本身参数的构造，需要使用，防止误解
+    不要使用类型转换如operator bool()(arg..){} 这种
+    列表初始化的不要用explicit,，copy构造u不要用explicit，不然功能不全
+
+12 copy move
+    要定义就要定义构造加赋值两个函数，
+    根据实际意义决定是要copy还是move， 不要的那个要显式执行=delete，不然会默认添加的
+    对于需要被派生的基类，定义protected的构造或者使用clone等其他名字，不要公开他自己的copy接口
+
+13 默认使用class，有需要采用struct   
+
+14 继承
+    尽量使用复合，组合而不是继承，只有完全确认B是A的一种，才可以继承，
+    使用public继承，否则直接复合在内部即可
+    使用override final来标记继承，可以让编译器检查错误
+    如果要使用多太，注意系够要virtual
+
+    多重继承，
+        一般不要用，需要的话，只能地一个有定义实现，其他都要是纯虚函数,类名需要Interface后缀表示
+
+15 接口
+    函数纯虚，可以有static函数以及成员，也可以有非static变量，不需要定义构造
+        但是系够需要定义virtual，并且最好实现一下
+        注意系够要noexcept
+
+16 重载
+    操作符号的重载必要的时候进行，需要的时候也要用，比如equal 应该是==，
+    不要定义人为的没有意义的操作副重载，不要&& || ， & “”  
+    如果定义了一个就要一组> <
+    二元的要定义成非成员函数
+    只在自己的类型上定义
+    不要给模板定义重载符号，因为不能涉及所有类型
+
+17 类内的声明顺序
+    public protected private顺序
+        每个里面 typedef(using teypdef ,nested strut class), constants, factory func, ctor, assignment operator,
+            dtor, other methods, data members
+    定义的话一般放在外面
+
+18函数参数，先输入，后输出的顺序摆放
+    函数要尽量写的小，不要超过40行
+
+    输入使用const引用，输出使用指针，这样的google规定记住
+        特殊情况也可以输入指针
+
+    重载函数
+        这个要明确，不要到需要理解匹配顺序的地步
+        可以的话可以细化函数的名字来写新函数
+        记住subclass的同名可能覆盖baseclass的函数
