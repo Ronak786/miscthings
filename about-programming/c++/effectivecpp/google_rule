@@ -174,3 +174,12 @@
     '\0' for char
 35 sizeof(varname) 而不是siseof(type) 
     因为var可能后期会改类型
+
+36 auto
+    在不影响可读性的情况下，也就是iterator里面或者上下文附近有明确定义的地方，
+        或者可以省略大量重复名字的地方，都可以用auto
+
+37 初始化列表
+    type var{1,2,3,4} 这种
+    记住explicit的函数不能接受复制构造，必须直接初始化就是没有等号 
+    {xxx} 可以当作initializerlist直接放在可以放initializer_list变量的地方比如循环
