@@ -2,13 +2,15 @@
 #define WHETHER_H_
 
 #include <iostream>
+#include <list>
 #include <string>
 
 namespace webdata {
+class Observer;
 class Subject {
     public:
-        virtual void RegisterObserver() = 0;
-        virtual void RemoveObserver() = 0;
+        virtual void RegisterObserver(Observer*) = 0;
+        virtual void RemoveObserver(Observer*) = 0;
         virtual void NotifyObserver() = 0;
 };
 
@@ -17,7 +19,7 @@ class WebData : public Subject{
         double one_;
         double two_;
         double three_;
-        list<Observer*> oblist_;
+        std::list<Observer*> oblist_;
     public:
         WebData(double a, double b, double c);
         void SetData(double a, double b, double c) {
@@ -25,8 +27,8 @@ class WebData : public Subject{
             two_ = b;
             three_ = c;
         }
-        void RegisterObserver(const Observer* obptr); 
-        void RemoveObserver(const Observer* obptr); 
+        void RegisterObserver(Observer* obptr); 
+        void RemoveObserver(Observer* obptr); 
         void NotifyObserver(); 
 };
 
@@ -41,21 +43,23 @@ class Observer {
 
 class CurrentConditionDisplay : public Observer {
     public:
-        void update();
-        void display();
+        void update() { std::cout << "in Current update" << std::endl; }
+        void display() { std::cout << "in curr display" << std::endl; }
 };
 
 class StatisticsDisplay : public Observer {
     public:
-        void update();
-        void display();
+        void update() { std::cout << "in Statistics update" << std::endl; }
+        void display() { std::cout << "in stat display" << std::endl; }
 };
 
 class ForecastDisplay : public Observer {
     public:
-        void update();
-        void display();
+        void update() { std::cout << "in Forecase update" << std::endl; }
+        void display() { std::cout << "in fore display" << std::endl; }
 };
 
 class ThirdPartyDisplay : public Observer {};
 } //namespace webdata
+
+#endif
