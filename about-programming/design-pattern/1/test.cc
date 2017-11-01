@@ -1,4 +1,12 @@
 #include <iostream>
+#include <list>
+
+template<typename T>
+void ploop(T t) {
+    for (auto i : t) {
+        std::cout << i << std::endl;
+    }
+}
 
 class A {
     protected:
@@ -16,7 +24,8 @@ class B : public A {
 };
 
 int main() {
-    B b(20);
-    b.test();
+    std::list<int> li{1,2,3,4,5};
+    li.remove(8);
+    ploop<std::list<int>>(li);
     return 0;
 }
