@@ -15,11 +15,6 @@ class Subject {
 };
 
 class WebData : public Subject{
-    private:
-        double one_;
-        double two_;
-        double three_;
-        std::list<Observer*> oblist_;
     public:
         WebData(double a, double b, double c);
         void SetData(double a, double b, double c) {
@@ -30,15 +25,20 @@ class WebData : public Subject{
         void RegisterObserver(Observer* obptr); 
         void RemoveObserver(Observer* obptr); 
         void NotifyObserver(); 
+    private:
+        double one_;
+        double two_;
+        double three_;
+        std::list<Observer*> oblist_;
 };
 
 class Observer {
-    private:
-        Subject *subptr_ = nullptr;
     public:
         void Subscribe(Subject *subptr);
         virtual void update() = 0;
         virtual void display() = 0;
+    private:
+        Subject *subptr_ = nullptr;
 };
 
 class CurrentConditionDisplay : public Observer {

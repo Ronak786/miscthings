@@ -33,5 +33,7 @@ int main() {
     stat.Subscribe(&web);
     fore.Subscribe(&web);
     web.NotifyObserver();
+    web.RemoveObserver(&stat);
+    web.NotifyObserver();
     return 0;
 }
