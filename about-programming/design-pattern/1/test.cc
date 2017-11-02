@@ -9,10 +9,13 @@ void ploop(T t) {
 }
 
 class A {
+    private:
+        int pp = 0;
     protected:
         int a;
     public:
         A(int tmp) : a(tmp) {}
+        void set(int qq) { pp = qq; }
 };
 
 class B : public A {
@@ -24,8 +27,7 @@ class B : public A {
 };
 
 int main() {
-    std::list<int> li{1,2,3,4,5};
-    li.remove(8);
-    ploop<std::list<int>>(li);
+    B b(30);
+    b.set(20);
     return 0;
 }
