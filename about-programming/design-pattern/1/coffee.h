@@ -14,7 +14,9 @@ class Beverage {
         virtual std::string GetDescription() = 0;  //virtual
         virtual double Cost();
         double GetSize() { return size_; }
-        virtual void SetSize(double sz) { size_ = sz; }
+        virtual void SetSize(double sz) { 
+            size_ = sz;
+        }
 };
 
 class HouseBlend : public Beverage {
@@ -64,6 +66,17 @@ class Moncha : public CondimentDecorator {
         std::string GetDescription() { return "moncha"; }
 };
 
+class Cup : public CondimentDecorator {
+    private:
+        Beverage *bptr_;
+    public:
+        Cup(Beverage *base) { bptr_ = base; }
+        void SetSize(double size) {
+            bptr_->SetSize(size);
+        }
+        std::string GetDescription() { return "Cup"; }
+        double Cost() { return bptr_->GetSize() + bptr_->Cost(); }
+};
 }  //namespace drink
 
 #endif
