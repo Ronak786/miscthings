@@ -10,12 +10,12 @@ class hello {
         }
 };
 
+void hi(std::unique_ptr<int> ui) {
+    std::cout << "ui is " << *ui << std::endl;
+}
+
 int main() {
-    hello h;
-    std::thread t(&hello::h1, h, 20);
-    std::cout << t.joinable() << std::endl;
-    t.join();
-    std::cout << t.joinable() << std::endl;
-//    sleep(5);
+    std::unique_ptr<int> p(new int(32));
+    hi(std::move(p));
     return 0;
 }

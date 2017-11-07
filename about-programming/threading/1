@@ -35,6 +35,13 @@ std::thread t(func, param...); //start
         线程会把你传入的值copy一份再给里面的函数，所以你需要传引用进去，用std::ref(var),
     移动：
         std::move() 移动而不是拷贝参数，也是可以的
+        std:;thread 类型是一个可移动类型，所以可以通过std::move()的方式进行赋值，会调用移动构造的
+            对于已经转移掉的变量，可以被另外赋值，但是，没有转移的不行，因为本身需要被系够，这个不允许
+            不请不出的被覆盖掉值的
+            同样可以利用函数返回值返回临时变量的对象return std::thread(func),
+                或者返回其他已经生成的对象，也会默认调用移动构造的！！
+                但是传参数的时候需要move或者临时变量
+            vector 移动敏感，可以直接把临时变量的thread类型push进去
 t.join()  //wait to stop
 t.joinable() true  can join, false can not join
 
