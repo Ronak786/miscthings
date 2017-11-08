@@ -48,3 +48,5 @@ once:
 读写锁
     boost::shared_lock<boost::shared_mutex> 用来读
     std::lock_guard<boost::shared_mutex> 用来写，排他访问
+recursive_mutex
+    递归上锁，可以利用guard lock 和unique lock管理，需要同样数量的unlock
