@@ -1,3 +1,8 @@
+extra：
+    distance（iter，iter）返回连个迭代器之间的举例，可移植的方法，好
+    std::ref() 返回对象的左引用
+    std::move() 返回右引用
+    std::forward()完美传递参数类型
 并发
     有硬件上的多核或者多处理器的真并发，多核有点假
     还有软件上的短时间多次切换形成的假并发
@@ -26,7 +31,7 @@
     标准库提供了线程模型，有高级抽象，也有底层工具，一般用抽象即可
 
 include <thread>
-std::thread t(func, param...); //start
+std::thread t(func, param...); //start 注意初始化会复制参数
     重载类为函数：
         如果有参数，直接classname（），没有的话需要(classname())
     成员函数：
@@ -44,6 +49,8 @@ std::thread t(func, param...); //start
                 或者返回其他已经生成的对象，也会默认调用移动构造的！！
                 但是传参数的时候需要move或者临时变量
             vector 移动敏感，可以直接把临时变量的thread类型push进去
+
+    记住，不需要某个拷贝或者移动的时候弄成delete
 t.join()  //wait to stop
 t.joinable() true  can join, false can not join
 
@@ -67,3 +74,8 @@ detach
         线程不会继续的
         !t.joinable()
         分离后只能确定最后main结束了他会结束
+
+id:
+    t.get_id() or  in one thread:   std::this_thread::get_id();
+    id 提供了hash，提供了比较，使用方便，同样不存在的同样是相等的
+    可以利用这个区分各个线程，master也是的
