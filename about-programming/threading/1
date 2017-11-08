@@ -27,6 +27,8 @@
 
 include <thread>
 std::thread t(func, param...); //start
+    重载类为函数：
+        如果有参数，直接classname（），没有的话需要(classname())
     成员函数：
         t(&classname::funcname, classname()(or objname or &objname), param)
     初始化是一个复制参数，然后给函数传递的过程，所以如果传递的是数组指针或者数组头，
