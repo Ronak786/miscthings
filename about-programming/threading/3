@@ -45,3 +45,33 @@ shared_future:
     可拷贝，多人同时读取
     shared_future<type> sf(promise.get_future());
     shared_future<type> sf(promise.get_futer().share())
+
+
+延时：
+    duaration
+    time_point
+        std::chrono::system_clock::now() 返回timepoint类型
+            需要使用system_clock::to_time_t(obj)来获得对应的timet类型才能打印
+
+        steady_clock::now() 获得对应的timepoint类型
+        通过duration<double> xx = duration_case<duration<double>>(t2 - t1) 的方法后的间隔，
+            然后xx.count()获得对应的秒数
+        is_steady 属性检测是否稳定
+    
+        high_resolution_clock 这个精度更高
+
+    duration:
+        时延，不截断时候不需要duration_case<double> 这个可以在不同的duration类型直接转换
+        duration<short, std::ratio(60, 1)> 表示60秒更新一次
+
+    future.wait_for(millisecond(num)) == std::future_status::ready/defered 
+        表示等待完成或者未完成
+
+    time_point + duration = timepoint 
+        duration 有一些内置类型seconds, 主动构造的类型有
+
+函数：
+    std::this_thread::sleep_for/sleep_until (for duration, until timepoint)
+    std:;condition_variable::wait_for/wait_until(lock, duration[, predicate])
+    std::timed_mutex/recursive_timed_mutex(try_lock_for/try_lock_until)
+    future.wait_for,wait_until
