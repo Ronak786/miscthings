@@ -1,0 +1,9 @@
+atomic:
+    atomic_int/ulong/....  == std::atomic<int> ...
+    atomic_int_least8_t ...
+
+atomic_flag
+    初始化必须是ATOMIC_FLAG_INIT 
+    test_and_set() return orig state
+    clear()
+        内部可以设置内存一致顺序，具体看网站描述
