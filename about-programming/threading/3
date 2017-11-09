@@ -1,0 +1,47 @@
+通知等待
+    condition_variable a;
+{
+    lock_guark ..
+    process(...);
+    a.notify_one()
+}
+
+等待者
+    unique_lock ...
+    a.wait(lock, func->return bool);
+    get_data()
+    unlock
+    process...
+
+    由于wait这里会时常加锁判定，假就解锁，所以函数不能有副作用，需要uniquelock可以方便加锁
+    
+线程休眠
+    std::this_thread::sleep_for(std::chrono::milliseconds(num)) 
+    注意休眠前要解锁，后面加锁，所以unique lock方便线程休眠
+
+任务与期望 一般用于某个地方依赖其他地方的值的时候
+    std::async(func, param) -> std::future<函数的返回值类型>
+        res.get()获得返回值，
+    第一个参数还可以是std::launch::defered 表明get的时候才会调用
+                        std::launch::async 表明放到另外的线程里调用
+        默认是随机选择一个
+    这个的作用是控制一个函数的调用，后的返回值
+
+    std::packaged_task<int(int,int)> a(b);
+        这个是打包一个类型的函数，后面是赋值，只能用move构造赋值
+        这样的好处是只有调用a()的时候才会进行调用，而返回值在这个packaged的时候就获得了.get_future()
+        是一个future类型，可以get内部的值，
+         利用move传入thread，就控制了什么时候调用
+        这个更抽象
+    
+    std::promise p, p.get_future(), p.set_value()
+        promise的值可以set value，这样future就可以get到了
+            不然阻塞。如果要传入函数，记得函数参数用引用，如果传入线程，记得<functional> std::ref用一下，不然强制复制一次的
+
+    缺点：
+        只能get一次，后面就没了
+
+shared_future:
+    可拷贝，多人同时读取
+    shared_future<type> sf(promise.get_future());
+    shared_future<type> sf(promise.get_futer().share())
