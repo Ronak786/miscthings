@@ -1,0 +1,92 @@
+type { 'name' :
+    param => value,
+}
+如果给了namevar ，比如file是path, 那么就可以名字随便取，不然名字就是资源对象
+
+agent, yum install puppet-agent
+
+node :
+    这个是后面跟名字表示对应的节点使用，只有一个可以匹配，要有个default，不然会报错
+
+resource
+file:
+    puppet resource file /xxxx/path可以告诉你当前文件的属性
+    puppet resource file /xxxx  content='xxxx' 可以设置内容，如果不同会赋值的！！
+package:
+    providers: 提供者，也就是当前平台的包安装器
+        可以利用安装puppet resource apckage xxx ensure=present 来触发错误发现提供者
+    puppet resource package xxx(httpd) 
+        purged 表示包和相关文件都不存在
+    puppet resource package xxx(httpd)  ensure=present  provider=gem 这样会用gem安装
+notify:
+    notify { 'xxxx' :} 即可，没有message，默认就是标题
+
+认证
+    master认证之后，agent才能连接，
+    master：
+        puppet cert list
+        puppet cert sign xxxx
+    agent
+        puppet agent -t 就可以主动连接请求了
+    
+parser validation
+    puppet parser validation 验证你的文件格式正确
+安装模块
+    在主pp文件中使用include xxx 可以包含某个模块中的pp文件
+    然后在内部定义class， package等
+    定义文件
+        还可以让使用本地的文件，puppet:///modules/xxxxx可以定位moudles目录地下的文件
+        file {'xxx':
+            source => 'puppet:///xxxxxxx',
+        }
+        service {'xxxx': (只要名字就行了）
+            source => 'xxxxx',
+        }
+    注意放在modules目录地下，模块地下manifests里是具体的init。pp
+    files地下是文件，但是source 路径里不要有files
+
+metaparam
+    属性参数，控制puppet的行为的，这里使用顺序控制
+    before => File['title'] 注意大写这里    
+    notify => Service['title'] 这个和before一样，单如果是service对象，那么修改了会
+        restart
+
+variables:
+    一旦指定不能改变
+    $var = 'xxxx' 没有逗号
+
+template:
+    mkdir module_name/templates/
+    touch xxxxxxxxxxxxxxxxxxxxx/xxx.yaml.epp 配置文件的模板文件
+    开头 <%- | $xxxxx='xxx', -%>
+        这个是声明，传进来的下面要使用的要声明， -表示去掉空格，|表示黑了是声明
+        下面<%= $xxxx %>就是使用的地方
+        传入的地方，首先使用一个变量 $xxx = { 'name' => $xxx }把定义的变量包裹起来，
+            然后content => epp('moudlename/templatename', $xxx)的方式传入对应的值
+
+class 变量
+    class name (
+        xx= xx,xx=xx
+    ) { .... } 注意逗号，内部变量没有的
+        这样的好处是在主文件里不用include，而是
+            class { 'name':
+                param => val, 可以在这里指定内部使用的变量的值，当然也可以不指定，使用默认
+            }
+
+factor tool
+    用来获取系统信息，提供跟master
+    facter -p
+    facter -p os.family 可以具体查看某项
+    这里面的可以直接使用$facts['xxx']['xxx']进行访问，当然最好在外层使用一个变量套起来，
+        内部使用变量，更符合接口
+
+conditional 
+    if xxx == xxx {
+        ....
+    }
+    elsif xxx { } else 
+
+forge
+    安装模块
+    puppet module install puppetlabs-postgresql --version 4.8.0
+    puppet module list
