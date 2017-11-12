@@ -90,3 +90,16 @@ forge
     安装模块
     puppet module install puppetlabs-postgresql --version 4.8.0
     puppet module list
+
+定义角色和配置
+    就是把配置嵌套在某个模块目录地下，然后再另外高一个角色的模块
+    在site。pp里只是include角色，这时一种模式设计
+
+自定义资源类型
+    define xxxxname )
+        pram = val,
+        param = val,
+    ) { }
+    然后可以使用 typename { 'title':
+        .....}
+    在内部可以根据定义的变量执行对应的操作
