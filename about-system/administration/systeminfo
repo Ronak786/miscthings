@@ -1,15 +1,64 @@
-cpuinto
-    "cpu cores" 每个物理cpu上的核心数
-    "physical id" 物理cpu数量
-    "processors" 逻辑核心总数，如果不是超县城， 1×2 == 3
+实体信息
+    cpuinto
+        "cpu cores" 每个物理cpu上的核心数
+        "physical id" 物理cpu数量
+        "processors" 逻辑核心总数，如果不是超县城， 1×2 == 3
 
-memory:
-    free -m , 
-        可以看man手册
-disk;   
-    fdisk -l
-    iostat -d -x -k 1 10
-filesystem:
-    df -h
-目录大小
-    du -sh dir/
+    memory:
+        free -m , 
+            可以看man手册
+    disk;   
+        fdisk -l
+        iostat -d -x -k 1 10
+    filesystem:
+        df -h
+    目录大小
+        du -sh dir/
+        du -cks dir/ 可以 打印目录下数量综合，s只打印综合 k 1k块计算
+
+    文件填充dd
+        可以制作镜像 dd if=/dev/cdrom of=xx.iso
+        dd 没有if of默认接标准口
+            ibs obs  bs(同时设置）
+            skip= 跳过输入的块
+            seek=跳过输出的块数量
+            count=  ibs制定的块大小的块数量，只复制这么多
+
+非实体信息
+    负载
+        uptime 即当前排队的进程数量
+        w 用户个数
+        top 动态
+            如果id 常小于50, 负载大于逻辑核心数，vmstat r > 核心数 代表负载过大
+    ls -lF 显示不同类型文件的后缀
+    lsb_release -a 发行办查看
+    lsmod
+    lspci
+
+    network
+        sysconfig/network-scripts
+    hostname
+        /etc/sysconfig/network
+    /etc/hosts
+        ip name alias alias
+    resolv.conf
+        nameserver xxxx
+    ifconfig
+    netstat  man里有各个链接状态的解释
+        route: netstat -rn
+    traceroute
+    nslookup
+        查看dns
+    dig 
+        域名查看，显示查找路径
+        dig @ xxx(ip) domain_name
+            在特定的dns上查找
+        dig xxx +trace
+            显示从根开始的路径
+
+    lsof 查看占用文件的进程
+        lsof -i :port 端口占用的文件包括网络设备文件
+
+    pgrep  name
+    kill -l list
+        -s 
