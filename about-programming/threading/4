@@ -1,0 +1,16 @@
+atomic:
+    atomic_int/ulong/....  == std::atomic<int> ...
+    atomic_int_least8_t ...
+
+atomic_flag
+    初始化必须是ATOMIC_FLAG_INIT 
+    test_and_set() return orig state
+    clear()
+        内部可以设置内存一致顺序，具体看网站描述
+
+atomic<type> 
+    compare_exchange_strong/weak 这两个是比较和期望相同的时候存储val，不同的时候存储值赋给期望，
+        weak赋值到内部可能失败
+    exchange 直接替换，返回旧值
+    store 存
+    load 读取

@@ -1,0 +1,44 @@
+注意
+    build run的时候没有指定:targ的话，默认用latest
+edit Dockerfile
+    docker build -t tag . 编译image
+
+docker run -p portmap   -d(daemon)  imagename
+    docker images  --> list
+    docker container ls --> list running containers
+    docker containers ls -a --> list stopped and running containers
+    docker container stop/kill id  --> stop
+    docker container rm id/$(docker container ls -a -q)
+attach
+    docker exec -it xxxname  bash 连接打开终端
+
+push
+    docker login
+    docker tag  imagename   username/reponame:tagname
+    docker push username/reponame:tagname
+
+compose 运行一个多个ocntainer组成的app
+    写一个compose 文件，然后用来控制启动服务
+    需要在swarm里面，所以需要先docekr swarm init
+    docker stack deploy -c .yml(file) service_name
+    docker service ps service_name
+    docker servcie ls
+    docker inspect continaer_or_task
+    docker stack rm service_name
+    docker swarm leave --force (离开swarm环境）
+
+docker-machine:
+    用来创建多个vm用于docker，在里面可以运行swarm，这个是集群的系统，可以组合分配多个节点干活，
+     然后docker-machine ssh  某一台name ‘command' 可以连接运行，
+    docker-machine env name 可以在当前环境下执行命令，利用当前目录，然后控制某个虚拟机器进行配置
+
+network:
+    docker network ls
+    docker nework inspect bridge 可以查看在这个网络上的容器，这个是默认使用的
+    create bridge
+        docker network create -d bridge mybridge
+    run:
+        docker run -d --net=xxxx  --name xxx   targname 可以指定网络
+        docker inspect container
+    docker network connect  mybridge contianer_name 连接
+    docker network disconnect bridge  networktest

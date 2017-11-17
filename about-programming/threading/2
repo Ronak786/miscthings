@@ -1,0 +1,54 @@
+竞争
+    必须注意，调试看不出来，负载大就有了
+无锁编程
+    比较困难，就是每个人看到的都是稳定的状态，中间态不出现
+软件事务内存
+    事务要么冲突失败，要么完成，这里不讨论STM
+
+mutex
+    std::mutex,
+    lock, unlock,
+    建议使用std::lock_guard<some_mutex> xxx, 这个变量会在初始化的时候控制加锁，delet的时候解锁
+        作为local变量更加方便
+    建议：为了加强保护，除了mutex，还要注意成员函数不要返回或者以保护的数据作为参数,或者存储在外部变量中
+
+    但是mutex不能解决几个原子操作组合的问题，空隙间还是可以被竞争的
+
+stack的一些问题 (锁与copy构造时候异常的问题）
+    每个操作包括构造都需要互斥量的保护，但是top pop ， empty pop之类的组合仍然会有问题
+        还有如return pop的时候，由于需要拷贝构造，如果这个时候异常那么已经pop，却丢了数据，
+        如果采用top，再pop又会有竞争
+        如果采用引用获取，需要类型相关函数，以及赋值操作的实现，总之不一定通用
+        还可以采用返回指针的方法，利用sharedptr
+
+    组合使用
+        先本地top，然后shareptr make一个，然后返回指针，全程使用lock guard保护  
+死锁
+    按顺序锁，来避免
+    另外，std::lock可以同时获取两个锁的，同时避免死锁
+        而lock_guard(mutex, std::adopt_lock) 可以让已经获取的给guard接管，而不是再构造
+
+    建议
+        避免嵌套锁，避免持有锁时调用用户的代码，固定顺序锁
+
+lock_guard
+unique_lock
+    后者更加灵活，前者初始化就是锁上（可以用adopt_lock获取已经上了的锁），析构就是unlock
+    后者可以defer——lock获取未加的锁，然后有单一拥有者控制lock的操作 lock unlock trylock
+        可以主动释放，也可以析构的时候释放
+
+once:
+    std::once_flag xxx;
+    std::call_once(xxx, func, param)   这样可以保证函数调用一次，仅一次
+        call_once(xxx, &classname::func, this)
+
+    static:
+        多线程中竞争定义的情况，在c++11里面不会出现了
+
+读写锁
+    boost::shared_lock<boost::shared_mutex> 用来读
+    std::lock_guard<boost::shared_mutex> 用来写，排他访问
+recursive_mutex
+    递归上锁，可以利用guard lock 和unique lock管理，需要同样数量的unlock
+
+
