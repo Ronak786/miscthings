@@ -1,0 +1,15 @@
+cpuinto
+    "cpu cores" 每个物理cpu上的核心数
+    "physical id" 物理cpu数量
+    "processors" 逻辑核心总数，如果不是超县城， 1×2 == 3
+
+memory:
+    free -m , 
+        可以看man手册
+disk;   
+    fdisk -l
+    iostat -d -x -k 1 10
+filesystem:
+    df -h
+目录大小
+    du -sh dir/
