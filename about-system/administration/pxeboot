@@ -1,0 +1,52 @@
+文档
+    kickstart https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/installation_guide/sect-kickstart-syntax
+    anaconda 
+        https://rhinstaller.github.io/anaconda/boot-options.html
+需要：
+    一个远程访问手段：http ntp ftp
+    一个tftp服务器
+    一个dhcp服务器
+
+dhcp配置：
+ddns-update-style interim;
+ignore client-updates;
+authoritative;
+allow booting;
+allow bootp;
+allow unknown-clients;
+
+subnet 192.168.103.0 netmask 255.255.255.0 {
+        range  192.168.103.200 192.168.103.250;
+        option domain-name-servers  221.228.255.1;
+        option domain-name  "cn7788.com";
+        option routers      192.168.103.1;
+        option broadcast-address 192.168.103.255;
+        option time-offset   -18000; #Eastern Standard Time
+        default-lease-time 21600;
+        max-lease-time 7200;
+
+        next-server 192.168.103.133;
+        filename "pxelinux.0";
+}
+
+http
+    挂在iso目录，把所有文件（注意两个隐藏文件！！）拷贝到底下
+tftp
+    启动的时候制定目录
+    将iso目录内iamges/pxeboot内的initrd  vmlinuz拷贝到tftp下
+    将isolinux下的cfg文件拷贝到pxelinux.cfg目录（新建）底下，命名ｄｅｆａｕｌｔ
+    将isolinux的系统包下的pxelinux.0 libutil.c32 ldlinux.c32 boot.msg 拷贝到同一个目录底下，路径在dhcp里设置
+    将ks。cfg放在web上，在对应的菜单的pxelinux文件里append后面加上inst.repo , inst.stage2 都要放上带有.treeinfo
+        文件所在的那个目录， 
+        文件开头default linux
+    package里如果minimal ,要 --nobase,
+
+    pxelinux.cfg/default:
+       label linux
+		  menu label ^Install CentOS Linux 7
+		  kernel vmlinuz
+		#  append initrd=initrd.img ks=http://192.168.103.133:/ks.cfg inst.repo=http://192.168.103.133:/ ip=dhcp nameserver=221.2
+		28.255.1 inst.stage2=hd:/dev/sda1 quiet
+		  append initrd=initrd.img inst.ks=http://192.168.103.133/ks.cfg inst.repo=http://192.168.103.133/ ip=dhcp nameserver=221
+		.228.255.1 inst.stage2=http://192.168.103.133/  inst.text
+ 
