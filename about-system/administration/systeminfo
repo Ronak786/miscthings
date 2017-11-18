@@ -62,3 +62,41 @@
     pgrep  name
     kill -l list
         -s 
+
+    route:
+        route add -net xxxx/24 dev eth0 
+
+    log:
+        /var/log/secure
+            登陆系统的数据
+        /var/log/wtmp
+            last
+        lastlog
+            每个用户上次登陆的时间，可以查看恶意登陆
+
+    ntsysv
+        这个可以用于管理是否自启动启动
+
+        注意关闭iptables selinux 如果不需要的话
+            grub: selinux=0
+        net.ipv4.tcp_syncookies = 1  > /etc/sysctl.conf
+        net.ipv4.tcp_tw_reuse=1  allow time_wait socket to be reused
+        net.ipv4.tcp_tw_recycle=1
+                tcp_fin_timeout=40 减少主动关闭的时间
+                tcp_keepalive_time =1200 减少keepalive连接发送消息的间隔
+                ip_local_port_range=1025 65000 扩大可对外的端口分配
+                tcp_max_syn_backlog=8192 扩大syn队列长度
+                tcp_max_tw_buckets=5000 减少可保持的timewait数量
+        HISTSIZE=  100  /etc/profile
+        ntp:
+        01 01 * * * root /sbin/ntpdate ntp.api.b >> /dev/null 2 >&1
+        /etc/security/limit.conf
+            * soft nofile 60000
+            * hard nofile 65535
+        ulimit -SHn 65535
+        cat /proc/$pid/limits  | grep "Max open files"
+        
+        etc/fstab
+            option noatime,nodiratime
+
+    nagios prometheus zabbix使用监控
