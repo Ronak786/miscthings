@@ -1,0 +1,23 @@
+状态
+    开始 closed
+    建立 主动方 syn_sent, extablished
+            被动方 listen syn_rcvd established
+    关闭
+        主动  (after send fin)fin_wait_1, (after received ack )fin_wait_2, 
+                (if receive fin and ack),directly into time_wait（否则表示对方还有想发给你的数据）
+                过2ｍｓｌ　之后变成ｃｌｏｓｅｄ
+                closing 这个表示发送fin，对方先会了fin，说明双方都早关闭
+
+        被动
+            close_wait(after receive fin and return a ack),
+            (after send a fin) last ack, 之后收到ack立刻closed
+
+tcpdump
+    tcpdump host  xx.xx.xx.xx
+    tcpdump host xx.xx and \(xx.xx or xx.xx) 第一个和2或者3之间的通信
+    tcpdump ip host xx.xx and ! xx.xx  除了和后者之间的通信 的ip包
+    tcpdump tcp port 25 and host xx.xx.xx
+wireshark
+
+nmap
+    扫描端口，查看经典服务
