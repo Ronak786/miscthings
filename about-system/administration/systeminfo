@@ -100,3 +100,43 @@
             option noatime,nodiratime
 
     nagios prometheus zabbix使用监控
+
+    配置网络onboot = yes
+    如果怕iptables配错，可以在cron里放一个iptables stop，这样保证一定能够登录
+    
+系统：
+    single  可以改密码
+
+    root 保存：
+        :w !sudo tee %
+    ulimit
+        这个命令控制当前终端， etc security limit控制所有，
+        建议
+            文件里，以及rc local ： ulimit -SHn 65535
+        可以在proc/pid/limits 里查看当前进程的文件数量
+    cron工作防止冲突
+        使用flock 文件锁，后面加命令
+
+    vim:
+        set nobackup 不要备份文件
+        set noswapfile 不要。swap文件
+        set nu
+        set cindent/ noindent C风格缩进
+        set autoinent 与上一行同样缩进
+        set shiftwidth=2
+        set tabstop=2
+        set softtabstop
+        set expandtab
+        set ruler
+        set mouse=v
+        syntax on
+
+    find
+        -ok 这个比exec更安全，会提示是否执行
+        -perm mode +mode -mode
+            -depth 会忽略 -prune
+        ctrl-
+            u 之前清楚
+            k 之后清除
+            y  黏贴
+        !! 上一条命令
