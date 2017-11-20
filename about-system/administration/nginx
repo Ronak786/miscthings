@@ -1,0 +1,30 @@
+编译安装，看官方网站有选项解释
+    或者./configure --help
+
+直接nginx启动，读取安装时候的默认路径配置，
+    pid等在log文件夹里，是master的，也可以用lsof -p pid查看打开文件
+        使用ps -ef | grep nginx 查看master 和 worker的父子关系
+
+    kill:
+        kill -s QUIT 从容停止
+        kill -s TERM/INT 快速停止
+        pkill -9 nginx 强制停止
+        无缝切换
+            kill -s HUP master_pid 重新加载conf
+            kill -s USR1 xxx  重新打开日志
+            kill -s USR2 xxx   升级exe程序
+                升级过程：
+                    kill -s usr2 xxx  开启新master
+                    kill -s WINCH oldpid  就的worker停止
+                    此时 处于新旧同时处理中
+                        kill -s HUP oldpid 重新开启就worker
+                        或者kill -s QUIT newpid 旧的pid文件会恢复，新的全面退出，等于回滚
+                        kill -s QUIT oldpid 旧的完全退出，完成升级
+
+    测试配置文件而不实际启动
+        nginx -t -c xxxx
+
+    log_format 制作自己的日志格式，然后
+        access log path  logformat可以指定
+    open_log_file_cache
+        用于记录log fd的cache，这样可以缓存
