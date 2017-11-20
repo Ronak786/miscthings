@@ -36,3 +36,11 @@
         }
 
     expires 30d/1m; 用于设定资源在浏览器上的缓存时间，一般图片之类的可以长一点
+
+    root:
+        这个本来是相对路径，就是conf所在的上一层路径，也可以用绝对
+
+    在php中，首先按照官方install说明把php。ini， phpfpm。conf设置好，
+        然后phpfpm启动即可
+        nginx conf中将 scriptfilename 设置好，这个就是你的文件位置，用
+            $document_root$fastcgi_script_name 就行了
