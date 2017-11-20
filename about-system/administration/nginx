@@ -11,7 +11,7 @@
         pkill -9 nginx 强制停止
         无缝切换
             kill -s HUP master_pid 重新加载conf
-            kill -s USR1 xxx  重新打开日志
+            kill -s USR1 xxx  重新打开日志, 需要轮换的，话，先mv掉原来的，再调用这个
             kill -s USR2 xxx   升级exe程序
                 升级过程：
                     kill -s usr2 xxx  开启新master
@@ -28,3 +28,11 @@
         access log path  logformat可以指定
     open_log_file_cache
         用于记录log fd的cache，这样可以缓存
+
+    自动列目录
+        首先不能有index指定页
+        location xxx {
+            autoindex on;
+        }
+
+    expires 30d/1m; 用于设定资源在浏览器上的缓存时间，一般图片之类的可以长一点
