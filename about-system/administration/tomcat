@@ -1,0 +1,18 @@
+首先注意设置好java的javahome， classpath好像新版本有默认的，不需要一定设置
+然后tomcat设置catalina home为你下崽的包解包后整体赋值到/usr/local/tomcat 成为这个目录，
+    然后home 就是这个
+    根据文档，修改 appbase， 进入 bin 解包commons daemon native，configure make
+    cp jsvc ../.., 然后进入../..  
+CATALINA_BASE=$CATALINA_HOME
+cd $CATALINA_HOME
+./bin/jsvc \
+    -classpath $CATALINA_HOME/bin/bootstrap.jar:$CATALINA_HOME/bin/tomcat-juli.jar \
+    -outfile $CATALINA_BASE/logs/catalina.out \
+    -errfile $CATALINA_BASE/logs/catalina.err \
+    -Dcatalina.home=$CATALINA_HOME \
+    -Dcatalina.base=$CATALINA_BASE \
+    -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager \
+    -Djava.util.logging.config.file=$CATALINA_BASE/conf/logging.properties \
+    org.apache.catalina.startup.Bootstrap
+
+    就可以开启tomcatdaemon服务监听8080了

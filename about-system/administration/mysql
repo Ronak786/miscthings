@@ -1,0 +1,3 @@
+mysql --help 可以查看配置文件的读取顺序
+
+show variables liek 'datadir' 获取数据存储路径
