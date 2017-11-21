@@ -5,3 +5,30 @@ show variables like 'socket' 获取socket 路径，这个可以利用mysql -S /t
 
 innodb 有master thread， io thread， purge thread（回收undolog的使用空间），
             page cleaner thread，辅助master刷新脏页
+
+innodb stats：
+    show engine innodb stats\G;
+    或者 select xxx from information_schema.innodb_xxxxx表
+缓冲池
+    用来加速，一般设置，innodb_buffer_pool_size 是速度的关键
+                        innodb_buffer_pool_instances 表示缓冲池的实例数量，多个
+                            减少竞争
+    innodb缓存管理缓存页的方式lru优化，插入的新页的位置有innodb_old_blocks_pct控制，
+        默认在尾端37%左右，缓存也默认16k大小
+        一般的缓存根据插入点分为old 和new两部分， 有个block time控制了old可以转为new的时间，
+            hit rate命中率如果95%一下就不好了
+        lru len, unzip lrulen
+            后者包含非16k的页，包含在前者内
+            unzip 分配的方法是内核使用的buddy 内存分配法
+
+    flush列表，用来管理脏页的刷新，同时页也存在于lru表用于缓存的
+        select from innodb buffer page lru where oldest_modification > 0
+        表示可以查到当前脏页
+
+    innodb_log_buffer_size
+        重做日志缓存，只要保证1s，后面会刷新到重做的文件里
+        刷新时机
+            每秒；每次事务提交，缓存空间少于1/2
+
+    除了数据和索引页，还有自适应，插入索引，锁信息等
+        还有额外内存池，这个用于分配一些额外的帧缓冲之类的，additional buffer选项可以设置值
