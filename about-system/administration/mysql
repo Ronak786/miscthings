@@ -32,3 +32,10 @@ innodb stats：
 
     除了数据和索引页，还有自适应，插入索引，锁信息等
         还有额外内存池，这个用于分配一些额外的帧缓冲之类的，additional buffer选项可以设置值
+
+checkpoint
+    用来控制刷新到此判断进度的机制
+    主要有master thread的周期性刷新
+        page cleaner的控制free page数量刷新，这个innodb_lru_scan_depth参数控制
+            这个线程还包括了异步/同步刷新功能，当checkpoint的未刷新数量的lsn编码
+            超过了文件总量的一定百分比，开始异步刷新，再超过一定的，开始同步刷新
