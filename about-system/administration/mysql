@@ -1,3 +1,7 @@
 mysql --help 可以查看配置文件的读取顺序
 
 show variables liek 'datadir' 获取数据存储路径
+show variables like 'socket' 获取socket 路径，这个可以利用mysql -S /tmp/sock.sock 来连接
+
+innodb 有master thread， io thread， purge thread（回收undolog的使用空间），
+            page cleaner thread，辅助master刷新脏页
