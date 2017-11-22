@@ -56,3 +56,23 @@ innodb特性
             每秒io小于5， 输出5%
             每10秒小于200， 输出5%
     innodb_change_buffering 控制开哪个buffer
+
+    double write
+        写的时候，会先从缓冲拷贝到一块内存中，，然后再输入磁盘，好处是如果磁盘里页破坏，
+            可以从内存空间中恢复一个副本
+            innodb_dblwr_pages_written show status like ...
+            查看实际的写的数量
+
+    ahi 自适应哈希
+        在你搜索100此以上某页（这里的页具体是什么结构的不知道现在），就会自动建立，对于
+            where xx=xx的等值搜索，可以利用来加速，范围不行
+
+    aio:
+        异步io
+        innodb_use_native_aio 控制是否使用os提供的aio技术，默认是否，可以打开它的
+        innodb_flush_neighbors 表示是否刷新脏页的时候同时刷新周围脏页，机械硬盘建议开启，ssd不用
+            可能会刷了不怎么脏的，以后还要脏
+        innodb_fast_shutdown  
+            控制是否关闭数据库的时候刷新数据到硬盘以及程度，这个主要影响再次启动的时候的数据恢复工作
+        innodb_force_recovery 
+            控制恢复的行为，阻止某些自动恢复操作，以供人工恢复
