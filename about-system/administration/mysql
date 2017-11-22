@@ -45,3 +45,14 @@ checkpoint
     master工作方式
         一个loop ，内部每秒进行每秒工作，同时判断当前的负载是否适合进行脏页刷新以及
             undopage中无用的页删除 ,刷新脏页的过程是看当前是否超过70%，不超过刷10%，否则100页
+
+innodb特性
+    insert buffer
+        后面叫做change buffer， innodb change buffer max size， 这个控制最大的buffer大小，
+            这个主要用于（目前）insert delete update 非聚集索引（非primary）的改动的时候，
+            而且是非唯一的才行，不然检查唯一的过程就产生了硬盘读的消耗，这里缓存所有的索引
+            读写消耗，然后把属于底层同一个索引页的放到一起,合并后找时间一起输出。
+        时机
+            每秒io小于5， 输出5%
+            每10秒小于200， 输出5%
+    innodb_change_buffering 控制开哪个buffer
