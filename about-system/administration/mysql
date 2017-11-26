@@ -39,12 +39,15 @@ checkpoint
         page cleaner的控制free page数量刷新，这个innodb_lru_scan_depth参数控制
             这个线程还包括了异步/同步刷新功能，当checkpoint的未刷新数量的lsn编码
             超过了文件总量的一定百分比，开始异步刷新，再超过一定的，开始同步刷新
+        这个要配合rego log使用
 
         innodb_max_dirty_page_pct 表示最多可以用的脏页的百分比
 
     master工作方式
         一个loop ，内部每秒进行每秒工作，同时判断当前的负载是否适合进行脏页刷新以及
             undopage中无用的页删除 ,刷新脏页的过程是看当前是否超过70%，不超过刷10%，否则100页
+
+    如果不够，redo log的更改 show variables like '%innodb_log%';
 
 innodb特性
     insert buffer
@@ -76,3 +79,17 @@ innodb特性
             控制是否关闭数据库的时候刷新数据到硬盘以及程度，这个主要影响再次启动的时候的数据恢复工作
         innodb_force_recovery 
             控制恢复的行为，阻止某些自动恢复操作，以供人工恢复
+
+文件相关
+    注：
+        system xxx 可以执行系统命令
+    配置，使用mysql --help | grep my。cnf 可以查到读取的配置文件顺序
+    可以同information schema的global variables 或者show globalvariables 找到变量
+        set [global|session] xx = xx;
+        获取：select @@global.xxxxx;
+
+    log:
+        error log show variables like 'log_error';
+        bin log
+        slow query log
+        log
