@@ -152,3 +152,26 @@ innodb特性
 
     行记录格式
         show table status in xxx like xx; 可以查看row format
+
+        compact 类型    
+            主要是开头的变长字段长度，null段位置标记，事件， id列，回滚列， 下条记录位置等
+        redundant
+            这个类型用于兼容从前版本
+        溢出长度的数据处理
+            blob 和varchar 如果一页可以存放至少两行数据，会记录在数据页里面，不过不行
+                或记录在blob额外页里面，不管其他的
+        compress/ dynamic
+            这两个新类型对于blob会采取溢出存储的方式，一个指针，内容完全存到数据页里面去
+        
+        查内部记录的方式
+            select a,char_length(a),length(a), hex(a)
+                第一个长度是字符数量，第二个是字节数量
+
+    页的存储方式
+        文件头，一些页的基本信息和类型
+        page header， 数据页的信息
+        然后是中间的行记录，首尾有两个固定的行记录表示首尾
+        然后是页目录，保存页中记录的相对位置，相当于高一层的索引，还是需要对应
+            slot中遍历的
+        然后是file trailer， 这个表示结尾
+        
