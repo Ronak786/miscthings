@@ -91,5 +91,64 @@ innodb特性
     log:
         error log show variables like 'log_error';
         bin log
-        slow query log
-        log
+            show master status;
+            show binlog events in 'xxxxx_file_显式在上一条命令里的';
+            只记录修改类型的命令
+
+            show global status; 查看当前各种binlog配置选项的使用情况
+                max_binlog_size
+                binlog_cache_size这个是每个连接线程都会分配的所以不能太大
+                show variables like '%log_bin%';
+                sync_binlog 这个用于设置是否每次使用同步的方式写入binlog，放宕机的
+                    同时应该开启support_xa方式宕机后一半的binlog问题
+                binlog_format
+                    这个二进制的格式问题
+                    默认mixed，row消耗容量大，但是对于操作记录更精细
+        slow query log   'long_query_time'  'log_slow_queries' 'log_queries_not_using_indexes'
+                mysqldumpshow slow_log_file 可以获得一些slow log的整合分析信息
+            log_output 这个变量控制table 或者file指定slowlog的输出方式
+                        table可以通过mysql。slow——log得到
+        log   'general_log' 普通的查询日志
+
+    socket
+        可以通过这个连接
+    pid
+        pid file
+
+    表结构
+        .frm 文件存放表的结构以及视图的结构
+
+    引擎表文件
+        默认  'data_file_path' 查，所有的都在这一个table空间里面
+            表空间可以多个文件的，不同的地方防止可以负载均衡
+        设置 file_per_table 可以让每个表一个.ibd 文件
+            设置了之后，数据索引缓冲在这个里面，其余还是在公共里面
+
+    重做日志
+        innodb%log%
+            至少一个组，内部至少两个文件，可以设定多个组为镜像
+            不能过小，不然会刷磁盘，抖动，太大恢复过慢
+        具体是在redo 缓冲中再刷入文件，每秒由master thread刷，也可以
+            有innodb_flush_log_at_trx_commit指定,1 同步刷，2异步，只要os不宕机还是可以恢复的
+
+        
+
+表：
+    表的组织根据索引，对于单个索引的情况，最先定义的非空索引会作为存储顺序依据，
+        非多列索引的情况可以使用_rowid 这个select field 查看
+    内部结构
+        表空间-》segment-》extent（区）-》page/block->row
+    表空间
+        在使用了修改之后，如果关掉autocommit，会增加table文件大小
+    段
+        数据段，索引段，回滚段，组织成b+树的形式
+    区，
+        一个区1M， 一个页pagesize默认16k，可以调节2 4 8k，这样页的数量会改变o
+        其内部还有一个优化机制，当数据量小的时候，不会一下子就分配一个区，而是96k，后面多了才涨
+    page
+        数据，undo 系统 事务数据 插入缓冲 插入缓冲空闲列表 二进制对象页等等等等
+    row
+        每page中行有上限 page / 2 - 200
+
+    行记录格式
+        show table status in xxx like xx; 可以查看row format
