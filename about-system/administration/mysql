@@ -1,0 +1,177 @@
+mysql --help 可以查看配置文件的读取顺序
+
+show variables liek 'datadir' 获取数据存储路径
+show variables like 'socket' 获取socket 路径，这个可以利用mysql -S /tmp/sock.sock 来连接
+
+innodb 有master thread， io thread， purge thread（回收undolog的使用空间），
+            page cleaner thread，辅助master刷新脏页
+
+innodb stats：
+    show engine innodb stats\G;
+    或者 select xxx from information_schema.innodb_xxxxx表
+缓冲池
+    用来加速，一般设置，innodb_buffer_pool_size 是速度的关键
+                        innodb_buffer_pool_instances 表示缓冲池的实例数量，多个
+                            减少竞争
+    innodb缓存管理缓存页的方式lru优化，插入的新页的位置有innodb_old_blocks_pct控制，
+        默认在尾端37%左右，缓存也默认16k大小
+        一般的缓存根据插入点分为old 和new两部分， 有个block time控制了old可以转为new的时间，
+            hit rate命中率如果95%一下就不好了
+        lru len, unzip lrulen
+            后者包含非16k的页，包含在前者内
+            unzip 分配的方法是内核使用的buddy 内存分配法
+
+    flush列表，用来管理脏页的刷新，同时页也存在于lru表用于缓存的
+        select from innodb buffer page lru where oldest_modification > 0
+        表示可以查到当前脏页
+
+    innodb_log_buffer_size
+        重做日志缓存，只要保证1s，后面会刷新到重做的文件里
+        刷新时机
+            每秒；每次事务提交，缓存空间少于1/2
+
+    除了数据和索引页，还有自适应，插入索引，锁信息等
+        还有额外内存池，这个用于分配一些额外的帧缓冲之类的，additional buffer选项可以设置值
+
+checkpoint
+    用来控制刷新到此判断进度的机制
+    主要有master thread的周期性刷新
+        page cleaner的控制free page数量刷新，这个innodb_lru_scan_depth参数控制
+            这个线程还包括了异步/同步刷新功能，当checkpoint的未刷新数量的lsn编码
+            超过了文件总量的一定百分比，开始异步刷新，再超过一定的，开始同步刷新
+        这个要配合rego log使用
+
+        innodb_max_dirty_page_pct 表示最多可以用的脏页的百分比
+
+    master工作方式
+        一个loop ，内部每秒进行每秒工作，同时判断当前的负载是否适合进行脏页刷新以及
+            undopage中无用的页删除 ,刷新脏页的过程是看当前是否超过70%，不超过刷10%，否则100页
+
+    如果不够，redo log的更改 show variables like '%innodb_log%';
+
+innodb特性
+    insert buffer
+        后面叫做change buffer， innodb change buffer max size， 这个控制最大的buffer大小，
+            这个主要用于（目前）insert delete update 非聚集索引（非primary）的改动的时候，
+            而且是非唯一的才行，不然检查唯一的过程就产生了硬盘读的消耗，这里缓存所有的索引
+            读写消耗，然后把属于底层同一个索引页的放到一起,合并后找时间一起输出。
+        时机
+            每秒io小于5， 输出5%
+            每10秒小于200， 输出5%
+    innodb_change_buffering 控制开哪个buffer
+
+    double write
+        写的时候，会先从缓冲拷贝到一块内存中，，然后再输入磁盘，好处是如果磁盘里页破坏，
+            可以从内存空间中恢复一个副本
+            innodb_dblwr_pages_written show status like ...
+            查看实际的写的数量
+
+    ahi 自适应哈希
+        在你搜索100此以上某页（这里的页具体是什么结构的不知道现在），就会自动建立，对于
+            where xx=xx的等值搜索，可以利用来加速，范围不行
+
+    aio:
+        异步io
+        innodb_use_native_aio 控制是否使用os提供的aio技术，默认是否，可以打开它的
+        innodb_flush_neighbors 表示是否刷新脏页的时候同时刷新周围脏页，机械硬盘建议开启，ssd不用
+            可能会刷了不怎么脏的，以后还要脏
+        innodb_fast_shutdown  
+            控制是否关闭数据库的时候刷新数据到硬盘以及程度，这个主要影响再次启动的时候的数据恢复工作
+        innodb_force_recovery 
+            控制恢复的行为，阻止某些自动恢复操作，以供人工恢复
+
+文件相关
+    注：
+        system xxx 可以执行系统命令
+    配置，使用mysql --help | grep my。cnf 可以查到读取的配置文件顺序
+    可以同information schema的global variables 或者show globalvariables 找到变量
+        set [global|session] xx = xx;
+        获取：select @@global.xxxxx;
+
+    log:
+        error log show variables like 'log_error';
+        bin log
+            show master status;
+            show binlog events in 'xxxxx_file_显式在上一条命令里的';
+            只记录修改类型的命令
+
+            show global status; 查看当前各种binlog配置选项的使用情况
+                max_binlog_size
+                binlog_cache_size这个是每个连接线程都会分配的所以不能太大
+                show variables like '%log_bin%';
+                sync_binlog 这个用于设置是否每次使用同步的方式写入binlog，放宕机的
+                    同时应该开启support_xa方式宕机后一半的binlog问题
+                binlog_format
+                    这个二进制的格式问题
+                    默认mixed，row消耗容量大，但是对于操作记录更精细
+        slow query log   'long_query_time'  'log_slow_queries' 'log_queries_not_using_indexes'
+                mysqldumpshow slow_log_file 可以获得一些slow log的整合分析信息
+            log_output 这个变量控制table 或者file指定slowlog的输出方式
+                        table可以通过mysql。slow——log得到
+        log   'general_log' 普通的查询日志
+
+    socket
+        可以通过这个连接
+    pid
+        pid file
+
+    表结构
+        .frm 文件存放表的结构以及视图的结构
+
+    引擎表文件
+        默认  'data_file_path' 查，所有的都在这一个table空间里面
+            表空间可以多个文件的，不同的地方防止可以负载均衡
+        设置 file_per_table 可以让每个表一个.ibd 文件
+            设置了之后，数据索引缓冲在这个里面，其余还是在公共里面
+
+    重做日志
+        innodb%log%
+            至少一个组，内部至少两个文件，可以设定多个组为镜像
+            不能过小，不然会刷磁盘，抖动，太大恢复过慢
+        具体是在redo 缓冲中再刷入文件，每秒由master thread刷，也可以
+            有innodb_flush_log_at_trx_commit指定,1 同步刷，2异步，只要os不宕机还是可以恢复的
+
+        
+
+表：
+    表的组织根据索引，对于单个索引的情况，最先定义的非空索引会作为存储顺序依据，
+        非多列索引的情况可以使用_rowid 这个select field 查看
+    内部结构
+        表空间-》segment-》extent（区）-》page/block->row
+    表空间
+        在使用了修改之后，如果关掉autocommit，会增加table文件大小
+    段
+        数据段，索引段，回滚段，组织成b+树的形式
+    区，
+        一个区1M， 一个页pagesize默认16k，可以调节2 4 8k，这样页的数量会改变o
+        其内部还有一个优化机制，当数据量小的时候，不会一下子就分配一个区，而是96k，后面多了才涨
+    page
+        数据，undo 系统 事务数据 插入缓冲 插入缓冲空闲列表 二进制对象页等等等等
+    row
+        每page中行有上限 page / 2 - 200
+
+    行记录格式
+        show table status in xxx like xx; 可以查看row format
+
+        compact 类型    
+            主要是开头的变长字段长度，null段位置标记，事件， id列，回滚列， 下条记录位置等
+        redundant
+            这个类型用于兼容从前版本
+        溢出长度的数据处理
+            blob 和varchar 如果一页可以存放至少两行数据，会记录在数据页里面，不过不行
+                或记录在blob额外页里面，不管其他的
+        compress/ dynamic
+            这两个新类型对于blob会采取溢出存储的方式，一个指针，内容完全存到数据页里面去
+        
+        查内部记录的方式
+            select a,char_length(a),length(a), hex(a)
+                第一个长度是字符数量，第二个是字节数量
+
+    页的存储方式
+        文件头，一些页的基本信息和类型
+        page header， 数据页的信息
+        然后是中间的行记录，首尾有两个固定的行记录表示首尾
+        然后是页目录，保存页中记录的相对位置，相当于高一层的索引，还是需要对应
+            slot中遍历的
+        然后是file trailer， 这个表示结尾
+        
