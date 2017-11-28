@@ -81,3 +81,19 @@ nginx
             file 生成 htpasswd -bc file user passwd 然后放在对应的location开始处或者servier里就行了
     autoindex
         这个用于没有index页就展示目录内容
+
+lnmp
+    mysql
+        编译加参数--with-mysql=mysqlnd 可以独立于本机的环境，即使没有mysql也可以安装，用于
+            mysql和nginx不在统一环境的情况
+        安装完后 mysql_install_db初始化必要的数据库
+            注意数据目录的权限问题以及初始化问题会导致无法链接
+        清理用户 drop user xx@xxxx;
+
+    fastcgi
+        用途是提供结构作为gninx的服务，nginx把动态请求通过sock接口传给他，他调用对应的php解释器执行操作，
+            比如调用数据库等，通过socket原路返回
+
+    问题
+        如果搭建wordpress提示php的mysql——connect函数不存在
+            可以打开php ini， uncomment  extension mysqli。so， 就行了
