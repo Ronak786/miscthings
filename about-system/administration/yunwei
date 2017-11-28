@@ -97,3 +97,6 @@ lnmp
     问题
         如果搭建wordpress提示php的mysql——connect函数不存在
             可以打开php ini， uncomment  extension mysqli。so， 就行了
+
+    cache
+        zendopcache， 打开一个extension， 还有其他开关即可
