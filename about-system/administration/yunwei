@@ -42,3 +42,42 @@ nginx
         基于ip 的可以在listen里制定ip:port
 
     include 用于分离配置文件的不同部分，分离结构用的
+    server_name xxx xxx xxx; 后面几个都是别名，就是都可以用的名字
+
+    main:
+        error_log  file level: debug|info|notice|warn|error|crit|alert|emerg
+
+    location
+        = 完全匹配
+        ～ 正则匹配
+        ~* 不区分大小写
+        !~ 
+        !~*
+        ^~ 如果此常规匹配最长满足，不进行正则尝试了
+
+        匹配顺序
+            完全匹配
+            ^~ 的匹配
+            正则匹配
+            最长前缀
+            /
+
+    rewrite 主要用来伪装静态
+        rewrite regex_pattern  replacement_syntax   flag(permanent)
+            可以使用(.*)  $1 这种
+            regex   .匹配\n外任何， 匹配所有需要[.\n]
+        flag:
+            last 继续匹配下面的url,  alias 使用，完了会对server块重新开始匹配
+            break 停止匹配  proxy_pass使用，完了会停止匹配
+            redirect 302 
+            permanent 301 这两个地址栏会显示跳转，上面的不会
+        建议
+            / localtion用 last
+            普通location 用break
+
+    加密
+        auth_basic "name"
+        auth_basic_user_file "conffile" 
+            file 生成 htpasswd -bc file user passwd 然后放在对应的location开始处或者servier里就行了
+    autoindex
+        这个用于没有index页就展示目录内容
