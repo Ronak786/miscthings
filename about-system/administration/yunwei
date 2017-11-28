@@ -1,0 +1,44 @@
+测试
+    curl -I 仅仅下载头部
+
+网络相关
+    ip addr add xxx/xx dev xxx
+
+在centos中，usr share底下有关于网络配置的说明 scripts-× 中
+limits的更改可以文件 也可以开机的时候ulimit -SHn 直接每次设置，前者需要重启
+
+伪静态网页
+    动态网页好处是灵活，坏处是效率低，同时不能被搜索收录，
+        所以可以做成伪静态网页，利用rewrite，当然会降低效率，建议还是转成纯静态网页
+
+名词
+    pv page view， 一次访问，一次刷新都算一次
+    ip  一个独立的公网ip 算一次
+    uv  独立访问，一个独立的客户端利用cookies算一个
+    并发数
+        理解为每秒服务器可以同时处理的链接数量
+            request_per_sec + simultaneous_connecctoins + avg_thinking_time = 并发数
+    qps 每秒的查询数量
+    iops 每秒存储进行的io次数
+
+    一般统计方法
+        运维日志，开发的页面jsp计数，市场统计ga统计工具
+
+nginx
+    特点web 反向代理 缓存
+    编译
+        nginx -V 查看编译参数，默认编译的模块之类的可以查看官网
+        nginx -t 测试配置文件
+        nginx -s reload
+    排查错误
+        注意log
+        关闭selinux，防火墙
+        查看进程，lsof 看端口是否监听
+        查看ip是否通， 查看port是否通，利用netstat或者telnet
+        是否user已经创建
+
+    虚拟主机
+        基于host 基于ip 基于端口皆有
+        基于ip 的可以在listen里制定ip:port
+
+    include 用于分离配置文件的不同部分，分离结构用的
