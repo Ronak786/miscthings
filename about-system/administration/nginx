@@ -44,3 +44,46 @@
         然后phpfpm启动即可
         nginx conf中将 scriptfilename 设置好，这个就是你的文件位置，用
             $document_root$fastcgi_script_name 就行了
+
+php 扩展安装
+    php pcre网站下载扩展，或者在github上
+    然后编译，copy到module目录，改动配置文件，可能source目录下有对应的配置，可以导入设置
+
+nginx优化
+    worker_processes cpu cores recommended
+    worker_cpu_affinity 0001 0010 0100 1000 这样制定绑定
+    use kqueue epoll 选择使用的io模型
+    worker_connections 单个进程可以连接的所有链接数
+        还收到worker_rlimit_nofile的限定
+
+    hash max size
+    hash bucket size
+        优先调整前者，共同用来hash域名，前者消耗内存，后者cpu居多，用来查询域名对应的功能块的应该
+        前者一般是l1缓存的4到5背
+
+    sendfile on
+    tcpnopush tcpnodelay 这三个共同作用，积极减少网络拥堵，增加传输效率
+
+    keepalive_timeout 设置keepavlie长链接的服务端保持时间，会放到header里面
+    nodelay:
+        有数据就发送，阻止nagle算法的发生
+    client_header_timeout 完整接受client 的头部的时间超时,组织http协议攻击
+    client_body_timeout 两次活跃发送间的超时
+    send_timeout 两次活跃发送间的超时
+    client_max_body_size 限制大小
+
+    gzip on; 一般图片不压缩，因为本身呀过了
+    gzip_min_length 1k;
+    gzip buffers 4 16k
+    gzip comp leve 压缩比率等级
+    gzip type  压缩类型
+    gzip vary on 
+
+    浏览器插件
+        yslow
+
+    expires 30d; 缓存在客户端
+
+
+    access_log off 放在某个location里表示这个不需要记录，这样减少消耗
+        日志目录只要root权限注意，不要给nginx用户权限
