@@ -148,3 +148,7 @@ nfs
     exportfs -rv 重读配置nfs
     mount -t nfs ip:path  /xxx
     showmount
+
+    首先开启rpcbind 然后nfs server ，然后编辑exports ，最后mount -t nfs 就行了
+        出错差一下rpcinfo 的结果
+    fstab 使用netfs参数即可，不然会失败，因为网络要先起来
