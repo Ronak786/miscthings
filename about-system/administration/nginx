@@ -106,3 +106,41 @@ nginx优化
         location @fallback {
             proxy_pass xxxxxx 可以这样使用
         }
+
+    目录权限
+        root  目录755 文件文件644
+
+    显示useragent 爬虫
+        if ( $http_user_agent ~ xxxx(正则））　｛ｘｘｘｘ｝
+        if ( $request_method !~ ^(GET|HEAD)) {xxxx}
+
+    limit_conn_zone
+    limit_conn    这两个用于限制链接的ｚｏｎｅ的大小
+
+    limit_req_zone
+    limit_req 限制请求的频率，也就是每秒的数量
+
+mysql
+    mysqld_safe --default-files 可以设置不同的配置文件，这样可以做到多个实例的启动
+
+    主从复制
+        log-bin=xxxxxx
+        主要过程，ｍａｓｔｅｒ的ｉｏ线程把ｂｉｎｌｏｇ的内容发送给链接过来的slave线程，认证过了已经，
+            然后slave写入relay中继日志，自己的sql线程把这些解析成sql执行
+        server-id 每台同步的主从这个要不一样
+        grant replication slave on *.* to xxxxx  设置复制的可用帐号
+        flush table with read lock 锁表
+        然后mysqldump dump当前数据库
+        unlock tables
+        然后在从库回复这些数据
+        然后从库连接
+            change master to master_host='xxxx', master_port=xxx, master_user=xxx,master_log_pos=xx这样就会同步了
+            好像不能有空格
+            这个用于改变从的链接配置，后面要start slave真正启动同步线程，stop slave停止
+        show master status
+        show slave status 里面有io running 和 second begind参数，需要注意
+
+        read-only参数从库可以使用
+
+
+    
