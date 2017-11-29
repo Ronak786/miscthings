@@ -142,5 +142,9 @@ mysql
 
         read-only参数从库可以使用
 
-
-    
+nfs
+    需要rpcbind  nfsutils两个服务nfs
+    /etc/exports这个是配置文件的地方
+    exportfs -rv 重读配置nfs
+    mount -t nfs ip:path  /xxx
+    showmount
