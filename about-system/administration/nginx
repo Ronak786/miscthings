@@ -87,3 +87,22 @@ nginx优化
 
     access_log off 放在某个location里表示这个不需要记录，这样减少消耗
         日志目录只要root权限注意，不要给nginx用户权限
+
+    deny all; 用于在location里拒绝请求，这样可以拒绝某些文件的流露
+        要放在允许处理的前面，因为是按顺序的
+    allow ip/xx;
+    deny ip; 可以筛选可以允许的ip
+
+    server_name _; 这样匹配到的是ip访问的，而不是域名访问的用户
+        return 501；对于这样的用户返回501
+
+    httpaccesskeymodule 这个用来防盗链，因为具体的url被改掉了
+    referer也可以
+        这一块要看一下 
+
+    错误页
+        errorpage  num num num  path;(这个是url后面那部分的path）
+        errorpage num = @fallback
+        location @fallback {
+            proxy_pass xxxxxx 可以这样使用
+        }
