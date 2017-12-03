@@ -1,0 +1,2 @@
+安装的时候数据库记得配置zabbix里的listen ip要监听非本地端口，对于mysql的dbhost是看server和mysql所在服务器的相对位置
+zabbix_get 可以用来测试获取数据
