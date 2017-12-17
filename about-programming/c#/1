@@ -1,0 +1,11 @@
+关于visualstudio 2017   这个要安装相关选项，使用installer来安装修改即可
+
+结合monogame，这个主要用于库，以及图片的转码，然后记得加入到vs的使用选择链接方式加入，
+    然后要选中右下选择 新的就copy 以及内容属性
+
+f5 ctrl的是开始运行，
+    主要分为initial ， contentload，  然后就是update  load的主循环
+
+    记得学好c#， 当然语言只是工具记住
+
+coursera上的deep learning 以及 virtual reality 系列付费课程看一下，尤其后者，集中看完！！ 
