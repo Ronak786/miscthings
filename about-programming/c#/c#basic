@@ -9,3 +9,7 @@ Main 要大写
       
 ///  文档注释
 //  /* */ 普通注释
+
+数据类型
+schar char uint ushort ulong double float class interface delegate enum dynamic string object 最后三个是特殊类型
+引用类型是实际存储堆中，一个引用在其他地方指向它
