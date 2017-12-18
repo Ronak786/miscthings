@@ -13,3 +13,31 @@ Main 要大写
 数据类型
 schar char uint ushort ulong double float class interface delegate enum dynamic string object 最后三个是特殊类型
 引用类型是实际存储堆中，一个引用在其他地方指向它
+
+class
+	包含字段，用于存储，默认有默认值
+	方法 ，包含函数调用
+	自动变量所有都不会自动初始化的
+
+	访问修饰符
+		private public  protected inernal (protected internal)
+
+	默认权限：
+		private，默认成员，方法都是私有的记住
+		就是只能从当前类内部的函数访问
+	名称嵌套
+		本地变量是不能嵌套同名的，和类的字段倒是可以同名
+	const 常量
+		必须初始化，不能引用对象，因为编译而不是运行时要决定好值，
+			只能null了
+	传参
+		ref 传引用 ，需要调用，声明函数的时候都用ref
+		ref的话，一定要传入的是变量，不能是单单的计算式子或者值
+		想要方法内部改变整个原先的引用，就要用到ref，不然
+		只不过是复制了引用变量，
+
+		输出参数
+			out type var 声明
+			out var 调用， 和ref一样都需要
+			传入之后内部一定要先初始化，赋值，才能读取，
+				外部直接放进去
