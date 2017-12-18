@@ -92,3 +92,52 @@ class
 
 		自动实现
 			不需要后备存储，直接set; get;
+
+	构造函数
+		普通的构造直接定义
+		静态构造，static，没有其他修饰符，只能初始化静态变量，
+		会在类实例所有之前完成运行
+
+        对象初始化
+        type xxx = new type() {xx=xx,xx=xx} 
+            后面的发生在构造函数之后，只能访问public变量
+
+        readonly
+            这个和const不一样，const属于静态，readonly可以在运行时赋值一次
+
+        this
+            在实例方法，构造 属性索引中使用，引用到类级别的变量
+
+        索引器
+            returntype  this i[int index]{
+             get ...
+             set ...
+             }  然后可以 obj[0] [1]  这样访问事先定下来的位置的值
+             只能用于实例不能静态
+
+             value作为set的传入参数值使用
+             就是根据传入的值作为索引，然后自己定义set get什么东西
+
+             可以重载，多个不同参数列表才行
+
+             访问器（set get）可以内部有自己的public private
+                但是必须是比外部的更严格的，而且只能有一个，不能两个都搞
+                    必须是两个都存在的情况下才能
+
+        partial class xxx
+        partial void func();
+        partial void func() {}
+            部分类可以这样定义在不同文件，相同文件
+            部分方法就是前面partial，必须void，而且隐式私有内部调用，
+                第一部分声明，后面定义就行了
+
+        继承
+            class xxx ： xxx
+            默认继承object，可以控制继承其他人
+
+            屏蔽
+                继承中如果数据的名字类型一样，屏蔽掉，
+                函数签名一样可以屏蔽掉
+                故意屏蔽使用new修饰符
+                    new public string xxx;
+                屏蔽之后的引用 base.xxx
