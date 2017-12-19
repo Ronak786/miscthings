@@ -1,3 +1,4 @@
+var xxx 自动推断类型
 Main 要大写
 使用某个空间里的类，就在外面using xxxx；
 自己也要放在一个空间里面
@@ -283,3 +284,97 @@ class
         按位的函数， 而且tostring打印也会考虑位的组合, HasFlag
 
         使用Enum。GetName（typeof name, int index）可以获得对应的名字
+
+
+    数组
+        Rank
+        Length 属性表示行数，长度（所有元素个数）
+        GetLength(index) 获取第几维度的长度
+            
+
+        一致长度数组：
+            long[,,] xxx  逗号代表多维，这里声明的矩形的多维长度一样的那种数组
+            int[,] arr = new int[4,10];
+            int [] arr = new int[] {1,2,3,4}
+            int [,] arr = new int[,] { {1,2}, {3,4}}
+            int [,] arr = new int[2,2] { {1,2}, {3,4}}
+            int [] arr = {11,2,1,1,1,1} 也可以
+            var arr = new  [,] {xx,xx,xx} 这种自动推断也可以
+                初始化必须元素写满，不会自动填0的！！
+
+        交错数组，长度可以不一样
+            int [][] = new int[2][] 最后一位不填
+            初始化需要两步，首先是顶层数组，然后是每个元素要赋值一个不同的数组，
+                可以是矩形数组，只要int[][,] = new int[2][,]
+            一维错位数组更有效率，矩形数组更容易理解
+
+        foreach(var xx in xxx)
+            矩形数组，直接用，最右边index最先变动
+            交错数组， 要嵌套一层foreach才行
+        
+        引用类型的数组可以通过 继承或者隐士，显式转变来赋值进去其他元素
+
+        数组继承了一些方法看一下
+
+    委托delegate
+        就是函数指针一样的，
+         delegate type func（）；声明 需要和可以指向的函数签名返回值一致
+            这个得到的是类型，然后 type name； 获得对应的变量
+            然后 name = new type(class.method) 放入方法
+                    name = class.method也可以
+                    name += method  可以添加
+                    name -= method 这些实际上创建了新的返回
+                        从尾部删除第一个
+                    空委托 == null 可以比较
+
+            返回值
+                只有最后一个方法的被返回
+            参数
+                引用参数会把新的值传下去
+        匿名委托
+            delegate type func();
+            type name = delegate() {}
+                如果没有out参数，可以省略参数括号
+            委托声明里面params在匿名里面可以省略不写
+                    删除不存在没效果，调用空异常
+        捕获：
+            在初始化匿名的时候可以引用到的外部的变量，在后面出了作用域，
+                还是可以用匿名委托引用到的
+
+        使用lambda代替匿名委托
+            delegate name():
+            type name =  x => x+1;
+                        (int x,int xx) => { return x + xx;}
+                参数列表不一定要类型，除非有ref out
+                如果只哟一个参数，可以括号类型都不要
+
+        事件
+            需要注册，需要事件声明，然后需要不断加入处理函数
+            delegate  type func();
+            class xxx {
+                public event func eventname;
+                f1() {
+                eventname += xxxxx;
+                eventname += xxxxx;
+                eventname += xxxxx;
+                }
+                f2() {
+                    if eventname != null;
+                        eventname(xx,xx) 调用
+                }
+            
+            public event EventHandler name; 使用系统定义的委托函数
+                回调的时候第一个参数是调用对象，第二个是传递信息的额，
+                    本身没用，可以继承然后传入自己的信息
+
+                如果要使用自己的派生类，要泛型的eventhandler《xxx》才行，
+                    同样的步骤，
+                    首先生成类，类里面有event，有对应的事件唤醒函数，
+                    然后加入新的函数，然后调用
+            通过这种方法，私有函数注册过去都是可以被直接调用的！！
+
+            可以像属性一样定义事件的访问器
+                public event EventHandler xxx {
+                 add {} // +=
+                 remove {} // -=
+                 }
