@@ -199,3 +199,56 @@ class
             camel 方式 局部变量和函数参数（第一个小写，后面首字母大写）
             私有变量和protected  _camle形式
             其他全首字符大写
+
+    计算符号
+        字面量，float xxxF
+        U/u  ul/UL L/l 推荐l大写
+        实数
+            xxx.xxexx的形式
+        字符用char 单引号
+            char c4 = '\u005a'  unicode
+            char c3 = '\x0061' 十六禁止ascii
+        字面量字符串
+            双引号 “   ” 常规里转换的
+            @“”  字面上的，么有任何转换, 中间还能换行的！！
+
+        bool 只能由关系比较产生，本身变量不具有bool意义
+
+        比较，
+            对于引用，只有引用同一个东西才会相等
+            其他的是深度比较，也就是比较内容的
+        && || !
+        & ^ |   ~按位取反
+        移位，有符号的因素右移注意
+
+        定义用户类型的隐士转换
+        public static implicit operator desttype ( sourcetype name)
+            的形式定义一个函数就行了
+            implicit 换成explicit的话就必须显式转换了 a = (desttype)b
+
+        运算符重载
+            必须public static returntype operator xxx （至少一个类参数）
+               + - ! ~ ++ -- true false
+               + - * / % & | ^ << >> == != < > <= >= 这些可以重载
+                但是++ --没有前后置区别了
+
+        typeof ()
+            可以获得类型的信息，也是一个类，里面有每个域，方法，以及class的名字
+            （用gettype方法获得）
+
+        switch
+            break 这个 必须，但是可以多个标签放一起，
+                不然编译错误
+
+        标签
+            可以用来跳转到不同的位置，但是只能从标签当前或者更内层的作用域
+            往外，
+            switch里可以goto case xxx 或者 goto default
+
+    using (type xxx = xxxx, xx = xx ) { 操作}
+        对于实现了idisposable接口的类型可以这么做
+        相当于python的with xxxx as xx
+        会自动析构
+        也可以 type xx =xx;
+                using(xx)
+                不过不太好
