@@ -104,6 +104,7 @@ class
 
         readonly
             这个和const不一样，const属于静态，readonly可以在运行时赋值一次
+            只能在声明或者构造里初始化！
 
         this
             在实例方法，构造 属性索引中使用，引用到类级别的变量
@@ -135,9 +136,66 @@ class
             class xxx ： xxx
             默认继承object，可以控制继承其他人
 
-            屏蔽
+            屏蔽 (注意覆盖 屏蔽是不一样的）
                 继承中如果数据的名字类型一样，屏蔽掉，
                 函数签名一样可以屏蔽掉
                 故意屏蔽使用new修饰符
                     new public string xxx;
                 屏蔽之后的引用 base.xxx
+
+                记住能访问到的才叫隐藏，不然不需要new的，比如base里的private
+                    成员，覆盖它不用new，因为本来就访问不到
+
+            使用基类引用强制转换，只会使用到基类的方法和域
+
+            虚方法
+                virtual xxxx 基类
+                override xxxx 派生类， 这个是必须的，不然不管
+                    然后就会调用到派生方法了
+
+                方法属性索引都可以的
+                但是override的必须是相同范围属性，同public或者。。
+                    不能覆盖static
+
+            继承的构造函数执行
+                构造 : base(参数）
+                构造 : this(参数） 这个是调用本类的其他某个构造
+                    这种就可以让某个构造变成private
+
+        类的限定符号
+            public
+            internal 这个只能在当前程序集引用，（目前不懂） 默认这个
+            而使用using表示去掉一个限定符号，和程序集没关系
+
+            成员的限定在类之内，不能超过的
+
+        成员限定符号
+            public 所有访问
+            private 自己以及嵌套类访问
+            protected 派生本身可访问
+            internal 程序集分界，外部不可以，内部可以
+            protected internal 两者的合体，是所有
+
+        abstract 
+            和virtual差不多，但是本身不能有实现，
+            必须覆盖， 用override
+            可以方法索引 属性 时间
+            本身可以继承自其他类
+
+        sealed class xxx
+            不能作为基类的类
+
+        staitc class 
+            静态类
+
+        扩展方法
+            就是在类外想再加个函数，但是类本身不允许继承，不能修改，
+            那就可以
+            static class xxx {static method(this classtype xxx)}
+                然后调用原来的class的实例就可以直接obj.method调用了
+                必须静态！！(类，方法都是）
+
+        命名方法
+            camel 方式 局部变量和函数参数（第一个小写，后面首字母大写）
+            私有变量和protected  _camle形式
+            其他全首字符大写
