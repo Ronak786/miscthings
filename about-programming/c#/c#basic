@@ -378,3 +378,60 @@ class
                  add {} // +=
                  remove {} // -=
                  }
+
+
+        接口
+            public interface xxx {
+                func;
+            }
+            class xaaa : xxx 就可以来实现接口
+
+            限制：
+                不能数据以及静态成员
+                    可以方法索引事件属性
+                接口可以有public protected internal private，
+                    但是成员不能有限定，默认public
+
+                先基类后接口，接口可以多个，逗号分离
+
+            可以使用强制转换获得接口的引用
+            interfacetype var = classvar as interfacetype;
+                这种比强制要好，失败返回null而不是异常
+
+            1如果多个接口方法签名一样，只要实现一个就行了
+            2 显式接口实现 实现的时候
+                interfacename.funcname() {} 来实现就行了
+                其他的同类成员需要((interfacetype)this).func()的方式访问
+                    才行,外部只能转相应接口类型才能访问这种重叠
+
+
+            如果基类有了当前派生类继承的接口对应的方法实现，
+                可以省略实现！！
+
+            接口继承
+                接口可以继承多个接口的,主要用来整合提供一个统一的大接口
+
+        转换
+            隐式转换，短的转换成长的，没有任何损失
+            checked unchecked 运算符
+                a = checked ((float)b)
+                    如果溢出，异常 ， 另一个表示忽略 
+                也可用于代码块
+            checked {
+            }
+            隐式转换转成类的接口或者基类都是自动可以的
+
+            autobox unbox
+                这两种可以让
+                int a = 2;
+                object oi = a;
+                int k = (int)oi
+                注意box起来的是副本，和原来的独立了
+
+            自定义类的转换
+                不能是接口或者object，不能使继承关系
+                public static implicit operator int(class name)
+
+            is :
+                aa is type 检测是否是某个类型，
+                    box ，引用转换为true
