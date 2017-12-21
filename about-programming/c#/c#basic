@@ -475,3 +475,22 @@ class
                     只要delegate T xxx<out T>(); 加个out就行了
                     不然不能赋值的
             逆变，需要in参数， 派生的委托接受基类委托的赋值
+
+
+    枚举：
+        首先类首先IEmurable 接口
+            这个里面就一个函数GetEmurator，返回一个IEmurator类型
+            然后再找一个类实现Emurator接口，
+                里面实现Current属性
+                 movenext reset函数
+                 Currnet返回object position初始在-1位置
+                 然后foreach会每次调用的
+
+            泛型版本，更加安全，因为返回不是object而是特定类型
+
+        迭代 using system.Collections.Generic
+            在返回rmurator的函数里使用yield return xxx
+                这样会自动创造处current等属性方法
+            有多个枚举的类，
+                可以手动指定多个范湖iemurable接口的方法，每个
+                    都可以放在foreach里面使用
