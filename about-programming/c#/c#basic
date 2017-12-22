@@ -551,3 +551,13 @@ class
             var 有属性的
         throw exceptionobject;
         throw 只能在catch里，表示继续跑出当前异常
+
+    预处理指令
+    #define
+    #if #undef
+    #elif
+    #warning
+    #error
+    #line
+    #pragma
+    #region
