@@ -494,3 +494,60 @@ class
             有多个枚举的类，
                 可以手动指定多个范湖iemurable接口的方法，每个
                     都可以放在foreach里面使用
+
+    匿名类型
+        var xx = new {xx=xx,xx=xx,xx=xx};的形式
+            只能用于局部变量
+        查询语法
+            var xx = from x in xx where xxx select x;
+                返回的是emurable类型或者值类型，如果前者直到处理枚举才执行，
+                    后者直接执行，所以前者可能获取到新值
+
+            from ... [from . let..where]* orderby ... select ... group ...
+                from type item in items join xxx in xxx  on yyy equals zzz
+
+            from let where 字句
+                可以多个，这个是在一开始的from的基础上的相当于n*(n-1)个组合
+                然后let xx=xx 设置变量，然后where进行判断筛选
+                最后select new {xxxxxx}  取出组成的匿名类
+                可以有多个条件wehere的
+
+                orderby xxx ascending/descending 可以多个，逗号
+                select ... group xx by xx 
+                into 延续
+                    把之前的查询结果放入这个，后面再from 的时候in 这个里面的
+        查询方法
+            有多个，如Count（） ，Sum（）等特有的，
+                实现了iemurable接口的类都可以直接使用
+
+        异步编程
+            public async Task<int> func(xxxx) {}
+                然后接受异步的结果保存到taskint里面
+                在异步函数内部使用await表示需要异步完成的语句
+            参数
+                不能是out ref
+            返回类型放在Task<type> 这个里面
+                Task  == return void ,然后根据task来后面检查状态
+                void 表示后续不管了
+
+                task.Wait()可以等待
+
+            async表示内部有多个await，没有其他功能
+
+        命名空间
+            可以嵌套，两种，一种放在里面
+                另外一种xx, xx.xxxx 的形式其实也是嵌套
+
+            using xxx;
+                放在开头
+                应用于当前所有空间
+            using xx = xxxx;  别名
+
+    异常
+        try {} 
+        catch {} 匹配所有
+        catch (type) {}
+        catch (type var) {}
+            var 有属性的
+        throw exceptionobject;
+        throw 只能在catch里，表示继续跑出当前异常
