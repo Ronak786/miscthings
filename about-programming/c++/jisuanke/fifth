@@ -70,3 +70,32 @@ static
         push_front push_back pop_...   size
         clear insert erase
         emplace 这个现在有右值引用，其实可以不用了
+
+
+map
+    map<xx,xx> xxx;
+    xxx.insert(make_pair(xx,xx));
+set
+	insert
+	find erase clear count
+
+算法函数
+    transform(begin ,end, begin2, lambda)
+        把begin到end通过lambda计算放入beign2开始的地方o
+        返回最后的位置，如果插入原位，那么返回的也刚好是结束的位置
+    copy_if(begin, end, iterator, lambda)
+        满足函数就复制到it的地方，这里可以使用backinserter来做到插入复制
+    partition(begin, end, lambda)
+        满足的放前面，不满足的后面，返回第一个ｆａｌｓｅ的位置
+    accumulate(begin, end, init, lamda)
+        再初始值上不断+ lambda处理过的元素 ,lambda(int a, int b) 第一个参数从init开始
+    std::plus<T>() 返回一个加法函数某个特定类型
+
+auto prefix =  accumulate(begin(xs)+1, end(xs),
+        end(first), [&](auto it, auto str) {
+            return mismatch(begin(first), it, begin(str), end(str)).first;
+        });
+    解释
+        这段的意思是从xs的vectorstring数组中从第二个开始取出，然后逐个和第一个比较，一开始比较到尾部，所以end（first）
+        后面比较的都是mismatch返回第一个不匹配迭代器位置，
+        所以最后得到的是所有字符串的公共前缀，
