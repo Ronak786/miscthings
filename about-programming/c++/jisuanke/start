@@ -27,5 +27,14 @@ type rich programming
 
     lambda
         当作函数指针使用， 可以搞个模板，template<typename U>int func(U filter) 
-            传入的时候只要 int func([](int x) {return x ;}就行了
+            传入的时候只要 int func([](int x) -> int {return x ;}就行了
                 【】里可以是 &  = this 表示如果在类里面，可以直接用类的元素（省略this）
+		参数只应该是局部变量或this，全局变量不用捕获，直接用，肯定可以修改！！
+
+	存放lambda的类型
+		使用function<xxx> 这个里面的类型使用你的函数返回值+标签 组成即可
+		这样可以用来存于vector中
+			这个方案虚函数有些耗ｃｐｕ，不过一般不是瓶颈，遇到了再测试模板的方法比较
+		一般用模板存放就行了，需要 存储函数指针的时候再用function
+		lambda到function的函数
+			赋值是可以隐式转换的，int double 互相可以转换赋予

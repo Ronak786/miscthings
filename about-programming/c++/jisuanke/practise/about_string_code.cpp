@@ -4,10 +4,7 @@
 
 int main() {
     std::string line;
-//    std::string regstring = R"(\w+@(\w+\.)+\w+)";
-//    std::string regstring = R"(abc)";
-//    std::regex reg(R"(\w+@(\w+\.)+\w+)");
-//    std::regex reg("\\w+@(\\w+\\.)+\\w+");
+    std::regex reg(R"(\w+@(\w+\.)+\w+)");
 
     while (std::getline(std::cin, line)) {
 //            std::cout << "got line " << line << std::endl;
