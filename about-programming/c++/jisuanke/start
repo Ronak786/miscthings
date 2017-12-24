@@ -1,0 +1,31 @@
+标准动态： isocpp。org
+平常查找网站 cppreference.com msdn: https://msdn.microsoft.com/en-us/library/hh875057.aspx
+type rich programming
+    每个不同种类的东西都用一个具体的类去表示，而不是都是数字就都用int，防止错误输入
+
+一些基本类型
+    vector 里的at 和 【】区别
+        前者有边界检查，后者未定义如果超出
+    string.replace(替换操作）
+    string.find() 返回index或者string::npos
+    string.c_str()  .data() 其实两个目前是一样的！！
+        raw_literal  R"xxx(yourstring)xxx" 其中 xxx( 是分隔符， xxx自定义，但是前后要一样
+    regex:
+        字符串新语法：
+         R"xxx(sdlkfsal)xxx" xxx必须前后一样，可以空，中间括号里面任意字符不会转义
+        用 regex 或者regex——basic初始化，前者是一个特例类型
+            然后regex match可以匹配，这个匹配整个的
+                regex search 这个可以部分匹配  返回true表示为真
+                    每次匹配最开始的一个，所以注意字符串替换
+                    获得的结果是smatch返回string类型，有多个，看有几个括号就有n+1个
+                regex replace用来替换，有几个版本的，可以本地，可以复制到新的地方
+
+            smatch 的返回
+                第一个元素的str是整个字符串，first second 两个迭代器是左闭右开的字符序列
+                    可以通过second制定下一波开始匹配的地方
+
+
+    lambda
+        当作函数指针使用， 可以搞个模板，template<typename U>int func(U filter) 
+            传入的时候只要 int func([](int x) {return x ;}就行了
+                【】里可以是 &  = this 表示如果在类里面，可以直接用类的元素（省略this）
