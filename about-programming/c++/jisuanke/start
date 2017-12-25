@@ -38,3 +38,13 @@ type rich programming
 		一般用模板存放就行了，需要 存储函数指针的时候再用function
 		lambda到function的函数
 			赋值是可以隐式转换的，int double 互相可以转换赋予
+
+        auto的参数，返回值全部可以是auto，这样的好处是传入是决定，记住，这个比hard的类型好
+                只能用于lambda
+        decltype（auto）这个的作用
+            放在变量前面，必须初始化，然后把初始化来的值放进去判定类型;
+            放在函数返回值，会衡量return的类型然后判断，返回lambda的时候比较管用
+        另一种写法
+            auto func(xx, xx) -> decltype(a+b) {
+            return a + b;
+            } 尾置写法
