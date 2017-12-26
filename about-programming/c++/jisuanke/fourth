@@ -1,0 +1,13 @@
+new delete
+内存泄漏查看 visual studio
+    #define _CRTDBG_MAP_ALLOC
+    #include <stdlib.h>
+    #include <crtdbg.h>
+    #define NEW_WITH_MEMORY_LEAK_CHECKING new(_NORMAL_BLOCK, __FILE__, __LINE__)
+    #define new NEW_WITH_MEMORY_LEAK_CHECKING
+
+    放文件开头
+    _CrtDumpMemoryLeaks();
+    放主函数结尾return之前
+
+    这样，运行完后，会显示new malloc 没有free delete的所有位置等信息

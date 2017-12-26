@@ -85,9 +85,9 @@ public:
         int newcount = count + 1;
         T* tmpvec = static_cast<T*>(malloc(count*sizeof(T) *(count + 1)));
         for (int i = 0; i < count; ++i) {
-            new(tmpvec+i) T{move(items[i])}; // use rvalue ctor
+            new(tmpvec[i]) T{move(items[i])}; // use rvalue ctor
         }
-        new(tmpvec+count) T{item}; // add new
+        new(tmpvec[count]) T{item}; // add new
         Clear();
         items = tmpvec; // assign new buffer
         count = newcount;
@@ -102,11 +102,11 @@ public:
 
         T* tmpvec = static_cast<T*>(malloc(count*sizeof(T) *(count + 1)));
         for (int i = 0; i < index; ++i) {
-            new(tmpvec+i) T{move(items[i])}; // use rvalue ctor
+            new(tmpvec[i]) T{move(items[i])}; // use rvalue ctor
         }
-        new(tmpvec+index) T{item}; // add new
+        new(tmpvec[index]) T{item}; // add new
         for (int i = index; i < count; ++i) {
-            new(tmpvec+i+1) T{move(items[i])}; // use rvalue ctor move the rest
+            new(tmpvec[i+1]) T{move(items[i])}; // use rvalue ctor move the rest
         }
 
         Clear();
@@ -123,10 +123,10 @@ public:
 
         T* tmpvec = static_cast<T*>(malloc(count*sizeof(T) *(count - 1)));
         for (int i = 0; i < index; ++i) {
-            new(tmpvec+i) T{move(items[i])}; // use rvalue ctor
+            new(tmpvec[i]) T{move(items[i])}; // use rvalue ctor
         }
         for (int i = index + 1; i < count; ++i) {
-            new(tmpvec+i-1) T{move(items[i])}; // use rvalue ctor move the rest
+            new(tmpvec[i-1]) T{move(items[i])}; // use rvalue ctor move the rest
         }
 
         Clear();

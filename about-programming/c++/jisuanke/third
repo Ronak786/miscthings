@@ -43,10 +43,12 @@
                 string func() {return "zxxxx";}这是优化
                 这样不会调用两次构造，而只哟一次
 
-placement new
+placement new (好像还有其他的placement new类型函数）
     在你提供的位置上传见对象
         xxx = new(buf) class; 
         释放
             xxx->~xxx() 这样这个位置还能给别人用,buf要多一个sizeofint的大小，用来存大小的
     全局new是不能重载的，
         operator new用来给类自己分配内存的，不是全局通用的
+
+        注意buf必须是正好的你那个位置！！！
