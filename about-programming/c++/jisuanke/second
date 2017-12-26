@@ -2,6 +2,7 @@ c++ 里struct没有独立名字空间，和c不一样，所以不能struct foo f
 struct 默认是public，继承也是默认public
 数组的使用
     array xxx[]{xxxxx} 可以直接初始化的
+        初始化是是可以初始化引用的
     构造：
         这种不带等号的{}初始化成为 universal construction
         当没有构造函数的时候,这种初始化会按顺序初始化每个成员
