@@ -1,0 +1,7 @@
+Input
+    获取输入
+rigidbody   
+    addforce
+    受力
+transform
+    面板上有这个属性，这个是位移的属性，里面还有position等可以使用

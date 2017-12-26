@@ -1,0 +1,45 @@
+新建项目
+    create菜单或者object菜单创建plane, ball之类的东西	
+    双击或者f2重命名
+    使用右侧的inspector面板 右边齿轮设置reset重置位置
+    选中物件，按f ，或者edit菜单的frame selected，聚焦到选中物体
+
+    secen画面的右上方的gimos里面可以设置grid网格的不显示
+    
+    拉伸维度
+        拖动inspector里的坐标移动
+    移动位移    
+        拉动三个标签，这个是左手坐标系
+
+    material
+        加颜色用,放在单独的文件夹里
+            create 一个material
+            然后 albedo里加入颜色，然后直接拖动这个material到你需要的平面上
+
+    component:
+        选中物体，然后component里面增加physics物理特性
+    特性位置调整    
+        齿轮可以上下调节
+        可以折叠，scene里对应的也会消失
+
+    script
+        脚本通过create 或者add conpoment 加入，
+            然后双击或者选中点击open打开
+        Update 
+        FixedUpdate 前者渲染前调用，后者物理计算前调用，所以物理运动的
+            代码在这里
+        类的公共变量可以直接再unity里调整，运行时也可以
+        Update 用来放置普通的每帧更新
+        LateUpdate用来放置所有其他更新都完成之后的动作更新
+            这个用来放置camera的挂接脚本最合适
+        gameobject
+            可以声明这个变量，然后手动拖入
+
+    文档
+        使用api文档来看需要什么，比如input输入如何获得
+
+
+
+
+拖动
+    可以把摄像机作为物体的子，这样摄像机会随物体而旋转（从属开始的位置开始）
