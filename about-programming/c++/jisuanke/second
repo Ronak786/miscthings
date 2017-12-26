@@ -56,7 +56,7 @@ struct 默认是public，继承也是默认public
 
     总结forward move
         forward 需要参数形式类型声明的时候是T&&形式，然后会原样穿进去
-        move 把左值传成右值
+        move 把左值传成右值,表示这个左值我不需要了，你可以当右值干掉
             进去后两者都有名字，变成左值
     explicit:
         单参数非复制构造函数，防止隐式转换，也就是如char* 转换成string

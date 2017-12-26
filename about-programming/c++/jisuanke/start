@@ -1,3 +1,6 @@
+一些算法
+    count_if(begin, end, bool_expr) return count 
+    find_if(beign, end, xxx)  return end if not found
 标准动态： isocpp。org
 平常查找网站 cppreference.com msdn: https://msdn.microsoft.com/en-us/library/hh875057.aspx
 type rich programming
