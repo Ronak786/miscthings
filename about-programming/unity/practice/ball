@@ -43,3 +43,56 @@
 
 拖动
     可以把摄像机作为物体的子，这样摄像机会随物体而旋转（从属开始的位置开始）
+    从heirachy拖动到project目录
+        会创建一个asset模板
+
+物体
+    empty object 用来组织一系列的同类物体
+    cube 可以当墙体
+        利用长宽高以及位置，角度等调整方位然后作为墙体即可
+
+    显示
+        选中物件，然后点击显示，可以取消显示
+        transform.Rotate(xxx * Time.deltaTime) 这个用于控制
+            每秒旋转的度数，因为这里delta是一帧所用时间，
+                那么如果1秒，就是旋转这么多，如果多余一秒，
+                就是当前x秒旋转x*xx，那一秒还是按么多
+
+
+    复制
+        ctrl-d 可以复制物体
+    视角
+        中间上面有global local 改变全局还是当前本地坐标
+    附着颜色
+        创建一个material，拖动到一个上面，然后右上角apply可以应用到所有上面
+        或者拖动到物体拖到folder创造出的preferb里去
+    碰撞    
+        物体都有碰撞属性，可以在碰撞之后设置对方的行为，比如匹配tag 
+            tag可以再对方属性设置，可以同意assert然后设置assert，这个方便
+        
+        trigger 碰撞
+            这个的好处是触发计算碰撞，但不会把碰撞表现出来，触发函数，
+                但不会有物理效果
+                在prefeb里mesh render里 in trigger
+
+        rigidbody
+            加入这个选项，就会从static colliders变成dynamic物体(只要有collider），这样，
+                就不会变动后写入cache，导致浪费资源
+            但是这样会受重力影响，如果选中了in trigger，不会受到
+            冲突显示出来，所以会无限下坠，不好
+
+            这时要选择kinematic ，这个表示可以自身转换，但是不受外力作用，
+
+
+    ui  记住所有东西创建后reset
+        create ui text
+            所有ui工具都是canvas下的，会自动添加
+        text
+            Text放置text，和界面create的text一样，
+                可以设置里面的值,通过拖拽界面的额text进入即可
+
+
+    build:
+        file->build settings or  shift+ctrl+b
+        add open scene ,或者拖动project里的game到上方界面
+        然后build就行了
