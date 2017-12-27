@@ -1,0 +1,51 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Accept	src/Expression.cpp	/^void BinaryExpression::Accept(IVisior* visitor)$/;"	f	class:BinaryExpression
+Accept	src/Expression.cpp	/^void NumberExpression::Accept(IVisior* visitor)$/;"	f	class:NumberExpression
+Assert	src/main.cpp	/^void Assert(const char* exp, string regular)$/;"	f
+BinaryExpression	include/Expression.h	/^	BinaryExpression(BinaryOperator theOp, shared_ptr<Expression> theLeft, shared_ptr<Expression> theRight) :$/;"	f	class:BinaryExpression
+BinaryExpression	include/Expression.h	/^class BinaryExpression :public Expression$/;"	c
+BinaryOperator	include/Expression.h	/^enum class BinaryOperator$/;"	c
+CC	src/Makefile	/^CC = g++$/;"	m
+CPPFLAGS	src/Makefile	/^CPPFLAGS = -I..\/include -std=c++11 -Wextra -g$/;"	m
+CXX	src/Makefile	/^CXX = g++$/;"	m
+Divide	include/Expression.h	/^	Divide,$/;"	m	class:BinaryOperator
+EXENAME	Makefile	/^EXENAME = main$/;"	m
+EXENAME	src/Makefile	/^EXENAME = main$/;"	m
+Error	include/utility.h	/^	const char* Error;$/;"	m	struct:Exception
+Exception	include/utility.h	/^	Exception(const char* aStart, const char* aError)$/;"	f	struct:Exception
+Exception	include/utility.h	/^struct Exception$/;"	s
+Expression	include/Expression.h	/^class Expression$/;"	c
+Expression	src/Expression.cpp	/^Expression::Expression()$/;"	f	class:Expression
+ExpressionPointer	include/visitor.h	/^class ExpressionPointer :public Expression::IVisior$/;"	c
+First	include/Expression.h	/^	shared_ptr<Expression> First;$/;"	m	class:BinaryExpression
+GetExp	src/parser.cpp	/^shared_ptr<Expression> GetExp(const char*& Stream)$/;"	f
+GetFactor	src/parser.cpp	/^shared_ptr<Expression> GetFactor(const char*& Stream)$/;"	f
+GetNumber	src/parser.cpp	/^shared_ptr<Expression> GetNumber(const char*& Stream)$/;"	f
+GetOp	src/utility.cpp	/^char GetOp(BinaryOperator B)$/;"	f
+GetTerm	src/parser.cpp	/^shared_ptr<Expression> GetTerm(const char*& Stream)$/;"	f
+IVisior	include/Expression.h	/^	class IVisior$/;"	c	class:Expression
+Is	src/utility.cpp	/^bool Is(const char*& Stream, const char* Text)$/;"	f
+IsLarger	src/utility.cpp	/^int IsLarger(BinaryOperator B1, BinaryOperator B2) \/\/b1_outside$/;"	f
+IsLeft	include/Expression.h	/^	bool IsLeft;$/;"	m	class:Expression
+LDFLAGS	src/Makefile	/^LDFLAGS = -std=c++11$/;"	m
+Minus	include/Expression.h	/^	Minus,$/;"	m	class:BinaryOperator
+Multiply	include/Expression.h	/^	Multiply,$/;"	m	class:BinaryOperator
+NumberExpression	include/Expression.h	/^class NumberExpression :public Expression$/;"	c
+NumberExpression	src/Expression.cpp	/^NumberExpression::NumberExpression(int number)$/;"	f	class:NumberExpression
+Op	include/Expression.h	/^	BinaryOperator Op;$/;"	m	class:BinaryExpression
+Plus	include/Expression.h	/^	Plus,$/;"	m	class:BinaryOperator
+Regular	src/utility.cpp	/^int Regular(int input)$/;"	f
+Second	include/Expression.h	/^	shared_ptr<Expression> Second;$/;"	m	class:BinaryExpression
+Start	include/utility.h	/^	const char* Start;$/;"	m	struct:Exception
+Value	include/Expression.h	/^	int Value;$/;"	m	class:NumberExpression
+Visit	src/visitor.cpp	/^void ExpressionPointer::Visit(BinaryExpression* node)$/;"	f	class:ExpressionPointer
+Visit	src/visitor.cpp	/^void ExpressionPointer::Visit(NumberExpression* node)$/;"	f	class:ExpressionPointer
+main	src/main.cpp	/^int main() {$/;"	f
+output	src/main.cpp	/^void output() {$/;"	f
+pass_count	src/main.cpp	/^int pass_count = 0;$/;"	v
+result	include/visitor.h	/^	string result;$/;"	m	class:ExpressionPointer

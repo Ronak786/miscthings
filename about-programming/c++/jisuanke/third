@@ -12,6 +12,11 @@
         右值引用的好处是保证不能让左值调用，还可以避免返回return的时候的复制
             需要move支持
 
+        写构造的时候，注意copy是const应该，而&&版本的不需要const，因为要修改
+
+    阻止某些构造
+        写一个基类，里面private了几个构造函数，然后=delete即可,阻止派生类的默认构造出现
+
 调用函数，作为lambda
     class xxx { operator()(xxx,xxx){}};
     sort(beign, end, xxx{}} 即可，因为返回了一个可调用对象，
