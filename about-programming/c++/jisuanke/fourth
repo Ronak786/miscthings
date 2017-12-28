@@ -117,3 +117,33 @@ _CrtDumpMemoryLeaks() 用于内存泄漏检查，在保证已经全部释放后�
     如果一个类同时继承自两个类
         那么拥有其中一个的base指针（指向child的）
             可以dynamic转换到另一个base上的，（当然dynamic要求有ivirtual函数存在）
+
+虚拟继承
+   如果不使用的话，菱形继承会有多分原始base代码 
+   class A;
+   class B:virtual A;
+   class C:virtual A;
+   class D:B,C
+    就行了
+    如果从bc继承了同样的函数,那么需要在D里面也有一个，作为final override，不然编译就过不去
+        使用可以classname::xxx来特别选择某个类里面的
+
+friend 无法被继承类使用
+    赋予函数访问protected private的能力
+    写在类里面即可，外面定义的时候不用写
+    friend func
+    friend struct...
+    不受public等影响
+
+    内部类
+        这个想要访问外部类，不需要friend定义标签，直接函数里就可以使用外部类
+        当然是可其他类一样要传类引用进去的，不是直接使用内部成员，毕竟不知道外部类有没有生成过，
+        内外只是名字空间的差别罢了
+
+    重载标准函数
+        在std里，所以要打开std空间
+        模板重载需要 template<>func() 的形式,参数要符合
+        如果放在class内，还需要原本的声明friend后放在类里面
+
+        通过隐藏构造和系够，然后利用其他friend方法介入控制可构造方法
+            可以避免必须本地构造，只允许堆构造,也可以避免继承

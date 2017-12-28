@@ -1,126 +1,27 @@
 #include <iostream>
 #include <string>
-#include <vector>
 #include <memory>
 
 using namespace std;
 
-class Cat;
-class Dog;
-class Mouse;
-
-class Animal
+struct Node
 {
-public:
-        class IVisitor {
-        public:
-            virtual ~IVisitor() 
-            {
-                
-            }
-            virtual void Visit(Cat *animal) = 0;
-            virtual void Visit(Dog *animal) = 0;
-            virtual void Visit(Mouse *animal) = 0;
-        };
+    int data;
+
 private:
-    string name;
-
-public:
-
-    
-    Animal(const string& theName)
-        :name{theName}
-    {
-    }
-
-    virtual ~Animal()
-    {
-    }
-
-    const string& GetName()const
-    {
-        return name;
-    }
-
-    virtual string Introduce()const = 0;
-    
-    virtual void Accept(IVisitor* visitor) = 0;
+    Node() = default;
+    ~Node() = default;
+    template<class T, class... TArgs>
+    friend shared_ptr<T> std::make_shared(TArgs&&... args);
 };
-
-class Cat : public Animal
-{
-public:
-    Cat(const string& theName)
-        :Animal{theName}
-    {
+namespace std {
+    template<>
+    shared_ptr<Node> make_shared<Node>() {
+        return shared_ptr<Node>(new Node(), [](Node* node) {delete node;});
     }
-
-    string Introduce()const override
-    {
-        return "我是一只猫，我的名字叫\"" + GetName() + "\"。";
-    }
-    
-    void Accept(IVisitor * visitor) override {
-        visitor->Visit(this);
-    }
-};
-
-class Dog : public Animal
-{
-public:
-    Dog(const string& theName)
-        :Animal{theName}
-    {
-    }
-
-    string Introduce()const override
-    {
-        return "我是一只狗，我的名字叫\"" + GetName() + "\"。";
-    }
-    void Accept(IVisitor * visitor) override {
-        visitor->Visit(this);
-    }
-};
-
-class Mouse : public Animal
-{
-public:
-    Mouse(const string& theName)
-        :Animal{theName}
-    {
-    }
-
-    string Introduce()const override
-    {
-        return "我是一只老鼠，我的名字叫\"" + GetName() + "\"。";
-    }
-    void Accept(IVisitor * visitor) override {
-        visitor->Visit(this);
-    }
-};
-
-class CatVisitor : public Animal::IVisitor {
-    void Visit(Cat *animal) override {
-        cout << animal->Introduce() << endl;
-    }
-    
-    void Visit(Dog * animal) override {}
-    void Visit(Mouse * animal) override {}
-};
-
+}
 int main()
 {
-    auto tom = make_shared<Cat>("Tom");
-    auto jerry = make_shared<Mouse>("Jerry");
-    auto spike = make_shared<Dog>("Spike");
-    auto butch = make_shared<Cat>("Butch");
-    auto lightning = make_shared<Cat>("Lightning");
-    vector<shared_ptr<Animal>> friends{ tom, jerry, spike, butch, lightning };
-
-    CatVisitor *catVisitor = new CatVisitor;
-    for (auto animal : friends)
-    {
-        animal->Accept(catVisitor);
-    }
+    auto node = make_shared<Node>();
     return 0;
 }
