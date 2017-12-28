@@ -82,6 +82,7 @@ public private等
         shared_ptr 利用这个可以避免释放，可以传入自己的析构函数
 
     智能指针推荐
+		shared_ptr 代表了共有所有权,代表了共享，么有共享意义的地方不该用
         unique: make_unique<xxx>  obj.release() 释放并返回ｕｎｉｑｕｅ指针内容，用来初始化另一个
         weak_ptr 这个使用前要ｌｏｃｋ返回给一个ｓｈａｒｅｐｔｒ才能判断使用之类的
             利用shared 来创造weak
@@ -92,3 +93,27 @@ public private等
             expired() 判断时候没了
             lock() 返回一个share指针
             只能从shared来初始化，不能从unique
+
+            这个在树形里面用做指向父节点的指针，不能shared，因为这样构成环形，
+                而任何环形的shared都不会释放内存，一定会泄漏
+
+	#ifndef NDEBUG
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#define CHECK_MEMORY_LEAKS_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#define new CHECK_MEMORY_LEAKS_NEW
+#endif
+
+_CrtDumpMemoryLeaks() 用于内存泄漏检查，在保证已经全部释放后调用这个
+
+类型转换注意
+    要使用dynamiccast，base至少有一个vurtial函数才行
+    数值解释的转换使用reinterpret
+    
+
+对于继承中父类函数的调用
+    obj->classname::func()
+    如果一个类同时继承自两个类
+        那么拥有其中一个的base指针（指向child的）
+            可以dynamic转换到另一个base上的，（当然dynamic要求有ivirtual函数存在）
