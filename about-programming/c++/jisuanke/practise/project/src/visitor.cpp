@@ -1,5 +1,5 @@
 #include "visitor.h"
-#include <sstream>
+#include <iostream>
 /*
  * 还有一种方法，用一个栈，从中间开始经历过就ｐｕｓｈ，然后对左边设置ｌｅｆｔ，然后做左边
  * 然后做右边，这个没有ｌｅｆｔ，然后把左右和自己组合起来，
@@ -15,41 +15,40 @@ void ExpressionPointer::Visit(NumberExpression* node)
 
 void ExpressionPointer::Visit(BinaryExpression* node)
 {
+   stack_bo.push(node->Op); // push current operator
 
-    // do with left
-    BinaryExpression* left = dynamic_cast<BinaryExpression*>(node->First.get());
-    if (left != nullptr) {
+   //check the left child
+   node->First->IsLeft = true;
+   auto left = dynamic_cast<BinaryExpression*>(node->First.get());
+   if (left == nullptr) 
+       Visit(dynamic_cast<NumberExpression*>(node->First.get())); 
+   else
        Visit(left);
-       if (Regular(static_cast<int>(node->Op)) 
-               && !Regular(static_cast<int>(left->Op))) { // left is +- , middle is */
-           result = "(" + result + ")" + string("") + GetOp(node->Op);
-       } else { // other circuments
-           result = result + GetOp(node->Op);
+   string leftResult = result + GetOp(node->Op);
+
+   // check the right child
+   auto right = dynamic_cast<BinaryExpression*>(node->Second.get());
+   if (right == nullptr) 
+       Visit(dynamic_cast<NumberExpression*>(node->Second.get())); 
+   else
+       Visit(right);
+   stack_bo.pop(); // pop current operator
+   result = leftResult + result;
+
+   // check current according the isleft flag and top of stack(parent)
+   if (stack_bo.size() != 0) { // not the root, so we should check
+       BinaryOperator parentOp = stack_bo.top();
+       if (node->IsLeft) {  // current is left child
+           if ((node->Op == BinaryOperator::Plus || node->Op == BinaryOperator::Minus)
+                   && (parentOp == BinaryOperator::Multiply || parentOp == BinaryOperator::Divide)) {
+               result = "(" + result + ")";
+           }
+       } else { // is right child
+           if ((parentOp == BinaryOperator::Divide)
+                   || ((parentOp == BinaryOperator::Minus || parentOp == BinaryOperator::Multiply)
+                       && (node->Op == BinaryOperator::Plus || node->Op == BinaryOperator::Minus))) {
+                result = "(" + result + ")";
+           }
        }
-    } else { // left is just a number
-           Visit(dynamic_cast<NumberExpression*>(node->First.get()));
-           result = result + GetOp(node->Op);
-    }
-
-    string halfResult{result}; // the second half process will rewrite result variable, so save it first
-
-    // do with right
-    BinaryExpression* right = dynamic_cast<BinaryExpression*>(node->Second.get());
-    if (right != nullptr) { // right is an expression
-        Visit(right);
-        BinaryOperator rightOp = right->Op;
-        BinaryOperator middleOp = node->Op;
-
-        if ((middleOp == BinaryOperator::Divide) || 
-                ((middleOp == BinaryOperator::Multiply || middleOp == BinaryOperator::Minus) 
-                  && (rightOp == BinaryOperator::Plus || rightOp == BinaryOperator::Minus)))
-        {
-            result = halfResult + string("") + "(" + result + ")";
-        } else {
-            result = halfResult + result;
-        }
-    } else {
-        Visit(dynamic_cast<NumberExpression*>(node->Second.get()));
-        result = halfResult + result;
-    }
+   }
 }

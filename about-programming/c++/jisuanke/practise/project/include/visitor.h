@@ -12,6 +12,7 @@ class ExpressionPointer :public Expression::IVisior
 {
 public:
 	string result;
+    stack<BinaryOperator> stack_bo;
 
 
 	void Visit(NumberExpression* node);
