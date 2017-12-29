@@ -1,5 +1,6 @@
 
 #include "Visitor.h" // used to get the expression tree structure and output a string
+#include <cstdio>
 void ExprPointer::Visit(NumberExpr* node)
 {
 	//TODO  set result here
@@ -13,20 +14,19 @@ void ExprPointer::Visit(IdExpr* node)
 void ExprPointer::Visit(BinaryExpr* node)
 {
 	//TODO
-    node->First->Accept(this);
+    node->first->Accept(this);
     string firstResult{result};
-    node->Second->Accept(this);
-    result = '(' + firstResult + GetOp(node->Op) + result + ')';
+    node->second->Accept(this);
+    result = '(' + string() +  GetOp(node->op) + string(" ") + firstResult + string(" ") + result + ')';
 }
 void ExprPointer::Visit(InvokeExpr* node)
 {
 	//TODO
     string tmpResult = '(' + node->name;
     for (auto it : node->arguments) {
-       it.Accept(this);
-       tmpResult += result;
+       it->Accept(this);
+       tmpResult += " " + result;
     }
     result = tmpResult + ')';
 }
 
-}

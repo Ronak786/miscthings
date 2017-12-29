@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include "Expr.h"
 
 using std::unique_ptr;
@@ -47,3 +48,5 @@ struct InvokeHandler :ExprHandler
 	};
 	bool Test(string token, bool forInvoke);
 };
+
+#include "Parser.h"

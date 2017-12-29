@@ -1,27 +1,20 @@
 #include <iostream>
 #include <string>
-#include <memory>
+#include <algorithm>
+#include <vector>
 
 using namespace std;
 
-struct Node
-{
-    int data;
-
-private:
-    Node() = default;
-    ~Node() = default;
-    template<class T, class... TArgs>
-    friend shared_ptr<T> std::make_shared(TArgs&&... args);
-};
-namespace std {
-    template<>
-    shared_ptr<Node> make_shared<Node>() {
-        return shared_ptr<Node>(new Node(), [](Node* node) {delete node;});
-    }
-}
 int main()
 {
-    auto node = make_shared<Node>();
+    vector<int> xs = { 3,5,1,4,2 };
+
+    sort(begin(xs), end(xs));
+    for (auto x : xs) cout << x << " ";
+    cout << endl;
+
+    sort(rbegin(xs), rend(xs));
+    for (auto x : xs) cout << x << " ";
+    cout << endl;
     return 0;
 }

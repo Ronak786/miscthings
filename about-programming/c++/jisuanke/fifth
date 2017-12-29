@@ -1,3 +1,72 @@
 责任链
     共同继承一个base，然后每个人判断自己是否处理，处理直接返回，
     不处理就地交给其他人
+
+static
+    除了全局，其他private等限制一样，和virtual排斥，构造，某些重载不能声明这个
+    声明定义
+        只要不是整形或者enum char等，就不能在类内部直接定义，内部相当与extern，
+        外面的定义才是定义，外面不需要static
+        记住不要头文件定义
+    调用
+        classname::func() 内部可以传势力名字之类的
+
+    对于构造私有的函数，可以通过内置静态来调用生成，或者重载及friend某个外部函数
+
+重载操作符（内部的不能static）
+    如果内部外部都有，选择class的（更特定的）
+    ++x operator++()
+    x++ operator++(int{}) 参数用于区分前后
+    可外内
+        + - 
+    只能内部
+        赋值
+
+    = 复制会自动生成和构造一样，但是如果某个成员的这个没有，就不会生成
+    外部caozuofu 重载可以放在任何名字空间
+    注意写重载时候哪些要const！！！ ostream之类的不要的
+
+重载类型转换
+    operator type() const {
+        return type;
+    }
+    如果强制显式转换，前面加explicit
+
+    可以i重载operator-> 编译器会一直调用下去直到返回指针
+    . ->* .*不行
+    写的时候要考虑和原来的操作副效果一致
+
+成员和函数指针 .* 高于（）优先级
+   membertype classname::* ptr = &classname::member
+     int Vector::* p1 = &Vector::data1; 成员指针
+    使用
+        obj.*p1 即可
+            ->*
+    成员函数指针 支持虚函数，记住，所以赋值好之后调用还是会调用到虚函数最顶层那个的
+        func: int GetX() const;
+        指针： int(classname::*p)()const = &class::funcname; 要这样写
+        传入   &classname::GetX
+    typedef int(class::*p)()const ; 然后使用 p xxx;
+    或者 using p = int(class::*)()const ;然后 p xxx;
+
+迭代器
+    std::begin()  cbegin end cend rbegin rend 可以取出迭代器
+    rbegin 属于 c++14
+    prev()  next() 可以获得前后迭代器，不会修改本身
+
+    如果自己实现迭代器的函数
+        注意使用next prev代替各种+1 -1, ++ -- 这两个是可以的
+        像list的+1之类是没有的，
+
+    冒泡
+        这个从后往前更好，外层从前往后，内曾从后往前，每次到达外层的那个index位置，
+            再往前就是拍好的了q
+
+    stack
+        pop top push emptpy size
+    queue
+        front back push pop empty size
+    list
+        push_front push_back pop_...   size
+        clear insert erase
+        emplace 这个现在有右值引用，其实可以不用了
