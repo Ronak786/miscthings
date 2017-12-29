@@ -1,0 +1,73 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Accept	src/Expr.cpp	/^void BinaryExpr::Accept(IVisitor* visitor)$/;"	f	class:BinaryExpr
+Accept	src/Expr.cpp	/^void IdExpr::Accept(IVisitor* visitor)$/;"	f	class:IdExpr
+Accept	src/Expr.cpp	/^void InvokeExpr::Accept(IVisitor* visitor)$/;"	f	class:InvokeExpr
+Accept	src/Expr.cpp	/^void NumberExpr::Accept(IVisitor* visitor)$/;"	f	class:NumberExpr
+Assert	src/main.cpp	/^void Assert(const char* test, string check)$/;"	f
+BinaryExpr	include/Expr.h	/^struct BinaryExpr :Expr$/;"	s
+BinaryFactory	include/handler.h	/^	struct BinaryFactory :IExprFactory$/;"	s	struct:BinaryHandler
+BinaryHandler	include/handler.h	/^struct BinaryHandler :ExprHandler$/;"	s
+BinaryOperator	include/Expr.h	/^enum class BinaryOperator$/;"	c
+CC	src/Makefile	/^CC = g++$/;"	m
+CPPFLAGS	src/Makefile	/^CPPFLAGS = -I..\/include -std=c++14 -Wextra -g$/;"	m
+CXX	src/Makefile	/^CXX = g++$/;"	m
+CreateExpr	src/handler.cpp	/^shared_ptr<Expr> IdHandler::IdFactory::CreateExpr(string token, vector<shared_ptr<Expr>>arguments)$/;"	f	class:IdHandler::IdFactory
+CreateExpr	src/handler.cpp	/^shared_ptr<Expr> InvokeHandler::InvokeFactory::CreateExpr(string token, vector<shared_ptr<Expr>>arguments)$/;"	f	class:InvokeHandler::InvokeFactory
+CreateExpr	src/handler.cpp	/^shared_ptr<Expr> NumberHandler::NumberFactory::CreateExpr(string token, vector<shared_ptr<Expr>>arguments)$/;"	f	class:NumberHandler::NumberFactory
+CreateExpr	src/handler.cpp	/^shared_ptr<Expr>BinaryHandler::BinaryFactory::CreateExpr(string token, vector<shared_ptr<Expr>>arguments)$/;"	f	class:BinaryHandler::BinaryFactory
+Divide	include/Expr.h	/^	Divide,$/;"	m	class:BinaryOperator
+EXENAME	Makefile	/^EXENAME = main$/;"	m
+EXENAME	src/Makefile	/^EXENAME = main$/;"	m
+Error	include/Parser.h	/^	const char* Error;$/;"	m	struct:Exception
+Exception	include/Parser.h	/^struct Exception$/;"	s
+Expr	include/Expr.h	/^struct Expr$/;"	s
+ExprHandler	include/handler.h	/^struct ExprHandler$/;"	s
+ExprPointer	include/Visitor.h	/^struct ExprPointer :Expr::IVisitor$/;"	s
+GetOp	src/utility.cpp	/^char GetOp(BinaryOperator B)$/;"	f
+IExprFactory	include/handler.h	/^struct IExprFactory$/;"	s
+IVisitor	include/Expr.h	/^	struct IVisitor$/;"	s	struct:Expr
+IdExpr	include/Expr.h	/^struct IdExpr :Expr$/;"	s
+IdFactory	include/handler.h	/^	struct IdFactory :IExprFactory$/;"	s	struct:IdHandler
+IdHandler	include/handler.h	/^struct IdHandler :ExprHandler$/;"	s
+InvokeExpr	include/Expr.h	/^struct InvokeExpr :Expr$/;"	s
+InvokeFactory	include/handler.h	/^	struct InvokeFactory :IExprFactory$/;"	s	struct:InvokeHandler
+InvokeHandler	include/handler.h	/^struct InvokeHandler :ExprHandler$/;"	s
+Is	src/utility.cpp	/^bool Is(const char*& Stream, const char* Text)$/;"	f
+LDFLAGS	src/Makefile	/^LDFLAGS = -std=c++14$/;"	m
+Minus	include/Expr.h	/^	Minus,$/;"	m	class:BinaryOperator
+Multiply	include/Expr.h	/^	Multiply,$/;"	m	class:BinaryOperator
+NumberExpr	include/Expr.h	/^struct NumberExpr :Expr$/;"	s
+NumberFactory	include/handler.h	/^	struct NumberFactory :IExprFactory$/;"	s	struct:NumberHandler
+NumberHandler	include/handler.h	/^struct NumberHandler :ExprHandler$/;"	s
+Parse	src/Parser.cpp	/^shared_ptr<Expr> Parse(const char*& expression, ExprHandler* handler)$/;"	f
+Plus	include/Expr.h	/^	Plus,$/;"	m	class:BinaryOperator
+Start	include/Parser.h	/^	const char* Start;$/;"	m	struct:Exception
+Test	src/handler.cpp	/^bool BinaryHandler::Test(string token, bool forInvoke)$/;"	f	class:BinaryHandler
+Test	src/handler.cpp	/^bool IdHandler::Test(string token, bool forInvoke)$/;"	f	class:IdHandler
+Test	src/handler.cpp	/^bool InvokeHandler::Test(string token, bool forInvoke)$/;"	f	class:InvokeHandler
+Test	src/handler.cpp	/^bool NumberHandler::Test(string token, bool forInvoke)$/;"	f	class:NumberHandler
+Visit	src/Visitor.cpp	/^void ExprPointer::Visit(BinaryExpr* node)$/;"	f	class:ExprPointer
+Visit	src/Visitor.cpp	/^void ExprPointer::Visit(IdExpr* node)$/;"	f	class:ExprPointer
+Visit	src/Visitor.cpp	/^void ExprPointer::Visit(InvokeExpr* node)$/;"	f	class:ExprPointer
+Visit	src/Visitor.cpp	/^void ExprPointer::Visit(NumberExpr* node)$/;"	f	class:ExprPointer
+arguments	include/Expr.h	/^	vector<shared_ptr<Expr>>arguments;$/;"	m	struct:InvokeExpr
+binhdl	src/main.cpp	/^BinaryHandler binhdl;$/;"	v
+factory	include/handler.h	/^	unique_ptr<IExprFactory> factory;$/;"	m	struct:ExprHandler
+first	include/Expr.h	/^	shared_ptr<Expr> first;$/;"	m	struct:BinaryExpr
+idhdl	src/main.cpp	/^IdHandler idhdl;$/;"	v
+init	src/main.cpp	/^void init()$/;"	f
+invokehdl	src/main.cpp	/^InvokeHandler invokehdl;$/;"	v
+main	src/main.cpp	/^int main() {$/;"	f
+name	include/Expr.h	/^	string name;$/;"	m	struct:IdExpr
+name	include/Expr.h	/^	string name;$/;"	m	struct:InvokeExpr
+next	include/handler.h	/^	ExprHandler* next = nullptr;$/;"	m	struct:ExprHandler
+number	include/Expr.h	/^	int number;$/;"	m	struct:NumberExpr
+op	include/Expr.h	/^	BinaryOperator op;$/;"	m	struct:BinaryExpr
+result	include/Visitor.h	/^	string result="";$/;"	m	struct:ExprPointer
+second	include/Expr.h	/^	shared_ptr<Expr> second;$/;"	m	struct:BinaryExpr
+total_num	src/main.cpp	/^int total_num = 0;$/;"	v
