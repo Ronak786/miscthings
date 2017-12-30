@@ -1,0 +1,49 @@
+从asset 下载插件
+    然后可以再创建项目的时候add asset，会自动加到asset目录里面
+
+save
+    这个会保存当前的scene，标题会放到顶上
+build target
+    file->build sesetting
+        选择，然后switch platform
+    还可以player setting        
+        同样在edit prjectsettting  player
+                可以设定project级别或者平台相关必须分辨率
+            还可以再game预览的地方进行开发时候测试的时候的设置
+
+    物理效果，需要加一个rigidbody， 不需要重力就取消勾选
+    碰撞区域划分，加一个collider(capsule collider)
+        通过调节direction调节height的增长方向
+        r 调节体积面上原的半径，目的是正好包住，
+        屏幕右上那个轴点击可以调整哪一边是面向屏幕上方的
+        还有其他collider box sphere mesh等，
+
+        使用mesh collider要选中convex 记住
+            mesh collider使用mesh slot from  mesh filter
+                也可以自制collider然后拖入框中
+            计算消耗大,大游戏不推荐
+            选择is trigger，碰撞就只会有一个触发，而不是物理效果，
+                我们需要的就是一个碰撞信号1
+
+        目的是网格的覆盖判定，增加其他collider要手动删掉原来的
+
+camera
+    默认有一个，可以调整位置
+        有两种模式，聚焦模式和orthographic
+    根据实际画面调整初始位置，可以调整caremra或者物体，建议camera
+    clear flags是默认背景吧，skybox 默认有一个
+        再window lighting 里面，如果没有，会默认使用background
+
+light
+    记住取消默认light
+    direction light 这个是平行光，和位置无关，和角度相关
+        可以跟着camrea角度设置
+    intensity 调整光密度，可以模仿阳光，大概1.5
+    光源可以放在各种角度，造成边缘微亮（超底部照）等，不同颜色效果
+
+    把所有相同东西放入同一个文件夹，可以一起移动
+
+3d->quad
+    这个用来存放一张图片可以，直接把dff图片拖上去就行了
+    shader用来处理光泽的显示
+        unlit->texture表示i独立，不需要光照，默认是有光照的
