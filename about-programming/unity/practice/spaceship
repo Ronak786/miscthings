@@ -26,6 +26,7 @@ build target
                 我们需要的就是一个碰撞信号1
 
         目的是网格的覆盖判定，增加其他collider要手动删掉原来的
+        edit collider 可以直接屏幕 拖拽
 
 camera
     默认有一个，可以调整位置
@@ -94,3 +95,55 @@ object.Instantiate () as xxxobjtype
         接口指针转换成功！！
 
     在edti project setting input里可以调整每个按键的电脑设置
+
+cube
+    可以作为边界
+    内置box collider 这个默认只在scene可见，game的时候不可见
+
+ontriggerexit
+    不碰到是销毁
+
+旋转
+    angularvelocity， 计算
+    random。insideunitsphere * xxx 可以自定义角速度
+    angular drag 阻力，需要清空，不然会变慢的
+
+gameobject
+    默认脚本里引用当前对象
+    destry 是标记，frame函数全部做完才destroy，所以顺序不重要
+
+debug
+    debug.log可以记录然后底下或者console查看
+
+拖动脚本到指定的object，可以在他地下生成一个同样的脚本
+
+要控制游戏，可以设置一个空的gameobject
+    然后再里面instan 生成一个你要的对象
+
+产生对象，等待，
+    等待的函数作为coroutine存在才不会导致游戏死机，这
+        就需要返回值IEnumerator，
+        具体的函数前 yield return new func(param);
+        然后外面调用出 StartCoroutine( func());
+
+        这种函数可以放在start里面的，会不断进入调用，start只是说开始
+            这些调用
+
+对于存在的隐藏物体
+    可以挂接一个destroy脚本，设置destroy时间，
+        比如爆炸，再爆炸图上destroy一个时间，就会delete资源了
+
+增加音频
+    直接拖拽音频文件到object上，或者手动创建audiosource放进去
+
+需要和其他对象的函数交互
+    提供publicscore
+
+模板，prefab中不能放置实例的引用，
+    需要再start的时候进行动态加载
+    gameobject.findwithtag 可以找到实例
+    uitext 使用 Text获取文本框，然后放置文本，
+
+    如果需要其他脚本的合作，就提供函数，
+        需要按键，就inputkeydown，然后keycode.xxx判断
+        SceneManager.LoadScene("xxx") 重新载入某个场景
