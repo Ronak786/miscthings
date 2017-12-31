@@ -12,7 +12,7 @@ build target
             还可以再game预览的地方进行开发时候测试的时候的设置
 
     物理效果，需要加一个rigidbody， 不需要重力就取消勾选
-    碰撞区域划分，加一个collider(capsule collider)
+    碰撞区域划分，加一个collider(capsule collider) ,也需要rigidbody
         通过调节direction调节height的增长方向
         r 调节体积面上原的半径，目的是正好包住，
         屏幕右上那个轴点击可以调整哪一边是面向屏幕上方的
@@ -47,3 +47,50 @@ light
     这个用来存放一张图片可以，直接把dff图片拖上去就行了
     shader用来处理光泽的显示
         unlit->texture表示i独立，不需要光照，默认是有光照的
+
+设置速度
+    GetComponent<Rigidbody>() 
+    rb.velocity = (xx,xx,xx)直接设置速度，和add force不同，这个
+        直接改变速度方向
+
+Mathf 
+    数学函数类
+        Clamp(限定值的范围）
+
+[System.Serializable]
+    放在自己定义的类上面，这样unity才会认识这个类：
+    想要public变量不占用多个行，可以折叠，要放在一个单独类里面
+
+根据速度小幅度翻转
+    rb = Quaternion.Euler(0, 0, rb.velocity.x * tilt)
+        在bank角度上反转 注意偏转方向和移动方向相反，左手坐标系
+
+new gameobject
+    ctrl shift n
+texture material
+    把文本和物体放在一起
+    在material的albedo左边可以找不同的texture放进去
+    然后把material放到指定的project里
+
+    shader
+        particle additive 这个把颜色值加到已有的上面去，黑色加0，白色加255等
+
+local z axis: transform.forward
+rotation:
+    注意如果rotate这个，包裹网点方向也会反转，会出错，
+        可以搞个父节点来包裹
+
+在播放状态下改变的所有会回复的
+
+飞船发射头
+    新建一个gameobject作为player的child然后放在相对位移的头部即可
+
+object.Instantiate () as xxxobjtype
+    生成一个对象作为某个对象，返回一个gameobject
+    用于动态生成
+
+要经常使用变量然后拖入的形式，应为更灵活
+    如果声明transform拖入object，因为继承了transform所以
+        接口指针转换成功！！
+
+    在edti project setting input里可以调整每个按键的电脑设置
