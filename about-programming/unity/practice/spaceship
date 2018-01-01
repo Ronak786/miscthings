@@ -147,3 +147,25 @@ debug
     如果需要其他脚本的合作，就提供函数，
         需要按键，就inputkeydown，然后keycode.xxx判断
         SceneManager.LoadScene("xxx") 重新载入某个场景
+
+使用数组
+    然后random.range获取其中一个也是可以的
+
+starfield
+    用来布满星星，记住prewarm，这样预先布满屏幕
+    利用math repeat来再一个范围内循环数字，可以作为屏幕的挪动
+        其实就是每个udpate里设置渐进的坐标
+
+
+增加物体的守则
+    增加一个空物体，然后把模型附着到地下，而不是直接放模型
+
+invokerepeating
+    重复调用某个函数
+
+父子
+    子的方向是基于父的，所以父的改变会改变子自己的上下左右，也就是原来
+        子的上变成了父看来的下
+
+对于asset frefab里的东西的脚本，如果想要获取某个实例的引用，需要再内部
+    使用getobjectwithtag然后检查null

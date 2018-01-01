@@ -1,0 +1,10 @@
+需要安装对应的移动包，
+    player settings
+            splash image  icon 等选项里面要放图片
+            Package Name 输入包的名字
+
+    unity remove
+        远程控制unity， 开发用
+
+    手机使用input.acceleration 获取位移
+        然后是x y对应我们的x z
