@@ -1,0 +1,1 @@
+cat phone.txt | sed -nE '/(\([[:digit:]]{3}\) |[[:digit:]]{3}-)[[:digit:]]{3}-[[:digit:]]{4}/p'

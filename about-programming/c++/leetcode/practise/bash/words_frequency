@@ -1,0 +1,1 @@
+cat words.txt |  tr '[:space:]' ' '  | sed -E 's/[ ]+/\n/g' | sort  | uniq -c | sort -nrk 2 | awk '{print $2 " " $1}'
