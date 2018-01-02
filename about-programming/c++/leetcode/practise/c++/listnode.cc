@@ -3,6 +3,8 @@
 /*
  * use existing listnode instead of alloc new ones
  * and pre alloc a struct to get rid of the exception "if-else" code from function
+ * (the assignment of tail->next=l1 is not nesessary because we are using that chain,
+ *  but when change from one list to the other, it is necessary, and only l1->l2 is possible in our code
  */
 using namespace std;
 struct ListNode {
@@ -17,12 +19,12 @@ class Solution {
             int inc = 0;
             ListNode *head, *tail;
             head = tail = new ListNode{0};
+            head->next = l1? l1:l2;
 
             while (l1 != NULL && l2 != NULL) {
                 l1->val = l1->val + l2->val + inc;
                 inc = l1->val / 10;
                 l1->val %= 10;
-                tail->next = l1;
                 tail = l1;
                 l1 = l1->next;
                 l2 = l2->next;
@@ -31,7 +33,6 @@ class Solution {
                 l1->val = l1->val + inc;
                 inc = l1->val / 10;
                 l1->val %= 10;
-                tail->next = l1;
                 tail = l1;
                 l1 = l1->next;
             }
