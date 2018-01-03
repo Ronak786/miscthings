@@ -21,3 +21,10 @@
         可以把拖拽从原点开始的距离作为向量，然后传入具体移动的函数
             然后传给作为移动的速度 rigidbody.velocity
                 就可以实现移动了
+        记录pointeid来记录按下的手指，放置其他手指的作用
+            这个在data的pointid里面
+            使用各种boolean来获取是否可以操作板子的信息，当然是从
+                pointerdown之类获取
+
+            button要在界面的额onclick里面加入对应的object的函数，就会
+                在点击的时候调用了
