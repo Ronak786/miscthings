@@ -3,6 +3,7 @@
 #include <vector>
 
 using namespace std;
+// 这个可以处理 aaa ~ ab*a*c*a的情况匹配，但是不能处理 aaca ~ ab*a*c*a 的情况，不行了。。。
 
 enum Type {
     NORMAL,
