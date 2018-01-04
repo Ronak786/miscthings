@@ -187,3 +187,7 @@ etc/hosts.allow
 etc/hosts.deny
     前者先查看，最后默认全部允许如果全不匹配
 
+
+ip 转发的方法
+    如果想把本地的ip包通过另一台机器转发出去，那就需要
+        ip route 设置frame 具体在http://www.sparksupport.com/blog/application-based-routing-in-linux_port-based-routing这个上面

@@ -127,3 +127,7 @@ auto prefix =  accumulate(begin(xs)+1, end(xs),
             无法分配都会throw  bad alloc
             异常安全，就是不会泄露内存, 如果除了问题，会恢复原样
         除0， 读0指针都是崩溃，os相关，不是异样，不能捕获
+
+
+
+
