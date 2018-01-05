@@ -1,0 +1,41 @@
+线程共享资源，有自己的调度计划，堆栈，信号处理以及特定数据
+
+pthread_create 比fork省的多
+    题外话，fork会拷贝未输出的缓冲区
+需要注意竞争的问题，特别是某些哭函数不是线程安全的，注意序列化
+
+配置
+    修改ulimit的max user processes, 
+类型
+pthread_xxx 管理类
+pthread_attr_  attr objects
+pthread_mutex_xxx
+pthread_mutexattr_
+pthread_cond(attr)_ 
+pthread_key_  thread data keys
+pthread_rwlock_
+ptrhead_barrier_ for sync 
+
+
+create...join
+    pthread_t id 存放thread的id，内部return或者exit返回
+        join的第二个参数作为返回值，注意类型要对上，不是指针的可以强制转换，是的可以任意转换为void*
+    这两个的返回值都是0正常，非0不正常
+
+attr:
+    thread_attr_init(&attr) .....destroy();
+    可以设置栈大小，调度策略，脱离状态等
+    sched_setscheduler, sched_setaffinity, pthread_setaffinity_np(这两个一个是pthread一个是linux提供的设置cpu
+        亲和的函数)
+exit
+    pthread_exit 不会消除任何内部资源
+    return
+    pthread_cancle
+    exit/exec (进程全部over）
+    main->exit 而不是pthread_exit(这个会让main阻塞直到其他人都完成）
+
+join..detach
+    join(id, status)
+    detach(id)
+    attr_setdetachstate(attr, state)
+    attr_getdetachstate(attr,state)
