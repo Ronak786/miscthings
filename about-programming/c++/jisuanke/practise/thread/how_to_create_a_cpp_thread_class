@@ -1,3 +1,9 @@
+注意
+    create函数里不能成员函数，
+    可以放一个成员静态函数，参数是this，
+    然后那个里面再调用你写的成员函数
+
+
 class mutex; attr inside
 class cond;  attr inside
 class thread {

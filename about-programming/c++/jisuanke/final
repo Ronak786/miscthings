@@ -1,0 +1,8 @@
+覆盖 隐藏
+
+final 禁止重写覆盖，
+class xx final 无法继承
+
+final 成员函数
+    virtual : 不能覆盖，但是可以重写隐藏，也就是函数标签不一样可以写一个
+    not virtual : 重写隐藏是不允许的
