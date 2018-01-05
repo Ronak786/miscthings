@@ -1,0 +1,28 @@
+class mutex; attr inside
+class cond;  attr inside
+class thread {
+    run() // id class, store also in attr
+    virtual start_routine();
+    lock
+    unlock
+    cond_wait
+    cond_signal
+    cond_broadcast
+    detach(); //detach itself, these two operate the attr thread id
+    join();
+}
+
+global  join function (every body can call)
+
+class A:thread {
+    implement:
+        start routine();
+};
+
+A a;
+a.run();
+
+data:
+a.getmutex(lock);
+a.getdata
+a.unlock(lock);

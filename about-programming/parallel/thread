@@ -1,5 +1,15 @@
 线程共享资源，有自己的调度计划，堆栈，信号处理以及特定数据
 
+调试工具
+    totalview
+https://hpc.llnl.gov/training/tutorials#workshops
+    这个有一些知识的总结文章
+
+linux工具
+    ps -Lf
+    ps -Lm 有层级 ps -Lm aux
+    top -H 可以看到thread
+
 pthread_create 比fork省的多
     题外话，fork会拷贝未输出的缓冲区
 需要注意竞争的问题，特别是某些哭函数不是线程安全的，注意序列化
@@ -23,10 +33,18 @@ create...join
     这两个的返回值都是0正常，非0不正常
 
 attr:
-    thread_attr_init(&attr) .....destroy();
+    thread_attr_init(&attr) .....destroy(); (create 完了就可以destroy了）
     可以设置栈大小，调度策略，脱离状态等
     sched_setscheduler, sched_setaffinity, pthread_setaffinity_np(这两个一个是pthread一个是linux提供的设置cpu
         亲和的函数)
+    man 7 sched (scheduling policies)
+
+    sched
+        pthread_setschedparam 用来设置thread而不是process的优先级
+        pthread_setinheritsched() 用来设置是否继承调度和优先级，这个默认继承，比attr里设置的要更优先，
+            所以要在里面设置explicit才会读取attr里的设置！！
+
+        通过sched_get_priority_min/max获取对应的优先级拥有的可以设置的优先级上下限制
 exit
     pthread_exit 不会消除任何内部资源
     return
@@ -39,3 +57,60 @@ join..detach
     detach(id)
     attr_setdetachstate(attr, state)
     attr_getdetachstate(attr,state)
+    可以attr设置，可以默认之后内部自己detach， 不能join已经detach的线程
+
+    attr_getstacksize /set
+    attr_getstackaddr /set 这些可以获取设置stack的大小和位置
+        使用attr_getstack setstack更好，只有set之后才能get到地址！！
+
+    好的程序应该设置join和stack，而不是依赖系统
+
+    对于detach的再join，为定义行为，也就是随便干啥，我测试的时候是正常获得返回值。success的
+
+self equel once
+    pthread_self() return self's thread id
+    pthread_equal() compare two id
+    pthread_once(once_obj, routine) 进程中所有调用只有第一次有效
+
+
+
+mutex
+    init
+        pthread_mutex_init() or = PTHREAD_MUTEX_INITIALIZER
+            dynamic one can set attr
+        pthread_mutexattr_init()
+        lock
+            pthrad_mutex_lock/trylock/unlock
+                tyrlock will fail if can not hold
+
+condition
+    用法
+        declare condition object
+        declare mutex
+        A:
+            do work
+            lock mutex then check data
+            call pthread_cond_wait(your condition)
+                (this will unlock mutex and wait, when signal come, lock)
+            now you check data
+            you unlock
+            done
+        B:
+            lock, change, 
+            check A's condition, if fullfill, wakeup A
+            unlock
+            continue
+
+        pthread_cond_init/destroy
+        attr...
+            只有一个，就是是否多进程共享某个进程中某个线程拥有的cond
+
+    wait,signal, broadcast
+        wait最好在一个loop中，避免内部解锁检验
+
+        logic
+            先mutexlock，再cond wait，否则不会block
+            signal之后再unlock,记住
+
+fork
+    pthread_atfork() fork只会复制当前线程，所以需要恢复线程的一些状态，child里等待其他线程的cond不合理，因为不存在了
