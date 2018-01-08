@@ -47,7 +47,7 @@ public private等
     
     定义在定义者的基类里，使用者不同与定义者， public可访问，protected private不可访问，而且不能转化基类
         派生类指针
-    定义在基类里，使用者继承子定义类，通过自身来访问定义类：
+    定义在基类里，使用者继承自定义类，通过自身来访问定义类：
         定义类public基类：public protected可访问 注意！！！
             protected 基类：同上
             private ： 不行，也不能转换指针
@@ -63,6 +63,7 @@ public private等
         基类析构函数纯虚，可以继承，不能正常释放
         基类析构函数 = delete 或者在private里， 不能继承
         直接防止构造也是可以的
+        直接使用final， 函数防止override， 类防止继承
 
 
 
