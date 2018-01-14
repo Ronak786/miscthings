@@ -31,3 +31,27 @@ command list
  url(r'^add/(\d+)/(\d+)/$', calc_views.add2, name='add2'),
 我们可以看到网址中多了 (\d+), 正则表达式中 \d 代表一个数字，+ 代表一个或多个前面的字符，写在一起 \d+ 就是一个或多个数字，用括号括起来的意思是保存为一个子组（更多知识请参见 Python 正则表达式），每一个子组将作为一个参数，被 views.py 中的对应视图函数接收
 2.0中则是 path('add2/<int:a>/<int:b>/', calc_views.add2, name='add2'),
+
+django.http.HttpResponse 
+	这个表示使用回应，相当于打印到客户端的print，
+	自己的urls转交的函数的参数第一个是request，有GET字典可以获取参数
+		也可以利用正则匹配组获取后续参数，放在参数表里
+
+render
+	首先ｒｅｔｕｒｎ　render（request， ‘xx.html’）然后settting加入当前app的installed apps
+		就剋找到appxia的template模板渲染了
+		debug=true还可以找到static下的静态文件
+
+https://docs.djangoproject.com/en/2.0/topics/http/urls/
+	有新版url匹配和正则的解释
+
+用来转移网址
+	from django.http import HttpResponseRedirect
+	from django.core.urlresolvers import reverse  # Django 1.4.x - Django 1.10.x
+	#  from django.urls import reverse  # Django 1.10.x - Django 2.x
+	 
+	 
+	def old_add2_redirect(request, a, b):
+	    return HttpResponseRedirect(
+		reverse('add2', args=(a, b))
+	    )
