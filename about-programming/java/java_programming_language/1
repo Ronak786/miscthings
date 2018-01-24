@@ -6,3 +6,9 @@ byte short int long float double
 final表示consttant
 
 import 作用是告知编译器去这个位置找我会使用的代码
+
+switch
+    可以接受byte char int short long string类型
+
+System.out.printf
+    用于格式化输出 %b bool

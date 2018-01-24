@@ -5,6 +5,23 @@ java.util.Scanner:
 java.lang.Math:
     这个不用import，默认就有，
     Math.random() return [0,1)
+    Math.toDegrees() toRadians() 默认使用弧度 PI, E
     
 time:
     System.currentTimeMillis 表示当前的从1970开始的毫秒数
+
+String:
+    都是方法，如length、 indexOf startswith  endswith contains等
+    String 加数字得到字符串
+    比较使用compareTo， equals 而不应该使用 == ，这个比较的只是引用本身
+    substring
+    concat 相当于直接 "a" + "b"
+
+Character
+    这个的方法用来判断字符，如isUpper isDigit 
+
+char
+    这个类型都是unicode， 可以 ‘x‘  可以 ’\uaabb'这种
+    字符和数字相加得到数字，和string相加得到字符串
+
+    
