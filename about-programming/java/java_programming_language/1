@@ -1,0 +1,8 @@
+byte short int long float double
+从左到右可以转换，反过来必须强制转换
+
+变量可以美元符号开头，一般系统用
+
+final表示consttant
+
+import 作用是告知编译器去这个位置找我会使用的代码

@@ -1,0 +1,9 @@
+java.util.Scanner:
+    Scanner a = new Scanner(System.in)
+    a.nextDouble() 可以获取下一个输入
+
+java.lang.Math:
+    这个不用import，默认就有，
+    
+time:
+    System.currentTimeMillis 表示当前的从1970开始的毫秒数
