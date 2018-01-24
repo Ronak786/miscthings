@@ -4,6 +4,7 @@ java.util.Scanner:
 
 java.lang.Math:
     这个不用import，默认就有，
+    Math.random() return [0,1)
     
 time:
     System.currentTimeMillis 表示当前的从1970开始的毫秒数
