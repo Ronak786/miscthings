@@ -12,3 +12,31 @@ switch
 
 System.out.printf
     用于格式化输出 %b bool
+
+数组
+    type[] var = new type[size] 默认元素值0
+    type[] var = {xx,xx,xx,xx} 这种初始化可以
+    传参匿名数组func(new int[]{1,2,3,4,5})
+    复制数组
+        System.arraycopy(src,srcindex, dest, destindex, length)
+        深度拷贝
+
+    foreach:
+        for (type var : arr) {
+            xxxx
+            }
+
+可变参数
+    func(type...varname) 
+        传入的时候可以传多个参数，也可以传入数组，内部当做数组使用的
+
+二维数组
+    int[][] = new int[x][y]
+    其实是数组的数组，每一位度可以.length的
+
+锯齿数组
+    int[][] = new int[][] { {1,2,3}, {3,4}, {3}};
+    或者
+    int[][] aa = new int[4][];
+    aa[0] = int[5]  这种也可以
+    int[][][]

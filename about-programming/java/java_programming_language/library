@@ -25,3 +25,10 @@ char
     字符和数字相加得到数字，和string相加得到字符串
 
     
+java.util.Arrays 
+    数组操作的静态方法
+    sort  parallelSort
+    binarySearch
+    equals
+    fill等
+
