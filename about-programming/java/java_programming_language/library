@@ -17,7 +17,7 @@ String:
     substring
     concat 相当于直接 "a" + "b"
 
-Character
+Characters
     这个的方法用来判断字符，如isUpper isDigit 
 
 char
@@ -31,4 +31,39 @@ java.util.Arrays
     binarySearch
     equals
     fill等
+
+BigInteger BigDecimal 
+    这两个从字符串构造，处理任意大小的，但是除法要指定精度，对于无限小数，不然
+    报错 
+
+Integer
+    .parseInt
+    .valueOf
+String
+    .valueOf
+    .match
+    .split
+    .replace .. .可以使用正则表达式
+
+ArrayList<>
+     泛型，可增长大小
+     java.util.ArrayList
+     add remove clear
+     ArrayList<> list = new ArrayList<>(Array.asList(array))
+     list.toArray(array)  放入一个数组中
+
+     排序
+        java.util.Collections.sort(list)
+
+Comparable<>
+    这个是泛型接口
+    有了这个，就可以java.util.Arrays.sort对他使用了
+
+Cloneable 空接口，做标记，这个可以克隆
+    具体的方法在object类里面
+        直接return super.clone()即可，返回object
+    但是默认的clone不会深度拷贝，
+        所以需要在你的clone执行super之后再自己拷贝自己的东西，
+    原来的clone是protected方法，throws CloneNotSupportedException,
+        你可以也throws ，也可以catch
 

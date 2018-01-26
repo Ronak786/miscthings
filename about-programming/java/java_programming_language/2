@@ -1,0 +1,85 @@
+class
+    构造，多个
+    继承 extends
+    自己内部： this
+    父类  super
+
+stringbuilder
+    这个可以制造字符串，然后toString变过去
+Integer ...
+    这种会自动装箱，
+    
+重写和重载
+    前者要求父子类，签名完全一样，并且父类的不是不可访问的（private），
+    可以用标记@Override
+    后者也可以不同类，是不同签名的，
+    重写在子类调用的时候不会跑到父类里面去找，即使需要转换类型
+
+object
+    默认类，toString 表示 classname@内存地址
+    instanceof 这个用于一个对象看是否是某个子类，
+        动态绑定后向子类转换需要的
+    equals方法
+        object的方法是是否指向同一个地址，需要重写
+
+修饰符
+    private < default < protected < public
+    子类可以重写父类的protected方法，并且改为public
+
+    final 表示方法或者类不能被重写或继承！！
+
+抽象类 存在抽象方法的类
+    public abstract class xxx {}
+    public abstract func () ;
+    子类如果不能实现所有抽象方法，必须也抽象
+
+接口
+    public interface xxx {
+        常量
+        抽象方法
+    }
+    接口要实现，不然就是抽象类了
+    变量只能是public static final
+    方法必须是公用的抽象的
+    接口可以继承接口
+    
+
+类的设计
+    内聚，不同的东西不要一类，，职责太多就分开
+    一致
+        想死的类中方法名一致
+    完整
+    实例 静态不可少，共享的就静态
+接口 抽象类
+    前者方便，后者用于强的父子关系，前者配享属性关系
+
+
+二进制io   try-with-resource  比较好
+    input stream -> file filter object -> data bufferred
+    outputstream 两个抽象基类
+
+    fileinput/outputstream (File / filename)
+    会产生ioexception，要catch
+
+    filter 用于过滤是基类，要使用datainputstream
+        然后 可以readByte()
+
+    readUTF writeUTF这种可以提高字符串存储效率
+    writebytes固定只写低位字节
+
+    bufferredinputstream 这个用于缓冲输入输出等,放在最上面
+
+    object IO
+        object input stream
+        object output stream
+        拥有data的功能，还有writeobject 可以写入对象
+        readobject之后强制转换即可
+
+    序列化： 不会写多个重复的
+        可以读写的类需要标记serializable 接口
+        如果含有非序列化成员，这个成员需要transient标记
+        static 变量不会存储，值
+            
+
+    randomaccessfile 
+        随机读写类，之前的都是顺序读写

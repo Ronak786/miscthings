@@ -1,0 +1,57 @@
+异常
+    throw
+        throw new xxxxException("xxxx");
+    catch:
+        try {
+        } catch (xxxxxException ex) {
+            xxxxx
+        }
+
+异常根类
+    java.lang.Throwable 1 exception
+                            error
+    RuntimeException, error 及其子类都是免检异常
+        其他的异常必须处理，要么throw 要么catch
+    方法要抛出的异常如果要处理，需要throws IOException 这样
+        父类的不声明，子类的也不可以
+
+    如果catch了，就不需要在函数头throws 不然需要的
+    捕获多个
+        catch(Exxx | exxx| exxx  ex)
+    finally{}
+        一定执行，即使catch里有return
+
+    catch内部可以重新抛出，会给调用者
+
+    链式异常
+        throw new Exception("xxx", ex)
+        可以抛出的同时抛处新异常同时抛出原始的，
+        打印会先新后原始
+
+文件io
+File:
+    java.io.File
+    拥有判断类型，读写权限，属性，路径等多种函数
+    mkdirs创建目录
+写数据
+    PrintWriter(filename or  File file)
+        print ,println printf
+
+    with open方法
+        try ( printWriter pw = new xxxx) {
+        } 会自动关闭
+        必须是autocloable子类型,
+读数据
+    调用者需要throws IOException 因为会报错
+    Scanner(File file or filename)
+    useDelimiter(string ) 方法可以重新设置读取间隔分隔符号
+
+    nextInt() 这种标记读取之后，不能使用 nextLine，会从当前标记开始包含
+        标记然后读到行分隔为止，这个不是下一行
+
+URL读取
+    java.net.URL
+   URL url = new URL(string)
+   Scanner(url.openStream()) 即可
+    会抛出MalformedURLException
+    然后就可以nextLine然后处理了
