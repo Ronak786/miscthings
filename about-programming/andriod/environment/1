@@ -1,0 +1,24 @@
+1 安装jdk
+2 设置系统的javahome 如果没有的话，还有classpath，一般会有的
+3 下载sdk tools， 设置国内代理，在andriod dev tools网上可以找到，
+    然后打开sdk manager，下载最新的sdk（首先更新tools本身，然后reload）
+    下载最新的会有问题，不要紧，下载失败后，在temp目录里有对应的下载包，
+    解压到platforms里面，改名为对应的andriod-xxx 即可
+4 下载andriod studio， 里面设置sdk的路径，
+    c:\user\sora\.gradle 下gradle.properties内org.gradle.daemon=true
+    然后新建项目,会下载需要的gradle，如果发现下载没速度，
+    杀掉进程，在。gradle下的wrapper里找打一个乱码目录，下载里面对应的
+    gradle版本的zip包，然后放到那个目录里面去，重新打开，会自动解压的
+    这样就搞定了
+
+eclipse
+    这个需要选择sdk位置，同时一个adt插件，选择本地载入，不过有bug，用
+    andriod studio比较好
+
+导入源码：
+首先in linux
+ source build/envsetup.sh
+$ lunch aosp_x86-eng #(or pick your favorite lunch target)
+$ make
+$ mmm development/tools/idegen/
+$ development/tools/idegen/idegen.sh
