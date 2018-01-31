@@ -74,7 +74,7 @@ regex:
     default_random_engine e, e() 返回随机数
         编译器会决定使用哪个stl标准的随机数引擎
             engine e;
-            engine e(s) 使用整形构造
+            engine e(seed) 使用整形构造
             e.seed(s) 重置
             e.min
             e.max
@@ -83,9 +83,10 @@ regex:
     有了引擎，还要有具体的分布，也就是你想在哪个范围产生数
 
     随机整数
-        uniform_int_distribution<unsigned> u(0,9);
-        default_random_engine e;
-        u(e) 的到随机数
+        random_device rd;
+        default_random_engine e(rd()); //设置种子
+        uniform_int_distribution<unsigned> u(0,9); //设置范围
+        u(e) 获取每次的随机数
     随机实数：
         uniform_real_distribution<double> u(0,1); 可以<>表示默认参数
         u(e)

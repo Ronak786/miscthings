@@ -22,3 +22,12 @@ $ lunch aosp_x86-eng #(or pick your favorite lunch target)
 $ make
 $ mmm development/tools/idegen/
 $ development/tools/idegen/idegen.sh
+
+
+编译源码
+    4.1需要jdk6.0  python2 make3.8,准备好，网上有安装到本地目录的版本，python用virtualenv
+        make configure的时候设定即可，
+        注意不要在ntfs上编译，会出现故障，好像是大小写不分导致的
+
+        make -j4 要相当时间
+        然后执行 mmm那一段，最后或的android.ipr 用来android studio 导入
