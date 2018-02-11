@@ -38,3 +38,5 @@ linux:
         但是/tmp如果是tmpfs的话可能不够，3G是不够的，
     修改：
         可以fstab改，这样就不会使用tmp.mount，但是不如该选项方便
+        或者 export _JAVA_OPTIONS=-Djava.io.tmpdir=/directory/to/use 因为
+                    JAVA_OPTIONS这个可以被机器上所有运行的java当作命令行参数使用
