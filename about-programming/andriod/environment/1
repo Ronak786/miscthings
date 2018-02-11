@@ -31,3 +31,10 @@ $ development/tools/idegen/idegen.sh
 
         make -j4 要相当时间
         然后执行 mmm那一段，最后或的android.ipr 用来android studio 导入
+
+
+linux:
+    -Djava.io.tmpdir=/home/tmpdir  这个用来把使用的暂存位置改掉，默认/tmp
+        但是/tmp如果是tmpfs的话可能不够，3G是不够的，
+    修改：
+        可以fstab改，这样就不会使用tmp.mount，但是不如该选项方便
