@@ -1,0 +1,11 @@
+配置gradle国内
+
+http://blog.csdn.net/jiangzhenlove/article/details/75334314
+http://blog.csdn.net/lj402159806/article/details/78422953
+
+https://www.cnblogs.com/wxishang1991/p/5457878.html
+默认gradle使用project structure中制定的版本，这个在project文件夹
+里的gradle内的properties里设定，这个应该是看到as安装目录里默认安装的
+gradle，这个可以在这里改默认，同时这个也可以设定为本地gradle，
+如果project选择了非默认的，要实现缓存在user 。gradle内，
+不然就会sync。。。。
