@@ -1,0 +1,23 @@
+intent:
+    隐式 不知道确切的处理应用，只是知道对方拥有的可处理接口
+        Intent(Intent.ACTION_SENDTO)
+        需要resolvActivity(getPackageManager())这种判断，因为可能没有满足的人
+    显式 明确指定需要启动的应用
+        Intent(context, class/category/extra info)
+
+修改应用名字：
+、  manifest中对应的activity标签中修改属性label即可
+
+onclick:
+    这个其实可以设置在任何view上面，除此之外，还可以通过
+    view.setOnClickListener这种方法可以代码设置onclick
+        首先内部设置一个匿名类onclicklistener，内部在
+            onclick方法中做事情，比如toast发信息，
+            比如intent唤醒应用
+        注：这里面用Mainactivity。this，因为是在内部类里面，
+                不然this就用错类了，activity的类才继承context，
+                才能用作context参数
+
+
+ArrayList<type>.get .add .remove
+    更灵活，autobox
