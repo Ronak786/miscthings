@@ -1,0 +1,43 @@
+新的内容
+    查看android 用于输入 这个udacity课堂中的其他好玩东西
+    查看material design 规范设计
+
+grandle 这个只能设置http代理使用，不要sock了
+    会在properties里同时写入，
+    可以用v2ray 和shadowsocks的http代理（后者默认支持）
+
+各种edittext， checkbox 。。。。 都是由的
+    可以嵌套layout使用
+
+呼叫外部应用，使用intent,具体查一下
+各国语言
+    在style.xml旁边
+    根据iso639-1，具体的写成style-fr。xml之类的文件就行了
+    没有的默认style.xml
+    [200~https://developer.android.com/training/basics/supporting-devices/languages.html?hl=zh-cn
+
+    string也可以，这样使用资源定位方法如@string/xxxx 以及R.string.xxx 来定位
+
+    同样在java需要string的地方使用getString(R.string.xxx)也可以
+
+    标记不用翻译：
+        由于有了本地语言支持，也需要字符串的部分不需要翻译，这个是由需要
+        xcliff：g，具体用法看网上，有格式化字符串功效
+
+        使用的时候就getString(R.string.xxx, one, two) 和格式化字符串一样
+
+    open translators editor
+        这个可以用于添加新的语言，当然翻译你要自己填进去
+        右键strings.xml可以获取
+
+
+样式：
+    在styles.xml中 每个style有一个名字还有内部属性，需要的地方直接
+        style="@style/xxxx"即可
+        更改主题： 查看 using material theme
+            <style name="xxx" parent="xxxx"> 表示我们继承原主题的一切
+                但是更改以下的某些部分
+            AppCompact 这个库的主题用于适配旧机器
+
+        在manifest中制定了默认使用的themeo  
+            一个activity表示的是一个界面
