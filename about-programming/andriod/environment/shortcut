@@ -1,0 +1,56 @@
+alt+insert
+    选择生成toString 会生成一个默认的string方法
+ctrl+O  
+    调出可重写方法
+
+activity: 每个阶段都有进入的回掉函数onxxx（）
+    created->started->resumed->paused->stopped->destroyed
+    可以在你的继承的activity里重写这些方法
+        前三个是启动后立刻调用的
+        home离开应用后pause 然后stopeed
+        进入后再 onstart onresume
+
+    我们应该再onstop中保存或者清除一些资源
+    这个也和audio focus相关,退出的时候，要放弃focus，进入的时候要requestfocus，
+        然后对于focus的状态要设置对应的函数
+        这里的request 放弃等都是一个flag，只有listener函数里才是干事情的
+
+background
+    设置?android:attr/selectableItemBackground 可以有按压效果，
+    但是颜色没有了，这时候需要外部包一层framelayout，加入背景颜色，
+        这样就结合起来了
+
+		第 1 个选项
+		在列表项布局中，你可以添加一个新的视图并覆盖 RelativeLayout 中的所有其他视图， 并与该 RelativeLayout 的宽度和高度相匹配。该视图的背景为 "?android:attr/selectableItemBackground”，这样默认情况下，该视图将为透明的 使你能够看到列表项中的内容。当列表项被点击时，它将显示按下状态（在 Lollipop 及更改版本的设备上显示灰色涟漪动画效果）。
+
+		修改后的 list_item.xml 文件的 代码片段
+
+		第 2 个选项
+		这次，不再向布局中添加新的视图，而是在单词列表布局中，对 ListView XML 元素添加 android:drawSelectorOnTop="true"属性。做出这行代码更改后，每个列表项都将显示按下状态。
+
+		在 word_list.xml 中：
+
+		<?xml version="1.0" encoding="utf-8"?>
+		<ListView 
+		   xmlns:android="http://schemas.android.com/apk/res/android"
+		   android:id="@+id/list"
+		   android:orientation="vertical"
+		   android:layout_width="match_parent"
+		   android:layout_height="match_parent"
+		   android:drawSelectorOnTop="true"/>
+
+audiofocus
+    这个audiomanager里，每次要播放前request，要设置一个listener
+        里面对于每种audio事件不同的处理
+
+
+
+用于添加标签
+ TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+
+       // Connect the tab layout with the view pager. This will
+       //   1. Update the tab layout when the view pager is swiped
+       //   2. Update the view pager when a tab is selected
+       //   3. Set the tab layout's tab names with the view pager's adapter's titles
+       //      by calling onPageTitle()
+       tabLayout.setupWithViewPager(viewPager);

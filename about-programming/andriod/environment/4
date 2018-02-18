@@ -41,6 +41,15 @@ listview + adapter
         getview第二个参数用来看是否有回收的，具体见
         https://github.com/udacity/ud839_CustomAdapter_Example/blob/master/app/src/main/java/com/example/android/flavor/AndroidFlavorAdapter.java
 
+
+listview.setOnItemClickListener 这个用于节省资源，在屏幕上显示的item
+    上挂接函数，而不是所有内部item上挂接
+    根据itemclicklistener里的position可以找到具体的arraylist中的项目的index
+
 tools namespace
     这个用于一些比如设计时属性，就是设计的时候会出现的text等，但是
         运行时不会出现，用于开发测试用的
+
+
+内部匿名类可以引用全局的和自己的变量，同时还能引用被包围的外层函数中的
+    final修饰的局部变量

@@ -1,0 +1,13 @@
+asset:
+    资源包
+
+design.google.com/devides 有热门机器型号信息
+dp: 独立像素密度，这个和mdip设备上数值相等
+mdpi hdip xhdip xxhdpi xxxhdpi这些一起上面dp会比例增大
+
+
+Image:
+    可以设置visible属性，用来某些条件下隐藏
+
+textview的位置：
+    可以设置weight，height=0，然后gravity设置重力方向

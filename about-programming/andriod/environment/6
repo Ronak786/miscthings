@@ -1,0 +1,14 @@
+导航设计
+   就是可以滑动左右屏幕，显示小菜单之类的 
+
+android:parentActivityName="com.example.android.miwok.MainActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.android.miwok.MainActivity" />
+
+就可以增加一个回到父亲节点的箭头
+
+左右滑动
+	fragmentpageradapter，用法见
+	https://github.com/udacity/ud839_ViewPager_Example/blob/quiz/app/src/main/java/com/example/android/viewpager/SimpleFragmentPagerAdapter.java
