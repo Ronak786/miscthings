@@ -1,0 +1,3 @@
+下载源码，使用aosp国内源，如果下载到windows分区
+repo sync的时候会有不同，这个时候把gitconfig中的filemode true改成false
+不然过不去

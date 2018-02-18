@@ -1,3 +1,5 @@
+重命名文件
+    如要右键，refactor里面重命名
 intent:
     隐式 不知道确切的处理应用，只是知道对方拥有的可处理接口
         Intent(Intent.ACTION_SENDTO)
@@ -21,3 +23,24 @@ onclick:
 
 ArrayList<type>.get .add .remove
     更灵活，autobox
+
+listview + adapter
+    防止scrollview导致的屏幕外也占用内存,这里会回收的
+
+    arrayadapter
+        三个参数，context， 单个元素对应的view xml id， arraylist，
+        然后listview。setadapter即可
+        list会逐个请求adapter，adapter会根据位置找到array对应项目，
+        然后利用回收的view对象settext即可
+
+    android.R.layout 这个是框架里预定义的layout
+
+    默认只能放一个textview，如果要使用自定义的，首先arraylist
+    中的对象要变成自定义对象，然后继承arrayadapter,改写getview方法，
+        构造中的super第二个不需要id了，直接0
+        getview第二个参数用来看是否有回收的，具体见
+        https://github.com/udacity/ud839_CustomAdapter_Example/blob/master/app/src/main/java/com/example/android/flavor/AndroidFlavorAdapter.java
+
+tools namespace
+    这个用于一些比如设计时属性，就是设计的时候会出现的text等，但是
+        运行时不会出现，用于开发测试用的
