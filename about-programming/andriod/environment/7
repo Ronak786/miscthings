@@ -1,0 +1,37 @@
+json
+    使用jsonobject解析
+    
+date simpledataformat
+    前者接受unix时间，后者构造格式然后接受date的时间对象，输出时间
+
+String
+    可以切分字符串
+
+DecimalFormat
+    用于精确数字
+
+color
+关于颜色值的注意事项：在 Java 代码中，你可以参考 使用颜色资源 ID（如 R.color.magnitude1、R.color.magnitude2） 在 colors.xml 文件中定义的颜色。尽管仍需将颜色 资源 ID 转换为颜色整数值。示例：
+
+ int magnitude1Color = ContextCompat.getColor(getContext(), R.color.magnitude1);
+
+
+ URI
+    URL要转换成URI才可以给intent ACTION_VIEW    使用
+    URI.parse(URL)
+
+
+权限
+    usess-permission 。。。
+    默认允许的正常权限如上网，获取网络状癌等，
+    危险权限需要手动同意，如使用摄像头
+
+    不管什么权限，都要再manifest里允许一下
+
+URL
+    conn = url.openconnection
+    conn.connect
+    conn.getinputstream
+    inputstreamreader(stream, charset)
+    然后可以读取
+    must handle  ioexception

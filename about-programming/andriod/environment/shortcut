@@ -15,7 +15,7 @@ activity: 每个阶段都有进入的回掉函数onxxx（）
         然后对于focus的状态要设置对应的函数
         这里的request 放弃等都是一个flag，只有listener函数里才是干事情的
 
-background
+background 按压
     设置?android:attr/selectableItemBackground 可以有按压效果，
     但是颜色没有了，这时候需要外部包一层framelayout，加入背景颜色，
         这样就结合起来了
