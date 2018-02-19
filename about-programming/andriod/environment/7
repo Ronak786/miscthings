@@ -35,3 +35,57 @@ URL
     inputstreamreader(stream, charset)
     然后可以读取
     must handle  ioexception
+
+try catch
+    unchecked exception : runtime exception 及子类
+        这些不必要throws或者catch，一般都是没必要处理的，因为出错说明
+        不正常，
+        像ioexception是正常异常
+
+线程：
+    不要阻塞主线程，所以不要主线程进行网络连接，或发生错误的exception
+
+    推荐使用asynctask类的子类完成，重写doinbackground方法，
+        再postexecute中调用本地方法，然后执行本地操作
+        因为ui更新最好在同一个线程完成！！这个线程不安全
+
+        这个适用于短期一次性任务
+
+        在backgorund中调用publishprogress，然后重写
+            onprogressupdate方法，可以更新进度条
+        onpostexecute在主线程中被执行后台结束后调用
+
+        asynctask是泛型的，重写方法需要的参数要在execute调用的时候穿进去
+            不需要的泛型参数在生成特定类的时候使用Void代替
+
+Loader:
+    asynctask会在每次重新打开或者旋转屏幕的时候重新创建应用的时候重新运行，
+        这个会浪费，如果以前的哪个还没运行完毕，
+        用loader可以解决这个问题, 应用消失也会自动清楚loader，不会滞留
+        旋转设备直接从initloader找到已有的然后进入finishedloader
+
+        但是如果是Home退出，再进入，会刷新loader的数据的
+
+    getLoaderManager().initLoader(id, null, this)
+        loader每个id只存在一个对应loader对象
+        不存在的话，调用this对象的oncreateloader方法（自己实现）
+
+    使用：
+        首先要有一个继承asynctaskloader的类，用来实际把background任务放进去，
+        然后activity继承callbackloader，实现oncreate onfinished，onreset，
+            也可以实现onstartloading（这个会init之后自动调用forceload）
+            不然手动调用forceload就行了
+
+
+内部类
+    实例只能存在于外部类的实例里面，
+
+
+inputstreamreader 这个设置编码
+bufferstreamreader 这些用来读取流
+
+设置空屏幕：
+    在你的屏幕view 同级别设置一个空textview，然后
+        设置setemtpyview（textview）这样如果listview么有成员，就会显示
+            这个空view，你可以在里面放东西，不要再加载开始就放东西，不然
+            会闪现，应该在第一次加载结束后加
