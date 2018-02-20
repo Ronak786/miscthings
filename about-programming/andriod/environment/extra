@@ -1,0 +1,102 @@
+总结：
+	通过preference管理找到指定的preference，然后setchangelistener，里面通过
+	setsummary的方法设置当前值
+	这个当前值是通过getstring（obj。getkey（））得到的
+
+
+对于我们的用户而言，通过单击 最小震级偏好来查看其当前设置 并不是一种美妙的体验。
+
+更好的方法是打开 Setting Activity 即可 查看偏好名称下方的偏好值， 如果对其进行更改，可以看到摘要将立即更新。
+
+这对于偏好更改后应用能够立即知晓非常有用， 特别是偏好更改应对 UI 产生某些可见影响。
+
+要实现该功能，当偏好发生更改时，PreferenceFragment 可以实现 OnPreferenceChangeListener 接口 以获取通知。然后，当用户更改单个偏好 并进行保存时，将使用已更改偏好的关键字来调用 onPreferenceChange() 方法。请注意，此方法 将返回布尔值，可防止通过返回 false 来 更改建议的偏好设置。
+
+首先声明 EarthquakePreferenceFragment 类应 实现 OnPreferenceChangeListener 接口，然后覆盖 onPreferenceChange() 方法。此方法中的代码 会在偏好更改后更新已显示的偏好摘要。
+
+在 SettingsActivity 中，在 EarthquakePreferenceFragment 类中：
+
+  public static class EarthquakePreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
+
+         @Override
+         public void onCreate(Bundle savedInstanceState) {
+             super.onCreate(savedInstanceState);
+             addPreferencesFromResource(R.xml.settings_main);
+         }
+
+         @Override
+         public boolean onPreferenceChange(Preference preference, Object value) {
+             String stringValue = value.toString();
+             preference.setSummary(stringValue);
+             return true;
+         }
+     }
+但是，在启动设置活动后， 仍需要更新偏好摘要。如果给定偏好的键，可以 使用 PreferenceFragment 的 findPreference() 方法来获取偏好 对象，然后使用 bindPreferenceSummaryToValue() 帮助程序方法来设置偏好。
+
+在 EarthquakePreferenceFragment 中：
+
+ @Override
+ public void onCreate(Bundle savedInstanceState) {
+     super.onCreate(savedInstanceState);
+     addPreferencesFromResource(R.xml.settings_main);
+
+     Preference minMagnitude = findPreference(getString(R.string.settings_min_magnitude_key));
+     bindPreferenceSummaryToValue(minMagnitude);
+ }
+现在需要定义 bindPreferenceSummaryToValue() 帮助程序方法 来设置当前 EarhtquakePreferenceFragment 实例作为 每个偏好上的侦听程序。还将读取 设备上 SharedPreferences 中存储的偏好当前值，然后在 偏好摘要中进行显示（以便用户能够查看 偏好的当前值）。
+
+在 EarthquakePreferenceFragment 中：
+
+ private void bindPreferenceSummaryToValue(Preference preference) {
+     preference.setOnPreferenceChangeListener(this);
+     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
+     String preferenceString = preferences.getString(preference.getKey(), "");
+     onPreferenceChange(preference, preferenceString);
+ }
+更改后，整个 SettingsActivity 文件 将如下所示：
+
+在 SettingsActivity.java 中：
+
+ package com.example.android.quakereport;
+
+ import android.content.SharedPreferences;
+ import android.os.Bundle;
+ import android.preference.Preference;
+ import android.preference.PreferenceFragment;
+ import android.preference.PreferenceManager;
+ import android.support.v7.app.AppCompatActivity;
+
+ public class SettingsActivity extends AppCompatActivity {
+
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.settings_activity);
+     }
+
+     public static class EarthquakePreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
+
+         @Override
+         public void onCreate(Bundle savedInstanceState) {
+             super.onCreate(savedInstanceState);
+             addPreferencesFromResource(R.xml.settings_main);
+
+             Preference minMagnitude = findPreference(getString(R.string.settings_min_magnitude_key));
+             bindPreferenceSummaryToValue(minMagnitude);
+         }
+
+         @Override
+         public boolean onPreferenceChange(Preference preference, Object value) {
+             String stringValue = value.toString();
+             preference.setSummary(stringValue);
+             return true;
+         }
+
+         private void bindPreferenceSummaryToValue(Preference preference) {
+             preference.setOnPreferenceChangeListener(this);
+             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
+             String preferenceString = preferences.getString(preference.getKey(), "");
+             onPreferenceChange(preference, preferenceString);
+         }
+     }
+ }

@@ -89,3 +89,23 @@ bufferstreamreader 这些用来读取流
         设置setemtpyview（textview）这样如果listview么有成员，就会显示
             这个空view，你可以在里面放东西，不要再加载开始就放东西，不然
             会闪现，应该在第一次加载结束后加
+
+progressbar
+    把这个通过relativelayout的方式添加到屏幕中间，
+        显示一个圆圈，然后再加载完毕后设置这个view不可见即可
+
+设置额外的setting菜单
+    这个需要一张activity 然后再oncreateoptionmenu的时候用inflate显示图标所在layout用layout可以再当前页面上显示
+    再onoptionsitemselected内用intent转到新的页面
+    再fragment标签的name 里设置需要的fragment的名字和位置，这样可以引用
+        它的内部oncreate方法创建项目
+
+        代码中使用sharedprefenence获取需要的值
+
+    sharedprefenence:
+        这个设置有些复杂具体看extra文件
+
+redirect:
+    java内http到https的往返重定向不能使用URL类的setfollowredirecct方法，
+    需要手动获取getheaderfield的location，重构url，然后获取新的内容，
+    记得重新设置cookie等
