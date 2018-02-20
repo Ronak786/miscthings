@@ -1,3 +1,6 @@
+view.append 可以添加string到原有的后面
+
+sqlite
 下载dll以及bundle到同一个文件夹，然后加入path即可
 
 命令：
@@ -43,6 +46,11 @@ android 数据库
     内部数据列对应：
         |contentvalues 使用这个类，然后put进id和数据，
         然后使用内部的select的方法，这样更不容易写错
+        不好的方法是rawQuery
+
+        query return cursor ,记得try finally 之后close cursor
+
 
 finish（）这个方法用于结束当前activity，返回上一个
 onstart（）这个再每次finish之后到达上一个应用都会执行的，用来刷新应用可以的
+    这个时候不是oncreate这个只会在一开始新开的时候运行

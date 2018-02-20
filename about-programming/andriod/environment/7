@@ -86,7 +86,7 @@ bufferstreamreader 这些用来读取流
 
 设置空屏幕：
     在你的屏幕view 同级别设置一个空textview，然后
-        设置setemtpyview（textview）这样如果listview么有成员，就会显示
+        设置setemptyview（textview）这样如果listview么有成员，就会显示
             这个空view，你可以在里面放东西，不要再加载开始就放东西，不然
             会闪现，应该在第一次加载结束后加
 

@@ -1,0 +1,30 @@
+your_activity pass uri(content://packagename/tablename/id) to content_resolver
+then resolves into the specific content provider which call its backgorund sqldbhelper 获取数据，然后原路返回，
+    这个就是拥有抽象层的安全的数据交流方法
+
+书写provider：
+1 需要继承content_provider abstrace class
+    继承后需要实现insert delete query update getType
+2 需要manifest中provider标签
+
+
+content resolver
+    这个会使用uri matcher来匹配你需要的uri类型，这个需要自己写
+    定义一个urimatcher ，默认里面是no match，
+    然后adduri， 加入对应的uri和对应的code
+
+    在具体的provider类的query方法里对应uri 的id进行工作，
+
+    在调用的activity里，getcontentresolver（）。query进行工作
+
+    contenturi.withappendid(uri, id) 可以在最后加上/数字
+                parseId(uri) 可以获取最后的id
+
+    getType:
+        这个用于类型的判定，一般自定义的，相当于特定的数据特定mime类型，
+        有法可依，
+        vnd.android.cursor.dir/com.example.android.pet/pets
+        vnd.android.cursor.item/com.example.android.pet/pets
+        这两个分别是单个和多个数据对应的type前面一段固定，
+            在ContentResolver。CURSOR_DIR_BAWSE_TYPE获取，
+                后面是你应用的全名
