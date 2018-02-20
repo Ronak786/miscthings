@@ -105,6 +105,8 @@ progressbar
     sharedprefenence:
         这个设置有些复杂具体看extra文件
 
+    设置list偏好 listpreference, 注意获取的东西是索引，需要
+
 redirect:
     java内http到https的往返重定向不能使用URL类的setfollowredirecct方法，
     需要手动获取getheaderfield的location，重构url，然后获取新的内容，

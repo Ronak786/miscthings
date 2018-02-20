@@ -1,0 +1,48 @@
+下载dll以及bundle到同一个文件夹，然后加入path即可
+
+命令：
+    .quit  退出
+    .open  打开新文件操作（所有操作都保存到文件的）o
+    .tables
+    .schema tablename  == show create table xxxx
+    PRAGMA TABLE_INFO(table_name) 可以查看更多的desc信息
+    drop table ....;
+    .mode xxx 设置显示的格式
+
+    primary key 
+    autoincrement
+    not null
+     default xxx   用来设置的
+
+datatype
+    数据类型是storage class
+    和datatype差不多的，就这样考虑吧
+    null integer real text blob 存储不同类型
+    blob存储的是二进制不改变的
+
+语句：
+    where
+    order by asc/dec
+    == != >=
+    delete from xxx
+
+android 数据库
+    首先利用一个继承自basecolumn的类，自定义一些字符串用来表示表明，列名等
+    然后创建一个继承sqliteopenhelper的类，实现oncreate onupgreade方法，
+        这样会帮你管理创建和打开操作
+        open: execSQL 方法使用，这个不能用于有返回的语句，所以用来create
+            delete就好
+
+    basecolumn的实现类主要是用于定义一些列名的，用于架构清洁
+    主要实现再sqliteopenhelper里，使用的话，直接new，然后
+    getreadabledatabase 或者writeable
+
+内部数据浏览
+    andorid device monitor
+    data->data->所在的包内可以找到数据
+    内部数据列对应：
+        |contentvalues 使用这个类，然后put进id和数据，
+        然后使用内部的select的方法，这样更不容易写错
+
+finish（）这个方法用于结束当前activity，返回上一个
+onstart（）这个再每次finish之后到达上一个应用都会执行的，用来刷新应用可以的
