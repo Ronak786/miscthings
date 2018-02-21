@@ -1,0 +1,53 @@
+cursor adapter:
+    实现newview  bindview分别用于新的和重用的view来显示
+    和arraydapter不一样，这里的getview会自动调用这两个，所以
+    改写这两个而不是getview
+
+    create: layoutinflator.from(context).inflate(r.layout.xxx, parent, false)
+        即可
+    bind：get view id , set value and set into then return;
+
+使用listview的步骤：
+    首先layout放入listview
+    设置他的emptyview
+    然后主函数里setadapter到一个你的adapter
+    然后继承一个adapter写相应的处理函数
+    实现callbackloader，在里面利用cursorloader直接利用url获取数据，
+        他会内部调用cursor，和你主动调用一样的，但是在线程上
+
+cursor loader:
+    用于后背刷新信息，和asynctaskloader差不多
+    首先继承callbackloader，然后执行inintloader，
+        在craeteloader里调用cursorloader（这次不用继承，这个具体的）
+        进行远程调用
+        onfished 里面设置adapter
+        onreset里面用来清除 swapcursor(null)
+
+更新数据when changed
+    cursor.setnotification()
+    getcontentresolver().getnotify()
+        对一个的cursorloader会重新调用oncreate
+
+点击调出新画面
+    使用intent，还可以setdata放入需要的uri
+    在新的画面里面默认调用cursorloader，但是传入的uri分为null和非null
+    null的话finished里的也是null，不操作,直接返回
+    非null，就可以设置需要的值了
+
+    所有需要载入的界面都是需要loader的
+
+返回，已修改，保留对话框：
+    首先ontouchedlistener设置给需要监听的view，设置后面需要的boolean值，
+    然后onbackpressed里面如果为修改，直接finished
+        否则：设置dialoginteraceonclicklistener，同时给
+        alterdialog.builder的两个选项，不同的动作，一个是
+            finish 一个是dialog.dismiss（）消除框框，继续。
+
+        记住同时设置onoptionitemhome中对上一个的同样的操作，
+        不过是navutils。navigateupfromsametask返回
+
+隐藏按钮 由于3.0android以上是默认打开菜单的，所以要先
+    invalidoptionsmenu()
+    然后onpreprationmenu 里面选择需要隐藏的按钮
+
+
