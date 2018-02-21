@@ -1,0 +1,61 @@
+git log 显示修改记录
+    git log --stat 显示修改的文件和修改量
+git diff id id 显示两次提交间的不同
+
+config: 这些设置了自动补全，提示符号颜色等
+    git config --global color.ui auto 设置彩色显示
+    右键上面，配置里设置背景为white forground 为black
+    将 此文件保存在你的主目录中（文件名为 git-completion.bash）。
+    将 此文件保存在你的主目录中（文件名为 git-prompt.sh）。
+    从辅助材料下载 bash_profile_course。
+    如果你的主目录中已有一个名为 .bash_profile 的文件，则将 bash_profile_course 中的内容复制并粘贴到 .bash_profile 的底部。如果没有，将 bash_profile_course 移到你的主目录中，然后将其重命名为 .bash_profile。（如果有兴趣详细了解 bash 提示符的工作方式，请参阅此页。）
+    git config --global core.editor "'C:/Program Files/Sublime Text 2/sublime_text.exe' -n -w"
+    git config --global push.default upstream
+    git config --global merge.conflictstyle diff3
+
+
+创建：
+    git init
+status:
+    git status
+add into stage:
+    git add 
+commit
+    git commit   
+    格式：  祈使句表明动作
+从detached返回
+    checkout id 之后如果commit新的，但没有建立分支，那么checkout回到其他
+        分支后，会找不到detached head
+    git checkout master  (git checkout commit-number 到达某个detach分支）
+diff:
+    git diff id1 id2  比较commit区域的两个
+    git diff  比较stage区和工作区不同，
+                stage区域默认和commit区是一样的，status一样代表三个区域都一样
+    git diff --staged 比较stage和commit区域最近一个的不同
+reset:
+    git reset --hard 撤销所有在stage以及工作目录中的未commit的部分
+branch:
+    create branch:  git branch name (不会转到上面去）
+    redirect to branch: git checkout name
+        这两条和一就是 git checkout -b name
+delet branch:
+    git branch -d name
+log:
+    git log --graph --oneline branch_name ...(多个名字）显示分支结构,显示单行
+        后面可以加的名字要看gitrevision的解释
+    -n 1 显示单个
+gc:
+    git gc  垃圾回收，删除分治后，那些id在关闭当前窗口前仍然存在
+换行问题：
+    windows : git config --global core.autocrlf true
+    linux : git config --global core.autocrlf input
+merge:
+    把分支合并进入当前分支，
+    失败的话，运行git merge --abort 返回原有状态修改
+    失败的时候的文件分三段：
+        上面是当前修改，下面是合并分支的修改
+        中间是两者的共同祖先
+    修改后可以add commit然后提交
+show:
+    git show 查看某个cimmit和他的父亲的差别，在多分枝合并中，
+        父亲有时候很难找，就用这个好
