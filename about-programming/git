@@ -12,6 +12,7 @@ config: 这些设置了自动补全，提示符号颜色等
     git config --global core.editor "'C:/Program Files/Sublime Text 2/sublime_text.exe' -n -w"
     git config --global push.default upstream
     git config --global merge.conflictstyle diff3
+    git config --global credential.helper wincred 用于git for win的缓存http密码
 
 
 创建：
@@ -59,3 +60,7 @@ merge:
 show:
     git show 查看某个cimmit和他的父亲的差别，在多分枝合并中，
         父亲有时候很难找，就用这个好
+
+
+github:
+    本地同步到github，要现在github上创建新项目
