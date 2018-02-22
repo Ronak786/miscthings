@@ -13,6 +13,7 @@ config: 这些设置了自动补全，提示符号颜色等
     git config --global push.default upstream
     git config --global merge.conflictstyle diff3
     git config --global credential.helper wincred 用于git for win的缓存http密码
+    git config --system core.longpaths true windows上防止路径过长出错
 
 
 创建：
@@ -57,9 +58,27 @@ merge:
         上面是当前修改，下面是合并分支的修改
         中间是两者的共同祖先
     修改后可以add commit然后提交
+
+    fast-forward merge 两个分支在同一条线上，不会创建merge commit
 show:
     git show 查看某个cimmit和他的父亲的差别，在多分枝合并中，
         父亲有时候很难找，就用这个好
+remote:
+    git remote -v 
+    git remot remove xxx
+    git remote add origin xxx
+push:
+    git push origin master 推送本地的master分支到origin，默认远程的分支名字和本地一样
+    token 3a7fa7887e055027012390ff928865941190e34b
+
+pull:
+    git pull origin master 拉下远程的master，合并到当前任何名字的分支
+fetch:
+    git fetch 会下载相应的分支，然后存储在本地的remote分支，可以避免一次性冲突
+        记住你的本地修改在master，fetch下来的在origin/master，是不一样的
+    git fetch origin 下载所有分支
+    git diff origin/master master 会展示这两个顶部commit的不同
+
 
 
 github:
