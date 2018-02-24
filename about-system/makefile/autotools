@@ -1,0 +1,51 @@
+autoconf automake ....
+
+search google autotools for help
+
+in prefix/share/config.site has some envs if the configured prefix is that prefix
+
+build dir and src dir can be differnet, this is useful when src dir is read-only
+
+corss-compile:
+    --host  once specify this, tools will know this is a cross compile
+    --host means the ouput exec will run on which platform
+    --build means current compiling platform
+    --target :if the exec is a compiler, we need --target means that exec compiler's ouput's
+            platform
+
+--program-prefix/postfix
+--program-transform-name=xxx
+    用来更改安装的program的名字
+
+make install-exec   用来安装平台相关的
+    install-data 平台无关的   这样更加普适
+
+make dist
+    distcheck  这个不仅会dist创造出源码包（带版本号），还会做各种make，configure检查，很好的）
+
+--disable-dependency-tracking:
+    第一遍make的时候不需要的，所以可以disable，。加速，
+--enable......
+    某些编译器默认关闭的，要开启，不然不会检查依赖的更新。。。
+
+
+创建： (不参照这个的话，官方autoconf文档也有一张图可以参照运行命令得到各个构建需要的文件）
+    in src dir:
+        create your file, 
+    in root dir and src dir:
+        create Makefile.am
+    in root dir:
+        create configure.ac
+        you can create a readme file
+
+    now:
+        autoreconf --install 这个只在构建系统时候第一次要运行，以后更改configure.ac和makefile.am
+            也不需要再运行这个的
+        ./configure  to create makefile from make.in
+        then make
+        make dist !!
+
+解析：
+    in configure.ac: 
+        AC_xxxx   used by autoconf
+        AM_xxxx   used by automake
