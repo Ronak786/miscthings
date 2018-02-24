@@ -18,6 +18,13 @@ filetype plugin indent on
 runtime macros/matchit.vim
 set incsearch
 set hlsearch
+set autoindent
+set smartindent
+set showmatch
+
+set fenc=utf-8
+set fencs=utf-8,usc-bom,euc-jp,gb18030,gbk,gb2312,cp936
+
 cnoremap <expr> %% getcmdtype( ) == ':' ? expand('%:h').'/' : '%%'
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
@@ -35,7 +42,7 @@ noremap  <C-\> <C-w>>
 "subsequent two no use
 "noremap <Leader>n nzz
 "noremap <Leader>N Nzz
-execute pathogen#infect()
+"execute pathogen#infect()
 if has("cscope")  
     set csprg=/usr/bin/cscope  
     set csto=0  
