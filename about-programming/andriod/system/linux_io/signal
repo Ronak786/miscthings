@@ -1,0 +1,4 @@
+sigempty set 信号集合
+sigprocmask 需要忽略的信号
+sigaction process
+sigpending  是否又信号到来

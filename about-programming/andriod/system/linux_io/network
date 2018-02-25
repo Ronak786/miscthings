@@ -1,0 +1,22 @@
+server:
+    socket create
+    memset the sockaddr_in
+    use gethostbyname to get struct in_addr*  type in h_addr and assign the inside 
+        uint32_t into sockaddr_in 's sin_addr.s_addr
+    fill other members
+    bind
+    liseten
+    accept
+    read/write
+    close the accepted fd
+
+client:
+    socket create
+    like server, fill sockaddr_in
+    connect
+    use that socket to read and write
+    close fd
+
+functions:
+    inet_aton  (convert string into network structure)
+    htons (convert number from host to network sequence)

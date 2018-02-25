@@ -1,0 +1,29 @@
+share mem:
+    id = shmget(ftok(xxx), size, flag); //create private or have an id
+    addr_ptr = shmat(id)
+    now process with addr_ptr....
+    shmdt (detach)
+
+msgqueue:
+    id = msgget
+    msgsnd
+    msgrcv
+    msgctl used to delete
+
+信号量  sysv：
+    semctl
+    semget
+    semop
+    semtimedop
+
+    初始化的是一个数组，是选择操作第几个信号量的
+
+posix信号量
+    sem_init
+    sem_destroy
+    sem_open
+    sem_close
+    sem_unlink
+    sem_wait
+    sem_timedwait
+
