@@ -1,0 +1,19 @@
+all in usb or on baidu disk
+
+install ubuntu 14.4:
+        must use fresh disk ,not existing partition!!!
+install sogou:
+        install fcitx
+        install sogou on sogou website
+        im-config  choose fcitx
+        reboot
+        im-config check
+        fcitx-config-gtk add sogou
+        now use
+install teamviewer
+        install the deb package in usb of 13
+        install error: apt-get install -f , then install ok
+        49567 account
+source insight
+        use wine install the rar provided
+        use open project window to open, remember to re parse
