@@ -17,3 +17,16 @@ install teamviewer
 source insight
         use wine install the rar provided
         use open project window to open, remember to re parse
+        
+install java 8:
+        sudo add-apt-repository ppa:webupd8team/java;
+        sudo apt-get update;
+        sudo apt-get install oracle-java8-installer;
+        sudo update-alternatives --config java;
+        java -version;
+
+operate repo:
+        repo init -u xxxx   , get manifest file
+        repo sync  download and change to the default master branch
+        repo init -b xxx && repo sync   : checkout branch 
+        cd .repo/manifests, git branch -a  : look all branches
