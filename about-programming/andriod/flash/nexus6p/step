@@ -22,4 +22,38 @@
             update from adb
     then reinsert usb if needed ,see sideload
     adb sideload your.zip 
+    then choose reboot system now
     over
+
+3 手动刷
+Step 7: If your bootloader is already unlocked, skip this step. If it is not, it has to be unlocked in order to flash anything. To do this, use the command:
+fastboot oem unlock
+Use the Vol Up to go up to yes and then use the power key to select. The device should now be unlocked
+
+Step 8: We now want to wipe the device. Use the following commands in order:
+fastboot erase boot
+fastboot erase cache
+fastboot erase recovery
+fastboot erase system
+Step 9: We will now flash the bootloader. It is important that you do not disconnect the device or mess with it during this step or else you hard brick the device.
+fastboot flash bootloader "name of bootloader"
+fastboot reboot-bootloader
+Step 10: If using a phone or data enabled tablet, we will now flash the mobile radios. Some phones have more than one radio file. Flash the CDMA radio after the LTE radio.
+fastboot flash radio "name of radio"
+fastboot reboot-bootloader
+Step 11: We will now flash the system, boot, and recovery all in one shot with the following command:
+fastboot -w update "name of zip file"
+Alternatively, you could extract all the .img files in the zip file and flash them manually one at a time. This makes things really handy if you're using the factory image to act as an update rather than a complete return to stock. If trying to update using the factory image, extract the .img from the zip file into the same directory as your bootloader and radio img files and execute the following commands in order:
+fastboot flash system system.img
+fastboot flash boot boot.img
+fastboot flash recovery recovery.img
+fastboot flash cache cache.img
+If going for a complete back to stock using the manual flashing of the zip file, execute the following commands after the above 4:
+fastboot erase userdata
+fastboot flash userdata userdata.img
+Step 12: The device now has been flash back to stock. Only one thing left to do is reboot.
+fastboot reboot
+Your device will now reboot and should be completely back to stock as well as be unrooted. 
+
+
+
