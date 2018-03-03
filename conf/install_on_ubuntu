@@ -36,3 +36,10 @@ compile aops
     download is https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+packages
         in pkgs dir
     need add keytool in jre/bin  into path
+
+    gc limit overhead
+        ~/.jack-settings,  add:
+            JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4096m"
+            $ prebuilts/sdk/tools/jack-admin kill-server
+            $ prebuilts/sdk/tools/jack-admin start-server
+            then continue build
