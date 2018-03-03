@@ -1,0 +1,25 @@
+1 官方镜像刷写
+ https://source.android.com/setup/running
+  https://developers.google.com/android/images
+  解锁手机， 点击build版本号
+  解锁oem lock 打开usb debug，记得手机上确认
+  官方下载adb
+          https://developer.android.com/studio/releases/platform-tools.html
+        adb 使用 https://developer.android.com/studio/command-line/adb.html
+    音量下加电源启动，进入fastbot， 或者adb  reboot fastboot
+
+    fastboot  flasing unlock 解锁
+    工厂镜像下载https://developers.google.com/android/images
+    命令行进入镜像的目录（记得adb加入path）
+    直接运行bat脚本即可刷写
+
+2 官方ota升级
+    https://developers.google.com/android/ota
+    downlaod zip file ,do not extract ,
+    verify by sha256
+    reboot use adb reboot recovery
+        or volumn - + power into fastboot, and power + volunm + and select
+            update from adb
+    then reinsert usb if needed ,see sideload
+    adb sideload your.zip 
+    over
