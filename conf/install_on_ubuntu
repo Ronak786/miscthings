@@ -30,3 +30,16 @@ operate repo:
         repo sync  download and change to the default master branch
         repo init -b xxx && repo sync   : checkout branch 
         cd .repo/manifests, git branch -a  : look all branches
+
+compile aops
+    version 7 or 8 need install openjdk 8 (not oracel java 8)
+    download is https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa/+packages
+        in pkgs dir
+    need add keytool in jre/bin  into path
+
+    gc limit overhead
+        ~/.jack-settings,  add:
+            JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4096m"
+            $ prebuilts/sdk/tools/jack-admin kill-server
+            $ prebuilts/sdk/tools/jack-admin start-server
+            then continue build

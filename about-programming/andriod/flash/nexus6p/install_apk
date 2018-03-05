@@ -1,0 +1,8 @@
+adb install xxxx, 如果有sign的问题，
+    需要依照https://www.scirra.com/tutorials/861/how-to-sign-and-align-your-android-app-apk的说法
+    (https://developer.xamarin.com/guides/android/deployment,_testing,_and_metrics/publishing/signing-the-app-package/manually-signing-the-apk/) 这个更好
+    首先建立keystore
+        keytool -genkey -v -keystore PATH/TO/YOUR_RELEASE_KEY.keystore -alias YOUR_ALIAS_NAME -keyalg RSA -keysize 2048 -validity 10000
+    然后签名
+        jarsigner -verbose -keystore PATH/TO/YOUR_RELEASE_KEY.keystore -storepass YOUR_STORE_PASS -keypass YOUR_KEY_PASS PATH/TO/YOUR_UNSIGNED_PROJECT.apk YOUR_ALIAS_NAM
+        然后就行了
