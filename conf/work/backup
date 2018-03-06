@@ -29,3 +29,7 @@ dest:
             process change show value, kill threads, start again
 
     chinese  wide char problem
+        显示是怎么消失的，一定要杀掉进程吗，能不能只杀线程
+            目前无法做到消失，折中办法，设置透明度为0
+
+    mediatek/external/ex-cynovo/protected-cynovo/main.c
