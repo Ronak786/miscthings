@@ -1,5 +1,10 @@
 ./mk -t mm external/Cpos_Watermark
 
+版本更新 
+    mediatek/config/pangu/cynovo/cynovo.mk 更新版本号，上传
+    然后gitlanb里面new branch 按照格式更新版本号
+    然后登陆gitlab的服务器，修改build pangu脚本里的版本号，然后编译即可
+
 
 6737中使用了imageinfo类在bitmap中替代setconfig
 
