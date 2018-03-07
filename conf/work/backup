@@ -1,3 +1,20 @@
+work things:
+    1, replace image of recovery and update stage
+        in bootable recovery, replace image
+            note: from android 5.0, pics are packed by interlace python script
+                into one pic
+                the process bar also can be changed into series of images
+            note:
+                recovery and update use the same image source, inside code
+                use type to distinguish
+    2, add water mark
+        use skia library to add watermark on screen
+            skia used together with surface component
+        transparent set use surface's alpha set better
+
+        note:
+            in cpp file compile, head file's declaration use extern better!
+
 ./mk -t mm external/Cpos_Watermark
 
 版本更新 
@@ -39,3 +56,10 @@ dest:
             目前无法做到消失，折中办法，设置透明度为0
 
     mediatek/external/ex-cynovo/protected-cynovo/main.c
+
+
+    next todo:
+        adb remount disable
+
+
+
