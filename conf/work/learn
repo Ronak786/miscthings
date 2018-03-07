@@ -1,3 +1,12 @@
 多文件变量声明注意唯一一个里面不能extern，且要初始化，其他只能extern，必须全局的时候extern
 
 c文件变成cpp本质不会更改包含头文件的搜索路径，如果发生错误，查一下是不是手动添加的include 路径导致了搜索偏差
+
+adb logcat  get log from startup
+    grep denied  : get selinux error-> cause app not run properly
+
+
+surface
+    这个的绘图设置位置会需要一个锁，最好预留1到两秒给每个surface，不然会出现位置重叠
+
+    我的做法是开机启动线程，后期只设定透明度，这样减少每次设定属性的开销

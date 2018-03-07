@@ -61,5 +61,10 @@ dest:
     next todo:
         adb remount disable
 
+    external/sepolicy/app.te
+    external/sepolicy/init.te
 
+    修改system/core/adb/sockets
 
+    selinux 自定义文件
+        device/mediatek/common/sepolicy
