@@ -1,0 +1,3 @@
+gradlew  stript to download if not exist the gradle
+build.gradle is the file tell what to do, like makefile
+    you can use -b xx.gradle tell instead use other gradle file
