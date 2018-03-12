@@ -68,3 +68,13 @@ dest:
 
     selinux 自定义文件
         device/mediatek/common/sepolicy
+
+
+next to do:
+    潜入mkimage 添加hash的方法 对于bootimg
+    打印计算hash的时间
+
+
+bmp to raw 颜色失真
+    ~/gitbase/pangu_mt6582/mediatek/custom/common/lk/logo/tool
+    ~/gitbase/pangu_mt6737/vendor/mediatek/proprietary/bootable/bootloader/lk/dev/logo/tool
