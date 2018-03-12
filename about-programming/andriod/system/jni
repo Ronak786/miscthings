@@ -34,3 +34,7 @@
         jnithrowexception 可以抛出异常，然后可以check，clear，之后就
             没有了
             或者可以直接返回，java层会受到异常
+            
+    两种jni：
+        应用的方法，使用system.load 一个库，注意不clear的异常会返回到java上
+        框架的方法，不需要load，而是register native method
