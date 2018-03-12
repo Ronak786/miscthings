@@ -1,0 +1,12 @@
+main function in mt_boot.c  mboot_android_check_bootimg_hdr
+lk start:
+    mt_boot_init->boot_linux_from_storage(NORMAL_BOOT)-> mboot_android_check_bootimg_hdr-> mboot_android_check_bootimg_hdr
+                                                    -> mboot_android_check_bootimg_hdr-> mboot_android_check_bootimg_hdr
+
+in file:
+    read whole img size including header, onto kernel addr , this is wrield!!
+
+在lk。bin后面加上额外数据
+    注意lk。bin的内部data必须对其16字节，所以需要适当往后添加0,之后才是
+    你添加的数据
+boot.img后面直接加即可，但是注意本来就多读了2048字节，这里还是添加了新的部分，没有就地使用
