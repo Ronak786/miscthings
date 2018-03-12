@@ -1,0 +1,36 @@
+框架的jni用法和javah获得头文件后ndkbuild不同，可以参考framework/base里的写法
+    首先java方法，在core/java下面，里面native方法，
+    然后jni实现在core/jni下面，一个文件，名字为类的全名下划线形式，
+    然后利用libnativehelper的头文件帮助，
+    写一个jninativemethod的数字，表明函数名，签名以及对应的native函数名字，
+    然后register 注册，内部使用jnienv的注册函数，对着类的名字注册，
+        这个是向jvm注册
+
+    jnienv: 这个cpp中是下面，c中是下下面
+    _jnienv 这个是一个结构体，第一个成员以下面那个指针
+    c_jnienv: 这个是结构体指针
+        这个结构体是线程相关的
+
+    数据类型：
+        jboolean jchar jbyte jshort .... void, jsize(jint), JNI_TRUE/FALSE 0, 1
+            jchar is 16bit
+
+        jxxxArray(各种类型的数组）， jobject, jstring, jclass
+        签名：(param1param2....)returntype
+
+    调用java方法：
+        利用第二个参数findclass getobject
+        jclass = env->findclass("xx/xx/xx")
+        field = env->getstaticintfiled(jclass, env->getstaticifiledid(class,
+            "debug", "i") 即可
+
+    jni中的引用计数
+        默认jni创造的引用都有局部引用
+        可以创造一个newglobalref全局引用 要deleteglobalref来删除
+        可以newweakglobalref来弱引用，需要env-》issameobject（xx，NULL）
+            来判断是否null了
+
+    exception:
+        jnithrowexception 可以抛出异常，然后可以check，clear，之后就
+            没有了
+            或者可以直接返回，java层会受到异常
