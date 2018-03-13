@@ -1,0 +1,31 @@
+in system/core/init/init.c
+
+1. mkdir of dev proc .... 
+2 mount those dirs of devpts or tmpfs
+3 close 0 1 2 fd
+4 init log and property
+    open a file under dev, get fd, then unlink file,now all r and w
+        oriented to memory
+5 read cpuinfo get hardware and revision
+6 parse cmdline use process_kernel_cmdline
+    get all android.  property, set to ro.boot.xxxx
+    then set all those into ro.xxx property
+7 load properties from property file (now not know)
+8 init_parse_config_file("/initrc");
+    parse_config中利用单行解析的方法，将service action
+    放入不同的两个list中，最后把所有的import的file全部用
+    当前函数进行解析，也加入这两个列表中
+
+9 action_for_each_trigger:
+    把trigger名字是xxx的整个action 结构体加入到action queue里面去
+10 queue)builtin_action
+    临时建立一个struct action，加入一个func为一个cmd
+    然后整个加入action list，同时加入action queue作为触发了已经
+
+11 queue other actions
+12 in a loop:
+            execute one command of an action
+            restart process if needed
+            poll property_set_fd, signal fd, keychord fd
+                要看一下这三个action函数的执行（就是创建fd的）
+
