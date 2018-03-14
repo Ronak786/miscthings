@@ -29,3 +29,19 @@ in system/core/init/init.c
             poll property_set_fd, signal fd, keychord fd
                 要看一下这三个action函数的执行（就是创建fd的）
 
+                handle_perperty_set_fd 用来设置property(set)
+                signal handle (用来接收wait一个子进程的死亡，
+                    按需重启或者重启机器）
+                keychord，按照传入的keychord组合的id启动服务或者
+                    停止服务（如果已经启动）
+
+
+zygote:(this is a service ,run as a fork)
+    init.rc -> on boot -> class_start  main -> service zygote
+    in app_process executable:
+        initialize args, set progress name, 
+        use android.runtime to run corresponding zygote java class's main
+
+    in appruntime::start():
+        start vm and get jnienv, use jnienv's method find class's main
+            method and call that , then turn into ZygoteInit.java
