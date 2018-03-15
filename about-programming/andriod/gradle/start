@@ -1,0 +1,36 @@
+gradlew  stript to download if not exist the gradle
+build.gradle is the file tell what to do, like makefile
+    you can use -b xx.gradle tell instead use other gradle file
+
+apt-get install gradle
+
+gradle  taskname 会执行build。gradle中的制定任务
+    其中可以定义java类，可以使用def 定义动态类型，
+        可以在字符串中$(xx + xx) 执行操作获取结果，
+        可以${foo.class}获取类的类型名字，
+        可以println 
+
+        函数 def xxx（xx） {
+            xxxx }   最后一句就是返回的内容，不需要renturn
+            在调用的时候，提供至少一个参数后，可以不加括号！！
+            还可以嵌套调用，但是内部函数的参数第一个要加括号
+            不然模棱， f2  f1(arg1),arg12
+
+        闭包 def xxx = { xxx }, 
+            内部多行，可以打包语句，调用和函数一样，
+            这个可以在def的变量间传递,还可以获得到外部的变量
+                $outer_var
+            传参： def xxx = {x -> x + x } 类似lambda函数形式
+
+        list:
+            def xx = [xx,xx,xx,]
+            list.each(func)
+            list.each{println "xxxx, $it"} 也是可以的
+                $it 是闭包的默认单个参数
+
+        class:
+            class xxx { };
+            def xxx = new xxx();
+
+        闭包可以使用定义的类的成员，
+            只要闭包。delegate = 类的实例 就行了
