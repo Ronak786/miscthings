@@ -78,3 +78,15 @@ next to do:
 bmp to raw 颜色失真
     ~/gitbase/pangu_mt6582/mediatek/custom/common/lk/logo/tool
     ~/gitbase/pangu_mt6737/vendor/mediatek/proprietary/bootable/bootloader/lk/dev/logo/tool
+    
+    mboot_common_load_logo
+
+    fill_animation_logo(show_animation_common.c, see project/PROJECT's rule.mk to include bmps)
+    in init_fb_screen  set screen struct
+
+    ./device/mediatek/mt6735/init.mt6735.rc  包含了调用logo的地方
+
+
+./build/tools/releasetools/ota_from_target_files -s device/mediatek/build/releasetools/mt_ota_from_target_files.py --block -i /home/sora/tmp/ota.zip  /home/sora/tmp/ota2.zip /home/sora/tmp/ota1_to_2.zip
+    升级包制作命令
+make otapackage 制作出全量以及用来制作增量的原始ota包
