@@ -17,6 +17,8 @@ work things:
 
 ./mk -t mm external/Cpos_Watermark
 
+adb shell am start -n com.android.settings/.Settings  启动设置界面
+
 版本更新 
     mediatek/config/pangu/cynovo/cynovo.mk 更新版本号，上传
     然后gitlanb里面new branch 按照格式更新版本号
@@ -90,3 +92,20 @@ bmp to raw 颜色失真
 ./build/tools/releasetools/ota_from_target_files -s device/mediatek/build/releasetools/mt_ota_from_target_files.py --block -i /home/sora/tmp/ota.zip  /home/sora/tmp/ota2.zip /home/sora/tmp/ota1_to_2.zip
     升级包制作命令
 make otapackage 制作出全量以及用来制作增量的原始ota包
+
+
+
+uart in preloader: /home/sora/gitbase/pangu_mt6737/vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6735/src/drivers  inc/mt67xx.h
+                            serial is UART1, so is UART_BASE0
+
+        echo 31 >/proc/c650_ctrl
+
+lib/libc/printf.c include  include/debug.h has _dputc defined in platform/mt67xx
+        which use uart_putc in uart.c include .h is include/dev/uart.h
+
+        uart_putc in uart.c  , declare in include/dev/uart.h
+        _dputc in platform/mt6735/debug.c declare in include/debug.h
+        putc in lib/libc/printf use _dputc ceclare in include/stdio.h
+
+问题
+    水印显示属性比较
