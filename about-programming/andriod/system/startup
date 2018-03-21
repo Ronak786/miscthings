@@ -45,3 +45,22 @@ zygote:(this is a service ,run as a fork)
     in appruntime::start():
         start vm and get jnienv, use jnienv's method find class's main
             method and call that , then turn into ZygoteInit.java
+
+        in zygote ,check arg and start system_server:
+            this will start lots of services in c++ and in java
+
+service_manager:
+    in c/c++:
+        this is a servcie in init.rc, start it, commuicate with 
+        kernel's binder char dev, allocate a space for share mem use,
+        then all service can communicate it to register service,
+            all client communicate it to get service(get a service handler,
+                wrap with a proxy and return ,get handler)
+    in java
+        in systemserver.java, start thread,
+            int thread's init(native), 
+            create a javabbinder to hold java's object ref
+                and pass that to android.os.binder 's mobject reference
+            create a bindreproxy hole native's bpbinder ,store in android.os.binderproxy
+
+
