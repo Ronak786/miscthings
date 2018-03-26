@@ -19,6 +19,8 @@ system make status
     BUILD_ID=DRVI-1.7.9.d-20180316
     OUT_DIR=out
 
+poweroff charging ?? 这个不在判定的里面
+
 新定义的应用放在external/ex-cynovo 中
 然后在device/teksun/tekxxxx/cynovo/cynovo.mk 中添加对应目录
 
