@@ -140,3 +140,20 @@ lib/libc/printf.c include  include/debug.h has _dputc defined in platform/mt67xx
 
     不断重启，可能read里面少量超时，要喂狗
 
+
+step:
+    make distclean
+    make Penguin_defconfig
+    make kernel.img 
+
+    make clean
+    make update-api -j4
+    make -j4
+
+    ./mkimage.sh ota
+
+    cd rockdev
+    rm update-unlock*
+    rm update-lock*
+    ./mkupdate.sh 
+
