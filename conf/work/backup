@@ -157,3 +157,13 @@ step:
     rm update-lock*
     ./mkupdate.sh 
 
+
+
+no use apks:
+../device/google/atv/products/atv_base.mk ?? include apks ?
+    ../vendor/mediatek/proprietary/packages/apps/CalendarImporter
+    ../frameworks/base/packages/CaptivePortalLogin   used in webpage wifi?
+    ../vendor/mediatek/proprietary/packages/apps/AutoDialer
+    ../vendor/mediatek/proprietary/packages/apps/BtTool
+    ../vendor/mediatek/proprietary/packages/apps/Bypass
+
