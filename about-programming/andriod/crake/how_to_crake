@@ -7,3 +7,8 @@
                         以及build/target/product/security 下的pem和 pk8 的test文件
                         就可签名了
                     最后adb install 即可
+
+
+2 d2j-dex2jar工具可以把dex或者apk文件变成jar包，
+    然后利用jd-gui可以打开jar包，同样可以看
+     apktool的好处是可以重新打包
