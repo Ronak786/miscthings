@@ -1,0 +1,17 @@
+od -A x (选择地址) -t x2z z表示右侧显示文字 -S 可以选择显示几个ascii字符以上连续的字符串
+    与strings不同这里的字符串必须\0结尾，strings不必须
+    -j skipbytes
+    -N readbytes
+
+一个读入二进制输出数组的命令
+#!/bin/sh
+# $0 objname <in >out
+objname=${1:-objname}
+od -A n -v -t x1 | sed -e '1i\
+const unsigned char '$objname'[] = {
+s/\([0-9a-f][0-9a-f]\) */0x\1,/g
+$s/,$//
+$a\
+};
+'
+以上可以读取二进制，数组的格式写入一个文件，每个字节前面加上对应的0x，很好用

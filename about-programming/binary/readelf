@@ -1,0 +1,18 @@
+readelf -h  elfheader
+    -l  program header
+    -S  section header
+    -s  symbols
+    -e  显示 -h -l -S
+    -d  需要的动态库依赖， 同样可以objdump -p
+        也可以查到当前如果是so的话 SONAME
+    -r .rela 段信息动态段
+    -V  版本信息，内部的
+    -s -D 使用dynamic段的符号信息显示
+    -xNUM 显示指定段的hex
+
+
+dysym 对应dystr，大小可以从头里面都出来
+    利用od可以读到指定位置的字节
+
+RELA section
+    包含重定位的信息，包含了段头开始的偏移，，重定位信息，以及最后需要的addend

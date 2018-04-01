@@ -1,0 +1,7 @@
+显示真实 链接的库的位置
+    可以使用LD_TRACE_LOADED_OBJECTS=1 /bin/exe
+        的方法显示和ldd同样的内容
+    LD_TRACE_LOADED_OBJECTS=1 /lib64/ld-linux-x86-64.so.2 /lib/x86_64-linux-gnu/libc.so.6 
+        也可以对动态库这样
+        这个实际上是给ld动态连接器用的
+    or  ld-linux-xxxx.so.2  --list /bin/xxx
