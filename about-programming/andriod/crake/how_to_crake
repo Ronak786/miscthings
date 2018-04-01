@@ -1,0 +1,9 @@
+首先安装apktool ，这个需要两部分，按照网站来，
+然后写一个应用，点击build的gen apk ，然后找到project目录下的一个apk
+    apktool d xx。apk 即可
+    然后内部的mainactivity。smail 里面可以更改，然后apktool b xxx 可以重新打包
+    签名：
+        打包后要签名，利用aosp下out/host/linux-x86/framework/signapk.jar
+                        以及build/target/product/security 下的pem和 pk8 的test文件
+                        就可签名了
+                    最后adb install 即可

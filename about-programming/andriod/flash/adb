@@ -1,0 +1,5 @@
+lsusb查看 vedor  product id
+    udev 添加一个android rules：
+        SUBSYSTEM=="usb", ATTR{idVendor}=="xxx", MODE="xxx", GRUP="plugdev"
+        即可
+        或者需要usb ini里面添加vendor id
