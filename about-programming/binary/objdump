@@ -1,0 +1,19 @@
+objdump
+-s  dump all
+-s -j .xxxx   指定段
+
+objdump -s --start-address= --stop-address=
+
+objdump -s -b binary xxx
+    可以直接解析二进制bin文件
+
+反汇编
+    objdump -d xxx
+            -D xxx 非text段也反
+            --prefix-address 则会输出当前函数中相对位置
+            --no-show-raw-insn  不显示对应的机器码
+            --show-raw-insn 使用prefix那个选项后默认不显示机器码，要手动开启
+            -j 制定节, 可以是section的，可以是program header的
+            --start-address ... 制定位置
+            -l 输出源文件对应行号，有debug时
+            -S 存在源文件的时候和插入对应源码

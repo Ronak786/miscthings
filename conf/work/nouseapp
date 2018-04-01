@@ -1,0 +1,216 @@
+app:
+    vendor/mediatek/proprietary/packages/apps/AutoDialer   
+desc:
+     A-GPS test utility for operators to do the Emergency 911 Performance Test.
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/BtTool/
+desc
+    bluetooth log tool 和蓝牙有关，不过没有具体用处说明，去掉后没有影响蓝牙功能开关
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/CalendarImporter
+desc:
+    It can compose the event to be a vcs attachment when user want to share a event to others via Email/BT/...
+    And correspondingly it can parse the received vcs file, and import it to calendar.
+    这个和用来解析vcs格式信息然后导入日历用的，我们的平台没有日历不需要这个
+
+
+app:
+    ./packages/providers/CalendarProvider
+desc:
+    日历相关
+
+app:
+    CallLogBackup
+    in  packages/providers/CallLogProvider
+desc:
+   通话相关，通话记录的备份
+
+app:
+    ./frameworks/base/packages/CaptivePortalLogin
+desc:
+    据网上介绍是用于公共场合接入wifi时候的登陆权限界面 
+
+app:
+   Exchange2
+desc
+    发送邮件使用
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/FlpEM2
+desc:
+    The Android Package 'FlpEM2.apk' is a GPS/Fused Location Provider tool on MediaTek's
+    platforms.
+    用于gps
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/YGPS
+desc:
+    YGPS.apk display satellites information, like coordinate, signal strength, fix status.
+    It can do hot/warm/cold/full restart gps and show NMEA log view, some debug switch button
+    gps测试工具
+
+app:
+   ./frameworks/base/packages/FusedLocation 
+desc:
+    Fused Location is actually a location service which combines GPS location and network location to achieve balance between battery consumption and accuracy.
+    配合gps工具来省电的
+
+
+app:
+    ./packages/apps/HTMLViewer
+desc:
+   配合webview 查看网页html 
+
+app:
+    ./packages/providers/UserDictionaryProvider
+desc:
+    用于用户定义输入法的字典建立
+
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/VoiceCommand
+desc:
+    语音控制相关的api
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/VoiceUnlock
+desc:
+    语音解锁功能相关
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/WiFiTest
+desc:
+    wifi 测试使用的工具
+
+
+app:
+   ./vendor/mediatek/proprietary/packages/services/AtciService/README 
+desc:
+    网上说
+    atci service是ATCi公司的一个软件，是将将音乐会、新闻、体育、企业通信以及其它视频内容的流媒体直播服务融入智能手机的功能
+    文档说
+    The Atci_service apk resides at java layer and receive AT commands belongs to Java layer.
+    Atcid will send these commands to java layer and atci_service apk will receive it.
+    This apk is pre-built by MediaTek internal.
+
+    应该是对我们没用的东西
+
+app:
+    BasicDreams 
+desc:
+    用处未知，位置没找到，应该可以用过配置文件屏蔽安装
+    网上的解释是
+    Its for Daydreams (compareable like screensaver) dont know how i can better explain.
+    So if you dont use Daydreams you can savely delete basicdreams.apk 
+
+
+app:
+    ./frameworks/base/media/packages/BluetoothMidiService
+desc:
+    利用蓝牙链接外部midi设备
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/DeviceRegister/README
+desc:
+    SMS register application for CT(China Telecom)
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/DeviceRegister/README
+desc:
+    SMS register application for CT(China Telecom)
+    电信用的
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/EngineerMode
+desc:
+    debug tool
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/Gba/README
+desc:
+    This is a service APK for Generic Bootstrap Function (GBA).
+    It provides service APIs to run bootstrap authentication with BSF server
+    and create GBA credentials for client applications.
+    看起来没什么用的服务
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/MTKThermalManager
+desc:
+    MTKThermalManager serves as an application for engineers to monitor thermal 
+    sensors and change thermal configurations via Engineering Mode.
+    engineer mode使用
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/MiraVision
+desc:
+    增强拍照清晰度的接口提供
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/Omacp
+desc:
+    Android APK file, used to install configuration messages such as APN settings, Bookmarks from Operators
+
+app:
+    ./packages/screensavers/PhotoTable
+desc:
+    照片相关，应该没用
+
+app:
+    PicoTts
+desc:
+    语音相关
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/SchedulePowerOnOff
+desc:
+    MTK feature , set the time of power on/off automatically.
+
+app:
+    ./vendor/mediatek/proprietary/packages/apps/DataProtection
+desc:
+    提供文件加解密
+
+
+app:
+    ImsService
+desc:
+    语音和多媒体的基于ip网络的交流使用
+app:
+    InputDevices
+desc:
+    输入设备相关，我们没有输入设备
+
+app:
+    MmsService
+desc:
+    多媒体短信
+
+app:
+    ProxyHandler 
+desc:
+    代理
+
+app:
+    ./frameworks/base/packages/VpnDialogs
+desc:
+    vpn
+
+app:
+    ./vendor/mediatek/proprietary/packages/3rd-party/Baidu_Location/
+desc:
+    
+app:
+    ./vendor/mediatek/proprietary/packages/apps/WiFiTest only in eng build
+desc:
+    It's 3rd party network location provider.
+
+存疑：
+
+app:
+    documentsui 
+desc:
+    com.android.documentsui provides a file picker for apps (since Android 4.4) and depending on your Android version, it is also the default file manager app (7.0+?). I wouldn't recommend removing it, because it can break apps made for android 4.4 and higher.
+    应该是用于浏览外部存储上的文件的默认文件管理器
+

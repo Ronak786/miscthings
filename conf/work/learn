@@ -10,3 +10,18 @@ surface
     这个的绘图设置位置会需要一个锁，最好预留1到两秒给每个surface，不然会出现位置重叠
 
     我的做法是开机启动线程，后期只设定透明度，这样减少每次设定属性的开销
+
+vim 去掉win的换行
+    :set magic
+    :set ++ff=unix "show line feeds & carriage-return
+    :%s/^M//g
+
+添加第三方库
+    LOCAL_PREBUILT_LIBS = xxx.a , 具体的可以到build/core下对应的文件里去看
+    include BUILD_HOST_PREBUILT
+        这样可以包含编译好的库，mm会直接放到out目录底下去
+        需要的地方直接LOCAL_STATIC_LIBRARIES:= 加上完整的名字就行了
+
+lk bootloader 堆栈增长
+                移植动态分配库到preloader
+

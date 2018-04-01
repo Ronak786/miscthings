@@ -1,3 +1,31 @@
+需要整理做过的事情
+
+莫名其妙的函数返回处停止执行，可能是栈空间溢出
+system make status
+    PLATFORM_VERSION_CODENAME=REL
+    PLATFORM_VERSION=6.0
+    TARGET_PRODUCT=full_tek6737t_36_m0
+    TARGET_BUILD_VARIANT=eng
+    TARGET_BUILD_TYPE=release
+    TARGET_BUILD_APPS=
+    TARGET_ARCH=arm
+    TARGET_ARCH_VARIANT=armv7-a-neon
+    TARGET_CPU_VARIANT=cortex-a53
+    TARGET_2ND_ARCH=
+    TARGET_2ND_ARCH_VARIANT=
+    TARGET_2ND_CPU_VARIANT=cortex-a53
+    HOST_ARCH=x86_64
+    HOST_OS=linux
+    HOST_OS_EXTRA=Linux-4.4.0-116-generic-x86_64-with-Ubuntu-14.04-trusty
+    HOST_BUILD_TYPE=release
+    BUILD_ID=DRVI-1.7.9.d-20180316
+    OUT_DIR=out
+
+poweroff charging ?? 这个不在判定的需要显示sha的范围内
+
+新定义的应用放在external/ex-cynovo 中
+然后在device/teksun/tekxxxx/cynovo/cynovo.mk 中添加对应目录
+
 work things:
     1, replace image of recovery and update stage
         in bootable recovery, replace image
@@ -16,6 +44,8 @@ work things:
             in cpp file compile, head file's declaration use extern better!
 
 ./mk -t mm external/Cpos_Watermark
+
+adb shell am start -n com.android.settings/.Settings  启动设置界面
 
 版本更新 
     mediatek/config/pangu/cynovo/cynovo.mk 更新版本号，上传
@@ -68,3 +98,86 @@ dest:
 
     selinux 自定义文件
         device/mediatek/common/sepolicy
+
+
+next to do:
+    潜入mkimage 添加hash的方法 对于bootimg
+    打印计算hash的时间
+
+
+bmp to raw 颜色失真
+    ~/gitbase/pangu_mt6582/mediatek/custom/common/lk/logo/tool
+    ~/gitbase/pangu_mt6737/vendor/mediatek/proprietary/bootable/bootloader/lk/dev/logo/tool
+    
+    mboot_common_load_logo
+
+    fill_animation_logo(show_animation_common.c, see project/PROJECT's rule.mk to include bmps)
+    in init_fb_screen  set screen struct
+
+    ./device/mediatek/mt6735/init.mt6735.rc  包含了调用logo的地方
+
+
+./build/tools/releasetools/ota_from_target_files -s device/mediatek/build/releasetools/mt_ota_from_target_files.py --block -i /home/sora/tmp/ota.zip  /home/sora/tmp/ota2.zip /home/sora/tmp/ota1_to_2.zip
+    升级包制作命令
+make otapackage 制作出全量以及用来制作增量的原始ota包
+
+
+
+uart in preloader: /home/sora/gitbase/pangu_mt6737/vendor/mediatek/proprietary/bootable/bootloader/preloader/platform/mt6735/src/drivers  inc/mt67xx.h
+                            serial is UART1, so is UART_BASE0
+
+        echo 31 >/proc/c650_ctrl
+
+lib/libc/printf.c include  include/debug.h has _dputc defined in platform/mt67xx
+        which use uart_putc in uart.c include .h is include/dev/uart.h
+
+        uart_putc in uart.c  , declare in include/dev/uart.h
+        _dputc in platform/mt6735/debug.c declare in include/debug.h
+        putc in lib/libc/printf use _dputc ceclare in include/stdio.h
+
+问题
+    水印显示属性比较
+
+    不断重启，可能read里面少量超时，要喂狗
+
+
+step:
+    make distclean
+    make Penguin_defconfig
+    make kernel.img 
+
+    make clean
+    make update-api -j4
+    make -j4
+
+    ./mkimage.sh ota
+
+    cd rockdev
+    rm update-unlock*
+    rm update-lock*
+    ./mkupdate.sh 
+
+
+
+no use apks:
+see this https://bitlog.it/mobile/dissecting-an-android-chinaphone/
+../device/google/atv/products/atv_base.mk ?? include apks ?
+    ../vendor/mediatek/proprietary/packages/apps/CalendarImporter
+    ../frameworks/base/packages/CaptivePortalLogin   used in webpage wifi?
+    ../vendor/mediatek/proprietary/packages/apps/AutoDialer
+    ../vendor/mediatek/proprietary/packages/apps/BtTool
+    ../vendor/mediatek/proprietary/packages/apps/Bypass
+    ../packages/apps/HTMLViewer
+    ../vendor/mediatek/proprietary/packages/apps/YGPS
+    ../vendor/mediatek/proprietary/packages/apps/EngineerMode
+    UserDictionaryProvider
+    VoiceCommand
+    /VoiceUnlock
+    testapk
+    CalendarProvider
+    CallLogBackup
+    ContactsProvider
+    TeleService
+    Telecom
+    TelephonyProvider
+    WiFiTest

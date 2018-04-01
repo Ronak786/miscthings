@@ -1,0 +1,5 @@
+static
+shared
+    这两种不同，前者会把内部需要的obj复制进入exe
+    后者只不过查询然后添加对应的soname名字到exe中
+        soname默认和库名一样，可以通过-Wl,-soname,xxxx制定
