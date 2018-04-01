@@ -143,7 +143,7 @@ desc:
     engineer mode使用
 
 app:
-    ./vendor/mediatek/proprietary/packages/apps/MiraVision/README
+    ./vendor/mediatek/proprietary/packages/apps/MiraVision
 desc:
     增强拍照清晰度的接口提供
 
@@ -158,7 +158,7 @@ desc:
     照片相关，应该没用
 
 app:
-    PhotoTable
+    PicoTts
 desc:
     语音相关
 
@@ -198,16 +198,11 @@ desc:
     vpn
 
 app:
-    ./vendor/mediatek/proprietary/packages/apps/WiFiTest
-desc:
-    wifitest
-
-app:
     ./vendor/mediatek/proprietary/packages/3rd-party/Baidu_Location/
 desc:
     
 app:
-    ./vendor/mediatek/proprietary/packages/apps/WiFiTest
+    ./vendor/mediatek/proprietary/packages/apps/WiFiTest only in eng build
 desc:
     It's 3rd party network location provider.
 
