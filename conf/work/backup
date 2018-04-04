@@ -181,3 +181,29 @@ see this https://bitlog.it/mobile/dissecting-an-android-chinaphone/
     Telecom
     TelephonyProvider
     WiFiTest
+
+
+
+led:
+    led-core  led-class led-triggers ledtrig-timer
+
+LightsService->native method->
+"./hardware/libhardware/include/hardware/lights.h" get lights's head
+vendor/mediatek/proprietary/hardware/liblights/lights.c  this is the
+    lights.mt6737t.so  library, color is set according to color offset
+
+/home/sora/gitbase/pangu_mt6582/frameworks/base/core/res/res/values 
+    this is the place to get color of light
+
+
+statusbar的出现流程：
+res/values/config。xml 里面有config_statusBarComponent，这个设定了
+    src/com/android/systemui/SystemUIService.java will inflate  SystemBars
+     in SystemBars: createStatusBarFromConfig里面设定了启动的statusbar，就是我们的phonestatusbar
+     in phonestatusbar: start()is called -> super.start()-> createAndAddwindows()->
+        addstatusbarwindow->makestatusbarview->
+        inflate from super_status_bar.xml into mStatusBarWindow,->
+            (the xml will inflate notificationpanel.java->kivvipanel->monitorkivvipanel
+            这个会监控图标状态)
+        mSettingsContainer != NULL -> create QuickSettings.java ->
+        call setup() -> do other settings in setupQuickSettings() and updateResources()

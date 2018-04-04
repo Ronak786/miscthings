@@ -206,11 +206,3 @@ app:
 desc:
     It's 3rd party network location provider.
 
-存疑：
-
-app:
-    documentsui 
-desc:
-    com.android.documentsui provides a file picker for apps (since Android 4.4) and depending on your Android version, it is also the default file manager app (7.0+?). I wouldn't recommend removing it, because it can break apps made for android 4.4 and higher.
-    应该是用于浏览外部存储上的文件的默认文件管理器
-
