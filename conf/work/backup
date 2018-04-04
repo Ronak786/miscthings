@@ -207,3 +207,7 @@ res/values/config。xml 里面有config_statusBarComponent，这个设定了
             这个会监控图标状态)
         mSettingsContainer != NULL -> create QuickSettings.java ->
         call setup() -> do other settings in setupQuickSettings() and updateResources()
+
+        疑问：
+            setup内有setupquicksetting的原本代码，包括airmode等，这些是否不需要了
+                还有和wifi相关的long press
