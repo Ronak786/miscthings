@@ -211,3 +211,8 @@ res/values/config。xml 里面有config_statusBarComponent，这个设定了
         疑问：
             setup内有setupquicksetting的原本代码，包括airmode等，这些是否不需要了
                 还有和wifi相关的long press
+
+ro.serialno  ,this is the serial number in android.os.Build get from meta.init
+from lk in boot_linux_fdt
+
+device/mediatek/mt6735/BoardConfig.mk   basic configuration of boot rom
