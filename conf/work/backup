@@ -216,3 +216,5 @@ ro.serialno  ,this is the serial number in android.os.Build get from meta.init
 from lk in boot_linux_fdt
 
 device/mediatek/mt6735/BoardConfig.mk   basic configuration of boot rom
+
+利用proinfo的目前版本不适用的空间，可以存储serial number， 可以获取
