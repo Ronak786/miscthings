@@ -222,3 +222,8 @@ device/mediatek/mt6735/BoardConfig.mk   basic configuration of boot rom
 Scatter file 生成:t 
     device/mediatek/build/build/tools/ptgen/MT6737T/ptgen.pl 包含了生成scatterfile的过程 , 通过ptgen。mk获取需要的环境名字，包括bin文件的名字，
         而scatter file由同目录下的emmc。yaml生成，在pt的pl中arglist里面强制制定的
+
+proinit .bin's config file is vendor/mediatek/proprietary/custom/tek6737t_36_m0/cgen/cfgdefault/CFG_PRODUCT_INFO_Default.h
+
+question:
+    insert into second of tablet's usb from left will turn long press reboot into charging mode !!
