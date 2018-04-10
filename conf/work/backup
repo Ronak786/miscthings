@@ -218,3 +218,7 @@ from lk in boot_linux_fdt
 device/mediatek/mt6735/BoardConfig.mk   basic configuration of boot rom
 
 利用proinfo的目前版本不适用的空间，可以存储serial number， 可以获取
+
+Scatter file 生成:t 
+    device/mediatek/build/build/tools/ptgen/MT6737T/ptgen.pl 包含了生成scatterfile的过程 , 通过ptgen。mk获取需要的环境名字，包括bin文件的名字，
+        而scatter file由同目录下的emmc。yaml生成，在pt的pl中arglist里面强制制定的
