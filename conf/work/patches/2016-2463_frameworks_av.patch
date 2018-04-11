@@ -1,0 +1,153 @@
+diff --git a/media/libstagefright/codecs/on2/h264dec/inc/H264SwDecApi.h b/media/libstagefright/codecs/on2/h264dec/inc/H264SwDecApi.h
+index fe112bc..9814e73 100644
+--- a/media/libstagefright/codecs/on2/h264dec/inc/H264SwDecApi.h
++++ b/media/libstagefright/codecs/on2/h264dec/inc/H264SwDecApi.h
+@@ -161,7 +161,7 @@
+     void H264SwDecTrace(char *);
+ 
+     /* function prototype for memory allocation */
+-    void* H264SwDecMalloc(u32 size);
++    void* H264SwDecMalloc(u32 size, u32 num);
+ 
+     /* function prototype for memory free */
+     void H264SwDecFree(void *ptr);
+diff --git a/media/libstagefright/codecs/on2/h264dec/source/DecTestBench.c b/media/libstagefright/codecs/on2/h264dec/source/DecTestBench.c
+index dcf2ef6..55c0065 100644
+--- a/media/libstagefright/codecs/on2/h264dec/source/DecTestBench.c
++++ b/media/libstagefright/codecs/on2/h264dec/source/DecTestBench.c
+@@ -700,18 +700,21 @@
+         library function malloc for allocation of memory.
+ 
+ ------------------------------------------------------------------------------*/
+-void* H264SwDecMalloc(u32 size)
++void* H264SwDecMalloc(u32 size, u32 num)
+ {
++    if (size > UINT32_MAX / num) {
++        return NULL;
++    }
+ 
+ #if defined(CHECK_MEMORY_USAGE)
+     /* Note that if the decoder has to free and reallocate some of the buffers
+      * the total value will be invalid */
+     static u32 numBytes = 0;
+-    numBytes += size;
++    numBytes += size * num;
+     DEBUG(("Allocated %d bytes, total %d\n", size, numBytes));
+ #endif
+ 
+-    return malloc(size);
++    return malloc(size * num);
+ }
+ 
+ /*------------------------------------------------------------------------------
+diff --git a/media/libstagefright/codecs/on2/h264dec/source/EvaluationTestBench.c b/media/libstagefright/codecs/on2/h264dec/source/EvaluationTestBench.c
+index aadc75f..e756a1f 100644
+--- a/media/libstagefright/codecs/on2/h264dec/source/EvaluationTestBench.c
++++ b/media/libstagefright/codecs/on2/h264dec/source/EvaluationTestBench.c
+@@ -85,7 +85,7 @@
+     rewind(finput);
+ 
+     /* allocate memory for stream buffer, exit if unsuccessful */
+-    byteStrm = byteStrmStart = (u8 *)H264SwDecMalloc(sizeof(u8)*strmLen);
++    byteStrm = byteStrmStart = (u8 *)H264SwDecMalloc(sizeof(u8), strmLen);
+     if (byteStrm == NULL)
+     {
+         printf("UNABLE TO ALLOCATE MEMORY\n");
+@@ -298,9 +298,12 @@
+         library function malloc for allocation of memory.
+ 
+ ------------------------------------------------------------------------------*/
+-void* H264SwDecMalloc(u32 size)
++void* H264SwDecMalloc(u32 size, u32 num)
+ {
+-    return malloc(size);
++    if (size > UINT32_MAX / num) {
++        return NULL;
++    }
++    return malloc(size * num);
+ }
+ 
+ /*------------------------------------------------------------------------------
+diff --git a/media/libstagefright/codecs/on2/h264dec/source/H264SwDecApi.c b/media/libstagefright/codecs/on2/h264dec/source/H264SwDecApi.c
+index a073dcb..f820dfd 100644
+--- a/media/libstagefright/codecs/on2/h264dec/source/H264SwDecApi.c
++++ b/media/libstagefright/codecs/on2/h264dec/source/H264SwDecApi.c
+@@ -35,6 +35,8 @@
+ /*------------------------------------------------------------------------------
+     1. Include headers
+ ------------------------------------------------------------------------------*/
++#include <log/log.h>
++
+ #include <stdlib.h>
+ #include <string.h>
+ #include "basetype.h"
+@@ -79,8 +81,13 @@
+     UNUSED(string);
+ }
+ 
+-void* H264SwDecMalloc(u32 size) {
+-    return malloc(size);
++void* H264SwDecMalloc(u32 size, u32 num) {
++    if (size > UINT32_MAX / num) {
++        ALOGE("can't allocate %u * %u bytes", size, num);
++        android_errorWriteLog(0x534e4554, "27855419");
++        return NULL;
++    }
++    return malloc(size * num);
+ }
+ 
+ void H264SwDecFree(void *ptr) {
+@@ -144,7 +151,7 @@
+         return(H264SWDEC_PARAM_ERR);
+     }
+ 
+-    pDecCont = (decContainer_t *)H264SwDecMalloc(sizeof(decContainer_t));
++    pDecCont = (decContainer_t *)H264SwDecMalloc(sizeof(decContainer_t), 1);
+ 
+     if (pDecCont == NULL)
+     {
+diff --git a/media/libstagefright/codecs/on2/h264dec/source/TestBenchMultipleInstance.c b/media/libstagefright/codecs/on2/h264dec/source/TestBenchMultipleInstance.c
+index 42170d3..9a386bb 100644
+--- a/media/libstagefright/codecs/on2/h264dec/source/TestBenchMultipleInstance.c
++++ b/media/libstagefright/codecs/on2/h264dec/source/TestBenchMultipleInstance.c
+@@ -413,9 +413,12 @@
+     Function name:  H264SwDecmalloc
+ 
+ ------------------------------------------------------------------------------*/
+-void* H264SwDecMalloc(u32 size)
++void* H264SwDecMalloc(u32 size, u32 num)
+ {
+-    return malloc(size);
++    if (size > UINT32_MAX / num) {
++        return NULL;
++    }
++    return malloc(size * num);
+ }
+ 
+ /*------------------------------------------------------------------------------
+diff --git a/media/libstagefright/codecs/on2/h264dec/source/h264bsd_decoder.c b/media/libstagefright/codecs/on2/h264dec/source/h264bsd_decoder.c
+index a816871..0ac480f 100644
+--- a/media/libstagefright/codecs/on2/h264dec/source/h264bsd_decoder.c
++++ b/media/libstagefright/codecs/on2/h264dec/source/h264bsd_decoder.c
+@@ -101,7 +101,7 @@
+      * specific NEON optimized "memset" for clearing the structure */
+     size = (sizeof(macroblockLayer_t) + 63) & ~0x3F;
+ 
+-    pStorage->mbLayer = (macroblockLayer_t*)H264SwDecMalloc(size);
++    pStorage->mbLayer = (macroblockLayer_t*)H264SwDecMalloc(size, 1);
+     if (!pStorage->mbLayer)
+         return HANTRO_NOK;
+ 
+diff --git a/media/libstagefright/codecs/on2/h264dec/source/h264bsd_util.h b/media/libstagefright/codecs/on2/h264dec/source/h264bsd_util.h
+index 216ad04..9f0eb7d 100644
+--- a/media/libstagefright/codecs/on2/h264dec/source/h264bsd_util.h
++++ b/media/libstagefright/codecs/on2/h264dec/source/h264bsd_util.h
+@@ -141,7 +141,7 @@
+ /* macro to allocate memory */
+ #define ALLOCATE(ptr, count, type) \
+ { \
+-    (ptr) = H264SwDecMalloc((count) * sizeof(type)); \
++    (ptr) = H264SwDecMalloc(sizeof(type), (count)); \
+ }
+ 
+ /* macro to free allocated memory */

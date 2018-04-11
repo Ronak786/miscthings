@@ -1,0 +1,20 @@
+diff --git a/core/jni/android/graphics/Region.cpp b/core/jni/android/graphics/Region.cpp
+index 912968a..6b99de8 100644
+--- a/core/jni/android/graphics/Region.cpp
++++ b/core/jni/android/graphics/Region.cpp
+@@ -212,9 +212,13 @@
+ 
+     android::Parcel* p = android::parcelForJavaObject(env, parcel);
+ 
++    const size_t size = p->readInt32();
++    const void* regionData = p->readInplace(size);
++    if (regionData == NULL) {
++        return NULL;
++    }
+     SkRegion* region = new SkRegion;
+-    size_t size = p->readInt32();
+-    region->readFromMemory(p->readInplace(size), size);
++    region->readFromMemory(regionData, size);
+ 
+     return reinterpret_cast<jlong>(region);
+ }

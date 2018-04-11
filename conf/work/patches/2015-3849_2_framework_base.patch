@@ -1,0 +1,18 @@
+diff --git a/core/jni/android/graphics/Region.cpp b/core/jni/android/graphics/Region.cpp
+index 6b99de8..ec4d8bf 100644
+--- a/core/jni/android/graphics/Region.cpp
++++ b/core/jni/android/graphics/Region.cpp
+@@ -218,7 +218,12 @@
+         return NULL;
+     }
+     SkRegion* region = new SkRegion;
+-    region->readFromMemory(regionData, size);
++    size_t actualSize = region->readFromMemory(regionData, size);
++
++    if (size != actualSize) {
++        delete region;
++        return NULL;
++    }
+ 
+     return reinterpret_cast<jlong>(region);
+ }

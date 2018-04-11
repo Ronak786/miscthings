@@ -1,0 +1,35 @@
+diff --git a/include/media/mediametadataretriever.h b/include/media/mediametadataretriever.h
+index b35cf32..84b9846 100644
+--- a/include/media/mediametadataretriever.h
++++ b/include/media/mediametadataretriever.h
+@@ -97,7 +97,7 @@
+     const char* extractMetadata(int keyCode);
+ 
+ private:
+-    static const sp<IMediaPlayerService>& getService();
++    static const sp<IMediaPlayerService> getService();
+ 
+     class DeathNotifier: public IBinder::DeathRecipient
+     {
+diff --git a/media/libmedia/mediametadataretriever.cpp b/media/libmedia/mediametadataretriever.cpp
+index 39a239d..67d4139 100644
+--- a/media/libmedia/mediametadataretriever.cpp
++++ b/media/libmedia/mediametadataretriever.cpp
+@@ -32,7 +32,7 @@
+ sp<IMediaPlayerService> MediaMetadataRetriever::sService;
+ sp<MediaMetadataRetriever::DeathNotifier> MediaMetadataRetriever::sDeathNotifier;
+ 
+-const sp<IMediaPlayerService>& MediaMetadataRetriever::getService()
++const sp<IMediaPlayerService> MediaMetadataRetriever::getService()
+ {
+     Mutex::Autolock lock(sServiceLock);
+     if (sService == 0) {
+@@ -59,7 +59,7 @@
+ MediaMetadataRetriever::MediaMetadataRetriever()
+ {
+     ALOGV("constructor");
+-    const sp<IMediaPlayerService>& service(getService());
++    const sp<IMediaPlayerService> service(getService());
+     if (service == 0) {
+         ALOGE("failed to obtain MediaMetadataRetrieverService");
+         return;

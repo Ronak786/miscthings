@@ -1,0 +1,110 @@
+diff --git a/include/media/stagefright/OMXCodec.h b/include/media/stagefright/OMXCodec.h
+index 7fabcb3..b0404aa 100644
+--- a/include/media/stagefright/OMXCodec.h
++++ b/include/media/stagefright/OMXCodec.h
+@@ -40,10 +40,6 @@
+         kPreferSoftwareCodecs    = 1,
+         kIgnoreCodecSpecificData = 2,
+ 
+-        // The client wants to access the output buffer's video
+-        // data for example for thumbnail extraction.
+-        kClientNeedsFramebuffer  = 4,
+-
+         // Request for software or hardware codecs. If request
+         // can not be fullfilled, Create() returns NULL.
+         kSoftwareCodecsOnly      = 8,
+diff --git a/media/libmedia/IOMX.cpp b/media/libmedia/IOMX.cpp
+index 84925f1..9be9b41 100644
+--- a/media/libmedia/IOMX.cpp
++++ b/media/libmedia/IOMX.cpp
+@@ -24,6 +24,7 @@
+ #include <binder/Parcel.h>
+ #include <media/IOMX.h>
+ #include <media/stagefright/foundation/ADebug.h>
++#include <media/openmax/OMX_IndexExt.h>
+ 
+ namespace android {
+ 
+@@ -698,7 +699,8 @@
+             void *params = NULL;
+             size_t pageSize = 0;
+             size_t allocSize = 0;
+-            if (code != SET_INTERNAL_OPTION && size < 8) {
++            if ((index == (OMX_INDEXTYPE) OMX_IndexParamConsumerUsageBits && size < 4) ||
++                    (code != SET_INTERNAL_OPTION && size < 8)) {
+                 // we expect the structure to contain at least the size and
+                 // version, 8 bytes total
+                 ALOGE("b/27207275 (%zu)", size);
+@@ -720,7 +722,9 @@
+                     } else {
+                         err = NOT_ENOUGH_DATA;
+                         OMX_U32 declaredSize = *(OMX_U32*)params;
+-                        if (code != SET_INTERNAL_OPTION && declaredSize > size) {
++                        if (code != SET_INTERNAL_OPTION &&
++                                index != (OMX_INDEXTYPE) OMX_IndexParamConsumerUsageBits &&
++                                declaredSize > size) {
+                             // the buffer says it's bigger than it actually is
+                             ALOGE("b/27207275 (%u/%zu)", declaredSize, size);
+                             android_errorWriteLog(0x534e4554, "27207275");
+diff --git a/media/libstagefright/OMXCodec.cpp b/media/libstagefright/OMXCodec.cpp
+index b1dde80..4618e21 100644
+--- a/media/libstagefright/OMXCodec.cpp
++++ b/media/libstagefright/OMXCodec.cpp
+@@ -349,21 +349,6 @@
+ 
+         ALOGV("Attempting to allocate OMX node '%s'", componentName);
+ 
+-        if (!createEncoder
+-                && (quirks & kOutputBuffersAreUnreadable)
+-                && (flags & kClientNeedsFramebuffer)) {
+-            if (strncmp(componentName, "OMX.SEC.", 8)) {
+-                // For OMX.SEC.* decoders we can enable a special mode that
+-                // gives the client access to the framebuffer contents.
+-
+-                ALOGW("Component '%s' does not give the client access to "
+-                     "the framebuffer contents. Skipping.",
+-                     componentName);
+-
+-                continue;
+-            }
+-        }
+-
+         status_t err = omx->allocateNode(componentName, observer, &node);
+         if (err == OK) {
+             ALOGV("Successfully allocated OMX node '%s'", componentName);
+@@ -672,35 +657,6 @@
+ 
+     initOutputFormat(meta);
+ 
+-    if ((mFlags & kClientNeedsFramebuffer)
+-            && !strncmp(mComponentName, "OMX.SEC.", 8)) {
+-        // This appears to no longer be needed???
+-
+-        OMX_INDEXTYPE index;
+-
+-        status_t err =
+-            mOMX->getExtensionIndex(
+-                    mNode,
+-                    "OMX.SEC.index.ThumbnailMode",
+-                    &index);
+-
+-        if (err != OK) {
+-            return err;
+-        }
+-
+-        OMX_BOOL enable = OMX_TRUE;
+-        err = mOMX->setConfig(mNode, index, &enable, sizeof(enable));
+-
+-        if (err != OK) {
+-            CODEC_LOGE("setConfig('OMX.SEC.index.ThumbnailMode') "
+-                       "returned error 0x%08x", err);
+-
+-            return err;
+-        }
+-
+-        mQuirks &= ~kOutputBuffersAreUnreadable;
+-    }
+-
+     if (mNativeWindow != NULL
+         && !mIsEncoder
+         && !strncasecmp(mMIME, "video/", 6)

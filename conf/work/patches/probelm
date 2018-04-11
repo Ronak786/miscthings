@@ -1,0 +1,22 @@
+in 2016-2495_1  
+    in /home/em/dev/temp/pangu_mt6582/frameworks/av/media/libstagefright/SampleTable.cpp
+    at line 405 ,we have a android_default_code macro which do not in aosp !
+
+in 2016-3754
+framework/av/media/libstagefright/MPEG4Extractor.cpp
+    line 2751 h v c C use malloc instead of ABuffer, diff from aosp
+
+in 2016-0826[2]
+    don't know what to do ??
+
+in 2016-2416
+    can not find the file
+
+in 2015-6764 
+    this is a chrome bug, fixed in chrome ??
+
+in 2016-2476
+    we have alot check to add !!! some not in aosp not added yet
+
+in 2016-2476
+    too much incompatible, only patch in part

@@ -1,0 +1,12 @@
+diff --git a/media/libstagefright/ACodec.cpp b/media/libstagefright/ACodec.cpp
+index 8d9bd21..6399b79 100644
+--- a/media/libstagefright/ACodec.cpp
++++ b/media/libstagefright/ACodec.cpp
+@@ -2418,6 +2418,7 @@
+             : OMX_AUDIO_AACStreamFormatMP4FF;
+ 
+     OMX_AUDIO_PARAM_ANDROID_AACPRESENTATIONTYPE presentation;
++    InitOMXParams(&presentation);
+     presentation.nMaxOutputChannels = maxOutputChannelCount;
+     presentation.nDrcCut = drc.drcCut;
+     presentation.nDrcBoost = drc.drcBoost;

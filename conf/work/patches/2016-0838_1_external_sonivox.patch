@@ -1,0 +1,103 @@
+diff --git a/arm-wt-22k/lib_src/eas_wtengine.c b/arm-wt-22k/lib_src/eas_wtengine.c
+index 224f60d..e7263fd 100644
+--- a/arm-wt-22k/lib_src/eas_wtengine.c
++++ b/arm-wt-22k/lib_src/eas_wtengine.c
+@@ -32,6 +32,8 @@
+  * includes
+  *------------------------------------
+ */
++#include "log/log.h"
++
+ #include "eas_types.h"
+ #include "eas_math.h"
+ #include "eas_audioconst.h"
+@@ -88,6 +90,10 @@
+ 
+     /* initialize some local variables */
+     numSamples = pWTIntFrame->numSamples;
++    if (numSamples <= 0) {
++        ALOGE("b/26366256");
++        return;
++    }
+     pMixBuffer = pWTIntFrame->pMixBuffer;
+     pInputBuffer = pWTIntFrame->pAudioBuffer;
+ 
+@@ -182,6 +188,10 @@
+ 
+     /* initialize some local variables */
+     numSamples = pWTIntFrame->numSamples;
++    if (numSamples <= 0) {
++        ALOGE("b/26366256");
++        return;
++    }
+     pOutputBuffer = pWTIntFrame->pAudioBuffer;
+ 
+     loopEnd = (const EAS_SAMPLE*) pWTVoice->loopEnd + 1;
+@@ -275,6 +285,10 @@
+ 
+     /* initialize some local variables */
+     numSamples = pWTIntFrame->numSamples;
++    if (numSamples <= 0) {
++        ALOGE("b/26366256");
++        return;
++    }
+     pOutputBuffer = pWTIntFrame->pAudioBuffer;
+ 
+     phaseInc = pWTIntFrame->frame.phaseIncrement;
+@@ -363,6 +377,10 @@
+ 
+     /* initialize some local variables */
+     numSamples = pWTIntFrame->numSamples;
++    if (numSamples <= 0) {
++        ALOGE("b/26366256");
++        return;
++    }
+     pAudioBuffer = pWTIntFrame->pAudioBuffer;
+ 
+     z1 = pFilter->z1;
+@@ -426,6 +444,10 @@
+ 
+     /* initialize some local variables */
+     numSamples = pWTIntFrame->numSamples;
++    if (numSamples <= 0) {
++        ALOGE("b/26366256");
++        return;
++    }
+     pOutputBuffer = pWTIntFrame->pAudioBuffer;
+     phaseInc = pWTIntFrame->frame.phaseIncrement;
+ 
+@@ -569,6 +591,10 @@
+     EAS_I8 *pLoopStart;
+ 
+     numSamples = pWTIntFrame->numSamples;
++    if (numSamples <= 0) {
++        ALOGE("b/26366256");
++        return;
++    }
+     pMixBuffer = pWTIntFrame->pMixBuffer;
+ 
+     /* calculate gain increment */
+diff --git a/arm-wt-22k/lib_src/eas_wtsynth.c b/arm-wt-22k/lib_src/eas_wtsynth.c
+index 45cf4b1..25a70db 100644
+--- a/arm-wt-22k/lib_src/eas_wtsynth.c
++++ b/arm-wt-22k/lib_src/eas_wtsynth.c
+@@ -28,6 +28,8 @@
+ */
+ 
+ // includes
++#include "log/log.h"
++
+ #include "eas_data.h"
+ #include "eas_report.h"
+ #include "eas_host.h"
+@@ -467,6 +469,10 @@
+         } else {
+             pWTIntFrame->numSamples = numSamples;
+         }
++        if (pWTIntFrame->numSamples < 0) {
++            ALOGE("b/26366256");
++            pWTIntFrame->numSamples = 0;
++        }
+ 
+         /* sound will be done this frame */
+         done = EAS_TRUE;

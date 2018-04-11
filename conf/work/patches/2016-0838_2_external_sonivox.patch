@@ -1,0 +1,81 @@
+diff --git a/arm-wt-22k/lib_src/eas_wtengine.c b/arm-wt-22k/lib_src/eas_wtengine.c
+index e7263fd..854d4b4 100644
+--- a/arm-wt-22k/lib_src/eas_wtengine.c
++++ b/arm-wt-22k/lib_src/eas_wtengine.c
+@@ -33,6 +33,7 @@
+  *------------------------------------
+ */
+ #include "log/log.h"
++#include <cutils/log.h>
+ 
+ #include "eas_types.h"
+ #include "eas_math.h"
+@@ -92,6 +93,7 @@
+     numSamples = pWTIntFrame->numSamples;
+     if (numSamples <= 0) {
+         ALOGE("b/26366256");
++        android_errorWriteLog(0x534e4554, "26366256");
+         return;
+     }
+     pMixBuffer = pWTIntFrame->pMixBuffer;
+@@ -190,6 +192,7 @@
+     numSamples = pWTIntFrame->numSamples;
+     if (numSamples <= 0) {
+         ALOGE("b/26366256");
++        android_errorWriteLog(0x534e4554, "26366256");
+         return;
+     }
+     pOutputBuffer = pWTIntFrame->pAudioBuffer;
+@@ -287,6 +290,7 @@
+     numSamples = pWTIntFrame->numSamples;
+     if (numSamples <= 0) {
+         ALOGE("b/26366256");
++        android_errorWriteLog(0x534e4554, "26366256");
+         return;
+     }
+     pOutputBuffer = pWTIntFrame->pAudioBuffer;
+@@ -379,6 +383,7 @@
+     numSamples = pWTIntFrame->numSamples;
+     if (numSamples <= 0) {
+         ALOGE("b/26366256");
++        android_errorWriteLog(0x534e4554, "26366256");
+         return;
+     }
+     pAudioBuffer = pWTIntFrame->pAudioBuffer;
+@@ -446,6 +451,7 @@
+     numSamples = pWTIntFrame->numSamples;
+     if (numSamples <= 0) {
+         ALOGE("b/26366256");
++        android_errorWriteLog(0x534e4554, "26366256");
+         return;
+     }
+     pOutputBuffer = pWTIntFrame->pAudioBuffer;
+@@ -593,6 +599,7 @@
+     numSamples = pWTIntFrame->numSamples;
+     if (numSamples <= 0) {
+         ALOGE("b/26366256");
++        android_errorWriteLog(0x534e4554, "26366256");
+         return;
+     }
+     pMixBuffer = pWTIntFrame->pMixBuffer;
+diff --git a/arm-wt-22k/lib_src/eas_wtsynth.c b/arm-wt-22k/lib_src/eas_wtsynth.c
+index 25a70db..9257951 100644
+--- a/arm-wt-22k/lib_src/eas_wtsynth.c
++++ b/arm-wt-22k/lib_src/eas_wtsynth.c
+@@ -29,6 +29,7 @@
+ 
+ // includes
+ #include "log/log.h"
++#include <cutils/log.h>
+ 
+ #include "eas_data.h"
+ #include "eas_report.h"
+@@ -471,6 +472,7 @@
+         }
+         if (pWTIntFrame->numSamples < 0) {
+             ALOGE("b/26366256");
++            android_errorWriteLog(0x534e4554, "26366256");
+             pWTIntFrame->numSamples = 0;
+         }
+ 
+

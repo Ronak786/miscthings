@@ -1,0 +1,51 @@
+diff --git a/media/libstagefright/SampleTable.cpp b/media/libstagefright/SampleTable.cpp
+index 5344ae4..8df9cb8 100644
+--- a/media/libstagefright/SampleTable.cpp
++++ b/media/libstagefright/SampleTable.cpp
+@@ -121,6 +121,7 @@
+       mSampleSizeFieldSize(0),
+       mDefaultSampleSize(0),
+       mNumSampleSizes(0),
++      mHasTimeToSample(false),
+       mTimeToSampleCount(0),
+       mTimeToSample(),
+       mSampleTimeEntries(NULL),
+@@ -159,7 +160,7 @@
+     return mChunkOffsetOffset >= 0
+         && mSampleToChunkOffset >= 0
+         && mSampleSizeOffset >= 0
+-        && !mTimeToSample.empty();
++        && mHasTimeToSample;
+ }
+ 
+ status_t SampleTable::setChunkOffsetParams(
+@@ -324,7 +325,7 @@
+ 
+ status_t SampleTable::setTimeToSampleParams(
+         off64_t data_offset, size_t data_size) {
+-    if (!mTimeToSample.empty() || data_size < 8) {
++    if (mHasTimeToSample || data_size < 8) {
+         return ERROR_MALFORMED;
+     }
+ 
+@@ -364,6 +365,8 @@
+     for (size_t i = 0; i < mTimeToSample.size(); ++i) {
+         mTimeToSample.editItemAt(i) = ntohl(mTimeToSample[i]);
+     }
++
++    mHasTimeToSample = true;
+     return OK;
+ }
+ 
+diff --git a/media/libstagefright/include/SampleTable.h b/media/libstagefright/include/SampleTable.h
+index 3764adb..465f37c 100644
+--- a/media/libstagefright/include/SampleTable.h
++++ b/media/libstagefright/include/SampleTable.h
+@@ -111,6 +111,7 @@
+     uint32_t mDefaultSampleSize;
+     uint32_t mNumSampleSizes;
+ 
++    bool mHasTimeToSample;
+     uint32_t mTimeToSampleCount;
+     Vector<uint32_t> mTimeToSample;
+ 

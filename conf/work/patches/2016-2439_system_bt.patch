@@ -1,0 +1,13 @@
+diff --git a/btif/src/btif_dm.c b/btif/src/btif_dm.c
+index 425af22..c7a5ffe 100644
+--- a/btif/src/btif_dm.c
++++ b/btif/src/btif_dm.c
+@@ -2436,7 +2436,7 @@
+                                uint8_t pin_len, bt_pin_code_t *pin_code)
+ {
+     BTIF_TRACE_EVENT("%s: accept=%d", __FUNCTION__, accept);
+-    if (pin_code == NULL)
++    if (pin_code == NULL || pin_len > PIN_CODE_LEN)
+         return BT_STATUS_FAIL;
+ #if (defined(BLE_INCLUDED) && (BLE_INCLUDED == TRUE))
+ 

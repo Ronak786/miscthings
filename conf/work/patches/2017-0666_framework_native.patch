@@ -1,0 +1,9 @@
+@@ -162,7 +162,7 @@
+         return INVALID_OPERATION;
+     }
+ 
+-    if (size < 1) {
++    if (size < getFlattenedSize()) {
+         return NO_MEMORY;
+     }
+ 
