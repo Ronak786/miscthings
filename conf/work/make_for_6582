@@ -1,0 +1,38 @@
+#!/bin/bash
+workspace=/home/cynovo/Android_dev_second
+svnpath=svn://192.168.1.35/em/PAR7/pangu_mt6582_tag
+project=pangu_mt6582_release_20160824
+projectimg=$project-img
+version=1.1.3
+oldotapath=/home/cynovo/Android_dev_second/pangu_mt6582_release_20160711-img/ota-1.1.2.zip
+oldversion=1.1.2
+
+cd $workspace
+svn checkout $svnpath/$project
+
+cd $workspace
+cd $project
+./mk -t -o=TARGET_BUILD_VARIANT=user pangu new
+./mk -t -o=TARGET_BUILD_VARIANT=user otapackage
+./mkimage.sh
+
+
+cd $workspace
+mkdir  $projectimg
+cp $project/Mtk-image $projectimg -a
+
+
+cd $workspace
+mv $projectimg/Mtk-image/pangu-target*.zip    $projectimg/ota-$version.zip
+
+
+cd $workspace
+mv $projectimg/Mtk-image/pangu-ota*.zip    $projectimg/quanliang.zip
+
+
+cd $workspace
+cd $project
+ ./build/tools/releasetools/ota_from_target_files  -v -n -p out/host/linux-x86/ -k build/target/product/security/pangu/releasekey  -i $oldotapath  $workspace/$projectimg/ota-$version.zip              $workspace/$projectimg/update-$oldversion-$version.zip
+
+
+  ./build/tools/releasetools/ota_from_target_files  -v -n -p out/host/linux-x86/ -k build/target/product/security/pangu/releasekey  -i $workspace/$projectimg/ota-$version.zip  $oldotapath        $workspace/$projectimg/update-test.zip
