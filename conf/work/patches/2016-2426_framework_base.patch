@@ -1,0 +1,87 @@
+diff --git a/core/java/android/content/SyncInfo.java b/core/java/android/content/SyncInfo.java
+index a586d6f..ab3c30b 100644
+--- a/core/java/android/content/SyncInfo.java
++++ b/core/java/android/content/SyncInfo.java
+@@ -24,6 +24,13 @@
+  * Information about the sync operation that is currently underway.
+  */
+ public class SyncInfo implements Parcelable {
++    /**
++     * Used when the caller receiving this object doesn't have permission to access the accounts
++     * on device.
++     * @See Manifest.permission.GET_ACCOUNTS
++     */
++    private static final Account REDACTED_ACCOUNT = new Account("*****", "*****");
++
+     /** @hide */
+     public final int authorityId;
+ 
+@@ -44,6 +51,17 @@
+      */
+     public final long startTime;
+ 
++    /**
++     * Creates a SyncInfo object with an unusable Account. Used when the caller receiving this
++     * object doesn't have access to the accounts on the device.
++     * @See Manifest.permission.GET_ACCOUNTS
++     * @hide
++     */
++    public static SyncInfo createAccountRedacted(
++        int authorityId, String authority, long startTime) {
++            return new SyncInfo(authorityId, REDACTED_ACCOUNT, authority, startTime);
++    }
++
+     /** @hide */
+     public SyncInfo(int authorityId, Account account, String authority, long startTime) {
+         this.authorityId = authorityId;
+diff --git a/services/core/java/com/android/server/content/ContentService.java b/services/core/java/com/android/server/content/ContentService.java
+index 165148b..22141dc 100644
+--- a/services/core/java/com/android/server/content/ContentService.java
++++ b/services/core/java/com/android/server/content/ContentService.java
+@@ -772,9 +772,13 @@
+         mContext.enforceCallingOrSelfPermission(Manifest.permission.READ_SYNC_STATS,
+                 "no permission to read the sync stats");
+ 
++        final boolean canAccessAccounts =
++            mContext.checkCallingOrSelfPermission(Manifest.permission.GET_ACCOUNTS)
++                == PackageManager.PERMISSION_GRANTED;
+         long identityToken = clearCallingIdentity();
+         try {
+-            return getSyncManager().getSyncStorageEngine().getCurrentSyncsCopy(userId);
++            return getSyncManager().getSyncStorageEngine()
++                .getCurrentSyncsCopy(userId, canAccessAccounts);
+         } finally {
+             restoreCallingIdentity(identityToken);
+         }
+diff --git a/services/core/java/com/android/server/content/SyncStorageEngine.java b/services/core/java/com/android/server/content/SyncStorageEngine.java
+index 0d5f240..1bd1709 100644
+--- a/services/core/java/com/android/server/content/SyncStorageEngine.java
++++ b/services/core/java/com/android/server/content/SyncStorageEngine.java
+@@ -1426,15 +1426,23 @@
+     }
+ 
+     /**
+-     * @return a copy of the current syncs data structure. Will not return
+-     * null.
++     * @param userId Id of user to return current sync info.
++     * @param canAccessAccounts Determines whether to redact Account information from the result.
++     * @return a copy of the current syncs data structure. Will not return null.
+      */
+-    public List<SyncInfo> getCurrentSyncsCopy(int userId) {
++    public List<SyncInfo> getCurrentSyncsCopy(int userId, boolean canAccessAccounts) {
+         synchronized (mAuthorities) {
+             final List<SyncInfo> syncs = getCurrentSyncsLocked(userId);
+             final List<SyncInfo> syncsCopy = new ArrayList<SyncInfo>();
+             for (SyncInfo sync : syncs) {
+-                syncsCopy.add(new SyncInfo(sync));
++                SyncInfo copy;
++                if (!canAccessAccounts) {
++                    copy = SyncInfo.createAccountRedacted(
++                        sync.authorityId, sync.authority, sync.startTime);
++                } else {
++                    copy = new SyncInfo(sync);
++                }
++                syncsCopy.add(copy);
+             }
+             return syncsCopy;
+         }
