@@ -25,9 +25,35 @@ in 2016-2476
     ===========================================
 
 dont't forget  // added by cynovo   and fix CVE-XXX-XXXX
+
+high:
 2015-3849 
     have no effect after modify!!
 2016-2416
     have no effect after modify!!
 2015-6764
     have no effect after modify!!
+
+mid:
+2016-2497 
+    have compile problem
+
+
+
+
+6737t eng:
+    2015-7555
+    2017-0589
+    2017-0832
+
+    2017-0666
+    2017-13156
+    2016-0826
+    2016-1646
+    2017-0669
+    2016-2449
+    2015-6764
+
+    2017-0820
+    2017-0739
+    2016-1677
