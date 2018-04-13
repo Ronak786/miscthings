@@ -24,12 +24,24 @@ in 2016-2476
 
     ===========================================
 
+original VCES:
+Critical:
+    CVE-2016-3861 CVE-2016-0841 CVE-2015-7555 CVE-2015-1805 CVE-2016-5195
+    CVE-2016-2463 CVE-2016-0838
+
+High:
+    CVE-2015-1532 CVE-2016-2495 CVE-2016-3915 CVE-2015-3849 CVE-2016-3754
+    CVE-2016-0826 CVE-2017-0666 CVE-2016-2416 CVE-2015-6764 CVE-2016-2476
+    CVE-2016-2439
+
+Medium:
+    CVE-2016-1677 CVE-2016-3921 CVE-2016-2497 CVE-2016-3897 CVE-2016-2426
+    CVE-2017-0560 CVE-2016-3832
+
 dont't forget  // added by cynovo   and fix CVE-XXX-XXXX
 
 high:
 2015-3849 
-    have no effect after modify!!
-2016-2416
     have no effect after modify!!
 2015-6764
     have no effect after modify!!
@@ -37,8 +49,6 @@ high:
 mid:
 2016-2497 
     have compile problem
-2017-0560
-    modify will fail, now just ignore
 
 
 
