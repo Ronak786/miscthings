@@ -1,0 +1,54 @@
+adb shell am start -n com.package.name/com.package.name.ActivityName 启动应用，后面可以直接/.Classname 省略包名
+
+setContentView(R.xxxx) 设置整个layout
+
+scrollview:
+    只能又一个child， 放入的东西可以滚动超出屏幕
+
+constraint layout:
+    这个是灵活约束布局，要使用这个，需要build.grale moduleapp里加上依赖
+        compile 'com.android.support.constraint:constraint-layout:1.1.0-beta1'
+    具体看https://codelabs.developers.google.com/codelabs/constraint-layout/#2
+    且buildtoolversion在同文件中设置要大于buildToolsVersion "25.0.2"
+
+    这个可以用来在不同组建间建立同一个坐标轴上的链接，保持两者同步平行
+
+menu:
+    创建菜单项目：
+    oncreateoptionsmenu() {
+        getmenuinflator().inflate(R.menu.main, menu);
+    }
+    onoptionitemselected () {}
+
+    首先资源里res menu 里面创建xml， 写入menu，
+    然后在menuinflator代码里inflat oncreateoptionsmenu函数中inflat它
+    使用app:showAsAction="ifRoom"表示如果空间够，就显示为一个按钮，不然
+        在。。。菜单里, 不适用的话就会变成直接...
+
+URL
+    利用URI构造url，uri.parse（xxx).buildUpon().appendQueryParameter(xx,xx).build();
+    URL = new URL(Uristring.toString);
+
+    connect:
+        URL.openConnection()  创建一个connect对象
+        getInputStream() 这个会开始获取内容
+encoding:
+    android use UTF-16, HTTP USE UTF-8
+    the android url connection will handle this
+
+network 必须在线程上运行
+    asycntaks可以，
+    onpreexecute() call in ui thread do before task
+    doinbackground() will actually do on other thread
+    publishprogress() call from doinbackground() will tell ui thread to update progressbar()
+        ui thread use on updateprogress() to catch that message
+    on postexecute() will call on ui thread when doin background done
+
+    具体可以在activity的内部设计一个类来调用网络操作
+
+    asynctask配合activity获取内容的做法不合时宜，太老了
+
+layout:
+    想要在同一个地方不同时候显示不同内容，可以包容在一个framelayout里面多个同级layout
+    设置visible属性
+
