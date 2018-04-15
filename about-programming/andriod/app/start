@@ -131,3 +131,8 @@ MIME:
 
 偏好设置
     利用fragment，因为这样可以在多个activity中共同访问
+
+设置回去的箭头：
+    getsupportactionbar.setdisplayhomeasupenabled(true)
+    然后覆盖onoptinitemselected( 获取R.id.home 然后Navutils.navigateUpfromsametask(this)即可会上层
+    注意androidmanifest内主activity设置lauchmode为singleton这样保证恢复不会重创而是直接使用
