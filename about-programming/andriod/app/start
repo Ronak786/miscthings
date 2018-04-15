@@ -4,6 +4,23 @@ setContentView(R.xxxx) 设置整个layout
 
 scrollview:
     只能又一个child， 放入的东西可以滚动超出屏幕
+listview:
+    旧版，不用了
+recyclerview
+    回收，用adapter
+    build.gradle 内compile 'com.android.support:recyclerview-v7:25.1.0'
+    android.support.v7.widget.RecyclerView 表示使用这个类
+
+    步骤:
+        set layoutmanager (linear layoutmanager)
+        set adapter(your inherited adapter)
+        in adapter: extends(recycylerview.adapter<your holder>
+            implement oncreateviewholder onbindviewholder  getitemcount
+        in your viewholder (extends recyclerview.viewholder
+            do your own thing , including how to do when in onbind in adapter
+
+    点击
+        holder implements view.onclicklistener
 
 constraint layout:
     这个是灵活约束布局，要使用这个，需要build.grale moduleapp里加上依赖
@@ -12,6 +29,9 @@ constraint layout:
     且buildtoolversion在同文件中设置要大于buildToolsVersion "25.0.2"
 
     这个可以用来在不同组建间建立同一个坐标轴上的链接，保持两者同步平行
+
+Toast.cancel
+    可以取消某个toat的显示
 
 menu:
     创建菜单项目：
@@ -32,6 +52,11 @@ URL
     connect:
         URL.openConnection()  创建一个connect对象
         getInputStream() 这个会开始获取内容
+
+Uri.Builder builder = new Uri.Builder(); 构造url 而不是直接parse，更安全
+    builder.scheme("http").path("www.baidu.com").query(value)
+    Uri = builder.build();
+
 encoding:
     android use UTF-16, HTTP USE UTF-8
     the android url connection will handle this
@@ -48,7 +73,61 @@ network 必须在线程上运行
 
     asynctask配合activity获取内容的做法不合时宜，太老了
 
+    asynctaskloader:
+        优点：不会重复，不会链接已经死亡的旋转前activity，
+        创建一个id用来loadermanager.initloader(id) 创建一个对应的loader
+        在需要创建task的地方创建bundle，放入数据，然后getloader利用id
+        之后initloader（id， bundle）
+        然后写一个子类用来实现asynctaskloader， onstartloading 
+                doinbackground，其中onstartloading可以forceload如果发现没数据，
+                或者如果有数据（来自deleverresult的缓存）不调用，
+                load的时候就会backgorundload
+                结束后onfinishload就行了
+
 layout:
     想要在同一个地方不同时候显示不同内容，可以包容在一个framelayout里面多个同级layout
     设置visible属性
 
+
+androidmanifest.xml
+    in <activity parentActivity=xxxx , 导航栏会多一个返回按钮
+
+intent:
+    显式intent
+    startActivity(intent(context, classname.class)) 即可
+    放入额外信息， intent.putExtra(INTENT.EXTRA_TEXT, value);
+    in another activity,
+        getIntent(), then intent.hasExtra(INTENT.EXTRA_TEXT)
+            if true, intent.getExtraString(xxxx);
+    隐式intent
+        intent(Intent.ACTION_VIEW, Uri) (intent(action, data))
+        if (intent.resolveActivity(getPackageManager) != null)
+            startActivity(intent);
+        or:
+            intent = new Intent(action);
+            intent.setData(xxx);
+
+    共享intent  
+        ShareCompat.IntentBuilder.from(this).setChooserTitle(xxx).setType(Minetype).setText().startchoose();
+        这样就会跳出分享框
+
+    擅于查看google  common intents
+
+MIME:
+    topleve typename/ subtype; parameter
+    text/html;charset=UTF-8
+
+生命周期
+    on create
+    onstart  --->now visible
+    onresume  --- > now active
+    onpause --> now visible but not active
+    no stop --> now inbackground -->onrestart to onstart
+    ondestroy--> now nonexist
+
+    Bundle 保存状态：ctrl-O 重写方法
+        onsavedinstancestate() bundle.putString(key, yourstr)
+        in oncreate or onrestoreinstancestate, restore from bundle
+
+偏好设置
+    利用fragment，因为这样可以在多个activity中共同访问
