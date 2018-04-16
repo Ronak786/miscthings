@@ -15,10 +15,10 @@ then
 fi
 
 function copyfile() {
-    local finalname=$1
+    local filename=$1
     local origfile=$2
     local subdir=$3
-    cp $origfile ${OUT_DIR}${finalname}.apk
+    cp $origfile ${OUT_DIR}${filename}.apk
 
     local basedir=
     case $subdir in
@@ -42,8 +42,8 @@ function copyfile() {
             exit 1
             ;;
     esac
-    cp $origfile ${MK6737TSRC_DIR}/${basedir}/${filename}.apk
-    echo "rename from $origfile to $finalname" >> /tmp/list_random
+#    cp $origfile ${MK6737TSRC_DIR}/${basedir}/${filename}.apk
+#    echo "rename from $origfile to $filename" >> /tmp/list_random
 }
 
 function copyprocess() {
@@ -60,37 +60,37 @@ function copyprocess() {
             basename=$(echo $apkfile | cut -d '/' -f 2)
             case $basename in 
                 kivviset)
-                    copyfile KivviSet $apkfile
+                    copyfile KivviSet $apkfile $subdir
                     ;;
                 kivvistore)
-                    copyfile KivviStore $apkfile
+                    copyfile KivviStore $apkfile $subdir
                     ;;
                 factorytest)
-                    copyfile KivviFactoryTest $apkfile
+                    copyfile KivviFactoryTest $apkfile $subdir
                     ;;
                 kivvimonitorservice)
-                    copyfile KivviMonitorService $apkfile
+                    copyfile KivviMonitorService $apkfile $subdir
                     ;;
                 kivviguide)
-                    copyfile KivviGuide $apkfile
+                    copyfile KivviGuide $apkfile $subdir
                     ;;
                 devicemanage)
-                    copyfile KivviDeviceManage $apkfile
+                    copyfile KivviDeviceManage $apkfile $subdir
                     ;;
                 mintkeydemo)
-                    copyfile KivviMintKeyDemo $apkfile
+                    copyfile KivviMintKeyDemo $apkfile $subdir
                     ;;
                 mintkeyservice)
-                    copyfile KivviMintKeyService $apkfile
+                    copyfile KivviMintKeyService $apkfile $subdir
                     ;;
                 kivvisystemsdkdemonew)
-                    copyfile KivviSystemSdkDemoNew $apkfile
+                    copyfile KivviSystemSdkDemoNew $apkfile $subdir
                     ;;
                 kivvisystemservice)
-                    copyfile KivviSystemService $apkfile
+                    copyfile KivviSystemService $apkfile $subdir
                     ;;
                 app)
-                    copyfile $subdir $apkfile
+                    copyfile $subdir $apkfile $subdir
                     ;;
                 *)
                     echo "error when rename and copy"
