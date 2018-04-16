@@ -3,6 +3,7 @@
 OUT_DIR="/home/sora/gitbase/KivviOSApplication_release/"
 BASE_DIR="/home/sora/gitbase/KivviOSApplication/PreApplication/"
 MK6737TSRC_DIR="/home/sora/gitbase/pangu_mt6737/device/teksun/tek6737t_36_m0/cynovo/"
+MK6582SRC_DIR="/home/sora/gitbase/pangu_mt6582/mediatek/config/pangu/cynovo/"
 
 SUB_PROJECTS=$(ls $BASE_DIR)
 export JAVA_HOME="/home/sora/app/android-studio/jre"
@@ -42,8 +43,9 @@ function copyfile() {
             exit 1
             ;;
     esac
-#    cp $origfile ${MK6737TSRC_DIR}/${basedir}/${filename}.apk
-#    echo "rename from $origfile to $filename" >> /tmp/list_random
+    cp $origfile ${MK6737TSRC_DIR}/${basedir}/${filename}.apk
+    cp $origfile ${MK6582SRC_DIR}/${basedir}/${filename}.apk
+    echo "rename from $origfile to $filename" >> /tmp/list_random
 }
 
 function copyprocess() {
