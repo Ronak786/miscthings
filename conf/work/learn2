@@ -14,6 +14,8 @@ boot.img后面直接加即可，但是注意本来就多读了2048字节，这�
 刷新屏幕，使用surface lock anativewindow_buffer ,然后unlock，
     设置dirty区域为0,这样就不会产生黑区域了
 
+下拉菜单tf检测，在systemui 's notificationpanel, onVolumeMounted
+
 
 
 如何发release       (one)        (two)
