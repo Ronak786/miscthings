@@ -225,5 +225,8 @@ Scatter file 生成:t
 
 proinit .bin's config file is vendor/mediatek/proprietary/custom/tek6737t_36_m0/cgen/cfgdefault/CFG_PRODUCT_INFO_Default.h
 
-question:
-    insert into second of tablet's usb from left will turn long press reboot into charging mode !!
+
+question
+    isDeviceIdAbnormal in  frameworks/opt/telephony/src/java/, if Long.parselong() exception will except, check that!!
+    frameworks/opt/telephony/src/java/com/android/internal/telephony/gsm/GsmServiceStateTracker.java 
+        same_imei invalid_imei
