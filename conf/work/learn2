@@ -16,3 +16,8 @@ boot.img后面直接加即可，但是注意本来就多读了2048字节，这�
 
 
 
+如何发release       (one)        (two)
+    更新然后clean pangu6737 and pangu6737t, clean
+    copy one into two, checkout(restore) lk and preloader,
+    check every file, add (added by cynovo tag)
+    use beyond compare to get diff files, copy out them into a file
