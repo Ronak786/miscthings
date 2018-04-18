@@ -230,3 +230,12 @@ question
     isDeviceIdAbnormal in  frameworks/opt/telephony/src/java/, if Long.parselong() exception will except, check that!!
     frameworks/opt/telephony/src/java/com/android/internal/telephony/gsm/GsmServiceStateTracker.java 
         same_imei invalid_imei
+
+
+    imei in 6582 can get :
+        ./frameworks/base/telephony/java/android/telephony/TelephonyManager.java call PHONE_SUBINFO_SERVICE
+        in frameworks/opt/telephony/src/java/com/android/internal/telephony/PhoneSubInfoProxy.java
+        telephonymanager use get default sim ??
+
+        java/com/android/internal/telephony/cdma/CDMAPhone.java 里面就是meid，我们的imei
+        在phoneinterfacemanager。java处理asinterface
