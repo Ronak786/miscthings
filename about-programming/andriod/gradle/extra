@@ -1,0 +1,2 @@
+gradlew 可以命令行编译，但是注意java版本，查看sdkloaction得到android studio使用的是内置1.8
+    我们自己的依据脚本里的JAVA-HOME 会导致不支持 版本52的问题

@@ -136,3 +136,53 @@ MIME:
     getsupportactionbar.setdisplayhomeasupenabled(true)
     然后覆盖onoptinitemselected( 获取R.id.home 然后Navutils.navigateUpfromsametask(this)即可会上层
     注意androidmanifest内主activity设置lauchmode为singleton这样保证恢复不会重创而是直接使用
+
+preference
+    preference:
+        in layout file of activity, set root as <fragment name=pkgname.classname >
+        in res/xml  create a pref file <preference><checkbox...>
+        create a fragment extends preferencefragmentcomapt  (in gradle.build compile 'com.android.support:preference-v7:25.1.0'
+        overload oncreateprefencece in which addpreferencefromsource(r.xml.xxx) 即可
+        then in styles, set preferenceTheme to @style/PreferenceThemeOverlay
+                            this must be set
+
+    use preference:
+        SharedPreference xxx = PreferenceManager.getDefaultSharedPreference(this)
+        xxx.getBoolean(keystring, default_val)
+
+        写入prefer ，本来靠fragment框架自动管理写入，这里也可以手动写
+            SharedPreference.Editor editor = sharedpre.edit();
+            editor.putBoolean(key, val);
+            editor.apply() 即可
+
+    监听preferencechange
+        implements sharedpreference.onsharedPreferencechangelistener
+
+        一般在oncreate：  sharedpreference.registeronsharedpreferencechangelisterner
+                ondestroy   unregisteronsharedpreferencechangelisterner 
+
+    另外一种 prefernece.onpreferencechangelistener
+        这个在保存入系统前触发，然后保存，然后触发上面那个shared的版本，
+        所以这个可以用来检验值的合法性
+
+    种类：
+        checkbox  key表示内部键，title名字 summaryon/off表示下面的简介小字, default 默认值
+            需要资源类型bool 创建一个bool。xml
+        list 
+            需要name 和value的两个array，entries  entryValues
+            创建在<array name="xxx">
+                    <item>xxx</item>
+                    </array>
+
+    preferencemanager().createpreferencescreen() = getpreferencescreen()
+    screen.getsharedpreference()
+    screen.getpreferencecount()
+    screen.getpreference(index i) 可以便利
+        preference i = xxx(index i)
+        if i instanceof Listpreference, 
+            cast, 
+            findindexofvalue(string)
+            if index >= 0
+                set  summary(list.getentries()[index])
+
+    you can use findpreference(string key) to find preference
