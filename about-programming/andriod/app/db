@@ -1,0 +1,39 @@
+database:
+    一般定义一个合约类用于放置所有表的所有名词 implements BaseColumns
+    定义自己的extends SQLiteOpenHelper 的类，实现oncreate onupdate方法
+
+    一般需要一个database name作为文件名，version作为每次修改sql代码的升级
+
+sql
+    in oncreate()
+        CREATE TABLE XXX ( a integer autoincrement primary key, b text not null, c timestamp default current_timestamp)
+        sqldatabase.exec(string)
+    in onupgrade()
+        (this will exec when version increases, so at that time, do something useful here)
+        drop if exist (use exec....)
+        oncreate()
+
+使用数据库
+    new xxxxx;
+    sqlitedatabase mdb = db.getwritabledbhelper 可写
+    mdb.query(xxx,xxxx) -> return Cursor
+
+    in adapter's onbindviewholder:
+        cursor.moveToPosiciton(position);
+        cursor.getString(cursor.getcolumnindex("column_name")) 获取对应列的值
+
+    put into database:
+        cv = contentvalues()
+        cv.put(column_name, value);
+        mdb.insert(tablename, null, cv); return new generated id
+        mdb.delete(tablename, xx  + "=" + xx, null) return removed count
+    
+    删除动作动画相关：
+        itemtouchhelper 这个支持滑动删除
+        new itemtouchhelper(new itemtouchhelper.simplecallback(0, itemtouchhelper.left | xxx.right) 左右滑动
+            overload onmove and onswiped(这个用来调用数据库删除）
+            如何获取数据id（可以事先存在view的settag(id)方法中，这个不会显示
+            adapter.swapcursor(return a cursor here)
+
+        itemtouchhelper.attachtorecyclerview(xxx);
+
