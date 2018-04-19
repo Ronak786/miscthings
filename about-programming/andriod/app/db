@@ -37,3 +37,48 @@ sql
 
         itemtouchhelper.attachtorecyclerview(xxx);
 
+
+content provider:
+    使用：
+        contentresolver = getcontentresolver()
+        cursor = resolver.query(uri, null ...) 其他参数用于约束获取的信息，如排序，选择列，选择行
+            uri: content://class.domain.name/operation
+            需要放在线程里操作
+        curosr.close(don't forget)
+
+    创建：
+        extends contentprovider class 
+        in manifest.xml:
+            <provider name="class.domain.name"
+                    authorities=packagename
+                    exported=false/true
+
+        uri matcher:
+            path  match path exactly
+            path/#  number
+            path/*  string
+
+            Urimatcher = new urimatcher(urimatcher.nomatch) to build a blank matcher
+            urimatcher.adduri(authority,path, code) code is your customer used in switch
+            urimatcher.match(uri) => return the code match uri !! ,so you can deal with
+                in contentprovider's overload method like (query delete upgrade insert ...)
+
+            eg. in insert() overload:
+                db.inseret(tablename, null, contentvalues);
+                getContext().getcontentresolver().notifychange(receiveuri) 用来通知改变
+                returnurl.withappendid(url, id);
+
+                in query() overload:
+                do db.query, 
+                cursor.setnotificationuri(getcontentresolver(), uri)
+
+                bulkinsert:
+                    used for multiy data insert
+
+
+        cursorloader
+            extends asynctaskloader, 
+
+                getType():
+                    vnd.android.cursor.dir/authority/path for path
+                    vnd.android.cursor.item/authority/path for path/xxx

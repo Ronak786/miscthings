@@ -74,6 +74,7 @@ network 必须在线程上运行
     asynctask配合activity获取内容的做法不合时宜，太老了
 
     asynctaskloader:
+    /*
         优点：不会重复，不会链接已经死亡的旋转前activity，
         创建一个id用来loadermanager.initloader(id) 创建一个对应的loader
         在需要创建task的地方创建bundle，放入数据，然后getloader利用id
@@ -83,6 +84,12 @@ network 必须在线程上运行
                 或者如果有数据（来自deleverresult的缓存）不调用，
                 load的时候就会backgorundload
                 结束后onfinishload就行了
+            restartloader 这个用于比如数据库重新获取数据，在已经插入或删除的时候
+    */
+    首先主类实现loadermanager.callback(your custom data class)
+    在oncreateloader中利用创建asynctaskloader　并返回
+    在onfinishloader中进行数据操作
+    在asynctaskloader类中进行真正的后台获取操作
 
 layout:
     想要在同一个地方不同时候显示不同内容，可以包容在一个framelayout里面多个同级layout
