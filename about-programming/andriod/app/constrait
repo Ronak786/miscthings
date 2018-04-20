@@ -1,0 +1,44 @@
+依次点击工具 > Android > SDK 管理器。
+点击 SDK 工具标签。
+展开支持资源库然后选中ConstraintLayout for Android 和 Solver for ConstraintLayout。选中 Show Package Details 并注意你下载的版本号（下面会用到）。
+点击“确定”。 5.在模型级别的 build.gradle 文件中将 ConstraintLayout 库添加为依赖项：
+ dependencies {
+     编译 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+ }
+你下载的库版本可能更高，所以确保这里指定的版本号与第 3 步下载的一致。
+在工具栏或同步通知中，点击 Sync Project with Gradle Files。
+现在你已准备好用 ConstraintLayout 构建布局了。
+
+利用ui界面拖动设计比较容易，
+    这个需要约束，不然自动跑到左上角，（可以设置textappearance="@style/Appearance.AppCompat.Caption"，无关，不过是啥)
+    如果两个上下的view的左侧约束到一起，代表他们的左边到边界的间距永远一样
+
+tools:text 用于设计测试时候数据
+
+constraint:
+    渲染时更高效，是扁平的，比relative好
+
+
+
+不使用findviewbyid
+    1. in app's build.gradle:
+        dataBinding.enabled = true;
+    2. 在布局外部加上<Layout>标签，这样android自动生成根的引用类
+    3. ActivityDataBinding xx = DataBindingUtil.setContentView(this. R.layout.xxx);
+    4. use xx.{your_id}.setText()即可
+
+contentDescription:
+    属性用作可读功能
+
+翻译：
+    <string name=xx translatable=false> 可以不翻译
+左右反向转
+    矢量图片： autoMirrored="true"
+    view 使用  layout_marginStart/End 而不是left right，旧机器不认，所以同时需要左右，这样新机器会忽略这个
+
+横向不同layout：
+    新建layout-land目录，放入同名文件即可
+
+取出共同部分layout
+    然后<include 
+        .... 即可
