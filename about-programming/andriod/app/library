@@ -1,0 +1,17 @@
+support library:
+    这个用来实现兼容功能，很大，所以一次只加入一点点，如recyclerview
+
+查找
+    support library website
+    android arsenal
+    github
+
+    筛选标准
+        维护日期， github的graph中提交频率
+        issue中问题影响
+        是否支持版本旧
+        ｌｉｓｃｅｎｓｅ
+        搜索in google ：   xxxx  vs 这样可以搜索有用的东西
+
+    添加必要的google play 服务到ｇｒａｄｌｅ，这个很重要具体看
+        设置google play 文档

@@ -1,0 +1,57 @@
+服务也是一种进程，需要真正运行的也需要放在后台的注意，利用asynctask
+
+startService() ->
+    onCreate->onstartcommand ->  stopself->ondestroy()
+
+intentService:
+    继承这个类，可以只写后台要用到的功能，简化了操作，然后intent，startService（）即可
+    override onHandleIntent method
+    注意，持续的startService调用的后台方法是按顺序执行的，因为只有一个后台线程
+
+androidmanifest.xml
+    <service 
+        android:name=".xxxxxx"
+        exported="false"
+        />
+
+pendingintent:
+    用来放在其他应用里，然后允许它启动自己的activity，
+
+通知栏：
+    NotificationCompat.Builder   xxx.setContentIntent(Pendingintent)
+    notificationmanager.notify(id, builder) 完成
+
+优先级
+    前台atcivity 前台服务 服务进程， 后台进程 空进程
+
+使用jobscheduler来调度执行弹窗服务
+    firebasejobdispatcher 这个是好用的子类 com.firebase:firebase-jobdispatcher:0.5.0
+    这是一个服务，继承jobdispatcher.jobservice, 这样就会调度执行弹窗
+
+    在使用jobdisaptcher。build 创建新的dispatcher
+    dispatcher.scheduler(your build service) 即可
+
+    流程：
+        首先创建自己的jobservice用来执行真正的notification工作，
+        然后利用dispatcher schedule你的jobservice就行了, 
+        jobservice中的工作就是发出弹窗，弹窗的就是在之前代码里创建好的notify,这里直接nofify就行了
+
+广播： extends BroadcastReceiver
+    静态：写在manifest内，
+    动态，写在代码的onresume onpause内，registerreceiver  unregisterreceiver
+
+
+实用的 ADB 命令
+要模拟手机从 USB 充电器上拔掉的情形，你可以使用：
+
+adb shell dumpsys battery set usb 0
+或者，如果你使用的是 Android 6.0 或更高版本的设备，你可以使用：
+
+adb shell dumpsys battery unplug
+要重新插入手机，只需使用以下命令重置充电状态：
+
+adb shell dumpsys battery reset
+
+获取电源状态
+    batterymanager 服务 或者注册ｒｅｃｅｉｖｅｒ不传入函数，接受ｓｔｉｃｋｙｉｎｔｅｎｔ，这种接受了
+    也不会消失，可以多次访问

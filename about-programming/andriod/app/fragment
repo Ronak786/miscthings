@@ -1,0 +1,16 @@
+创建一个layout 包含你自己需要的view即可
+创建一个类 extends fragment in supportlib
+overload oncreateview
+    view = inflater.inflate(R.layout.xxx)
+
+in activity layout, insert a <Fragemnt />
+    manager = getSupportFragmentManager()
+    manager.beginTranscation().add(fragment_label_id, your_fragment_class).commit();
+
+静态fragment
+    这种不需要transcation来add，直接在标签内 name=具体的类名即可
+
+多fragment 通信：
+    给fragment元素注册callback，但是由mainactivity实现,利用mainactivity共享
+    fragment的view 实现onclicklistener, 内部调用mainactivity的click，
+    可以在onattach（）中实现检测
