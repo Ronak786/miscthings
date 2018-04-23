@@ -23,3 +23,4 @@ boot.img后面直接加即可，但是注意本来就多读了2048字节，这�
     copy one into two, checkout(restore) lk and preloader,
     check every file, add (added by cynovo tag)
     use beyond compare to get diff files, copy out them into a file
+

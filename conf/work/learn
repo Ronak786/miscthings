@@ -25,3 +25,4 @@ vim 去掉win的换行
 lk bootloader 堆栈增长
                 移植动态分配库到preloader
 
+check selinux when feature not work !!
