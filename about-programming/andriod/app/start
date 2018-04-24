@@ -90,6 +90,9 @@ network 必须在线程上运行
     在oncreateloader中利用创建asynctaskloader　并返回
     在onfinishloader中进行数据操作
     在asynctaskloader类中进行真正的后台获取操作
+        内部覆盖onstartloading onstoploader doinbackgorund 
+        每次initloader的时候会调用createloader
+        然后asynctaskloader就会在后台运行
 
 layout:
     想要在同一个地方不同时候显示不同内容，可以包容在一个framelayout里面多个同级layout
