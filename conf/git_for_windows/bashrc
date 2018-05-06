@@ -1,0 +1,2 @@
+export LANG=en_US.utf-8
+alias ls='ls --show-control-chars --color=auto'
