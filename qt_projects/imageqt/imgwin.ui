@@ -10,6 +10,12 @@
     <height>401</height>
    </rect>
   </property>
+  <property name="maximumSize">
+   <size>
+    <width>522</width>
+    <height>401</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>imgWin</string>
   </property>

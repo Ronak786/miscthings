@@ -10,6 +10,7 @@
 #include <QWidget>
 #include <QStatusBar>
 #include <QTimer>
+#include "kthread.h"
 
 namespace Ui {
 class imgWin;
@@ -22,12 +23,15 @@ class imgWin : public QMainWindow
 public:
     explicit imgWin(QWidget *parent = 0);
     ~imgWin();
-
+signals:
+    void shut();
 public slots:
     void info();
+    void response();
 private:
     Ui::imgWin *ui;
     QTimer * timer;
+    KThread * thread;
 };
 
 #endif // IMGWIN_H

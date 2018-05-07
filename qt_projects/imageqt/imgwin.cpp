@@ -17,11 +17,11 @@ imgWin::imgWin(QWidget *parent) :
     } else {
         ui->labelImage->setText("wrong image path");
     }
+    connect(this, SIGNAL(shut()), this, SLOT(response()));
 
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(info()));
-    timer->start(1000);
-
+    thread = new KThread(this);
+    connect(thread, SIGNAL(tell()), this, SLOT(info()));
+    thread->start();
 }
 
 imgWin::~imgWin()
@@ -33,4 +33,12 @@ void imgWin::info() {
     static int i = 0;
     ui->labelA->setText(QString::number(i));
     ui->labelB->setText(QString::number(i++));
+    if (i == 10) {
+        emit shut();
+    }
+}
+
+void imgWin::response() {
+    qWarning("begin shutdown\n");
+    delete thread;
 }

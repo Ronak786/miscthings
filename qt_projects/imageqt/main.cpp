@@ -31,8 +31,6 @@ int main(int argc, char *argv[])
         printf("load fail\n");
     }
     qlib.unload();
- //   int res = Nkrypto_Init();
-  //  printf("res is %d\n", res);
     w.show();
 
     return a.exec();

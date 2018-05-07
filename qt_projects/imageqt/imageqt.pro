@@ -25,11 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        imgwin.cpp
+        imgwin.cpp \
+    kthread.cpp
 
 HEADERS += \
         imgwin.h \
-    nkrypto.h
+    nkrypto.h \
+    kthread.h
 
 FORMS += \
         imgwin.ui
