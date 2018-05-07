@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>imgWin</class>
+ <widget class="QMainWindow" name="imgWin">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>522</width>
+    <height>401</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>imgWin</string>
+  </property>
+  <widget class="QWidget" name="cWidget">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <layout class="QVBoxLayout" name="vbox">
+    <item>
+     <layout class="QHBoxLayout" name="hbox">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetFixedSize</enum>
+      </property>
+      <item>
+       <widget class="QLabel" name="labelB">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelA">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="labelImage">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
