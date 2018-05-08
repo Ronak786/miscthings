@@ -9,18 +9,13 @@ imgWin::imgWin(QWidget *parent) :
     ui->setupUi(this);
     ui->labelA->setText("labelA");
     ui->labelB->setText("labelB");
-    QImageReader reader(QString("../imageqt/image1.bmp"));
-    reader.setAutoDetectImageFormat(true);
-    QImage img = reader.read();
-    if (!img.isNull()) {
-        ui->labelImage->setPixmap(QPixmap::fromImage(img));
-    } else {
-        ui->labelImage->setText("wrong image path");
-    }
+    ui->labelImage->setText("wrong image path");
+
     connect(this, SIGNAL(shut()), this, SLOT(response()));
 
     thread = new KThread(this);
-    connect(thread, SIGNAL(tell()), this, SLOT(info()));
+    connect(thread, SIGNAL(tell(QImage)), this, SLOT(info(QImage)));
+    connect(thread, SIGNAL(showFps(int)), this, SLOT(displayFps(int)));
     thread->start();
 }
 
@@ -29,16 +24,21 @@ imgWin::~imgWin()
     delete ui;
 }
 
-void imgWin::info() {
-    static int i = 0;
-    ui->labelA->setText(QString::number(i));
-    ui->labelB->setText(QString::number(i++));
-    if (i == 10) {
-        emit shut();
-    }
+void imgWin::info(QImage img) {
+    ui->labelImage->setPixmap(QPixmap::fromImage(img));
 }
 
 void imgWin::response() {
     qWarning("begin shutdown\n");
     delete thread;
+}
+
+void imgWin::displayFps(int fps) {
+    ui->labelA->setText(QString::number(fps) + " fps");
+}
+
+void imgWin::closeEvent(QCloseEvent *event) {
+    qDebug("we are now closing in event\n");
+    delete thread;
+    QMainWindow::closeEvent(event);
 }
