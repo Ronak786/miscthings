@@ -1,0 +1,1 @@
+ CC=arm-eabi-gcc ../glibc-2.17/configure --prefix=/home/sora/build/glibcdir --disable-profile --enable-kernel=2.6.25  --disable-werror --with-headers=/home/sora/build/L1S902/trunk/out/target/product/sp9820w_6c10/obj/KERNEL libc_cv_forced_unwind=yes libc_cv_stros_header=yes libc_cv_c_cleanup=yes
