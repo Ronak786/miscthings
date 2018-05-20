@@ -1,1 +1,7 @@
 ../qt-everywhere-opensource-src-5.9.5/configure -release -xplatform linux-arm-custom-g++  -prefix /usr/local/qt5.9 -nomake tests -nomake examples  -no-warnings-are-errors -opensource -confirm-license -no-opengl
+
+../qt-everywhere-opensource-src-5.9.5/configure -release -opengl es2 -device linux-rasp-pi2-custom-g++ -device-option CROSS_COMPILE=~/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf- -sysroot ~/raspi/sysroot -opensource -confirm-license -make libs -prefix /usr/local/qt5pi -extprefix ~/raspi/qt5pi -hostprefix ~/raspi/qt5 -no-use-gold-linker -skip qtwebengine -v
+
+website:
+https://wiki.qt.io/RaspberryPi2EGLFS
+http://wiki.qt.io/Raspberry_Pi_Beginners_Guide
