@@ -9,6 +9,12 @@ http://wiki.qt.io/Raspberry_Pi_Beginners_Guide
 
 ../qt-everywhere-opensource-src-5.9.5/configure -release  -device linux-rasp-pi2-fb-g++ -device-option CROSS_COMPILE=~/x-tools/arm-unknown-linux-gnueabihf/bin/arm-unknown-linux-gnueabihf-  -sysroot ~/x-tools/arm-unknown-linux-gnueabihf/arm-unknown-linux-gnueabihf/sysroot  -opensource -confirm-license -make libs -prefix /usr/local/qt5pi -extprefix ~/raspi/fbcustom/qt5pi -hostprefix ~/raspi/fbcustom/qt5 -no-use-gold-linker -skip qtwebengine -no-opengl -shared   -v
 
+font in lib/fonts:
+    http://dejavu-fonts.org 
+
+
+
+
     linux-vdso.so.1 (0x7eea9000)
     /usr/lib/arm-linux-gnueabihf/libarmmem.so (0x76f2a000)
     libQt5Widgets.so.5 => /usr/local/qt5pi/lib/libQt5Widgets.so.5 (0x76a24000)
