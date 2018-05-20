@@ -5,3 +5,7 @@
 website:
 https://wiki.qt.io/RaspberryPi2EGLFS
 http://wiki.qt.io/Raspberry_Pi_Beginners_Guide
+
+
+../qt-everywhere-opensource-src-5.9.5/configure -release  -device linux-rasp-pi2-fb-g++ -device-option CROSS_COMPILE=~/x-tools/arm-unknown-linux-gnueabihf/bin/arm-unknown-linux-gnueabihf-  -sysroot ~/x-tools/arm-unknown-linux-gnueabihf/arm-unknown-linux-gnueabihf/sysroot  -opensource -confirm-license -make libs -prefix /usr/local/qt5pi -extprefix ~/raspi/fbcustom/qt5pi -hostprefix ~/raspi/fbcustom/qt5 -no-use-gold-linker -skip qtwebengine -no-opengl -shared   -v
+
