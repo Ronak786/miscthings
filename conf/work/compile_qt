@@ -13,40 +13,6 @@ font in lib/fonts:
     http://dejavu-fonts.org 
 
 
+../qt-everywhere-opensource-src-5.9.5/configure -release  -device linux-par64g-g++ -device-option CROSS_COMPILE=/opt/x-tools/arm-L1S902-linux-gnueabi/bin/arm-L1S902-linux-gnueabi-  -sysroot /opt/x-tools/arm-L1S902-linux-gnueabi/arm-L1S902-linux-gnueabi/sysroot  -opensource -confirm-license -make libs -prefix /usr/local/qt5pi -extprefix /opt/fbcustom/qt5pi -hostprefix /opt/fbcustom/qt5 -no-use-gold-linker -skip qtwebengine -no-opengl -shared  -skip qttranslations -skip qtwayland -skip webchannel -skip webengine -skip websockets  -skip qtwinextras -skip qtx11extras -skip qtmultimedia -skip qt3d -skip qtandroidextras -skip qtcanvas3d -skip qtdatavis3d -skip qtgamepad -skip qtdoc -skip qtlocation -skip qtnetworkauth -skip qtremoteobjects -skip qtspeech -skip qtwebchannel -skip qtserialbus -skip qtserialport  -optimize-size -strip -no-dbus -no-cups  -no-xcb  -no-gbm -no-kms  -v
 
-
-    linux-vdso.so.1 (0x7eea9000)
-    /usr/lib/arm-linux-gnueabihf/libarmmem.so (0x76f2a000)
-    libQt5Widgets.so.5 => /usr/local/qt5pi/lib/libQt5Widgets.so.5 (0x76a24000)
-    libQt5Gui.so.5 => /usr/local/qt5pi/lib/libQt5Gui.so.5 (0x765ce000)
-    libQt5Core.so.5 => /usr/local/qt5pi/lib/libQt5Core.so.5 (0x76071000)
-    libpthread.so.0 => /lib/arm-linux-gnueabihf/libpthread.so.0 (0x76037000)
-    libstdc++.so.6 => /usr/lib/arm-linux-gnueabihf/libstdc++.so.6 (0x75eef000)
-    libm.so.6 => /lib/arm-linux-gnueabihf/libm.so.6 (0x75e70000)
-    libgcc_s.so.1 => /lib/arm-linux-gnueabihf/libgcc_s.so.1 (0x75e43000)
-    libc.so.6 => /lib/arm-linux-gnueabihf/libc.so.6 (0x75d04000)
-    libdl.so.2 => /lib/arm-linux-gnueabihf/libdl.so.2 (0x75cf1000)
-    /lib/ld-linux-armhf.so.3 (0x76f40000)
-
-    linux-vdso.so.1 (0x7ef20000)
-    /usr/lib/arm-linux-gnueabihf/libarmmem.so (0x76f71000)
-    libQt5Widgets.so.5 => /usr/local/qt5pi/lib/libQt5Widgets.so.5 (0x76a61000)
-    libQt5Gui.so.5 => /usr/local/qt5pi/lib/libQt5Gui.so.5 (0x76694000)
-    libQt5Core.so.5 => /usr/local/qt5pi/lib/libQt5Core.so.5 (0x76171000)
-    libpthread.so.0 => /lib/arm-linux-gnueabihf/libpthread.so.0 (0x76137000)
-    libstdc++.so.6 => /usr/lib/arm-linux-gnueabihf/libstdc++.so.6 (0x75fef000)
-    libm.so.6 => /lib/arm-linux-gnueabihf/libm.so.6 (0x75f70000)
-    libgcc_s.so.1 => /lib/arm-linux-gnueabihf/libgcc_s.so.1 (0x75f43000)
-    libc.so.6 => /lib/arm-linux-gnueabihf/libc.so.6 (0x75e04000)
-    libpng16.so.16 => /usr/lib/arm-linux-gnueabihf/libpng16.so.16 (0x75dca000)
-    libharfbuzz.so.0 => /usr/lib/arm-linux-gnueabihf/libharfbuzz.so.0 (0x75d33000)
-    libz.so.1 => /lib/arm-linux-gnueabihf/libz.so.1 (0x75d0c000)
-    libdouble-conversion.so.1 => /usr/lib/arm-linux-gnueabihf/libdouble-conversion.so.1 (0x75cea000)
-    libdl.so.2 => /lib/arm-linux-gnueabihf/libdl.so.2 (0x75cd7000)
-    libgthread-2.0.so.0 => /usr/lib/arm-linux-gnueabihf/libgthread-2.0.so.0 (0x75cc5000)
-    libglib-2.0.so.0 => /lib/arm-linux-gnueabihf/libglib-2.0.so.0 (0x75bbd000)
-    /lib/ld-linux-armhf.so.3 (0x76f87000)
-    libfreetype.so.6 => /usr/lib/arm-linux-gnueabihf/libfreetype.so.6 (0x75b22000)
-    libgraphite2.so.3 => /usr/lib/arm-linux-gnueabihf/libgraphite2.so.3 (0x75aef000)
-    libpcre.so.3 => /lib/arm-linux-gnueabihf/libpcre.so.3 (0x75a76000)
 
