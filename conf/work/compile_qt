@@ -1,13 +1,7 @@
-../qt-everywhere-opensource-src-5.9.5/configure -release -xplatform linux-arm-custom-g++  -prefix /usr/local/qt5.9 -nomake tests -nomake examples  -no-warnings-are-errors -opensource -confirm-license -no-opengl
-
-../qt-everywhere-opensource-src-5.9.5/configure -release -opengl es2 -device linux-rasp-pi2-custom-g++ -device-option CROSS_COMPILE=~/raspi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf- -sysroot ~/raspi/sysroot -opensource -confirm-license -make libs -prefix /usr/local/qt5pi -extprefix ~/raspi/qt5pi -hostprefix ~/raspi/qt5 -no-use-gold-linker -skip qtwebengine -v
 
 website:
 https://wiki.qt.io/RaspberryPi2EGLFS
 http://wiki.qt.io/Raspberry_Pi_Beginners_Guide
-
-
-../qt-everywhere-opensource-src-5.9.5/configure -release  -device linux-rasp-pi2-fb-g++ -device-option CROSS_COMPILE=~/x-tools/arm-unknown-linux-gnueabihf/bin/arm-unknown-linux-gnueabihf-  -sysroot ~/x-tools/arm-unknown-linux-gnueabihf/arm-unknown-linux-gnueabihf/sysroot  -opensource -confirm-license -make libs -prefix /usr/local/qt5pi -extprefix ~/raspi/fbcustom/qt5pi -hostprefix ~/raspi/fbcustom/qt5 -no-use-gold-linker -skip qtwebengine -no-opengl -shared   -v
 
 font in lib/fonts:
     http://dejavu-fonts.org 
@@ -15,5 +9,8 @@ font in lib/fonts:
 
 ../qt-everywhere-opensource-src-5.9.5/configure -release  -device linux-par64g-g++ -device-option CROSS_COMPILE=/opt/x-tools/arm-L1S902-linux-gnueabi/bin/arm-L1S902-linux-gnueabi-  -sysroot /opt/x-tools/arm-L1S902-linux-gnueabi/arm-L1S902-linux-gnueabi/sysroot  -opensource -confirm-license -make libs -prefix /usr/local/qt5pi -extprefix /opt/fbcustom/qt5pi -hostprefix /opt/fbcustom/qt5 -no-use-gold-linker -skip qtwebengine -no-opengl -shared  -skip qttranslations -skip qtwayland -skip webchannel -skip webengine -skip websockets  -skip qtwinextras -skip qtx11extras -skip qtmultimedia -skip qt3d -skip qtandroidextras -skip qtcanvas3d -skip qtdatavis3d -skip qtgamepad -skip qtdoc -skip qtlocation -skip qtnetworkauth -skip qtremoteobjects -skip qtspeech -skip qtwebchannel -skip qtserialbus -skip qtserialport  -optimize-size -strip -no-dbus -no-cups  -no-xcb  -no-gbm -no-kms  -v
 
+#######################################################################
+!!!!remember to check qmake.conf and remove -tune=cortex-a53!!
+#######################################################################
 
 ../qt-everywhere-opensource-src-5.9.5/configure -release  -device linux-par64g-g++ -device-option CROSS_COMPILE=/opt/x-tools/arm-L1S902-linux-gnueabi/bin/arm-L1S902-linux-gnueabi-  -sysroot /opt/x-tools/arm-L1S902-linux-gnueabi/arm-L1S902-linux-gnueabi/sysroot  -opensource -confirm-license -make libs -prefix /usr/local/qt5pi -extprefix /opt/fbcustom/qt5pi -hostprefix /opt/fbcustom/qt5 -no-use-gold-linker -skip qtwebengine -no-opengl -shared -optimize-size -v 
