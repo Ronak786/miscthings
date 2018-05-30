@@ -18,12 +18,14 @@
 #include <map>
 
 bool samefield(const __u16 c1, const __u16 c2);
-void changecurcode(__u16 &code);
+__u16 changecurcode(__u16 code);
 void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &sec);
 void handleKey(int fdf, int fdev);
 void sendbackspace(int fdf);
+void dumbalarm(int sig);
 
 static std::map<__u16,__u16> sec;
+
 /*
  * input event use select:
  *		two dev: event0, event1
@@ -68,6 +70,7 @@ int main(int ac, char *av[]) {
 	
 	// ignore signal pipe when read port is closed, occurred at write port
 	signal(SIGPIPE, SIG_IGN);
+    signal(SIGALRM, dumbalarm);
 
 
     handleKey(fdf, fdev);
@@ -115,7 +118,7 @@ void handleKey(int fdf, int fdev) {
                 if (mvec[mode].find(ie.code) != mvec[mode].end()) {
                     
                     if (ie.value == 0) { // pop
-                        ie.code = mvec[mode][ie.code];
+                        ie.code = lastcode;
                         if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
                             printf("pop send: write error into fifo\n");
                         }
@@ -132,7 +135,7 @@ void handleKey(int fdf, int fdev) {
                         } else {
                             int restime = alarm(delaytime);
                             if (restime != 0) { // we should change
-                                changecurcode(ie.code); 
+                                ie.code = changecurcode(lastcode); 
                                 sendbackspace(fdf);
                             }
                             lastcode = ie.code;
@@ -177,33 +180,34 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
     vec[1][KEY_NUMERIC_STAR] = KEY_V;
     vec[1][KEY_NUMERIC_POUND] = KEY_Y;
     vec[1][KEY_UP] = KEY_CAPSLOCK;
+    vec[1][KEY_ENTER] = KEY_ENTER;
     
     sec[KEY_A] = KEY_B;
     sec[KEY_B] = KEY_C;
-    sec[KEY_C] = KEY_D;
+    sec[KEY_C] = KEY_A;
     sec[KEY_D] = KEY_E;
     sec[KEY_E] = KEY_F;
-    sec[KEY_F] = KEY_G;
+    sec[KEY_F] = KEY_D;
     sec[KEY_G] = KEY_H;
     sec[KEY_H] = KEY_I;
-    sec[KEY_I] = KEY_J;
+    sec[KEY_I] = KEY_G;
     sec[KEY_J] = KEY_K;
     sec[KEY_K] = KEY_L;
-    sec[KEY_L] = KEY_M;
+    sec[KEY_L] = KEY_J;
     sec[KEY_M] = KEY_N;
     sec[KEY_N] = KEY_O;
-    sec[KEY_O] = KEY_P;
+    sec[KEY_O] = KEY_M;
     sec[KEY_P] = KEY_Q;
     sec[KEY_Q] = KEY_R;
-    sec[KEY_R] = KEY_S;
+    sec[KEY_R] = KEY_P;
     sec[KEY_S] = KEY_T;
     sec[KEY_T] = KEY_U;
-    sec[KEY_U] = KEY_V;
+    sec[KEY_U] = KEY_S;
     sec[KEY_V] = KEY_W;
     sec[KEY_W] = KEY_X;
-    sec[KEY_X] = KEY_Y;
+    sec[KEY_X] = KEY_V;
     sec[KEY_Y] = KEY_Z;
-    sec[KEY_Z] = KEY_A;
+    sec[KEY_Z] = KEY_Y;
                      
 
 }
@@ -231,7 +235,7 @@ bool samefield(const __u16 c1, const __u16 c2) {
     else if (c1 == KEY_Y || c1 == KEY_Z) 
         status = (c2 == KEY_Y || c2 == KEY_Z);
     else  { 
-        printf("we reach here as error\n");
+        printf("we reach here as c1 or c2 belongs to not a-z %d %d\n", c1, c2);
         status = false;
     }
     return status;
@@ -239,8 +243,9 @@ bool samefield(const __u16 c1, const __u16 c2) {
 
 
 // change code to neighbour code
-void changecurcode(__u16 &code) {
-    code = sec[code];    
+__u16 changecurcode(__u16 code) {
+    return sec[code];    
+
 }
 
 void sendbackspace(int fdf) {
@@ -257,3 +262,6 @@ void sendbackspace(int fdf) {
         printf("backspace pop: write error into fifoname\n");
     }
 }
+
+
+void dumbalarm(int sig) {}
