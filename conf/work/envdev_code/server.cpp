@@ -17,6 +17,13 @@
 #include <vector>
 #include <map>
 
+bool samefield(const __u16 c1, const __u16 c2);
+void changecurcode(__u16 &code);
+void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &sec);
+void handleKey(int fdf, int fdev);
+void sendbackspace(int fdf);
+
+static std::map<__u16,__u16> sec;
 /*
  * input event use select:
  *		two dev: event0, event1
@@ -39,11 +46,10 @@
 // test, we use 
 
 int main(int ac, char *av[]) {
-	struct input_event ie;
-	char * evname = "/dev/input/event2"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
+	const char * evname = "/dev/input/event2"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
 
     // creat fifo file if not exist
-	char * fifoname = "/dev/event100";
+	const char * fifoname = "/dev/event100";
 	if (access(fifoname, F_OK) != 0) {
 		int res = mkfifo(fifoname, 0666);
 		if (res) {
@@ -64,17 +70,22 @@ int main(int ac, char *av[]) {
 	signal(SIGPIPE, SIG_IGN);
 
 
-    handleKey();
+    handleKey(fdf, fdev);
+    close(fdf);
+    close(fdev);
 	return 0;
 }
 
-void handleKey() {
+void handleKey(int fdf, int fdev) {
+	struct input_event ie;
     int mode = 0; // 0 number; 1 alpha; 2 symbol
+    __u16 lastcode = (__u16)-1;
+    int delaytime = 1;
 
     // map from keycode to keycode, we have three mode, use vector 
-    std::vector<std::map<int, int>> mvec{std::map<int,int>, 
-        std::map<int,int>, std::map<int,int>};
-    initDict(mvec);
+    std::vector<std::map<__u16, __u16>> mvec{std::map<__u16,__u16>(), std::map<__u16,__u16>(), std::map<__u16,__u16>()};
+
+    initDict(mvec, sec);
 
 	while (1) {
 		if (read(fdev, &ie, sizeof(ie)) != sizeof(ie)) {
@@ -82,25 +93,39 @@ void handleKey() {
             continue;
 		} 
         printf("get type %d, code %d, value %d from eventdev\n", ie.type, ie.code, ie.value);
-        if (ie.type != EV_KEY) {
+        if (ie.type != EV_KEY) { // if not keycode or is pop
             // if not key event, just send thourgh
             if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
-                printf("unmodified send: write error into %s\n", fifoname);
+                printf("unmodified send: write error into fifo\n");
             }
+            continue;
         }
+
         switch (ie.code) {
             case KEY_LEFT:
-                mode = (mode+1)%2; // current only number and alpha mode
-                alarm(0); //cancel any alarm
+                if (ie.value == 0) { // only handle after pop
+                    mode = (mode+1)%2; // current only number and alpha mode
+                    alarm(0); //cancel any alarm
+                    lastcode = (__u16)-1;
+                    printf("changing mode to %d\n", mode);
+                }
                 break;
             default:
                 // only transfer recognized code
                 if (mvec[mode].find(ie.code) != mvec[mode].end()) {
-                    ie.code = vec[mode][ie.code];
                     
+                    if (ie.value == 0) { // pop
+                        ie.code = mvec[mode][ie.code];
+                        if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
+                            printf("pop send: write error into fifo\n");
+                        }
+                        break;
+                    }
+
                     if (mode == 1 && (ie.code >= KEY_1 && ie.code <= KEY_7
                                 || ie.code == KEY_NUMERIC_STAR
                                 || ie.code == KEY_NUMERIC_POUND)) { // we have char change 
+                        ie.code = mvec[mode][ie.code];
                         if (!samefield(lastcode, ie.code)) {
                             alarm(delaytime);
                             lastcode = ie.code;
@@ -108,13 +133,15 @@ void handleKey() {
                             int restime = alarm(delaytime);
                             if (restime != 0) { // we should change
                                 changecurcode(ie.code); 
-                                lastcode = ie.code;
                                 sendbackspace(fdf);
                             }
+                            lastcode = ie.code;
                         }
+                    } else {
+                        ie.code = mvec[mode][ie.code];
                     }
                     if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
-                        printf("modify send: write error into %s\n", fifoname);
+                        printf("modify send: write error into fifo\n");
                     }
                 }
                 break;
@@ -123,7 +150,7 @@ void handleKey() {
 	}
 }
 
-void initDict(std::vector<std::map<int,int>> &vec) {
+void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &sec) {
     // for numerical
     // KEY_LEFT is special, used to switch mode
     // KEY_UP caps lock
@@ -150,4 +177,83 @@ void initDict(std::vector<std::map<int,int>> &vec) {
     vec[1][KEY_NUMERIC_STAR] = KEY_V;
     vec[1][KEY_NUMERIC_POUND] = KEY_Y;
     vec[1][KEY_UP] = KEY_CAPSLOCK;
+    
+    sec[KEY_A] = KEY_B;
+    sec[KEY_B] = KEY_C;
+    sec[KEY_C] = KEY_D;
+    sec[KEY_D] = KEY_E;
+    sec[KEY_E] = KEY_F;
+    sec[KEY_F] = KEY_G;
+    sec[KEY_G] = KEY_H;
+    sec[KEY_H] = KEY_I;
+    sec[KEY_I] = KEY_J;
+    sec[KEY_J] = KEY_K;
+    sec[KEY_K] = KEY_L;
+    sec[KEY_L] = KEY_M;
+    sec[KEY_M] = KEY_N;
+    sec[KEY_N] = KEY_O;
+    sec[KEY_O] = KEY_P;
+    sec[KEY_P] = KEY_Q;
+    sec[KEY_Q] = KEY_R;
+    sec[KEY_R] = KEY_S;
+    sec[KEY_S] = KEY_T;
+    sec[KEY_T] = KEY_U;
+    sec[KEY_U] = KEY_V;
+    sec[KEY_V] = KEY_W;
+    sec[KEY_W] = KEY_X;
+    sec[KEY_X] = KEY_Y;
+    sec[KEY_Y] = KEY_Z;
+    sec[KEY_Z] = KEY_A;
+                     
+
+}
+
+
+// check whether c1 and c1 belong to the same button on phone kbd
+bool samefield(const __u16 c1, const __u16 c2) {
+    bool status = false;
+    if (c1 == KEY_A || c1 == KEY_B || c1 == KEY_C) 
+        status = (c2 == KEY_A || c2 == KEY_B || c2 == KEY_C);
+    else if (c1 == KEY_D || c1 == KEY_E || c1 == KEY_F) 
+        status = (c2 == KEY_D || c2 == KEY_E || c2 == KEY_F);
+    else if (c1 == KEY_G || c1 == KEY_H || c1 == KEY_I) 
+        status = (c2 == KEY_G || c2 == KEY_H || c2 == KEY_I);
+    else if (c1 == KEY_J || c1 == KEY_K || c1 == KEY_L) 
+        status = (c2 == KEY_J || c2 == KEY_K || c2 == KEY_L);
+    else if (c1 == KEY_M || c1 == KEY_N || c1 == KEY_O) 
+        status = (c2 == KEY_M || c2 == KEY_N || c2 == KEY_O);
+    else if (c1 == KEY_P || c1 == KEY_Q || c1 == KEY_R) 
+        status = (c2 == KEY_P || c2 == KEY_Q || c2 == KEY_R);
+    else if (c1 == KEY_S || c1 == KEY_T || c1 == KEY_U) 
+        status = (c2 == KEY_S || c2 == KEY_T || c2 == KEY_U);
+    else if (c1 == KEY_V || c1 == KEY_W || c1 == KEY_X) 
+        status = (c2 == KEY_V || c2 == KEY_W || c2 == KEY_X);
+    else if (c1 == KEY_Y || c1 == KEY_Z) 
+        status = (c2 == KEY_Y || c2 == KEY_Z);
+    else  { 
+        printf("we reach here as error\n");
+        status = false;
+    }
+    return status;
+}
+
+
+// change code to neighbour code
+void changecurcode(__u16 &code) {
+    code = sec[code];    
+}
+
+void sendbackspace(int fdf) {
+    struct input_event ie;
+    ie.type = EV_KEY;
+    ie.code = KEY_BACKSPACE;
+    ie.value = 1;
+
+    if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
+        printf("backspace push: write error into fifoname\n");
+    }
+    ie.value = 0;
+    if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
+        printf("backspace pop: write error into fifoname\n");
+    }
 }
