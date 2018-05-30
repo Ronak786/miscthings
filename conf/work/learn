@@ -30,3 +30,8 @@ check selinux when feature not work !!
 
 查看gcc变量
     gcc -dM -E - < /dev/null
+
+svn:
+	svn st
+	svn revert -R .
+	svn st | grep '^?' | awk '{print $2}' | xargs rm -rf  : used to clean untracked files
