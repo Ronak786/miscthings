@@ -12,10 +12,10 @@
 #include <stdlib.h>
 
 int main(int ac, char *av[]) {
-	int fd = open("/dev/event100", O_RDONLY);
+	int fd = open("/dev/input/event2", O_RDONLY);
 	struct input_event ie;
 	if (fd < 0) {
-		printf("can not open event100\n");
+		printf("can not open event2\n");
 		exit(0);
 	}
 
