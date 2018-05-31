@@ -8,9 +8,11 @@
 #include <linux/input.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <unistd.h>
 #include <fcntl.h>
 
+#include <cerrno>
 #include <cstdio>
 #include <cstdlib>
 #include <csignal>
@@ -20,7 +22,7 @@
 bool samefield(const __u16 c1, const __u16 c2);
 __u16 changecurcode(__u16 code);
 void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &sec);
-void handleKey(int fdf, int fdev);
+void handleKey(std::vector<const char*>, int fdev);
 void sendbackspace(int fdf);
 void dumbalarm(int sig);
 
@@ -49,9 +51,21 @@ static std::map<__u16,__u16> sec;
 
 int main(int ac, char *av[]) {
 	const char * evname = "/dev/input/event2"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
+	const char * fifoname = "/dev/event100";
+
+	std::vector<const char*> fdvec; // currently only test one
+	if (ac == 1) {
+		fdvec.push_back(evname);
+	} else {
+		for(int i = 1; i < ac; ++i) {
+			fdvec.push_back(av[i]);
+			printf("get dev name %s\n", av[i]);
+		}
+	}
+
+//	std::cout << "event devices: " << fdvec << std::endl;
 
     // creat fifo file if not exist
-	const char * fifoname = "/dev/event100";
 	if (access(fifoname, F_OK) != 0) {
 		int res = mkfifo(fifoname, 0666);
 		if (res) {
@@ -61,95 +75,129 @@ int main(int ac, char *av[]) {
 	}
 
 	int fdf = open(fifoname, O_WRONLY);
-	int fdev = open(evname, O_RDONLY);
 
-	if (fdf < 0 || fdev < 0) {
-		printf("can not open fifo or event dev\n");
+	if (fdf < 0) {
+		printf("can not open fifo\n");
 		exit(0);
 	}
+	printf("open pip success\n");
 	
 	// ignore signal pipe when read port is closed, occurred at write port
 	signal(SIGPIPE, SIG_IGN);
     signal(SIGALRM, dumbalarm);
 
-
-    handleKey(fdf, fdev);
+    handleKey(fdvec, fdf);
     close(fdf);
-    close(fdev);
 	return 0;
 }
 
-void handleKey(int fdf, int fdev) {
+void handleKey(std::vector<const char*> fdvec, int fdf) {
 	struct input_event ie;
     int mode = 0; // 0 number; 1 alpha; 2 symbol
     __u16 lastcode = (__u16)-1;
     int delaytime = 1;
+
+	fd_set sset, backset;
+	FD_ZERO(&sset);
+	int maxfd = -1;
+	for (auto name: fdvec) {
+		int fd = open(name, O_RDONLY);
+		if (fd >= 0) {
+			FD_SET(fd, &sset);
+			maxfd = fd > maxfd ? fd : maxfd;
+			printf("append fd %d\n", fd);
+		} else {
+			printf("can not open eventdev %s\n", name);
+		}
+	}
+
+	if (maxfd < 0) {
+		printf("not find any event input, stop\n");
+		return;
+	} else {
+		printf("max fd is %d\n", maxfd);
+	}
 
     // map from keycode to keycode, we have three mode, use vector 
     std::vector<std::map<__u16, __u16>> mvec{std::map<__u16,__u16>(), std::map<__u16,__u16>(), std::map<__u16,__u16>()};
 
     initDict(mvec, sec);
 
+	backset = sset;
 	while (1) {
-		if (read(fdev, &ie, sizeof(ie)) != sizeof(ie)) {
-			printf("read error size from event dev\n");
-            continue;
-		} 
-        printf("get type %d, code %d, value %d from eventdev\n", ie.type, ie.code, ie.value);
-        if (ie.type != EV_KEY) { // if not keycode or is pop
-            // if not key event, just send thourgh
-            if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
-                printf("unmodified send: write error into fifo\n");
-            }
-            continue;
-        }
+		printf("start to wait\n");
+		sset = backset;
+		int res = select(maxfd+1, &sset, NULL, NULL, NULL);
+		if (res > 0) {
+			printf(" we get res as %d\n", res);
+			for (int i = 0; i < maxfd+1; ++i) {
+				if( FD_ISSET(i, &sset)) {
+					printf("receive from fd %d\n", i);
+					if (read(i, &ie, sizeof(ie)) != sizeof(ie)) {
+						printf("read error size from event dev\n");
+						continue;
+					} 
+					printf("get type %d, code %d, value %d from eventdev\n", ie.type, ie.code, ie.value);
+					if (ie.type != EV_KEY) { // if not keycode or is pop
+						// if not key event, just send thourgh
+						if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
+							printf("unmodified send: write error into fifo\n");
+						}
+						continue;
+					}
 
-        switch (ie.code) {
-            case KEY_LEFT:
-                if (ie.value == 0) { // only handle after pop
-                    mode = (mode+1)%2; // current only number and alpha mode
-                    alarm(0); //cancel any alarm
-                    lastcode = (__u16)-1;
-                    printf("changing mode to %d\n", mode);
-                }
-                break;
-            default:
-                // only transfer recognized code
-                if (mvec[mode].find(ie.code) != mvec[mode].end()) {
-                    
-                    if (ie.value == 0) { // pop
-                        ie.code = lastcode;
-                        if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
-                            printf("pop send: write error into fifo\n");
-                        }
-                        break;
-                    }
+					switch (ie.code) {
+						case KEY_LEFT:
+							if (ie.value == 0) { // handle model change after key pop
+								mode = (mode+1)%2; // current only number and alpha mode
+								alarm(0); //cancel any alarm
+								lastcode = (__u16)-1;
+								printf("changing mode to %d\n", mode);
+							}
+							break;
+						default:
+							// only transfer recognized code
+							if (mvec[mode].find(ie.code) != mvec[mode].end()) {
+								
+								if (ie.value == 0) { // pop
+									if (lastcode != (__u16)-1) {
+										ie.code = lastcode;
+									}
+									if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
+										printf("pop send: write error into fifo\n");
+									}
+									break;
+								}
 
-                    if (mode == 1 && (ie.code >= KEY_1 && ie.code <= KEY_7
-                                || ie.code == KEY_NUMERIC_STAR
-                                || ie.code == KEY_NUMERIC_POUND)) { // we have char change 
-                        ie.code = mvec[mode][ie.code];
-                        if (!samefield(lastcode, ie.code)) {
-                            alarm(delaytime);
-                            lastcode = ie.code;
-                        } else {
-                            int restime = alarm(delaytime);
-                            if (restime != 0) { // we should change
-                                ie.code = changecurcode(lastcode); 
-                                sendbackspace(fdf);
-                            }
-                            lastcode = ie.code;
-                        }
-                    } else {
-                        ie.code = mvec[mode][ie.code];
-                    }
-                    if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
-                        printf("modify send: write error into fifo\n");
-                    }
-                }
-                break;
-        }
-		
+								if (mode == 1 && (ie.code >= KEY_1 && ie.code <= KEY_8
+											|| ie.code == KEY_NUMERIC_STAR
+											|| ie.code == KEY_NUMERIC_POUND)) { // we have char change 
+									ie.code = mvec[mode][ie.code];
+									if (!samefield(lastcode, ie.code)) {
+										alarm(delaytime);
+										lastcode = ie.code;
+									} else {
+										int restime = alarm(delaytime);
+										if (restime != 0) { // we should change
+											ie.code = changecurcode(lastcode); 
+											sendbackspace(fdf);
+										}
+										lastcode = ie.code;
+									}
+								} else {
+									ie.code = mvec[mode][ie.code];
+								}
+								if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
+									printf("modify send: write error into fifo\n");
+								}
+							}
+							break;
+					}
+				}
+			}
+		}else {
+			perror("some error while select: ");
+		}
 	}
 }
 
@@ -163,24 +211,26 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
     vec[0][KEY_3] = KEY_3;
     vec[0][KEY_4] = KEY_4;
     vec[0][KEY_5] = KEY_5;
-    vec[0][KEY_6] = KEY_6;
-    vec[0][KEY_7] = KEY_7;
+    vec[0][KEY_7] = KEY_6;
+    vec[0][KEY_8] = KEY_7;
     vec[0][KEY_NUMERIC_STAR] = KEY_8;
     vec[0][KEY_NUMERIC_POUND] = KEY_9;
-    vec[0][KEY_UP] = KEY_CAPSLOCK;
+    vec[0][KEY_UP] = KEY_0;
     vec[0][KEY_ENTER] = KEY_ENTER;
+	vec[0][KEY_DOWN] = KEY_TAB;
 
     vec[1][KEY_1] = KEY_A;
     vec[1][KEY_2] = KEY_D;
     vec[1][KEY_3] = KEY_G;
     vec[1][KEY_4] = KEY_J;
     vec[1][KEY_5] = KEY_M;
-    vec[1][KEY_6] = KEY_P;
-    vec[1][KEY_7] = KEY_S;
+    vec[1][KEY_7] = KEY_P;
+    vec[1][KEY_8] = KEY_S;
     vec[1][KEY_NUMERIC_STAR] = KEY_V;
     vec[1][KEY_NUMERIC_POUND] = KEY_Y;
     vec[1][KEY_UP] = KEY_CAPSLOCK;
     vec[1][KEY_ENTER] = KEY_ENTER;
+	vec[1][KEY_DOWN] = KEY_TAB;
     
     sec[KEY_A] = KEY_B;
     sec[KEY_B] = KEY_C;
