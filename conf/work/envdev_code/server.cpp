@@ -59,11 +59,10 @@ int main(int ac, char *av[]) {
 	} else {
 		for(int i = 1; i < ac; ++i) {
 			fdvec.push_back(av[i]);
-			printf("get dev name %s\n", av[i]);
 		}
 	}
 
-//	std::cout << "event devices: " << fdvec << std::endl;
+	daemon(0, 0); // daemon one self
 
     // creat fifo file if not exist
 	if (access(fifoname, F_OK) != 0) {
@@ -105,7 +104,6 @@ void handleKey(std::vector<const char*> fdvec, int fdf) {
 		if (fd >= 0) {
 			FD_SET(fd, &sset);
 			maxfd = fd > maxfd ? fd : maxfd;
-			printf("append fd %d\n", fd);
 		} else {
 			printf("can not open eventdev %s\n", name);
 		}
@@ -125,19 +123,16 @@ void handleKey(std::vector<const char*> fdvec, int fdf) {
 
 	backset = sset;
 	while (1) {
-		printf("start to wait\n");
 		sset = backset;
 		int res = select(maxfd+1, &sset, NULL, NULL, NULL);
 		if (res > 0) {
-			printf(" we get res as %d\n", res);
 			for (int i = 0; i < maxfd+1; ++i) {
 				if( FD_ISSET(i, &sset)) {
-					printf("receive from fd %d\n", i);
 					if (read(i, &ie, sizeof(ie)) != sizeof(ie)) {
 						printf("read error size from event dev\n");
 						continue;
 					} 
-					printf("get type %d, code %d, value %d from eventdev\n", ie.type, ie.code, ie.value);
+//					printf("get type %d, code %d, value %d from eventdev\n", ie.type, ie.code, ie.value);
 					if (ie.type != EV_KEY) { // if not keycode or is pop
 						// if not key event, just send thourgh
 						if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
@@ -218,6 +213,7 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
     vec[0][KEY_UP] = KEY_0;
     vec[0][KEY_ENTER] = KEY_ENTER;
 	vec[0][KEY_DOWN] = KEY_TAB;
+	vec[0][KEY_RIGHT] = KEY_ESC;
 
     vec[1][KEY_1] = KEY_A;
     vec[1][KEY_2] = KEY_D;
@@ -231,7 +227,25 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
     vec[1][KEY_UP] = KEY_CAPSLOCK;
     vec[1][KEY_ENTER] = KEY_ENTER;
 	vec[1][KEY_DOWN] = KEY_TAB;
+	vec[1][KEY_RIGHT] = KEY_ESC;
     
+	// no symbol yet
+	/*
+    vec[2][KEY_1] = KEY_A;
+    vec[2][KEY_2] = KEY_D;
+    vec[2][KEY_3] = KEY_G;
+    vec[2][KEY_4] = KEY_J;
+    vec[2][KEY_5] = KEY_M;
+    vec[2][KEY_7] = KEY_P;
+    vec[2][KEY_8] = KEY_S;
+    vec[2][KEY_NUMERIC_STAR] = KEY_V;
+    vec[2][KEY_NUMERIC_POUND] = KEY_Y;
+    vec[2][KEY_UP] = KEY_CAPSLOCK;
+    vec[2][KEY_ENTER] = KEY_ENTER;
+	vec[2][KEY_DOWN] = KEY_TAB;
+	vec[2][KEY_RIGHT] = KEY_ESC;
+	*/
+
     sec[KEY_A] = KEY_B;
     sec[KEY_B] = KEY_C;
     sec[KEY_C] = KEY_A;
