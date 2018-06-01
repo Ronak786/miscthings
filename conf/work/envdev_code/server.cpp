@@ -94,6 +94,7 @@ void handleKey(std::vector<const char*> fdvec, int fdf) {
 	struct input_event ie;
     int mode = 0; // 0 number; 1 alpha; 2 symbol
     __u16 lastcode = (__u16)-1;
+	__u16 lastpush = (__u16)-1 -1;
     int delaytime = 1;
 
 	fd_set sset, backset;
@@ -155,9 +156,12 @@ void handleKey(std::vector<const char*> fdvec, int fdf) {
 							if (mvec[mode].find(ie.code) != mvec[mode].end()) {
 								
 								if (ie.value == 0) { // pop
+									/*
 									if (lastcode != (__u16)-1) {
 										ie.code = lastcode;
 									}
+									*/
+									ie.code = lastpush;
 									if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
 										printf("pop send: write error into fifo\n");
 									}
@@ -182,6 +186,7 @@ void handleKey(std::vector<const char*> fdvec, int fdf) {
 								} else {
 									ie.code = mvec[mode][ie.code];
 								}
+								lastpush = ie.code;
 								if (write(fdf, &ie, sizeof(ie)) != sizeof(ie)) {
 									printf("modify send: write error into fifo\n");
 								}
@@ -211,7 +216,7 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
     vec[0][KEY_NUMERIC_STAR] = KEY_8;
     vec[0][KEY_NUMERIC_POUND] = KEY_9;
     vec[0][KEY_UP] = KEY_0;
-    vec[0][KEY_ENTER] = KEY_ENTER;
+    vec[0][KEY_ENTER] = KEY_SPACE;
 	vec[0][KEY_DOWN] = KEY_TAB;
 	vec[0][KEY_RIGHT] = KEY_ESC;
 
@@ -225,7 +230,7 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
     vec[1][KEY_NUMERIC_STAR] = KEY_V;
     vec[1][KEY_NUMERIC_POUND] = KEY_Y;
     vec[1][KEY_UP] = KEY_CAPSLOCK;
-    vec[1][KEY_ENTER] = KEY_ENTER;
+    vec[1][KEY_ENTER] = KEY_SPACE;
 	vec[1][KEY_DOWN] = KEY_TAB;
 	vec[1][KEY_RIGHT] = KEY_ESC;
     
