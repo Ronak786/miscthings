@@ -1,0 +1,53 @@
+说明：
+以AT的形式直接访问modem
+需要停止/system/priv-app/TeleService.apk 和/system/bin/Phoneserver
+shell中运行 PhoneServerAtTest
+
+通道0,1,2 对应sim0  ，通道0为modem主动上报通道 1,2为at通道
+通道3,4,5 对应sim1  ，通道3为modem主动上报通道 4,5为at通道
+
+open0 open1为打开对应通道，详细请看下代码PhoneServerAtTest.c
+通道打开后，可发送AT。
+
+AT+CGDCONT=1,"IP","CMNET"
+at+csq 查信号
+
+下面是sim0上网的基本AT流程：
+at+sptestmodem=6,254
+at+sfun=4 
+at+sfun=2 //sequence ???
+AT+CGACT=1,1
+AT+CGDATA="M-ETHER",1
+AT+CGDCONT?
+AT+CGCONTRDP=1
+
+
+//ip addr add 0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1/64 dev seth_lte0
+ip link set seth_lte0 mtu 1500
+ip addr add 10.5.74.231 dev seth_lte0
+ip -6 link set seth_lte0 arp off
+ip link set seth_lte0 up
+ip addr show up
+
+ip route add default via 10.5.74.231 dev seth_lte0
+
+
+
+
+AT+CGACT=0,1
+ip link set seth_lte0 down 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
