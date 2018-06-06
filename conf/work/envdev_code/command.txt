@@ -1,0 +1,8 @@
+for i in $(seq 0 31) ; do mknod /dev/stty_lte$i c 246 $i ; done
+1,5,3gnet,10.207.235.167.255.0.0.0,,221.6.4.66,58.240.57.33
+1,5,3gnet,10.210.115.179.255.0.0.0,,221.6.4.66,58.240.57.33
+1,5,WONET,10.1.14.198.255.0.0.0,,58.240.57.33,221.6.4.66
+1,5,3gnet,172.18.208.244.255.255.0.0,,221.6.4.66,58.240.57.33
+
+
+./configure --host=arm-L1S902-linux-gnueabi --prefix=/opt/mtd-utils --without-lzo --without-xattr CFLAGS=-I/home/em/dev/temp/zips/include/   LDFLAGS=-L/home/em/dev/temp/L1S902/vendor/amoi/root/lib PKG_CONFIG_PATH=/home/em/dev/temp/L1S902/vendor/amoi/root/lib/pkgconfig PKG_CONFIG_LIBDIR=/home/em/dev/temp/L1S902/vendor/amoi/root/lib
