@@ -10,3 +10,4 @@
 
 
 	./Configure linux-armv4 -march=armv7 shared no-asm --prefix=/opt/openssl for openssl install
+    如果发生libtool错误，肯定是某个依赖库的libxxx.la中的路径不对
