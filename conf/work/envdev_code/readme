@@ -6,3 +6,7 @@
 
        qputenv("QT_QPA_EVDEV_KEYBOARD_PARAMETERS", "/dev/event100");
     qputenv("QT_QPA_PLATFORM", "linuxfb:size=800x600;mmsize=162x121");
+
+
+
+	./Configure linux-armv4 -march=armv7 shared no-asm --prefix=/opt/openssl for openssl install
