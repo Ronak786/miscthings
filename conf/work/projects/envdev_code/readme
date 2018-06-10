@@ -8,6 +8,7 @@
     qputenv("QT_QPA_PLATFORM", "linuxfb:size=800x600;mmsize=162x121");
 
 
+    如果发生libtool错误，肯定是某个依赖库的libxxx.la中的路径不对
 
 	./Configure linux-armv4 -march=armv7 shared no-asm --prefix=/opt/openssl for openssl install
 	./configure PKG_CONFIG_PATH=/opt/libcurl/lib/pkgconfig:/opt/libarchive/lib/pkgconfig:/opt/expat/lib/pkgconfig:/opt/openssl/lib/pkgconfig --prefix=/opt/pacman --host=arm-L1S902-linux-gnueabi  for pacman install  (disable manual if not wanted, a2x is needed for this)
