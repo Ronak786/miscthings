@@ -10,3 +10,4 @@
 
 
 	./Configure linux-armv4 -march=armv7 shared no-asm --prefix=/opt/openssl for openssl install
+	./configure PKG_CONFIG_PATH=/opt/libcurl/lib/pkgconfig:/opt/libarchive/lib/pkgconfig:/opt/expat/lib/pkgconfig:/opt/openssl/lib/pkgconfig --prefix=/opt/pacman --host=arm-L1S902-linux-gnueabi  for pacman install  (disable manual if not wanted, a2x is needed for this)

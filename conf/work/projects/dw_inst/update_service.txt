@@ -1,0 +1,19 @@
+non encrypt:
+
+send:
+	build a pkg
+	put on ftp site, update pkglist
+
+client:
+	regularly check ftp site pkglist, compare to local sql database
+	if have non installed or updated pkgss:
+		(notify user? and) send request of file, get file, check 
+		if success, udpate, if error ,retry some times and fail
+
+	update detail:
+		unzip and untar, check every dir and copy exactly to same dest position
+
+general:
+	server is a ftp server
+	client is a socket daemon
+	
