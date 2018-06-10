@@ -12,10 +12,10 @@ PkgHandle::PkgHandle() {}
 
 PkgHandle::~PkgHandle() {}
 
-void PkgHandle::set_pkglist(vector<string> plist) {
+void PkgHandle::set_pkglist(const vector<PkgInfo> &plist) {
 	_vpkg = plist;
 }
 
-const vector<string>& PkgHandle::get_pkglist() {
+const vector<PkgInfo>& PkgHandle::get_pkglist() {
 	return _vpkg;
 }

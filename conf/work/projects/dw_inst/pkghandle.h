@@ -10,17 +10,18 @@
 
 #include <string>
 #include <vector>
+#include "pkginfo.h"
 
 using namespace std;
 
 class PkgHandle {
 private:
-	vector<string> _vpkg;
+	vector<PkgInfo> _vpkg;
 public:
 	PkgHandle();
 	~PkgHandle();
-	void set_pkglist(vector<string> plist);
-	const vector<string>& get_pkglist();
+	void set_pkglist(const vector<PkgInfo> &plist);
+	const vector<PkgInfo>& get_pkglist();
 };
 
 #endif

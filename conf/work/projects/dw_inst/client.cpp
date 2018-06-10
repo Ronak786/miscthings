@@ -7,16 +7,18 @@
 
 #include "client.h"
 #include "pkghandle.h"
+#include "json.h"
 
 #include <unistd.h>
 #include <algorithm>
-
+#include <fstream>
 #include <cstring>
 
+using json = nlohmann::json;
 string pkgfile = "/home/sora/tmp/pkgfile.txt";
 string pkgfilelocal = "/home/sora/tmp/pkgfilelocal.txt";
 
-static void getpkglist(string filename, vector<string> &vstr);
+static void getpkglist(string filename, vector<PkgInfo> &vstr);
 
 int main(int ac, char *av[]) {
 	bool stop = false;
@@ -40,7 +42,7 @@ void init_handle(PkgHandle &hdl) {
 // get a list of new pkgs needed to be download
 // currently list is just one line 
 bool get_and_check(PkgHandle &hdl) {
-	vector<string> vremote, vnew;
+	vector<PkgInfo> vremote, vnew;
 	getpkglist(pkgfile, vremote);
 	compare_and_list_new(vremote, vnew);
 	if (!vnew.empty()) {
@@ -51,46 +53,44 @@ bool get_and_check(PkgHandle &hdl) {
 	}
 }
 
-
 void dumppkgs(PkgHandle hdl) {
 	for(auto pkg: hdl.get_pkglist()) {
 		showInfo(pkg);
 	}
 }
 
-void showInfo(string pkg) {
-	printf("name: %s\n", pkg.c_str());
+void showInfo(PkgInfo& pkg) {
+	printf("name: %s, version %s, size %s\n", pkg.getName().c_str(), pkg.getVersion().c_str(), pkg.getSize().c_str());
 }
 
 void updatepkgs(PkgHandle hdl) {
 	printf("updating\n");
 }
 
-void getpkglist(string file, vector<string> &vstr) {
-	FILE *fp = fopen(file.c_str(), "ro");
-	char tmpname[100];
-	if (fp == NULL) {
+// should use ifstream?
+void getpkglist(string file, vector<PkgInfo> &vstr) {
+	ifstream ifs(file);
+	if (!ifs) {
 		printf("can not get meta file, just continue\n");
 		return;
 	}
-	while (fgets(tmpname, 100, fp)) {
-		if (strlen(tmpname) > 0) {
-			if (tmpname[strlen(tmpname)-1] == '\n') {
-				tmpname[strlen(tmpname)-1] = '\0';
-			}
-			vstr.push_back(tmpname);
-		}
+
+	json content;
+	ifs >> content;
+	for (auto pkg: content) {
+		printf("get content: %s %s %s\n", pkg["name"], pkg["version"], pkg["size"]);
+		vstr.push_back(PkgInfo(pkg["name"],pkg["version"],pkg["size"]));
 	}
 }
 
 //vremote: contain downloaded list
 //vnew: return list of pkgs needed to be downloade
-void compare_and_list_new(const vector<string> vremote, vector<string> &vnew) {
-	vector<string> vlocal;
+void compare_and_list_new(const vector<PkgInfo> vremote, vector<PkgInfo> &vnew) {
+	vector<PkgInfo> vlocal;
 	getpkglist(pkgfilelocal, vlocal);
 	for (auto remote: vremote) {
 		if (find(vlocal.begin(), vlocal.end(), remote) == vlocal.end()) {
-			printf("added new pkg: %s\n", remote.c_str());
+			printf("added new pkg: %s\n", remote.getName());
 			vnew.push_back(remote);
 		}
 	}
