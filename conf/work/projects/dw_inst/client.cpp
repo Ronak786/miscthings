@@ -13,10 +13,11 @@
 #include <algorithm>
 #include <fstream>
 #include <cstring>
+#include <iostream>
 
 using json = nlohmann::json;
-string pkgfile = "/home/sora/tmp/pkgfile.txt";
-string pkgfilelocal = "/home/sora/tmp/pkgfilelocal.txt";
+string pkgfile = "localpkg.json";
+string pkgfilelocal = "remotepkg.json";
 
 static void getpkglist(string filename, vector<PkgInfo> &vstr);
 
@@ -77,8 +78,9 @@ void getpkglist(string file, vector<PkgInfo> &vstr) {
 
 	json content;
 	ifs >> content;
+	cout << "file " << file << endl;
 	for (auto pkg: content) {
-		printf("get content: %s %s %s\n", pkg["name"], pkg["version"], pkg["size"]);
+		cout << "get content: " <<  pkg["name"] <<  pkg["version"] << pkg["size"] << endl;
 		vstr.push_back(PkgInfo(pkg["name"],pkg["version"],pkg["size"]));
 	}
 }
@@ -90,7 +92,7 @@ void compare_and_list_new(const vector<PkgInfo> vremote, vector<PkgInfo> &vnew) 
 	getpkglist(pkgfilelocal, vlocal);
 	for (auto remote: vremote) {
 		if (find(vlocal.begin(), vlocal.end(), remote) == vlocal.end()) {
-			printf("added new pkg: %s\n", remote.getName());
+			printf("added new pkg: %s\n", remote.getName().c_str());
 			vnew.push_back(remote);
 		}
 	}

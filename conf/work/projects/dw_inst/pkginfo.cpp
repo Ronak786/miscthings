@@ -10,16 +10,16 @@
 PkgInfo::PkgInfo(string nm, string ver, string siz): 
 		name(nm), version(ver), size(siz) {}
 
-~PkgInfo::PkgInfo() {}
+PkgInfo::~PkgInfo() {}
 
 string PkgInfo::getVersion() { return version;}
 string PkgInfo::getName() { return name; }
 string PkgInfo::getSize() { return size; }
 
 bool PkgInfo::operator==(const PkgInfo &one) {
-	return name == two.name &&
-		   versio == two.version &&
-		   size == two.size;
+	return name == one.name &&
+		   version == one.version &&
+		   size == one.size;
 }
 
 PkgInfo& PkgInfo::operator=(const PkgInfo &one) {
