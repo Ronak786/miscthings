@@ -33,11 +33,9 @@ int main(int ac, char *av[]) {
 			printf("scanf fail for %s, continue\n", line.c_str());
 			continue;
 		}
-		json tmparray;
-		tmparray["name"] = name;
-		tmparray["version"] = version;
-		tmparray["size"] = size;
-		obj.push_back(tmparray);
+		obj[name]["name"] = name;
+		obj[name]["version"] = version;
+		obj[name]["size"] = size;
 	}
 	ofs << obj;
 	return 0;

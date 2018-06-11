@@ -22,5 +22,6 @@ void dumppkgs(PkgHandle hdl);
 void showInfo(PkgInfo &pkg);
 void updatepkgs(PkgHandle hdl);
 void compare_and_list_new(const vector<PkgInfo> vremote, vector<PkgInfo> &vnew);
+void install_and_updatelocal(PkgHandle hdl);
 
 #endif

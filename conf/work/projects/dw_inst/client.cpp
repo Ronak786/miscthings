@@ -14,10 +14,21 @@
 #include <fstream>
 #include <cstring>
 #include <iostream>
+#include <cstdlib>
+#include <cstdio>
+#include <unistd.h>
+#include <fcntl.h>
 
 using json = nlohmann::json;
-string pkgfile = "localpkg.json";
-string pkgfilelocal = "remotepkg.json";
+string pkgfilelocal = "localpkg.json";
+string pkgfilelocalbak = "localpkg.json.bak";
+string pkgfile = "remotepkg.json";
+string pkgfilebak = "remotepkg.json.bak";
+
+// install releated
+string remotedir = "pkgs/";
+string localdir = "localpkgs/";
+string installdir = "destdir/";
 
 static void getpkglist(string filename, vector<PkgInfo> &vstr);
 
@@ -37,6 +48,11 @@ int main(int ac, char *av[]) {
 }
 
 void init_handle(PkgHandle &hdl) {
+	if (access(pkgfilelocal.c_str(), F_OK) != 0) {
+		ofstream ofs(pkgfilelocal);
+		json tmpobj = json({});
+		ofs << tmpobj;
+	}
 	printf("inited \n");
 }
 
@@ -66,6 +82,90 @@ void showInfo(PkgInfo& pkg) {
 
 void updatepkgs(PkgHandle hdl) {
 	printf("updating\n");
+	install_and_updatelocal(hdl);
+	printf("end update\n");
+}
+
+void install_and_updatelocal(PkgHandle hdl) {
+	vector<PkgInfo> vnew = hdl.get_pkglist();
+	ifstream ifs(pkgfilelocal);
+	if (!ifs) {
+		printf("error occured when read local json\n");
+		exit(1);
+	}
+	json obj;
+	ifs >> obj;
+	for(auto item: vnew) {
+
+		// update packages
+		string pkgfile = item.getName() + "-" + item.getVersion();
+		download(pkgfile + ".tar.gz");
+		if (!extract_and_install(pkgfile)) {
+			printf("can not install pkg\n", item.getName().c_str());
+			continue;
+		}
+
+		// update local meta info
+		printf("process %s\n", item.getName().c_str());
+		obj[item.getName().c_str()]["name"] = item.getName();
+		obj[item.getName().c_str()]["version"] = item.getVersion();
+		obj[item.getName().c_str()]["size"] = item.getSize();
+		printf("install pkg %s success\n", item.getName().c_str());
+	}
+	unlink(pkgfilelocalbak.c_str());
+	rename(pkgfilelocal.c_str(), pkgfilelocalbak.c_str());
+	ofstream ofs(pkgfilelocal);
+	ofs << obj;
+}
+
+void download(string pkgfile) {
+	printf("download( just copy here\n");
+	do_copy_file(pkgfile, remotedir, localdir);
+}
+
+void do_copy_file(string filename, string remotedir, string localdir) {
+	ifstream ifs(remotedir + filename);
+	ofstream ofs(localdir + filename);
+	if (!ifs || !ofs) {
+		printf("get dir of copy file ifs or ofs\n");
+		exit(1);
+	}
+	ofs << ifs.rdbuf();	
+}
+
+void do_copy_file2(string from, string to) {
+	ifstream ifs(from);
+	ofstream ofs(to);
+	if (!ifs || !ofs) {
+		printf("get dir of copy file ifs or ofs\n");
+		exit(1);
+	}
+	ofs << ifs.rdbuf();	
+}
+
+void do_copy_pkg(string pkgname) {
+	ifstream ifslist(localdir + pkgname + "/" + FILELIST.lst);
+	string pathline;
+	if (!ifslist) {
+		printf("can not copy package path %s\n", pkgname);
+	}
+	while (std::getline(ifslist, pathline)) {
+		if (pathline[pathline.length()-1] != "/") {
+//			mkdir(destdir + pathline, 0775); // make dir, we use find(1) make sure dir created before copy file
+			cout << "makedir: " << destdir + pathline << endl;
+		} else {
+//			do_copy_file2(localdir + pkgname + "/src/" + pathline, destdir + pathline);
+			cout << "do copy file2:" << localdir + pkgname + "/src/" + pathline << "to: " << destdir + pathline << endl;
+		}
+	}
+}
+
+bool extract_and_install(string pkgfile) {
+	string localpath = localdir + pkgfile;
+	char localbuf[100];
+	sprintf(localbuf, "tar xf %s -C %s\n", localpath.c_str(), localdir.c_str());
+	system(localbuf);
+	do_copy_pkg(pkgfile);
 }
 
 // should use ifstream?

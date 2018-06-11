@@ -1,3 +1,6 @@
+generate filelist:
+	find .   | tail -n +2 | grep -v FILELIST | xargs -n 1 /bin/ls -Fd | cut -d '.' -f 2 
+
 non encrypt:
 
 send:
@@ -11,7 +14,9 @@ client:
 		if success, udpate, if error ,retry some times and fail
 
 	update detail:
-		unzip and untar, check every dir and copy exactly to same dest position
+		download pkg.tar.gz from remote pkgs dir into localpkgs dir
+		(check sha sign)
+		extract files, read file list and install them into destdir
 
 general:
 	server is a ftp server
