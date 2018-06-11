@@ -8,6 +8,7 @@
 #include "client.h"
 #include "pkghandle.h"
 #include "json.h"
+#include "ftplib.h"
 
 #include <unistd.h>
 #include <algorithm>
@@ -24,7 +25,7 @@
 using json = nlohmann::json;
 
 // install releated
-string remotedir = "pkgs/";
+string remotedir = "gitbase/miscthings/conf/work/projects/dw_inst/remotepkgs";
 string localdir = "localpkgs/";
 string installdir = "destdir/";
 
@@ -32,7 +33,6 @@ string pkgfilelocal = localdir + "localpkg.json";
 string pkgfilelocalbak = localdir + "localpkg.json.bak";
 
 string pkgfileremotename = "remotepkg.json";
-string pkgfileremote = localdir + pkgfileremotename;
 string pkgfileremotebak = localdir + "remotepkg.json.bak";
 
 static void getpkglist(string filename, vector<PkgInfo> &vstr);
@@ -48,7 +48,7 @@ int main(int ac, char *av[]) {
 			dumppkgs(hdl);
 			updatepkgs(hdl);
 		}
-		sleep(3);
+		sleep(1);
 	}
 }
 
@@ -65,8 +65,8 @@ void init_handle(PkgHandle &hdl) {
 // currently list is just one line 
 bool get_and_check(PkgHandle &hdl) {
 	vector<PkgInfo> vremote, vnew;
-//	download(pkgfileremotename);
-	getpkglist(pkgfileremote, vremote);
+	download(pkgfileremotename);
+	getpkglist(localdir + pkgfileremotename, vremote);
 	compare_and_list_new(vremote, vnew);
 	if (!vnew.empty()) {
 		hdl.set_pkglist(vnew);
@@ -125,12 +125,41 @@ void install_and_updatelocal(PkgHandle &hdl) {
 
 // current: just copy from a remote dir
 // need to be: request from remote ftp and save file to localdir
+//		ftp initialize should do every check circle, not every file download here!!
 void download(string pkgfile) {
-	printf("download( just copy here)\n");
-	do_copy_file(pkgfile, remotedir, localdir);
+	int res = 0, retry = 3;
+
+	cout << "download file " << pkgfile << endl;
+	while (retry-- != 0) {
+		ftplib *ftp = new ftplib();
+		cout << "try " << retry << endl;
+		res = ftp->Connect("192.168.0.26:21");
+		if (res != 1) continue;
+		printf("after connet\n");
+
+		res = ftp->Login("sora","ssss1234");
+		if (res != 1) continue;
+		printf("after login\n");
+
+		res = ftp->Chdir(remotedir.c_str());
+		if (res != 1) continue;
+		printf("after chdir\n");
+
+		string localfilepath = localdir + pkgfile;
+		unlink(localfilepath.c_str());
+
+		res = ftp->Get(localfilepath.c_str(), pkgfile.c_str(), ftplib::image);
+		if (res != 1) continue;
+		printf("after get\n");
+
+		ftp->Quit();
+		free(ftp);
+		break;
+	//	do_copy_file(pkgfile, remotedir, localdir);
+	}
 }
 
-
+/*
 void do_copy_file(string filename, string remotedir, string localdir) {
 	ifstream ifs(remotedir + filename);
 	ofstream ofs(localdir + filename);
@@ -140,6 +169,7 @@ void do_copy_file(string filename, string remotedir, string localdir) {
 	}
 	ofs << ifs.rdbuf();	
 }
+*/
 
 void do_copy_file2(string from, string to) {
 	unlink(to.c_str());
@@ -177,13 +207,22 @@ void uninstallpkg(string pkgname) {
 		printf("can not open file for %s and uninstall, may be first install\n", pkgname.c_str());
 	}
 
+	vector<string> reverselines;
 	string pathline;
 	while (std::getline(ifslist, pathline)) {
 		if (pathline[pathline.length()-1] != '/') {
 			string tmpdir = installdir + pathline;
 			unlink(tmpdir.c_str());
 			cout << "unlink: " << tmpdir << endl;
+		} else {
+			reverselines.push_back(pathline); // push all dirs in reverse order
 		}
+	}
+	// remove dirs if empty
+	for (auto i = reverselines.rbegin(); i != reverselines.rend(); ++i) {
+		string tmpdir = installdir + *i;
+		cout << "remove dir " << tmpdir << endl;
+		rmdir(tmpdir.c_str());
 	}
 }
 
@@ -191,6 +230,12 @@ bool extract_and_install(string pkgfile) {
 	string localpath = localdir + pkgfile + ".tar.gz";
 	string localpathdir = localdir + pkgfile;
 	string localpathdirbak = localdir + pkgfile + "-bak";
+
+	/*
+	if (!signcheck(pkgfile)) {
+		return false;
+	}
+	*/
 
 	uninstallpkg(pkgfile);
 
