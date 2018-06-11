@@ -23,3 +23,11 @@ general:
 	server is a ftp server
 	client is a socket daemon
 	
+
+sign:
+	read pkg, sha256 .... -> hash number, 
+	ecdsa sign hash, output as asc file
+
+verify:
+	read pkg, sha256 ---->hash number,
+	ecdsa verify use pubkey and 
