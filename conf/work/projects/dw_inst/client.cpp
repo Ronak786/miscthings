@@ -133,11 +133,11 @@ void download(string pkgfile) {
 	while (retry-- != 0) {
 		ftplib *ftp = new ftplib();
 		cout << "try " << retry << endl;
-		res = ftp->Connect("192.168.0.26:21");
+		res = ftp->Connect("127.0.0.1:21");
 		if (res != 1) continue;
 		printf("after connet\n");
 
-		res = ftp->Login("sora","ssss1234");
+		res = ftp->Login("sora","123456");
 		if (res != 1) continue;
 		printf("after login\n");
 

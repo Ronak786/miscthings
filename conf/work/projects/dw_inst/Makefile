@@ -13,5 +13,9 @@ client: pkghandle.o client.o pkginfo.o ftplib.o
 input: createjsonfromtext.cpp json.h
 	g++ ${CPPFLAGS} -o $@ $<
 
+sig: createsig
+createsig: createsig.o
+	g++ ${CPPFLAGS} -o $@ $< -lcrypto
+
 clean:
-	rm -f *.o
+	rm -f *.o input client createsig

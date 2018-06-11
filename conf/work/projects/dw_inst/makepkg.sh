@@ -15,3 +15,4 @@ fi
 
 (cd $dirname && find .   |  grep -v FILELIST | xargs -n 1 /bin/ls -Fd | sed  -e '1,2d' -e 's#\./src##' > FILELIST.lst)
 tar -zcf ${dirname}.tar.gz $dirname
+../createsig ${dirname}.tar.gz ${dirname}.tar.gz.sig
