@@ -26,7 +26,7 @@ int main(int ac, char *av[]) {
 	}
 
 	string line;
-	json obj;
+	json obj({});
 	char name[50],version[50],size[50];
 	while(std::getline(ifs, line)) {
 		if (sscanf(line.c_str(), "name:%s version:%s size:%s", name, version ,size) != 3) {
@@ -37,7 +37,11 @@ int main(int ac, char *av[]) {
 		obj[name]["version"] = version;
 		obj[name]["size"] = size;
 	}
-	ofs << obj;
+	if (!obj.is_null()) {
+		ofs << obj;
+	} else {
+		ofs.close();
+	}
 	return 0;
 }
 

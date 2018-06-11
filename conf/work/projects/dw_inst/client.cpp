@@ -18,6 +18,8 @@
 #include <cstdio>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 using json = nlohmann::json;
 string pkgfilelocal = "localpkg.json";
@@ -96,12 +98,11 @@ void install_and_updatelocal(PkgHandle hdl) {
 	json obj;
 	ifs >> obj;
 	for(auto item: vnew) {
-
 		// update packages
 		string pkgfile = item.getName() + "-" + item.getVersion();
 		download(pkgfile + ".tar.gz");
 		if (!extract_and_install(pkgfile)) {
-			printf("can not install pkg\n", item.getName().c_str());
+			printf("can not install pkg %s\n", item.getName().c_str());
 			continue;
 		}
 
@@ -119,7 +120,7 @@ void install_and_updatelocal(PkgHandle hdl) {
 }
 
 void download(string pkgfile) {
-	printf("download( just copy here\n");
+	printf("download( just copy here)\n");
 	do_copy_file(pkgfile, remotedir, localdir);
 }
 
@@ -127,45 +128,73 @@ void do_copy_file(string filename, string remotedir, string localdir) {
 	ifstream ifs(remotedir + filename);
 	ofstream ofs(localdir + filename);
 	if (!ifs || !ofs) {
-		printf("get dir of copy file ifs or ofs\n");
+		printf("do_copy_file can't get dir of copy file ifs or ofs\n");
 		exit(1);
 	}
 	ofs << ifs.rdbuf();	
 }
 
 void do_copy_file2(string from, string to) {
+	unlink(to.c_str());
 	ifstream ifs(from);
 	ofstream ofs(to);
 	if (!ifs || !ofs) {
-		printf("get dir of copy file ifs or ofs\n");
+		printf("do_copy_file2 can't get dir of copy file ifs or ofs\n");
 		exit(1);
 	}
 	ofs << ifs.rdbuf();	
 }
 
 void do_copy_pkg(string pkgname) {
-	ifstream ifslist(localdir + pkgname + "/" + FILELIST.lst);
+	ifstream ifslist(localdir + pkgname + "/FILELIST.lst");
 	string pathline;
 	if (!ifslist) {
-		printf("can not copy package path %s\n", pkgname);
+		printf("can not copy package path %s\n", pkgname.c_str());
 	}
 	while (std::getline(ifslist, pathline)) {
-		if (pathline[pathline.length()-1] != "/") {
-//			mkdir(destdir + pathline, 0775); // make dir, we use find(1) make sure dir created before copy file
-			cout << "makedir: " << destdir + pathline << endl;
+		if (pathline[pathline.length()-1] == '/') {
+			string tmpdir = installdir + pathline;
+			cout << "makedir: " << installdir + pathline << endl;
+			mkdir(tmpdir.c_str(), 0775); // make dir, we use find(1) make sure dir created before copy file
 		} else {
-//			do_copy_file2(localdir + pkgname + "/src/" + pathline, destdir + pathline);
-			cout << "do copy file2:" << localdir + pkgname + "/src/" + pathline << "to: " << destdir + pathline << endl;
+			cout << "do copy file2: " << localdir + pkgname + "/src/" + pathline << " to: " << installdir + pathline << endl;
+			do_copy_file2(localdir + pkgname + "/src/" + pathline, installdir + pathline);
+		}
+	}
+	ifslist.close();
+}
+
+void uninstallpkg(string pkgname) {
+	ifstream ifslist(localdir + pkgname + "/FILELIST.lst");
+	if (!ifslist) {
+		printf("can not open file for %s and uninstall\n", pkgfile.c_str());
+		exit(1);
+	}
+
+	string pathline;
+	while (std::getline(ifslist, pathline)) {
+		if (pathline[pathline.length()-1] != '/') {
+			string tmpdir = installdir + pathline;
+			unlink(tmpdir.c_str());
+			cout << "unlink: " << tmpdir << endl;
 		}
 	}
 }
 
 bool extract_and_install(string pkgfile) {
-	string localpath = localdir + pkgfile;
+	string localpath = localdir + pkgfile + ".tar.gz";
+	string localpathdir = localdir + pkgfile;
+	string localpathdirbak = localdir + pkgfile + "-bak";
+
+	uninstallpkg(pkgfile);
+
 	char localbuf[100];
-	sprintf(localbuf, "tar xf %s -C %s\n", localpath.c_str(), localdir.c_str());
+	sprintf(localbuf, "/bin/mv  %s %s; tar xf %s -C %s\n", 
+			localpathdir.c_str(), localpathdirbak.c_str(), localpath.c_str(), localdir.c_str());
 	system(localbuf);
 	do_copy_pkg(pkgfile);
+	unlink(localpath.c_str());
+	return true;
 }
 
 // should use ifstream?

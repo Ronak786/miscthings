@@ -1,5 +1,6 @@
 generate filelist:
 	find .   | tail -n +2 | grep -v FILELIST | xargs -n 1 /bin/ls -Fd | cut -d '.' -f 2 
+	find .   |  grep -v FILELIST | xargs -n 1 /bin/ls -Fd | sed  -e '1,2d' -e 's#\./src##'
 
 non encrypt:
 
