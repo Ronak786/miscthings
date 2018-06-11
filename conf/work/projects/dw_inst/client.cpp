@@ -22,15 +22,18 @@
 #include <sys/types.h>
 
 using json = nlohmann::json;
-string pkgfilelocal = "localpkg.json";
-string pkgfilelocalbak = "localpkg.json.bak";
-string pkgfile = "remotepkg.json";
-string pkgfilebak = "remotepkg.json.bak";
 
 // install releated
 string remotedir = "pkgs/";
 string localdir = "localpkgs/";
 string installdir = "destdir/";
+
+string pkgfilelocal = localdir + "localpkg.json";
+string pkgfilelocalbak = localdir + "localpkg.json.bak";
+
+string pkgfileremotename = "remotepkg.json";
+string pkgfileremote = localdir + pkgfileremotename;
+string pkgfileremotebak = localdir + "remotepkg.json.bak";
 
 static void getpkglist(string filename, vector<PkgInfo> &vstr);
 
@@ -45,7 +48,7 @@ int main(int ac, char *av[]) {
 			dumppkgs(hdl);
 			updatepkgs(hdl);
 		}
-		sleep(5);
+		sleep(3);
 	}
 }
 
@@ -62,7 +65,8 @@ void init_handle(PkgHandle &hdl) {
 // currently list is just one line 
 bool get_and_check(PkgHandle &hdl) {
 	vector<PkgInfo> vremote, vnew;
-	getpkglist(pkgfile, vremote);
+//	download(pkgfileremotename);
+	getpkglist(pkgfileremote, vremote);
 	compare_and_list_new(vremote, vnew);
 	if (!vnew.empty()) {
 		hdl.set_pkglist(vnew);
@@ -79,16 +83,16 @@ void dumppkgs(PkgHandle hdl) {
 }
 
 void showInfo(PkgInfo& pkg) {
-	printf("name: %s, version %s, size %s\n", pkg.getName().c_str(), pkg.getVersion().c_str(), pkg.getSize().c_str());
+	printf("name: %s, version %s, desc %s\n", pkg.getName().c_str(), pkg.getVersion().c_str(), pkg.getDesc().c_str());
 }
 
-void updatepkgs(PkgHandle hdl) {
+void updatepkgs(PkgHandle &hdl) {
 	printf("updating\n");
 	install_and_updatelocal(hdl);
 	printf("end update\n");
 }
 
-void install_and_updatelocal(PkgHandle hdl) {
+void install_and_updatelocal(PkgHandle &hdl) {
 	vector<PkgInfo> vnew = hdl.get_pkglist();
 	ifstream ifs(pkgfilelocal);
 	if (!ifs) {
@@ -110,7 +114,7 @@ void install_and_updatelocal(PkgHandle hdl) {
 		printf("process %s\n", item.getName().c_str());
 		obj[item.getName().c_str()]["name"] = item.getName();
 		obj[item.getName().c_str()]["version"] = item.getVersion();
-		obj[item.getName().c_str()]["size"] = item.getSize();
+		obj[item.getName().c_str()]["desc"] = item.getDesc();
 		printf("install pkg %s success\n", item.getName().c_str());
 	}
 	unlink(pkgfilelocalbak.c_str());
@@ -119,10 +123,13 @@ void install_and_updatelocal(PkgHandle hdl) {
 	ofs << obj;
 }
 
+// current: just copy from a remote dir
+// need to be: request from remote ftp and save file to localdir
 void download(string pkgfile) {
 	printf("download( just copy here)\n");
 	do_copy_file(pkgfile, remotedir, localdir);
 }
+
 
 void do_copy_file(string filename, string remotedir, string localdir) {
 	ifstream ifs(remotedir + filename);
@@ -167,8 +174,7 @@ void do_copy_pkg(string pkgname) {
 void uninstallpkg(string pkgname) {
 	ifstream ifslist(localdir + pkgname + "/FILELIST.lst");
 	if (!ifslist) {
-		printf("can not open file for %s and uninstall\n", pkgfile.c_str());
-		exit(1);
+		printf("can not open file for %s and uninstall, may be first install\n", pkgname.c_str());
 	}
 
 	string pathline;
@@ -188,16 +194,15 @@ bool extract_and_install(string pkgfile) {
 
 	uninstallpkg(pkgfile);
 
-	char localbuf[100];
-	sprintf(localbuf, "/bin/mv  %s %s; tar xf %s -C %s\n", 
-			localpathdir.c_str(), localpathdirbak.c_str(), localpath.c_str(), localdir.c_str());
+	char localbuf[200];
+	sprintf(localbuf, "rm -rf %s; /bin/mv  %s %s; tar xf %s -C %s\n", 
+			localpathdirbak.c_str(), localpathdir.c_str(), localpathdirbak.c_str(), localpath.c_str(), localdir.c_str());
 	system(localbuf);
 	do_copy_pkg(pkgfile);
 	unlink(localpath.c_str());
 	return true;
 }
 
-// should use ifstream?
 void getpkglist(string file, vector<PkgInfo> &vstr) {
 	ifstream ifs(file);
 	if (!ifs) {
@@ -209,8 +214,8 @@ void getpkglist(string file, vector<PkgInfo> &vstr) {
 	ifs >> content;
 	cout << "file " << file << endl;
 	for (auto pkg: content) {
-		cout << "get content: " <<  pkg["name"] <<  pkg["version"] << pkg["size"] << endl;
-		vstr.push_back(PkgInfo(pkg["name"],pkg["version"],pkg["size"]));
+		cout << "get content: " <<  pkg["name"] <<  pkg["version"] << pkg["desc"] << endl;
+		vstr.push_back(PkgInfo(pkg["name"],pkg["version"],pkg["desc"]));
 	}
 }
 

@@ -6,5 +6,5 @@
 #########################################################################
 #!/bin/bash
 
-./input localpkg.txt localpkg.json
-./input remotepkg.txt remotepkg.json
+./input localpkg.txt localpkgs/localpkg.json
+./input remotepkg.txt localpkgs/remotepkg.json

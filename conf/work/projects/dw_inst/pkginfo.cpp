@@ -7,25 +7,24 @@
 
 #include "pkginfo.h"
 
-PkgInfo::PkgInfo(string nm, string ver, string siz): 
-		name(nm), version(ver), size(siz) {}
+PkgInfo::PkgInfo(string nm, string ver, string des): 
+		name(nm), version(ver), desc(des) {}
 
 PkgInfo::~PkgInfo() {}
 
 string PkgInfo::getVersion() { return version;}
 string PkgInfo::getName() { return name; }
-string PkgInfo::getSize() { return size; }
+string PkgInfo::getDesc() { return desc; }
 
 bool PkgInfo::operator==(const PkgInfo &one) {
 	return name == one.name &&
-		   version == one.version &&
-		   size == one.size;
+		   version == one.version;
 }
 
 PkgInfo& PkgInfo::operator=(const PkgInfo &one) {
 	if (this == &one) return *this;
 	this->name = one.name;
 	this->version = one.version;
-	this->size = one.size;
+	this->desc = one.desc;
 	return *this;
 }

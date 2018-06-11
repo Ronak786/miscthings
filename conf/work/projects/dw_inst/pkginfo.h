@@ -15,14 +15,14 @@ class PkgInfo {
 private:
 	string name;
 	string version;
-	string size;
+	string desc;
 public:
-	PkgInfo(string nm, string ver, string siz);
+	PkgInfo(string nm, string ver, string des);
 	~PkgInfo();
 
 	string getVersion();
 	string getName();
-	string getSize();
+	string getDesc();
 	bool operator==(const PkgInfo &one);
 	PkgInfo& operator=(const PkgInfo &one);
 };

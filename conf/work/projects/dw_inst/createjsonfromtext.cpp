@@ -27,15 +27,15 @@ int main(int ac, char *av[]) {
 
 	string line;
 	json obj({});
-	char name[50],version[50],size[50];
+	char name[50],version[50],desc[50];
 	while(std::getline(ifs, line)) {
-		if (sscanf(line.c_str(), "name:%s version:%s size:%s", name, version ,size) != 3) {
+		if (sscanf(line.c_str(), "name:%s version:%s desc:%s", name, version ,desc) != 3) {
 			printf("scanf fail for %s, continue\n", line.c_str());
 			continue;
 		}
 		obj[name]["name"] = name;
 		obj[name]["version"] = version;
-		obj[name]["size"] = size;
+		obj[name]["desc"] = desc;
 	}
 	if (!obj.is_null()) {
 		ofs << obj;
