@@ -28,3 +28,7 @@ PkgInfo& PkgInfo::operator=(const PkgInfo &one) {
 	this->desc = one.desc;
 	return *this;
 }
+
+string PkgInfo::show() {
+	return "name: " + name + " ,version: " + version + " ,desc: " + desc;
+}

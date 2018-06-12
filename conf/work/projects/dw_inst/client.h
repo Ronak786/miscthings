@@ -24,10 +24,11 @@ void updatepkgs(PkgHandle &hdl);
 void compare_and_list_new(const vector<PkgInfo> vremote, vector<PkgInfo> &vnew);
 void install_and_updatelocal(PkgHandle &hdl);
 void do_copy_pkg(string pkgname);
-void do_copy_file2(string from, string to);
-void do_copy_file(string filename, string remotedir, string localdir);
+void do_copy_file(string from, string to);
 void download(string pkgfile);
 bool extract_and_install(string pkgfile);
 void uninstallpkg(string pkgfile);
+bool checksig(char *fname, char* fsig);
+void getpkglist(string filename, vector<PkgInfo> &vstr);
 
 #endif

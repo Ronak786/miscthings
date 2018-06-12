@@ -22,10 +22,18 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#define _DEBUG
+
+#ifdef _DEBUG
+#define pr_info(f_, ...) printf((f_), ##__VA_ARGS__)
+#else
+#define pr_info(f_, ...)
+#endif
+
 using json = nlohmann::json;
 
 // install releated
-string remotedir = "gitbase/miscthings/conf/work/projects/dw_inst/remotepkgs";
+string remotedir = "gitbase/miscthings/conf/work/projects/dw_inst/remotepkgs"; // remote ftpdir
 string localdir = "localpkgs/";
 string installdir = "destdir/";
 
@@ -35,36 +43,58 @@ string pkgfilelocalbak = localdir + "localpkg.json.bak";
 string pkgfileremotename = "remotepkg.json";
 string pkgfileremotebak = localdir + "remotepkg.json.bak";
 
-static void getpkglist(string filename, vector<PkgInfo> &vstr);
+ftplib *ftp = NULL;
+
 
 int main(int ac, char *av[]) {
 	bool stop = false;
 	PkgHandle hdl;
 	init_handle(hdl);
 	while (!stop) {
-		printf("begin check\n");
+		pr_info("begin check\n");
 		if (get_and_check(hdl)) {
-			printf("we have new pkgs\n");
+			pr_info("we have new pkgs\n");
 			dumppkgs(hdl);
 			updatepkgs(hdl);
 		}
-		sleep(1);
+		sleep(2);
 	}
+	uninit_handle(hdl);
 }
 
 void init_handle(PkgHandle &hdl) {
+	// if local package meta file not exist, create an empty one
 	if (access(pkgfilelocal.c_str(), F_OK) != 0) {
 		ofstream ofs(pkgfilelocal);
 		json tmpobj = json({});
 		ofs << tmpobj;
 	}
-	printf("inited \n");
+	ftp = new ftplib();
+	cout << "try " << retry << endl;
+	res = ftp->Connect("127.0.0.1:21");
+	if (res != 1) continue;
+	pr_info("after connet\n");
+
+	res = ftp->Login("sora","123456");
+	if (res != 1) continue;
+	pr_info("after login\n");
+
+	res = ftp->Chdir(remotedir.c_str());
+	if (res != 1) continue;
+	pr_info("after chdir\n");
+	pr_info("inited \n");
+}
+
+void uninit_handle(PkgHandle &hdl) {
+	ftp->Quit();
+	free(ftp);
 }
 
 // get a list of new pkgs needed to be download
 // currently list is just one line 
 bool get_and_check(PkgHandle &hdl) {
 	vector<PkgInfo> vremote, vnew;
+
 	download(pkgfileremotename);
 	getpkglist(localdir + pkgfileremotename, vremote);
 	compare_and_list_new(vremote, vnew);
@@ -83,21 +113,21 @@ void dumppkgs(PkgHandle hdl) {
 }
 
 void showInfo(PkgInfo& pkg) {
-	printf("name: %s, version %s, desc %s\n", pkg.getName().c_str(), pkg.getVersion().c_str(), pkg.getDesc().c_str());
+	cout << pkg.show() << endl;
 }
 
 void updatepkgs(PkgHandle &hdl) {
-	printf("updating\n");
+	pr_info("updating\n");
 	install_and_updatelocal(hdl);
-	printf("end update\n");
+	pr_info("end update\n");
 }
 
-void install_and_updatelocal(PkgHandle &hdl) {
+int install_and_updatelocal(PkgHandle &hdl) {
 	vector<PkgInfo> vnew = hdl.get_pkglist();
 	ifstream ifs(pkgfilelocal);
 	if (!ifs) {
-		printf("error occured when read local json\n");
-		exit(1);
+		pr_info("error occured when read local json\n");
+		return -1;
 	}
 	json obj;
 	ifs >> obj;
@@ -105,79 +135,53 @@ void install_and_updatelocal(PkgHandle &hdl) {
 		// update packages
 		string pkgfile = item.getName() + "-" + item.getVersion();
 		download(pkgfile + ".tar.gz");
+		download(pkgfile + ".tar.gz.sig");
+		
+		//check signature
+		if (!checksig(pkgfile + ".tar.gz", pkgfile +".tar.gz.sig")) {
+			pr_info("check sig fail, can not install %s\n", pkgfile.c_str());
+			continue;
+		}
 		if (!extract_and_install(pkgfile)) {
-			printf("can not install pkg %s\n", item.getName().c_str());
+			pr_info("can not install pkg %s\n", item.getName().c_str());
 			continue;
 		}
 
-		// update local meta info
-		printf("process %s\n", item.getName().c_str());
+		// update local meta info 
+		// TODO: obj assign should be better do in pkginfo file
+		pr_info("process %s\n", item.getName().c_str());
 		obj[item.getName().c_str()]["name"] = item.getName();
 		obj[item.getName().c_str()]["version"] = item.getVersion();
 		obj[item.getName().c_str()]["desc"] = item.getDesc();
-		printf("install pkg %s success\n", item.getName().c_str());
+		pr_info("install pkg %s success\n", item.getName().c_str());
 	}
-	unlink(pkgfilelocalbak.c_str());
-	rename(pkgfilelocal.c_str(), pkgfilelocalbak.c_str());
+	// remove old pkgconfig
+	unlink(pkgfilelocal.c_str());
 	ofstream ofs(pkgfilelocal);
 	ofs << obj;
+	return 0;
 }
 
-// current: just copy from a remote dir
 // need to be: request from remote ftp and save file to localdir
 //		ftp initialize should do every check circle, not every file download here!!
 void download(string pkgfile) {
-	int res = 0, retry = 3;
+	int res = 0;
 
-	cout << "download file " << pkgfile << endl;
-	while (retry-- != 0) {
-		ftplib *ftp = new ftplib();
-		cout << "try " << retry << endl;
-		res = ftp->Connect("127.0.0.1:21");
-		if (res != 1) continue;
-		printf("after connet\n");
+	pr_info("download file %s\n", pkgfile.c_str());
 
-		res = ftp->Login("sora","123456");
-		if (res != 1) continue;
-		printf("after login\n");
+	string localfilepath = localdir + pkgfile;
+	unlink(localfilepath.c_str());
 
-		res = ftp->Chdir(remotedir.c_str());
-		if (res != 1) continue;
-		printf("after chdir\n");
-
-		string localfilepath = localdir + pkgfile;
-		unlink(localfilepath.c_str());
-
-		res = ftp->Get(localfilepath.c_str(), pkgfile.c_str(), ftplib::image);
-		if (res != 1) continue;
-		printf("after get\n");
-
-		ftp->Quit();
-		free(ftp);
-		break;
-	//	do_copy_file(pkgfile, remotedir, localdir);
-	}
+	res = ftp->Get(localfilepath.c_str(), pkgfile.c_str(), ftplib::image);
 }
 
-/*
-void do_copy_file(string filename, string remotedir, string localdir) {
-	ifstream ifs(remotedir + filename);
-	ofstream ofs(localdir + filename);
-	if (!ifs || !ofs) {
-		printf("do_copy_file can't get dir of copy file ifs or ofs\n");
-		exit(1);
-	}
-	ofs << ifs.rdbuf();	
-}
-*/
-
-void do_copy_file2(string from, string to) {
+void do_copy_file(string from, string to) {
 	unlink(to.c_str());
 	ifstream ifs(from);
 	ofstream ofs(to);
 	if (!ifs || !ofs) {
-		printf("do_copy_file2 can't get dir of copy file ifs or ofs\n");
-		exit(1);
+		pr_info("do_copy_file can't get dir of copy file ifs or ofs\n");
+		return;
 	}
 	ofs << ifs.rdbuf();	
 }
@@ -186,16 +190,18 @@ void do_copy_pkg(string pkgname) {
 	ifstream ifslist(localdir + pkgname + "/FILELIST.lst");
 	string pathline;
 	if (!ifslist) {
-		printf("can not copy package path %s\n", pkgname.c_str());
+		pr_info("can not copy package path %s\n", pkgname.c_str());
+		return;
 	}
 	while (std::getline(ifslist, pathline)) {
 		if (pathline[pathline.length()-1] == '/') {
 			string tmpdir = installdir + pathline;
-			cout << "makedir: " << installdir + pathline << endl;
+			pr_info("makedir: %s%s\n", installdir.c_str(), pathline.c_str());
 			mkdir(tmpdir.c_str(), 0775); // make dir, we use find(1) make sure dir created before copy file
 		} else {
-			cout << "do copy file2: " << localdir + pkgname + "/src/" + pathline << " to: " << installdir + pathline << endl;
-			do_copy_file2(localdir + pkgname + "/src/" + pathline, installdir + pathline);
+			pr_info("copy: %s/src/%s to: %s%s\n", localdir.c_str(), pkgname.c_str(),
+					installdir.c_str(), pathline.c_str());
+			do_copy_file(localdir + pkgname + "/src/" + pathline, installdir + pathline);
 		}
 	}
 	ifslist.close();
@@ -204,7 +210,8 @@ void do_copy_pkg(string pkgname) {
 void uninstallpkg(string pkgname) {
 	ifstream ifslist(localdir + pkgname + "/FILELIST.lst");
 	if (!ifslist) {
-		printf("can not open file for %s and uninstall, may be first install\n", pkgname.c_str());
+		pr_info("can not open file for %s and uninstall, may be first install\n", pkgname.c_str());
+		return;
 	}
 
 	vector<string> reverselines;
@@ -231,35 +238,30 @@ bool extract_and_install(string pkgfile) {
 	string localpathdir = localdir + pkgfile;
 	string localpathdirbak = localdir + pkgfile + "-bak";
 
-	/*
-	if (!signcheck(pkgfile)) {
-		return false;
-	}
-	*/
-
 	uninstallpkg(pkgfile);
 
 	char localbuf[200];
-	sprintf(localbuf, "rm -rf %s; /bin/mv  %s %s; tar xf %s -C %s\n", 
-			localpathdirbak.c_str(), localpathdir.c_str(), localpathdirbak.c_str(), localpath.c_str(), localdir.c_str());
+	spr_info(localbuf, "rm -rf %s; tar xf %s -C %s\n", 
+		localpathdir.c_str(), localpath.c_str(), localdir.c_str());
 	system(localbuf);
 	do_copy_pkg(pkgfile);
 	unlink(localpath.c_str());
 	return true;
 }
 
+// add into pkginfo should be done in pkginfo.cpp
 void getpkglist(string file, vector<PkgInfo> &vstr) {
 	ifstream ifs(file);
 	if (!ifs) {
-		printf("can not get meta file, just continue\n");
+		pr_info("can not get meta file, just continue\n");
 		return;
 	}
 
 	json content;
 	ifs >> content;
-	cout << "file " << file << endl;
+
+	pr_info("file %s\n", file.c_str());
 	for (auto pkg: content) {
-		cout << "get content: " <<  pkg["name"] <<  pkg["version"] << pkg["desc"] << endl;
 		vstr.push_back(PkgInfo(pkg["name"],pkg["version"],pkg["desc"]));
 	}
 }
@@ -271,8 +273,15 @@ void compare_and_list_new(const vector<PkgInfo> vremote, vector<PkgInfo> &vnew) 
 	getpkglist(pkgfilelocal, vlocal);
 	for (auto remote: vremote) {
 		if (find(vlocal.begin(), vlocal.end(), remote) == vlocal.end()) {
-			printf("added new pkg: %s\n", remote.getName().c_str());
+			pr_info("added new pkg: %s\n", remote.getName().c_str());
 			vnew.push_back(remote);
 		}
 	}
+}
+
+bool checksig(char *fname, char* fsig) {
+static int get_sha256(char *fnamel, unsigned char* result); //get sha
+static int readpubeckey(EC_KEY **pubeckeyptr); // read pubkey
+static int readkeyfromfile(const char* fname, char**bufptr); //read sig from file, return length
+static int ecdsa_verify(unsigned char *content, int contentlen, unsigned char*sig, unsigned int siglen);
 }

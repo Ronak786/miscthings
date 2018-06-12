@@ -25,6 +25,7 @@ public:
 	string getDesc();
 	bool operator==(const PkgInfo &one);
 	PkgInfo& operator=(const PkgInfo &one);
+	string show();
 };
 
 #endif
