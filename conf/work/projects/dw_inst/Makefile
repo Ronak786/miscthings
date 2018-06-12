@@ -1,8 +1,9 @@
 All: client
 
 CPPFLAGS := -DNOSSL -std=c++11 -Wall
-SIGCPPFLAGS := -I/opt/openssl/include
-SIGLDFLAGS := -L/opt/openssl/lib -lcrypto
+#SIGCPPFLAGS := -I/opt/openssl/include
+#SIGLDFLAGS := -L/opt/openssl/lib -lcrypto
+SIGLDFLAGS := -lcrypto
 pkghandle.o : pkghandle.cpp pkghandle.h
 client.o: client.cpp client.h json.h
 pkginfo.o : pkginfo.cpp pkginfo.h
