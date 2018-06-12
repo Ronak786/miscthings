@@ -13,10 +13,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <string.h>
+
 #define READSIZ 1*1024*1024
 
-char *privkeypath = "remotepkgs/privkey.pem";
-char *pubkeypath = "localpkgs/pubkey.pem";
+const char *privkeypath = "../remotepkgs/privkey.pem";
+const char *pubkeypath = "../localpkgs/pubkey.pem";
 
 static int get_sha256(char *fnamel, unsigned char* result);
 static int ecdsa_sign(char *fname, unsigned char* result);
@@ -67,46 +69,75 @@ int get_sha256(char *fname, unsigned char* result) {
 	return 0;
 }
 
+
 int ecdsa_sign(char *fname, unsigned char *result) {
 
-	int ret, fd;
+	int ret, fd, count;
 	ECDSA_SIG *sig;
-	EC_KEY *eckey;
-	BIGNUM *privkey;
-	EC_POINT *pubkey;
-	eckey = EC_KEY_new_by_curve_name(NID_secp192k1);
+	EC_KEY *eckey, *priveckey, *pubeckey;
+	EC_POINT *pubkey = NULL;
+
+	eckey = EC_KEY_new_by_curve_name(NID_secp521r1);
 	if (eckey == NULL) {
-		printf("can not create curve\n");
-		return -1;
-	}
-	if (!EC_KEY_generate_key(eckey)) {
-		printf("cannot generate key from curve group\n");
+		printf("can not create curve for eckey\n");
 		return -1;
 	}
 
-	pubkey = EC_KEY_get0_public_key(eckey);
-	privkey = EC_KEY_get0_private_key(eckey);
+	if (access(privkeypath, F_OK) != 0 || access(pubkeypath, F_OK) != 0) {
 
-	// convert priv key into char and store
-	char *privkeystr = BN_bn2hex(privkey);
-	if ((fd = open(privkeypath, O_WRONLY|O_CREAT|O_TRUNC)) == -1) {
-		printf("can not open file for priv key store\n");
+		// if key not saved yet , create them
+		printf("begin generate key\n");
+		if (!EC_KEY_generate_key(eckey)) {
+			printf("cannot generate key from curve group\n");
+			return -1;
+		}
+
+		printf("begin save privkey\n");
+		// save priv key
+		char *privkeystr = BN_bn2hex(EC_KEY_get0_private_key(eckey));
+		if ((fd = open(privkeypath, O_WRONLY|O_CREAT|O_TRUNC, 0600)) == -1) {
+			printf("can not open file for priv key store\n");
+			return -1;
+		}
+		count = strlen(privkeystr);
+		if (write(fd, privkeystr, count) != count) {
+			printf("error write to file of privkey\n");
+			return -1;
+		}
+		free(privkeystr);
+		close(fd);
+
+		printf("begin save pubkey\n");
+		// save pub key
+		char *pubkeystr = EC_POINT_point2hex(EC_KEY_get0_group(eckey), EC_KEY_get0_public_key(eckey), POINT_CONVERSION_COMPRESSED, NULL);
+		if ((fd = open(pubkeypath, O_WRONLY|O_CREAT|O_TRUNC, 0600)) == -1) {
+			printf("can not open file for pub key store\n");
+			return -1;
+		}
+		count = strlen(pubkeystr);
+		if (write(fd, pubkeystr, count) != count) {
+			printf("error write to file of pubkey\n");
+			return -1;
+		}
+		free(pubkeystr);
+		close(fd);
+	}
+	EC_KEY_free(eckey);
+
+
+	printf("begin read privkey\n");
+	priveckey = EC_KEY_new_by_curve_name(NID_secp521r1);
+	if (priveckey == NULL) {
+		printf("can not create curve for priveckey\n");
 		return -1;
 	}
-	int count = strlen(privkeystr);
-	if (write(fd, privkeystr, count) != count) {
-		printf("error write to file of privkey\n");
-		return -1;
-	}
-	free(privkeystr);
-	close(fd);
-
 	// read privkey and sign
 	if ((fd = open(privkeypath, O_RDONLY)) == -1) {
 		printf("can not open file for priv key read\n");
 		return -1;
 	}
-	int count = lseek(fd, 0L, SEEK_END);
+	count = lseek(fd, 0L, SEEK_END);
+	lseek(fd, 0L, SEEK_SET);
 	char *privkeyread = (char*)malloc(count);
 	if (privkeyread == NULL) {
 		printf("can not alloc mem for priv key read\n");
@@ -116,55 +147,56 @@ int ecdsa_sign(char *fname, unsigned char *result) {
 		printf("can not read privkey from file\n");
 		return -1;
 	}
-	BIGNUM *privbignum = NULL
+	BIGNUM *privbignum = NULL;
 	if (BN_hex2bn(&privbignum, privkeyread) == 0) {
 		printf("create big num fail\n");
 		return 0;
 	}
-
-	//save pub key
-	char *pubkeystr = EC_POINT_point2hex(EC_KEY_get0_group(eckey), EC_KEY_get0_public_key(eckey), 2, NULL);
-	if ((fd = open(pubkeypath, O_WRONLY|O_CREAT|O_TRUNC)) == -1) {
-		printf("can not open file for pub key store\n");
+	priveckey = EC_KEY_new_by_curve_name(NID_secp521r1);
+	if (EC_KEY_set_private_key(priveckey, privbignum) != 1) {
+		printf("can not set private key\n");
 		return -1;
 	}
-	int count = strlen(privkeystr);
-	if (write(fd, pubkeystr, count) != count) {
-		printf("error write to file of pubkey\n");
-		return -1;
-	}
-	free(pubkeystr);
-	close(fd);
-
-	// read pubkey and verify ?? not finished
-	if ((fd = open(privkeypath, O_RDONLY)) == -1) {
-		printf("can not open file for priv key read\n");
-		return -1;
-	}
-	int count = lseek(fd, 0L, SEEK_END);
-	char *privkeyread = (char*)malloc(count);
-	if (privkeyread == NULL) {
-		printf("can not alloc mem for priv key read\n");
-		return -1;
-	}
-	if (read(fd, privkeyread, count) != count) {
-		printf("can not read privkey from file\n");
-		return -1;
-	}
-	BIGNUM *privbignum = NULL
-	if (BN_hex2bn(&privbignum, privkeyread) == 0) {
-		printf("create big num fail\n");
-		return 0;
-	}
-
 	//sign
-	sig = ECDSA_do_sign(result, SHA256_DIGEST_LENGTH, eckey);
+	sig = ECDSA_do_sign(result, SHA256_DIGEST_LENGTH, priveckey);
 	if (sig == NULL) {
 		printf("can not generate sig\n");
 		return -1;
 	}
+	printf("success signed\n");
+	EC_KEY_free(priveckey);
 
-	ret = ECDSA_do_verify(result, SHA256_DIGEST_LENGTH, sig, eckey);
+
+	printf("begin read pubkey\n");
+	pubeckey = EC_KEY_new_by_curve_name(NID_secp512r1);
+	if (pubeckey == NULL) {
+		printf("can not create curve for pubeckey\n");
+		return -1;
+	}
+	// read pubkey and verify
+	if ((fd = open(pubkeypath, O_RDONLY)) == -1) {
+		printf("can not open file for pub key read\n");
+		return -1;
+	}
+	count = lseek(fd, 0L, SEEK_END);
+	lseek(fd, 0L, SEEK_SET);
+	char *pubkeyread = (char*)malloc(count);
+	if (pubkeyread == NULL) {
+		printf("can not alloc mem for pub key read\n");
+		return -1;
+	}
+	if (read(fd, pubkeyread, count) != count) {
+		printf("can not read pubkey from file\n");
+		return -1;
+	}
+	BN_CTX *ctx = BN_CTX_new();
+	if ((pubkey = EC_POINT_hex2point(EC_KEY_get0_group(pubeckey), pubkeyread, pubkey, ctx)) == NULL) {
+		printf("can not convert from hex to ecpoint\n");
+		return -1;
+	}
+
+	// verify
+	ret = ECDSA_do_verify(result, SHA256_DIGEST_LENGTH, sig, pubeckey);
 	if (ret == -1) {
 		printf("verify error\n");
 	} else if (ret == 0) {
@@ -172,6 +204,8 @@ int ecdsa_sign(char *fname, unsigned char *result) {
 	} else {
 		printf("verify success\n");
 	}
+	BN_CTX_free(ctx);
+	EC_KEY_free(pubeckey);
 	return 0;
 	/*
 	// write sig into file
