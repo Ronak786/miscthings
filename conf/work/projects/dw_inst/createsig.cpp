@@ -122,7 +122,6 @@ int ecdsa_sign(char *fname, unsigned char *result) {
 		free(pubkeystr);
 		close(fd);
 	}
-	EC_KEY_free(eckey);
 
 
 	printf("begin read privkey\n");
@@ -152,28 +151,19 @@ int ecdsa_sign(char *fname, unsigned char *result) {
 		printf("create big num fail\n");
 		return 0;
 	}
-	priveckey = EC_KEY_new_by_curve_name(NID_secp521r1);
 	if (EC_KEY_set_private_key(priveckey, privbignum) != 1) {
 		printf("can not set private key\n");
 		return -1;
 	}
-	//sign
-	sig = ECDSA_do_sign(result, SHA256_DIGEST_LENGTH, priveckey);
-	if (sig == NULL) {
-		printf("can not generate sig\n");
-		return -1;
-	}
-	printf("success signed\n");
-	EC_KEY_free(priveckey);
 
 
+	// read pubkey and verify
 	printf("begin read pubkey\n");
-	pubeckey = EC_KEY_new_by_curve_name(NID_secp512r1);
+	pubeckey = EC_KEY_new_by_curve_name(NID_secp521r1);
 	if (pubeckey == NULL) {
 		printf("can not create curve for pubeckey\n");
 		return -1;
 	}
-	// read pubkey and verify
 	if ((fd = open(pubkeypath, O_RDONLY)) == -1) {
 		printf("can not open file for pub key read\n");
 		return -1;
@@ -194,6 +184,18 @@ int ecdsa_sign(char *fname, unsigned char *result) {
 		printf("can not convert from hex to ecpoint\n");
 		return -1;
 	}
+	if (EC_KEY_set_public_key(pubeckey, pubkey) != 1) {
+		printf("can not set public eckey\n");
+		return -1;
+	}
+
+	//sign
+	sig = ECDSA_do_sign(result, SHA256_DIGEST_LENGTH, priveckey);
+	if (sig == NULL) {
+		printf("can not generate sig\n");
+		return -1;
+	}
+	printf("success signed\n");
 
 	// verify
 	ret = ECDSA_do_verify(result, SHA256_DIGEST_LENGTH, sig, pubeckey);
@@ -205,6 +207,8 @@ int ecdsa_sign(char *fname, unsigned char *result) {
 		printf("verify success\n");
 	}
 	BN_CTX_free(ctx);
+	EC_KEY_free(eckey);
+	EC_KEY_free(priveckey);
 	EC_KEY_free(pubeckey);
 	return 0;
 	/*
