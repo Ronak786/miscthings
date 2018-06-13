@@ -16,19 +16,20 @@
 
 using namespace std;
 
-void init_handle(PkgHandle &hdl);
+int init_handle(PkgHandle &hdl);
+void uninit_handle(PkgHandle &hdl);
 bool get_and_check(PkgHandle &hdl);
 void dumppkgs(PkgHandle hdl);
 void showInfo(PkgInfo &pkg);
 void updatepkgs(PkgHandle &hdl);
 void compare_and_list_new(const vector<PkgInfo> vremote, vector<PkgInfo> &vnew);
-void install_and_updatelocal(PkgHandle &hdl);
+int install_and_updatelocal(PkgHandle &hdl);
 void do_copy_pkg(string pkgname);
 void do_copy_file(string from, string to);
-void download(string pkgfile);
+int download(string pkgfile);
 bool extract_and_install(string pkgfile);
 void uninstallpkg(string pkgfile);
-bool checksig(char *fname, char* fsig);
+bool checksig(string fname, string fsig);
 void getpkglist(string filename, vector<PkgInfo> &vstr);
 
 #endif

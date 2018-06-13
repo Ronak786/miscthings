@@ -1,24 +1,28 @@
-All: client
+All: client input
 
+CFLAGS := -fpermissive
 CPPFLAGS := -DNOSSL -std=c++11 -Wall
-#SIGCPPFLAGS := -I/opt/openssl/include
-#SIGLDFLAGS := -L/opt/openssl/lib -lcrypto
-SIGLDFLAGS := -lcrypto
+LDFLAGS := -L. -lsigutil -lcrypto
+SIGCPPFLAGS := -fPIC
+SIGLDFLAGS := -shared -lcrypto
 pkghandle.o : pkghandle.cpp pkghandle.h
 client.o: client.cpp client.h json.h
+	g++ ${CFLAGS} ${CPPFLAGS} -c $< -o $@
 pkginfo.o : pkginfo.cpp pkginfo.h
 ftplib.o: ftplib.cpp ftplib.h
 	g++ -Wno-unused-variable -Wno-format -Wno-unused-but-set-variable -Wno-restrict ${CPPFLAGS} -c $<
 
-client: pkghandle.o client.o pkginfo.o ftplib.o
-	g++ ${CPPFLAGS} -o $@ $^
+client: pkghandle.o client.o pkginfo.o ftplib.o libsigutil.so
+	g++ -o $@ $^ ${LDFLAGS}
 
 input: createjsonfromtext.cpp json.h
 	g++ ${CPPFLAGS} -o $@ $<
 
-sig: createsig
-createsig: createsig.o
-	g++ ${CPPFLAGS} ${SIGCPPFLAGS} -o $@ $< ${SIGLDFLAGS} 
+sig: libsigutil.so
+sigutil.o: sigutil.cpp sigutil.h
+	g++ ${CPPFLAGS} ${SIGCPPFLAGS} -o $@ -c $<
+libsigutil.so: sigutil.o
+	g++  -o $@ $< ${SIGLDFLAGS} 
 
 clean:
-	rm -f *.o input client createsig
+	rm -f *.o *.so input client createsig

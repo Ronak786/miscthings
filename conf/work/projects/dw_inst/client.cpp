@@ -9,6 +9,7 @@
 #include "pkghandle.h"
 #include "json.h"
 #include "ftplib.h"
+#include "sigutil.h"
 
 #include <unistd.h>
 #include <algorithm>
@@ -49,7 +50,10 @@ ftplib *ftp = NULL;
 int main(int ac, char *av[]) {
 	bool stop = false;
 	PkgHandle hdl;
-	init_handle(hdl);
+	if (init_handle(hdl) == -1) {
+		pr_info("fail init\n");
+		return -1;
+	}
 	while (!stop) {
 		pr_info("begin check\n");
 		if (get_and_check(hdl)) {
@@ -62,7 +66,8 @@ int main(int ac, char *av[]) {
 	uninit_handle(hdl);
 }
 
-void init_handle(PkgHandle &hdl) {
+int init_handle(PkgHandle &hdl) {
+	int ret = 0, res = 0;
 	// if local package meta file not exist, create an empty one
 	if (access(pkgfilelocal.c_str(), F_OK) != 0) {
 		ofstream ofs(pkgfilelocal);
@@ -70,19 +75,34 @@ void init_handle(PkgHandle &hdl) {
 		ofs << tmpobj;
 	}
 	ftp = new ftplib();
-	cout << "try " << retry << endl;
 	res = ftp->Connect("127.0.0.1:21");
-	if (res != 1) continue;
+	if (res != 1) { 
+		ret = -1;
+		goto freeobj;
+	}
 	pr_info("after connet\n");
 
-	res = ftp->Login("sora","123456");
-	if (res != 1) continue;
+	res = ftp->Login("sora","ssss1234");
+	if (res != 1) {
+		ret = -1;
+		goto freeconnect;
+	}
 	pr_info("after login\n");
 
 	res = ftp->Chdir(remotedir.c_str());
-	if (res != 1) continue;
-	pr_info("after chdir\n");
+	if (res != 1) {
+		ret = -1;
+		goto freeconnect;
+	}
 	pr_info("inited \n");
+
+	return ret;
+
+freeconnect:
+	ftp->Quit();
+freeobj:
+	free(ftp);
+	return ret;
 }
 
 void uninit_handle(PkgHandle &hdl) {
@@ -164,7 +184,7 @@ int install_and_updatelocal(PkgHandle &hdl) {
 
 // need to be: request from remote ftp and save file to localdir
 //		ftp initialize should do every check circle, not every file download here!!
-void download(string pkgfile) {
+int download(string pkgfile) {
 	int res = 0;
 
 	pr_info("download file %s\n", pkgfile.c_str());
@@ -173,6 +193,10 @@ void download(string pkgfile) {
 	unlink(localfilepath.c_str());
 
 	res = ftp->Get(localfilepath.c_str(), pkgfile.c_str(), ftplib::image);
+	if (res != 1) {
+		return -1;
+	}
+	return 0;
 }
 
 void do_copy_file(string from, string to) {
@@ -241,7 +265,7 @@ bool extract_and_install(string pkgfile) {
 	uninstallpkg(pkgfile);
 
 	char localbuf[200];
-	spr_info(localbuf, "rm -rf %s; tar xf %s -C %s\n", 
+	pr_info(localbuf, "rm -rf %s; tar xf %s -C %s\n", 
 		localpathdir.c_str(), localpath.c_str(), localdir.c_str());
 	system(localbuf);
 	do_copy_pkg(pkgfile);
@@ -279,9 +303,51 @@ void compare_and_list_new(const vector<PkgInfo> vremote, vector<PkgInfo> &vnew) 
 	}
 }
 
-bool checksig(char *fname, char* fsig) {
-static int get_sha256(char *fnamel, unsigned char* result); //get sha
-static int readpubeckey(EC_KEY **pubeckeyptr); // read pubkey
-static int readkeyfromfile(const char* fname, char**bufptr); //read sig from file, return length
-static int ecdsa_verify(unsigned char *content, int contentlen, unsigned char*sig, unsigned int siglen);
+bool checksig(string fnamestr, string fsigstr) {
+	const char *fname = fnamestr.c_str();
+	const char *fsig = fsigstr.c_str();
+	unsigned char content[SHA256_DIGEST_LENGTH];
+	EC_KEY * pubeckey;
+	int siglen;
+	unsigned char *sig;
+	int res = 0;
+	bool ret = true;
+
+	if (get_sha256(fname, content) == -1) {
+		pr_info("can not get sha\n");
+		ret = false;
+		goto freenon;
+	}
+	if (readpubeckey(&pubeckey) == -1) {
+		pr_info("can not get pubeckey\n");
+		ret = false;
+		goto freenon;
+	}
+
+	char *tmpsigptr = (char*)sig;
+	if ((siglen = readkeyfromfile(fsig, &tmpsigptr)) == -1) {
+		pr_info("can not read sig from file %s\n", fname);
+		ret = false;
+		goto freekey;
+	}
+	
+	res = ecdsa_verify(content, SHA256_DIGEST_LENGTH, sig, (unsigned int)siglen);
+	switch(res) {
+	case -1:
+	  pr_info("verify error occureed\n");
+	  break;
+	case 0:
+	  pr_info("verify fail\n");
+	  break;
+	default:
+	  pr_info("verify success file %s, can install\n", fname);
+	  break;
+	}
+
+free(sig);
+
+freekey:
+	EC_KEY_free(pubeckey);
+freenon:
+	return ret;
 }

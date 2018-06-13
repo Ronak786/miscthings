@@ -8,13 +8,11 @@
 // need to be careful of memory new and free when handle error
 
 #include <stdio.h>
-#include <openssl/sha.h>
-#include <openssl/ecdsa.h>
-#include <openssl/bn.h>
-#include <openssl/evp.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
+
+#include "sigutil.h"
 
 #define READSIZ 1*1024*1024
 #define _DEBUG
@@ -49,15 +47,6 @@
 
 const char *privkeypath = "../remotepkgs/privkey.pem";
 const char *pubkeypath = "../localpkgs/pubkey.pem";
-
-static int get_sha256(char *fnamel, unsigned char* result);
-static void dumpbuf(const unsigned char* buf, int size);
-static int generate_new_keypairs();
-static int readpubeckey(EC_KEY **pubeckeyptr);
-static int readpriveckey(EC_KEY **priveckeyptr);
-static int readkeyfromfile(const char* fname, char**bufptr);
-static int ecdsa_sign(unsigned char *content, int contentlen, unsigned char*sig, unsigned int *siglenptr);
-static int ecdsa_verify(unsigned char *content, int contentlen, unsigned char*sig, unsigned int siglen);
 
 int main (int ac, char *av[]) {
 	if (ac !=3) {
@@ -119,7 +108,7 @@ int main (int ac, char *av[]) {
  *		0 success
  *		-1 fail
  */
-int get_sha256(char *fname, unsigned char* result) {
+int get_sha256(const char *fname, unsigned char* result) {
 	SHA256_CTX ctx;
 	SHA256_Init(&ctx);
 
@@ -322,14 +311,6 @@ int ecdsa_sign(unsigned char *content, int contentlen, unsigned char*sig, unsign
 	if (siglenptr == NULL || sig == NULL) {
 		return ECDSA_size(priveckey);
 	}
-
-	/*
-	// also set pubkey into privatekey
-	if (EC_KEY_set_public_key(priveckey, pubkey) != 1) {
-		pr_info("can not set public eckey into privkey\n");
-		return -1;
-	}
-	*/
 
 	//sign
 	if (!ECDSA_sign(0, content, contentlen, sig, siglenptr, priveckey)) {
