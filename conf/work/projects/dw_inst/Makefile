@@ -1,4 +1,4 @@
-All: client input
+All: client input createsig
 
 CFLAGS := -fpermissive
 CPPFLAGS := -DNOSSL -std=c++11 -Wall
@@ -23,6 +23,9 @@ sigutil.o: sigutil.cpp sigutil.h
 	g++ ${CPPFLAGS} ${SIGCPPFLAGS} -o $@ -c $<
 libsigutil.so: sigutil.o
 	g++  -o $@ $< ${SIGLDFLAGS} 
+
+createsig: createsig.cpp libsigutil.so 
+	g++ ${CPPFLAGS} ${CFLAGS} -o $@ $< ${LDFLAGS}
 
 clean:
 	rm -f *.o *.so input client createsig

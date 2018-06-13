@@ -45,9 +45,6 @@
 		return d; \
 	} while(0)
 
-const char *privkeypath = "../remotepkgs/privkey.pem";
-const char *pubkeypath = "../localpkgs/pubkey.pem";
-
 int main (int ac, char *av[]) {
 	if (ac !=3) {
 		pr_info("%s inputfile sigfilename\n", av[0]);
@@ -128,7 +125,7 @@ int get_sha256(const char *fname, unsigned char* result) {
 	return 0;
 }
 
-int generate_new_keypairs() {
+int generate_new_keypairs(const char *privkeypath, const char* pubkeypath) {
 
 	int fd, count;
 	EC_KEY *eckey;
@@ -203,7 +200,7 @@ int readkeyfromfile(const char* fname, char**bufptr) {
 	return count;
 }
 
-int readpriveckey(EC_KEY **priveckeyptr) {
+int readpriveckey(EC_KEY **priveckeyptr, const char *privkeypath, const char*pubkeypath) {
 	EC_KEY *priveckey = NULL;
 	EC_POINT *pubkey = NULL;
 	char *keybuf = NULL;
@@ -253,7 +250,7 @@ int readpriveckey(EC_KEY **priveckeyptr) {
 	return 0;
 }
 
-int readpubeckey(EC_KEY **pubeckeyptr) {
+int readpubeckey(EC_KEY **pubeckeyptr, const char* pubkeypath) {
 	EC_POINT *pubkey = NULL;
 	EC_KEY *pubeckey = NULL;
 	char *keybuf = NULL;
@@ -290,19 +287,20 @@ int readpubeckey(EC_KEY **pubeckeyptr) {
  * if success, return 0
  *	  error, return -1
  */
-int ecdsa_sign(unsigned char *content, int contentlen, unsigned char*sig, unsigned int *siglenptr) {
+int ecdsa_sign(unsigned char *content, int contentlen, unsigned char*sig, unsigned int *siglenptr, 
+		const char *priveckeyname, const char *pubeckeyname) {
 
 	EC_KEY *priveckey;
 
 	// if private or public key file not exist, regenerate keys and store into file
 	if (access(privkeypath, F_OK) != 0 || access(pubkeypath, F_OK) != 0) {
-		if (generate_new_keypairs() != 0) {
+		if (generate_new_keypairs(priveckeyname, pubeckeyname) != 0) {
 			pr_info("can not generate key pair\n");
 			return -1;
 		}
 	}
 
-	if (readpriveckey(&priveckey) != 0) {
+	if (readpriveckey(&priveckey, priveckeyname, pubeckeyname) != 0) {
 		pr_info("can not read priveckey\n");
 		return -1;
 	}
@@ -328,7 +326,7 @@ int ecdsa_sign(unsigned char *content, int contentlen, unsigned char*sig, unsign
  * return:
  *		-1 error, 0 verify fail, 1 success
  */
-int ecdsa_verify(unsigned char *content, int contentlen, unsigned char*sig, unsigned int siglen) {
+int ecdsa_verify(unsigned char *content, int contentlen, unsigned char*sig, unsigned int siglen, const char *pubeckeyname) {
 	EC_KEY *pubeckey;
 	int ret;
 
@@ -339,7 +337,7 @@ int ecdsa_verify(unsigned char *content, int contentlen, unsigned char*sig, unsi
 	}
 
 	// read public key
-	if (readpubeckey(&pubeckey) != 0) {
+	if (readpubeckey(&pubeckey, pubeckeyname) != 0) {
 		pr_info("can not read pubeckey\n");
 		return -1;
 	}

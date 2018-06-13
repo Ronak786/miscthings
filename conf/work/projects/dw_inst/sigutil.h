@@ -34,19 +34,19 @@ void dumpbuf(const unsigned char* buf, int size);
  * success: return 0
  * error: -1
  */
-int generate_new_keypairs();
+int generate_new_keypairs(const char* priv, const char *pub);
 
 /*
  * success: 0
  * error: -1
  */
-int readpubeckey(EC_KEY **pubeckeyptr);
+int readpubeckey(EC_KEY **pubeckeyptr, const char *priv, const char* pub);
 
 /*
  * success: 0
  * error: -1
  */
-int readpriveckey(EC_KEY **priveckeyptr);
+int readpriveckey(EC_KEY **priveckeyptr, const char *priv);
 
 /*
  * success: num of bytes in buf
@@ -55,12 +55,14 @@ int readpriveckey(EC_KEY **priveckeyptr);
 int readkeyfromfile(const char* fname, char**bufptr);
 
 /*
+ * read priv and pub key from file and sign
  * success: 0
  * error: -1
  */
 int ecdsa_sign(unsigned char *content, int contentlen, unsigned char*sig, unsigned int *siglenptr);
 
 /*
+ * read pub key from file and verify
  * success: >0
  * fail: 0
  * error: -1

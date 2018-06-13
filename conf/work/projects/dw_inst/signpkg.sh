@@ -13,5 +13,4 @@ if [ "x$dirname" == "x" ]; then
 	exit 1
 fi
 
-(cd $dirname && find .   |  grep -v FILELIST | xargs -n 1 /bin/ls -Fd | sed  -e '1,2d' -e 's#\./src##' > FILELIST.lst)
-tar -zcf ${dirname}.tar.gz $dirname
+LD_LIBRARY_PATH=.. ../createsig ${dirname}.tar.gz ${dirname}.tar.gz.sig

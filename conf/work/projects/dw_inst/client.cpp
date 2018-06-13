@@ -39,31 +39,30 @@ string localdir = "localpkgs/";
 string installdir = "destdir/";
 
 string pkgfilelocal = localdir + "localpkg.json";
-string pkgfilelocalbak = localdir + "localpkg.json.bak";
-
 string pkgfileremotename = "remotepkg.json";
-string pkgfileremotebak = localdir + "remotepkg.json.bak";
+string pubkeypath = localdir + "
 
 ftplib *ftp = NULL;
 
 
 int main(int ac, char *av[]) {
 	bool stop = false;
-	PkgHandle hdl;
-	if (init_handle(hdl) == -1) {
-		pr_info("fail init\n");
-		return -1;
-	}
+
 	while (!stop) {
+		PkgHandle hdl;
+		if (init_handle(hdl) == -1) {
+			pr_info("fail init\n");
+			return -1;
+		}
 		pr_info("begin check\n");
 		if (get_and_check(hdl)) {
 			pr_info("we have new pkgs\n");
 			dumppkgs(hdl);
 			updatepkgs(hdl);
 		}
+		uninit_handle(hdl);
 		sleep(2);
 	}
-	uninit_handle(hdl);
 }
 
 int init_handle(PkgHandle &hdl) {
@@ -304,8 +303,11 @@ void compare_and_list_new(const vector<PkgInfo> vremote, vector<PkgInfo> &vnew) 
 }
 
 bool checksig(string fnamestr, string fsigstr) {
-	const char *fname = fnamestr.c_str();
-	const char *fsig = fsigstr.c_str();
+	string filepath = localdir + fnamestr;
+	string sigpath = localdir + fsigstr;
+	const char *fname = filepath.c_str();
+	const char *fsig = sigpath.c_str();
+	string pubkeypath = localdir + 
 	unsigned char content[SHA256_DIGEST_LENGTH];
 	EC_KEY * pubeckey;
 	int siglen;
@@ -318,7 +320,7 @@ bool checksig(string fnamestr, string fsigstr) {
 		ret = false;
 		goto freenon;
 	}
-	if (readpubeckey(&pubeckey) == -1) {
+	if (readpubeckey(&pubeckey,) == -1) {
 		pr_info("can not get pubeckey\n");
 		ret = false;
 		goto freenon;
@@ -335,12 +337,15 @@ bool checksig(string fnamestr, string fsigstr) {
 	switch(res) {
 	case -1:
 	  pr_info("verify error occureed\n");
+	  ret = false;
 	  break;
 	case 0:
 	  pr_info("verify fail\n");
+	  ret = false;
 	  break;
 	default:
 	  pr_info("verify success file %s, can install\n", fname);
+	  ret = true;
 	  break;
 	}
 
