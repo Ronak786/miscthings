@@ -15,7 +15,6 @@
 #include "sigutil.h"
 
 #define READSIZ 1*1024*1024
-#define _DEBUG
 
 #ifdef _DEBUG
 #define pr_info(f_, ...) printf((f_), ##__VA_ARGS__)

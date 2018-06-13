@@ -16,10 +16,11 @@ if [ "$param" == "local" ]; then
 	./input localpkg.txt localpkgs/localpkg.json
 elif [ "$param" == "remote" ]; then
 	./input remotepkg.txt remotepkgs/remotepkg.json
+elif [ "$param" == "config" ]; then
+	/bin/cp config.json localpkgs/config.json
 elif [ "$param" == "all" ]; then
 	./input localpkg.txt localpkgs/localpkg.json
 	./input remotepkg.txt remotepkgs/remotepkg.json
-elif [ "$param" == "config" ]; then
 	/bin/cp config.json localpkgs/config.json
 else
 	echo "param wrong"

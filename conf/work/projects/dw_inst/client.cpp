@@ -24,7 +24,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#define _DEBUG
 
 #ifdef _DEBUG
 #define pr_info(f_, ...) printf((f_), ##__VA_ARGS__)
@@ -53,6 +52,10 @@ static ftplib *ftp = NULL;
 int main(int ac, char *av[]) {
 
 	load_config(ac, av);
+
+	if (daemon_flag) {
+		daemon(1,0);
+	}
 	bool stop = false;
 
 	while (!stop) {
@@ -383,7 +386,7 @@ int load_config(int ac, char *av[]) {
 	localdir = "dumpdir/";
 	installdir = "dumpdir/";
 
-	defconf = "localpkgs/config.json"
+	defconf = "localpkgs/config.json";
 	pkgfileremotename = "readme";
 	pkgfilelocalname = "readme";
 	remoteaddr = "192.168.0.1:21";
@@ -402,31 +405,40 @@ int load_config(int ac, char *av[]) {
 		ifs >> jconf;
 
 		for (json::iterator it = jconf.begin(); it != jconf.end(); ++it) {
-			if (it->key() == "localpkgdir") {
-				localdir = it->value();
-			} else if (it->key() == "installdir") {
-				installdir = it->value();
-			} else if (it->key() == "remoteaddr") {
-				remoteaddr = it->value();
-			} else if (it->key() == "remoteuser") {
-				remoteuser = it->value();
-			} else if (it->key() == "remotepass") {
-				remotepass = it->value();
-			} else if (it->key() == "remotepkgdir") {
-				remotepkgdir = it->value();
-			} else if (it->key() == "daemonize") {
-				daemon_flag = it->value;
-			} else if (it->key() == "remotemeta") {
-				pkgfileremotename = it->value();
-			} else if (it->key() == "localmeta") {
-				pkgfilelocalname = it->value();
+			if (it.key() == "localpkgdir") {
+				localdir = it.value();
+			} else if (it.key() == "installdir") {
+				installdir = it.value();
+			} else if (it.key() == "remoteaddr") {
+				remoteaddr = it.value();
+			} else if (it.key() == "remoteuser") {
+				remoteuser = it.value();
+			} else if (it.key() == "remotepass") {
+				remotepass = it.value();
+			} else if (it.key() == "remotepkgdir") {
+				remotepkgdir = it.value();
+			} else if (it.key() == "daemonize") {
+				daemon_flag = it.value();
+			} else if (it.key() == "remotemeta") {
+				pkgfileremotename = it.value();
+			} else if (it.key() == "localmeta") {
+				pkgfilelocalname = it.value();
 			} else {
-				cout << "unknown json object: " << it->key();
+				cout << "unknown json object: " << it.key() << endl;
 			}
 		}
 	} else {
 		pr_info("use all default config\n");
 	}
 	pkgfilelocal = localdir + pkgfilelocalname;
+
+	// dump configs
+	/*
+	pr_info("dump configs: defconf:%s, pkgfileremotename:%s, pkgfilelocalname:%s,"
+			"remoteaddr:%s,remoteuser:%s,remotepass:%s,remotepkgdir:%s,daemon_flag:%d\n",
+			defconf.c_str(), pkgfileremotename.c_str(), pkgfilelocalname.c_str(),
+			remoteaddr.c_str(), remoteuser.c_str(), remotepass.c_str(), remotepkgdir.c_str(),
+			daemon_flag);
+	*/
 	return 0;
 }
