@@ -40,9 +40,8 @@ string installdir = "destdir/";
 
 string pkgfilelocal = localdir + "localpkg.json";
 string pkgfileremotename = "remotepkg.json";
-string pubkeypath = localdir + "
 
-ftplib *ftp = NULL;
+static ftplib *ftp = NULL;
 
 
 int main(int ac, char *av[]) {
@@ -259,12 +258,11 @@ void uninstallpkg(string pkgname) {
 bool extract_and_install(string pkgfile) {
 	string localpath = localdir + pkgfile + ".tar.gz";
 	string localpathdir = localdir + pkgfile;
-	string localpathdirbak = localdir + pkgfile + "-bak";
 
 	uninstallpkg(pkgfile);
 
 	char localbuf[200];
-	pr_info(localbuf, "rm -rf %s; tar xf %s -C %s\n", 
+	snprintf(localbuf, sizeof(localbuf)-1 , "rm -rf %s; tar xf %s -C %s", 
 		localpathdir.c_str(), localpath.c_str(), localdir.c_str());
 	system(localbuf);
 	do_copy_pkg(pkgfile);
@@ -305,13 +303,13 @@ void compare_and_list_new(const vector<PkgInfo> vremote, vector<PkgInfo> &vnew) 
 bool checksig(string fnamestr, string fsigstr) {
 	string filepath = localdir + fnamestr;
 	string sigpath = localdir + fsigstr;
+	string pubkeypath = localdir + "pubkey.pem";
 	const char *fname = filepath.c_str();
 	const char *fsig = sigpath.c_str();
-	string pubkeypath = localdir + 
 	unsigned char content[SHA256_DIGEST_LENGTH];
 	EC_KEY * pubeckey;
 	int siglen;
-	unsigned char *sig;
+	char *sig = NULL; //buffer to store signature
 	int res = 0;
 	bool ret = true;
 
@@ -320,20 +318,19 @@ bool checksig(string fnamestr, string fsigstr) {
 		ret = false;
 		goto freenon;
 	}
-	if (readpubeckey(&pubeckey,) == -1) {
+	if (readpubeckey(&pubeckey, pubkeypath.c_str()) == -1) {
 		pr_info("can not get pubeckey\n");
 		ret = false;
 		goto freenon;
 	}
 
-	char *tmpsigptr = (char*)sig;
-	if ((siglen = readkeyfromfile(fsig, &tmpsigptr)) == -1) {
+	if ((siglen = readkeyfromfile(fsig, &sig)) == -1) {
 		pr_info("can not read sig from file %s\n", fname);
 		ret = false;
 		goto freekey;
 	}
 	
-	res = ecdsa_verify(content, SHA256_DIGEST_LENGTH, sig, (unsigned int)siglen);
+	res = ecdsa_verify(content, SHA256_DIGEST_LENGTH, (unsigned char*)sig, (unsigned int)siglen, pubkeypath.c_str());
 	switch(res) {
 	case -1:
 	  pr_info("verify error occureed\n");
@@ -349,7 +346,7 @@ bool checksig(string fnamestr, string fsigstr) {
 	  break;
 	}
 
-free(sig);
+	free(sig);
 
 freekey:
 	EC_KEY_free(pubeckey);

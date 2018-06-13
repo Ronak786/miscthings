@@ -40,13 +40,13 @@ int generate_new_keypairs(const char* priv, const char *pub);
  * success: 0
  * error: -1
  */
-int readpubeckey(EC_KEY **pubeckeyptr, const char *priv, const char* pub);
+int readpubeckey(EC_KEY **pubeckeyptr, const char* pub);
 
 /*
  * success: 0
  * error: -1
  */
-int readpriveckey(EC_KEY **priveckeyptr, const char *priv);
+int readpriveckey(EC_KEY **priveckeyptr, const char *priv, const char* pub);
 
 /*
  * success: num of bytes in buf
@@ -59,7 +59,8 @@ int readkeyfromfile(const char* fname, char**bufptr);
  * success: 0
  * error: -1
  */
-int ecdsa_sign(unsigned char *content, int contentlen, unsigned char*sig, unsigned int *siglenptr);
+int ecdsa_sign(unsigned char *content, int contentlen, unsigned char* sig, unsigned int *siglenptr,
+		const char *privkeyfname, const char *pubkeyfname);
 
 /*
  * read pub key from file and verify
@@ -67,7 +68,8 @@ int ecdsa_sign(unsigned char *content, int contentlen, unsigned char*sig, unsign
  * fail: 0
  * error: -1
  */
-int ecdsa_verify(unsigned char *content, int contentlen, unsigned char*sig, unsigned int siglen);
+int ecdsa_verify(unsigned char *content, int contentlen, unsigned char* sig, unsigned int siglen, 
+		const char* pubkeyfname);
 
 #ifdef __cplusplus
 }

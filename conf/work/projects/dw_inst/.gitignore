@@ -1,3 +1,6 @@
 *.o
 a.out
 *.so
+localpkgs/*
+~localpkgs/pubkey.pem
+~localpkgs/localpkg.json

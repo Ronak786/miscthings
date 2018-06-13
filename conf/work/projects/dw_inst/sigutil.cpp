@@ -63,13 +63,14 @@ int main (int ac, char *av[]) {
 	// dump hash
 //	dumpbuf(result, SHA256_DIGEST_LENGTH);
 
-	siglen = ecdsa_sign(NULL, 0, NULL, NULL);
+	siglen = ecdsa_sign(NULL, 0, NULL, NULL, NULL, NULL);
 	if ((signature = (unsigned char*)OPENSSL_malloc(siglen)) == NULL) {
 		pr_info("can not allocate signature buffer\n");
 		return -1;
 	}
 	
-	if (ecdsa_sign(content, SHA256_DIGEST_LENGTH, signature, &siglen) != 0) {
+	if (ecdsa_sign(content, SHA256_DIGEST_LENGTH, signature, &siglen, 
+				"../remotepkgs/privkey.pem", "../localpkgs/pubkey.pem") != 0) {
 		pr_info("sig failed\n");
 		return -1;
 	}
@@ -88,7 +89,7 @@ int main (int ac, char *av[]) {
 	close(fd);
 	/**********************************************/
 
-	if (ecdsa_verify(content, SHA256_DIGEST_LENGTH, signature, siglen) <= 0) {
+	if (ecdsa_verify(content, SHA256_DIGEST_LENGTH, signature, siglen, "../localpkgs/pubkey.pem") <= 0) {
 		pr_info("verify failed\n");
 		return -1;
 	}
@@ -115,7 +116,7 @@ int get_sha256(const char *fname, unsigned char* result) {
 		return -1;
 	}
 
-	char tmpbuf[READSIZ];
+	unsigned char tmpbuf[READSIZ];
 	int count = 0;
 	while ((count = read(fd, tmpbuf, READSIZ)) > 0) {
 		SHA256_Update(&ctx, tmpbuf, count);
@@ -177,7 +178,7 @@ int generate_new_keypairs(const char *privkeypath, const char* pubkeypath) {
 }
 
 // caller should free buffer allocated inside this function
-int readkeyfromfile(const char* fname, char**bufptr) {
+int readkeyfromfile(const char* fname, char** bufptr) {
 	int fd, count;
 	char *buf = NULL;
 	// read privkey and sign
@@ -287,13 +288,13 @@ int readpubeckey(EC_KEY **pubeckeyptr, const char* pubkeypath) {
  * if success, return 0
  *	  error, return -1
  */
-int ecdsa_sign(unsigned char *content, int contentlen, unsigned char*sig, unsigned int *siglenptr, 
+int ecdsa_sign(unsigned char *content, int contentlen, unsigned char* sig, unsigned int *siglenptr, 
 		const char *priveckeyname, const char *pubeckeyname) {
 
 	EC_KEY *priveckey;
 
 	// if private or public key file not exist, regenerate keys and store into file
-	if (access(privkeypath, F_OK) != 0 || access(pubkeypath, F_OK) != 0) {
+	if (access((const char*)priveckeyname, F_OK) != 0 || access((const char*)pubeckeyname, F_OK) != 0) {
 		if (generate_new_keypairs(priveckeyname, pubeckeyname) != 0) {
 			pr_info("can not generate key pair\n");
 			return -1;
@@ -326,7 +327,7 @@ int ecdsa_sign(unsigned char *content, int contentlen, unsigned char*sig, unsign
  * return:
  *		-1 error, 0 verify fail, 1 success
  */
-int ecdsa_verify(unsigned char *content, int contentlen, unsigned char*sig, unsigned int siglen, const char *pubeckeyname) {
+int ecdsa_verify(unsigned char *content, int contentlen, unsigned char* sig, unsigned int siglen, const char *pubeckeyname) {
 	EC_KEY *pubeckey;
 	int ret;
 

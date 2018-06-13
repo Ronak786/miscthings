@@ -28,13 +28,14 @@ int main(int ac, char *av[]) {
 	}
 
 	// get sigbug length
-	siglen = ecdsa_sign(NULL, 0, NULL, NULL);
+	siglen = ecdsa_sign(NULL, 0, NULL, NULL, NULL, NULL);
 	if ((signature = (unsigned char*)OPENSSL_malloc(siglen)) == NULL) {
 		printf("can not allocate signature buffer\n");
 		return -1;
 	}
 	
-	if (ecdsa_sign(content, SHA256_DIGEST_LENGTH, signature, &siglen) != 0) {
+	if (ecdsa_sign(content, SHA256_DIGEST_LENGTH, signature, &siglen, 
+				"../remotepkgs/privkey.pem", "../localpkgs/pubkey.pem") != 0) {
 		printf("sig failed\n");
 		return -1;
 	}
