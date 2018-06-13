@@ -8,7 +8,7 @@
 
 param=$1
 if [ "x$param" == "x" ]; then
-	echo "param: local remote all"
+	echo "param: local remote config all"
 	exit 1
 fi
 
@@ -19,6 +19,8 @@ elif [ "$param" == "remote" ]; then
 elif [ "$param" == "all" ]; then
 	./input localpkg.txt localpkgs/localpkg.json
 	./input remotepkg.txt remotepkgs/remotepkg.json
+elif [ "$param" == "config" ]; then
+	/bin/cp config.json localpkgs/config.json
 else
 	echo "param wrong"
 fi

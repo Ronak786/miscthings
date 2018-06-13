@@ -35,21 +35,28 @@
 using json = nlohmann::json;
 
 // install releated
-string remotedir = "gitbase/miscthings/conf/work/projects/dw_inst/remotepkgs"; // remote ftpdir
-string localdir = "localpkgs/";
-string installdir = "destdir/";
+string localdir;
+string installdir;
 
-string pkgfilelocal = localdir + "localpkg.json";
-string pkgfileremotename = "remotepkg.json";
+string pkgfilelocal;
+string pkgfileremotename;
+string pkgfilelocalname;
+string defconf;
+
+string remoteaddr;
+string remoteuser;
+string remotepass;
+string remotedir; // remote ftpdir
+bool daemon_flag = false;
 
 static ftplib *ftp = NULL;
 
-// use -d to start daemon, regularly should use a personal daemon function
-// need a flag detect program !!!!! getopt, and set other settings all in one file, use 
-//		-e to specify that file ,or default xxxx.json
+// check cmdline arg as config file path, default is set as default 
+static int load_config(int ac, char *av[]);
+
 int main(int ac, char *av[]) {
 
-//	load_config();
+	load_config(ac, av);
 	bool stop = false;
 
 	while (!stop) {
@@ -78,14 +85,14 @@ int init_handle(PkgHandle &hdl) {
 		ofs << tmpobj;
 	}
 	ftp = new ftplib();
-	res = ftp->Connect("127.0.0.1:21");
+	res = ftp->Connect(remoteaddr.c_str());
 	if (res != 1) { 
 		ret = -1;
 		goto freeobj;
 	}
 	pr_info("after connet\n");
 
-	res = ftp->Login("sora","ssss1234");
+	res = ftp->Login(remoteuser.c_str(), remotepass.c_str());
 	if (res != 1) {
 		ret = -1;
 		goto freeconnect;
@@ -361,4 +368,71 @@ freekey:
 	EC_KEY_free(pubeckey);
 freenon:
 	return ret;
+}
+
+/*
+ * recognized option:
+ * daemon: (bool)true/false
+ * remoteaddr: (string)ip:port
+ * remoteuser: (string)username
+ * remotepass: (string)password
+ * remotedir:  (string)ftp's dir
+ * localpkgdir: (string)pkg download dir
+ * installdir: (string)pkg install rootdir, on board is persist
+ */
+int load_config(int ac, char *av[]) {
+	// set cmdline specified conf file 
+	// set default vars first
+	localdir = "localpkgs/";
+	installdir = "destdir/";
+
+	pkgfileremotename = "remotepkg.json";
+	pkgfilelocalname = "local.json";
+	defconf = "localpkgs/config.json"
+	remoteaddr = "192.168.0.137:21";
+	remoteuser = "root";
+	remotepass = "123456";
+	remotedir = "/persist/ftpdir/"; // remote ftpdir
+	daemon_flag = false;
+
+	if (ac >= 2) {
+		defconf = av[1];
+	}
+
+	ifstream ifs(defconf);
+	if (ifs) {
+
+		json jconf;
+		ifs >> jconf;
+
+		for (json::iterator it = jconf.begin(); it != jconf.end(); ++it) {
+			if (it->key() == "localdir") {
+				localdir = it->value();
+			} else if (it->key() == "installdir") {
+				installdir = it->value();
+			} else if (it->key() == "localpkgdir") {
+				localdir = it->value();
+			} else if (it->key() == "remoteaddr") {
+				remoteaddr = it->value();
+			} else if (it->key() == "remoteuser") {
+				remoteuser = it->value();
+			} else if (it->key() == "remotepass") {
+				remotepass = it->value();
+			} else if (it->key() == "remotedir") {
+				remotedir = it->value();
+			} else if (it->key() == "daemonize") {
+				daemon_flag = it->value;
+			} else if (it->key() == "remotemeta") {
+				pkgfileremotename = it->value();
+			} else if (it->key() == "localmeta") {
+				pkgfilelocalname = it->value();
+			} else {
+				cout << "unknown json object: " << it->key();
+			}
+		}
+	} else {
+		pr_info("use all default config\n");
+	}
+	pkgfilelocal = localdir + pkgfilelocalname;
+
 }
