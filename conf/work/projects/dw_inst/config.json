@@ -1,0 +1,11 @@
+{
+"localpkgdir" : "localpkgs/",
+"installdir" : "destdir/",
+"remoteaddr" : "192.168.0.26:21",
+"remoteuser" : "sora",
+"remotepass" : "ssss1234",
+"remotepkgdir" : "gitbase/miscthings/conf/work/projects/dw_inst/remotepkgs",
+"daemonize" : false,
+"remotemeta" : "remotepkg.json",
+"localmeta" : "localpkg.json"
+}

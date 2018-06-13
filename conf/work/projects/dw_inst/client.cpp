@@ -34,25 +34,21 @@
 
 using json = nlohmann::json;
 
-// install releated
-string localdir;
-string installdir;
+// config params
+static string localdir;
+static string installdir;
+static string pkgfilelocal;
+static string pkgfileremotename;
+static string pkgfilelocalname;
+static string remoteaddr;
+static string remoteuser;
+static string remotepass;
+static string remotepkgdir; // remote ftpdir
+static bool daemon_flag = false;
 
-string pkgfilelocal;
-string pkgfileremotename;
-string pkgfilelocalname;
-string defconf;
-
-string remoteaddr;
-string remoteuser;
-string remotepass;
-string remotedir; // remote ftpdir
-bool daemon_flag = false;
-
+static string defconf = "localpkgs/config.json"; //default place of config file
 static ftplib *ftp = NULL;
 
-// check cmdline arg as config file path, default is set as default 
-static int load_config(int ac, char *av[]);
 
 int main(int ac, char *av[]) {
 
@@ -99,7 +95,7 @@ int init_handle(PkgHandle &hdl) {
 	}
 	pr_info("after login\n");
 
-	res = ftp->Chdir(remotedir.c_str());
+	res = ftp->Chdir(remotepkgdir.c_str());
 	if (res != 1) {
 		ret = -1;
 		goto freeconnect;
@@ -334,6 +330,7 @@ bool checksig(string fnamestr, string fsigstr) {
 		ret = false;
 		goto freenon;
 	}
+
 	if (readpubeckey(&pubeckey, pubkeypath.c_str()) == -1) {
 		pr_info("can not get pubeckey\n");
 		ret = false;
@@ -376,23 +373,23 @@ freenon:
  * remoteaddr: (string)ip:port
  * remoteuser: (string)username
  * remotepass: (string)password
- * remotedir:  (string)ftp's dir
+ * remotepkgdir:  (string)ftp's dir
  * localpkgdir: (string)pkg download dir
  * installdir: (string)pkg install rootdir, on board is persist
  */
 int load_config(int ac, char *av[]) {
 	// set cmdline specified conf file 
 	// set default vars first
-	localdir = "localpkgs/";
-	installdir = "destdir/";
+	localdir = "dumpdir/";
+	installdir = "dumpdir/";
 
-	pkgfileremotename = "remotepkg.json";
-	pkgfilelocalname = "local.json";
 	defconf = "localpkgs/config.json"
-	remoteaddr = "192.168.0.137:21";
-	remoteuser = "root";
+	pkgfileremotename = "readme";
+	pkgfilelocalname = "readme";
+	remoteaddr = "192.168.0.1:21";
+	remoteuser = "dumb";
 	remotepass = "123456";
-	remotedir = "/persist/ftpdir/"; // remote ftpdir
+	remotepkgdir = "/persist/ftpdir/"; // remote ftpdir
 	daemon_flag = false;
 
 	if (ac >= 2) {
@@ -400,26 +397,23 @@ int load_config(int ac, char *av[]) {
 	}
 
 	ifstream ifs(defconf);
-	if (ifs) {
-
+	if (ifs && !ifs.fail()) { //fstream work properly and file exists
 		json jconf;
 		ifs >> jconf;
 
 		for (json::iterator it = jconf.begin(); it != jconf.end(); ++it) {
-			if (it->key() == "localdir") {
+			if (it->key() == "localpkgdir") {
 				localdir = it->value();
 			} else if (it->key() == "installdir") {
 				installdir = it->value();
-			} else if (it->key() == "localpkgdir") {
-				localdir = it->value();
 			} else if (it->key() == "remoteaddr") {
 				remoteaddr = it->value();
 			} else if (it->key() == "remoteuser") {
 				remoteuser = it->value();
 			} else if (it->key() == "remotepass") {
 				remotepass = it->value();
-			} else if (it->key() == "remotedir") {
-				remotedir = it->value();
+			} else if (it->key() == "remotepkgdir") {
+				remotepkgdir = it->value();
 			} else if (it->key() == "daemonize") {
 				daemon_flag = it->value;
 			} else if (it->key() == "remotemeta") {
@@ -434,5 +428,5 @@ int load_config(int ac, char *av[]) {
 		pr_info("use all default config\n");
 	}
 	pkgfilelocal = localdir + pkgfilelocalname;
-
+	return 0;
 }

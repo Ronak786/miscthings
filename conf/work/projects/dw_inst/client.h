@@ -31,5 +31,6 @@ bool extract_and_install(string pkgfile);
 void uninstallpkg(string pkgfile);
 bool checksig(string fname, string fsig);
 void getpkglist(string filename, vector<PkgInfo> &vstr);
+int load_config(int ac, char *av[]);
 
 #endif
