@@ -44,17 +44,12 @@ string pkgfileremotename = "remotepkg.json";
 
 static ftplib *ftp = NULL;
 
-
 // use -d to start daemon, regularly should use a personal daemon function
+// need a flag detect program !!!!! getopt, and set other settings all in one file, use 
+//		-e to specify that file ,or default xxxx.json
 int main(int ac, char *av[]) {
-	const char *daemon_flag = NULL;
-	if (ac > 1) {
-		daemon_flag = av[1];
-		if (strcmp(daemon_flag, "-d")) {
-			daemon(0, 0);
-		}
-	}
 
+//	load_config();
 	bool stop = false;
 
 	while (!stop) {
