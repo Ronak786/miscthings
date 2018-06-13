@@ -53,6 +53,8 @@ int main (int ac, char *av[]) {
 	unsigned char content[SHA256_DIGEST_LENGTH];
 	unsigned char *signature;
 	unsigned int siglen;
+	const char *privkeypath = "../remotepkgs/privkey.pem";
+	const char *pubkeypath = "../localpkgs/pubkey.pem";
 	int fd;
 
 	if (get_sha256(av[1], content) == -1) {
@@ -63,14 +65,14 @@ int main (int ac, char *av[]) {
 	// dump hash
 //	dumpbuf(result, SHA256_DIGEST_LENGTH);
 
-	siglen = ecdsa_sign(NULL, 0, NULL, NULL, NULL, NULL);
+	siglen = ecdsa_sign(NULL, 0, NULL, NULL, privkeypath, pubkeypath);
 	if ((signature = (unsigned char*)OPENSSL_malloc(siglen)) == NULL) {
 		pr_info("can not allocate signature buffer\n");
 		return -1;
 	}
 	
 	if (ecdsa_sign(content, SHA256_DIGEST_LENGTH, signature, &siglen, 
-				"../remotepkgs/privkey.pem", "../localpkgs/pubkey.pem") != 0) {
+				privkeypath, pubkeypath) != 0) {
 		pr_info("sig failed\n");
 		return -1;
 	}
@@ -148,7 +150,7 @@ int generate_new_keypairs(const char *privkeypath, const char* pubkeypath) {
 	// save priv key
 	privkeystr = BN_bn2hex(EC_KEY_get0_private_key(eckey));
 	if ((fd = open(privkeypath, O_WRONLY|O_CREAT|O_TRUNC, 0600)) == -1) {
-		pr_info("can not open file for priv key store\n");
+		pr_info("can not open file for priv key store %s\n", privkeypath);
 		return -1;
 	}
 	count = strlen((char*)privkeystr);
@@ -163,7 +165,7 @@ int generate_new_keypairs(const char *privkeypath, const char* pubkeypath) {
 	// save pub key
 	pubkeystr = EC_POINT_point2hex(EC_KEY_get0_group(eckey), EC_KEY_get0_public_key(eckey), POINT_CONVERSION_COMPRESSED, NULL);
 	if ((fd = open(pubkeypath, O_WRONLY|O_CREAT|O_TRUNC, 0600)) == -1) {
-		pr_info("can not open file for pub key store\n");
+		pr_info("can not open file for pub key store %s\n", pubkeypath);
 		return -1;
 	}
 	count = strlen(pubkeystr);

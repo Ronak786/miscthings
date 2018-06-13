@@ -22,6 +22,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 
 #define _DEBUG
 
@@ -44,7 +45,16 @@ string pkgfileremotename = "remotepkg.json";
 static ftplib *ftp = NULL;
 
 
+// use -d to start daemon, regularly should use a personal daemon function
 int main(int ac, char *av[]) {
+	const char *daemon_flag = NULL;
+	if (ac > 1) {
+		daemon_flag = av[1];
+		if (strcmp(daemon_flag, "-d")) {
+			daemon(0, 0);
+		}
+	}
+
 	bool stop = false;
 
 	while (!stop) {
@@ -60,7 +70,7 @@ int main(int ac, char *av[]) {
 			updatepkgs(hdl);
 		}
 		uninit_handle(hdl);
-		sleep(2);
+		sleep(5);
 	}
 }
 
@@ -264,7 +274,11 @@ bool extract_and_install(string pkgfile) {
 	char localbuf[200];
 	snprintf(localbuf, sizeof(localbuf)-1 , "rm -rf %s; tar xf %s -C %s", 
 		localpathdir.c_str(), localpath.c_str(), localdir.c_str());
-	system(localbuf);
+	int ret = system(localbuf);
+	if (WEXITSTATUS(ret) != 0) {
+		pr_info("can not extract tar ball\n");
+		return false;
+	}
 	do_copy_pkg(pkgfile);
 	unlink(localpath.c_str());
 	return true;

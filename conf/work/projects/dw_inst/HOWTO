@@ -1,0 +1,16 @@
+server side:
+	take package "one" and version 1.1 as example:
+	create a dir one-1.1 under remotepkgs, in it, create dir src, put all files
+		under "/" on destination device into dir src;
+		then out of dir one, run ../makepkg.sh one-1.1 => now have a one-1.1.tar.gz
+							 run ../signpkg.sh one-1.1 ==> now have a one-1.1.tar.gz.sig
+
+		cd .. ; then add a line in remotepkg.txt as "name:xxx version:xxx desc:xxx"
+		run ./makejson remote
+
+		
+client side:
+	first time run:
+		on server, copy pubkey.pem,  into client's local pos
+		run ./makejson local, copy localpkgs/localpkg.json into client's local pos
+	run ./client on local side

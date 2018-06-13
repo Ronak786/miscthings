@@ -30,3 +30,7 @@ createsig: createsig.cpp libsigutil.so
 
 clean:
 	rm -f *.o *.so input client createsig
+dataclean:
+	rm -rf destdir/*
+	rm -rf localpkgs/*
+	rm -rf remotepkgs/*.tar.gz*  remotepkgs/*.pem remotepkgs/*.json

@@ -20,6 +20,8 @@ int main(int ac, char *av[]) {
 	unsigned char content[SHA256_DIGEST_LENGTH];
 	unsigned char *signature;
 	unsigned int siglen;
+	const char *privkeypath = "../remotepkgs/privkey.pem";
+	const char *pubkeypath = "../localpkgs/pubkey.pem";
 	int fd;
 
 	if (get_sha256(av[1], content) == -1) {
@@ -28,14 +30,14 @@ int main(int ac, char *av[]) {
 	}
 
 	// get sigbug length
-	siglen = ecdsa_sign(NULL, 0, NULL, NULL, NULL, NULL);
+	siglen = ecdsa_sign(NULL, 0, NULL, NULL, privkeypath, pubkeypath);
 	if ((signature = (unsigned char*)OPENSSL_malloc(siglen)) == NULL) {
 		printf("can not allocate signature buffer\n");
 		return -1;
 	}
 	
 	if (ecdsa_sign(content, SHA256_DIGEST_LENGTH, signature, &siglen, 
-				"../remotepkgs/privkey.pem", "../localpkgs/pubkey.pem") != 0) {
+				privkeypath, pubkeypath) != 0) {
 		printf("sig failed\n");
 		return -1;
 	}
