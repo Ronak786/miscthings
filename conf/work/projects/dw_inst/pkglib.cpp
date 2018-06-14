@@ -5,7 +5,7 @@
 	> Created Time: 2018年06月10日 星期日 19时28分13秒
  ************************************************************************/
 
-#include "client.h"
+#include "pkgmgnt.h"
 #include "pkghandle.h"
 #include "json.h"
 #include "ftplib.h"
@@ -23,6 +23,10 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <vector>
+#include <string>
+
+using namespace std;
 
 
 #ifdef _DEBUG
@@ -48,14 +52,21 @@ static bool daemon_flag = false;
 static string defconf = "localpkgs/config.json"; //default place of config file
 static ftplib *ftp = NULL;
 
+static void compare_and_list_new(const vector<PkgInfo> vremote, vector<PkgInfo> &vnew);
+static int install_and_updatelocal(PkgHandle &hdl);
+static void do_copy_pkg(string pkgname);
+static void do_copy_file(string from, string to);
+static int download(string pkgfile);
+static bool extract_and_install(string &pkgfile, string &pkgver);
+static void uninstallpkg(string pkgfile);
+static bool checksig(string fname, string fsig);
+static void getpkglist(string filename, vector<PkgInfo> &vstr);
 
+// demo main
 int main(int ac, char *av[]) {
 
 	load_config(ac, av);
 
-	if (daemon_flag) {
-		daemon(1,0);
-	}
 	bool stop = false;
 
 	while (!stop) {
@@ -135,7 +146,7 @@ bool get_and_check(PkgHandle &hdl) {
 	}
 }
 
-void dumppkgs(PkgHandle hdl) {
+void dumppkgs(PkgHandle &hdl) {
 	for(auto pkg: hdl.get_pkglist()) {
 		showInfo(pkg);
 	}
@@ -440,6 +451,9 @@ int load_config(int ac, char *av[]) {
 	}
 	pkgfilelocal = localdir + pkgfilelocalname;
 
+	if (daemon_flag) {
+		daemon(1,0);
+	}
 	// dump configs
 	/*
 	pr_info("dump configs: defconf:%s, pkgfileremotename:%s, pkgfilelocalname:%s,"

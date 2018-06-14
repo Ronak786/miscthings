@@ -83,7 +83,7 @@ int main (int ac, char *av[]) {
 		pr_info("can not open file %s\n", av[2]);
 		return -1;
 	}
-	if (write(fd, signature, siglen) != siglen) {
+	if (write(fd, signature, siglen) != (ssize_t)siglen) {
 		pr_info("can not write sig into file\n");
 		return -1;
 	}
