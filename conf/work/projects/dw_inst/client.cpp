@@ -162,16 +162,17 @@ int install_and_updatelocal(PkgHandle &hdl) {
 	ifs >> obj;
 	for(auto item: vnew) {
 		// update packages
-		string pkgfile = item.getName() + "-" + item.getVersion();
-		download(pkgfile + ".tar.gz");
-		download(pkgfile + ".tar.gz.sig");
+		string pkgfile = item.getName();
+		string pkgver = item.getVersion();
+		download(pkgfile + "-" + pkgver + ".tar.gz");
+		download(pkgfile + "-" + pkgver + ".tar.gz.sig");
 		
 		//check signature
-		if (!checksig(pkgfile + ".tar.gz", pkgfile +".tar.gz.sig")) {
+		if (!checksig(pkgfile + "-" + pkgver + ".tar.gz", pkgfile + "-" + pkgver +".tar.gz.sig")) {
 			pr_info("check sig fail, can not install %s\n", pkgfile.c_str());
 			continue;
 		}
-		if (!extract_and_install(pkgfile)) {
+		if (!extract_and_install(pkgfile, pkgver)) {
 			pr_info("can not install pkg %s\n", item.getName().c_str());
 			continue;
 		}
@@ -266,11 +267,18 @@ void uninstallpkg(string pkgname) {
 	}
 }
 
-bool extract_and_install(string pkgfile) {
-	string localpath = localdir + pkgfile + ".tar.gz";
-	string localpathdir = localdir + pkgfile;
+bool extract_and_install(string &pkgfile, string &pkgver) {
+	string localpath = localdir + pkgfile + "-" + pkgver + ".tar.gz";
+	string localpathdir = localdir + pkgfile + "-" + pkgver ;
 
-	uninstallpkg(pkgfile);
+	// uninstall local pre installed version of tobe installed file
+	vector<PkgInfo> vlocal;
+	getpkglist(pkgfilelocal, vlocal);
+	for(auto item: vlocal) {
+		if (item.getName() == pkgfile) {
+			uninstallpkg(pkgfile + "-" + item.getVersion());
+		}
+	}
 
 	char localbuf[200];
 	snprintf(localbuf, sizeof(localbuf)-1 , "rm -rf %s; tar xf %s -C %s", 
@@ -280,7 +288,7 @@ bool extract_and_install(string pkgfile) {
 		pr_info("can not extract tar ball\n");
 		return false;
 	}
-	do_copy_pkg(pkgfile);
+	do_copy_pkg(pkgfile + "-" + pkgver);
 	unlink(localpath.c_str());
 	return true;
 }

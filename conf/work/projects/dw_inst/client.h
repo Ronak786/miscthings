@@ -27,7 +27,7 @@ int install_and_updatelocal(PkgHandle &hdl);
 void do_copy_pkg(string pkgname);
 void do_copy_file(string from, string to);
 int download(string pkgfile);
-bool extract_and_install(string pkgfile);
+bool extract_and_install(string &pkgfile, string &pkgver);
 void uninstallpkg(string pkgfile);
 bool checksig(string fname, string fsig);
 void getpkglist(string filename, vector<PkgInfo> &vstr);

@@ -1,0 +1,44 @@
+All: client input createsig
+
+COPREFIX := /home/em/x-tools/arm-L1S902-linux-gnueabi/bin/arm-L1S902-linux-gnueabi-
+CC := ${COPREFIX}gcc
+CXX := ${COPREFIX}g++
+LD := ${COPREFIX}ld
+
+#CFLAGS := -D_DEBUG
+CFLAGS := -I/opt/openssl/include
+CPPFLAGS := -DNOSSL -std=c++11 -Wall
+CLIENTLDFLAGS := -lsigutil
+UTILLDFLAGS := -lsigutil
+LDFLAGS := -L. -L/opt/openssl/lib -lcrypto
+SIGCPPFLAGS := -fPIC
+SIGLDFLAGS := -shared 
+pkghandle.o : pkghandle.cpp pkghandle.h
+pkginfo.o : pkginfo.cpp pkginfo.h
+ftplib.o: ftplib.cpp ftplib.h
+	${CXX} -Wno-unused-variable -Wno-format -Wno-unused-but-set-variable -Wno-restrict ${CPPFLAGS} -c $<
+client.o: client.cpp client.h json.h libsigutil.so
+	${CXX} ${CFLAGS} ${CPPFLAGS} -c $< -o $@
+
+
+client: pkghandle.o client.o pkginfo.o ftplib.o
+	${CXX} -o $@ $^ ${LDFLAGS} ${CLIENTLDFLAGS}
+
+input: createjsonfromtext.cpp json.h
+	${CXX} ${CPPFLAGS} -o $@ $<
+
+sig: libsigutil.so
+libsigutil.so: sigutil.o
+	${CXX}  -o $@ $< ${LDFLAGS} ${SIGLDFLAGS} 
+sigutil.o: sigutil.cpp sigutil.h
+	${CXX} ${CFLAGS} ${CPPFLAGS} ${SIGCPPFLAGS} -o $@ -c $<
+
+createsig: createsig.cpp libsigutil.so 
+	${CXX} ${CPPFLAGS} ${CFLAGS} -o $@ $< ${LDFLAGS} ${UTILLDFLAGS}
+
+clean:
+	rm -f *.o *.so input client createsig arm/*
+dataclean:
+	rm -rf destdir/*
+	rm -rf localpkgs/*
+	rm -rf remotepkgs/*.tar.gz*  remotepkgs/*.pem remotepkgs/*.json

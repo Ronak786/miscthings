@@ -29,7 +29,7 @@ createsig: createsig.cpp libsigutil.so
 	g++ ${CPPFLAGS} ${CFLAGS} -o $@ $< ${LDFLAGS}
 
 clean:
-	rm -f *.o *.so input client createsig
+	rm -f *.o *.so input client createsig arm/*
 dataclean:
 	rm -rf destdir/*
 	rm -rf localpkgs/*
