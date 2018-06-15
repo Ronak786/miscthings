@@ -7,6 +7,7 @@
 
 #include "pkghandle.h"
 
+using namespace std;
 
 PkgHandle::PkgHandle() {}
 

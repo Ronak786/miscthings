@@ -7,6 +7,8 @@
 
 #include "pkginfo.h"
 
+using namespace std;
+
 PkgInfo::PkgInfo(string nm, string ver, string des): 
 		name(nm), version(ver), desc(des) {}
 

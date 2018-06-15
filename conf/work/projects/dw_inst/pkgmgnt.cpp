@@ -27,7 +27,6 @@ int main(int ac, char *av[]) {
 		printf("begin check\n");
 		if (get_and_check(hdl)) {
 			printf("we have new pkgs\n");
-			dumppkgs(hdl);
 			updatepkgs(hdl);
 		}
 		uninit_handle(hdl);
