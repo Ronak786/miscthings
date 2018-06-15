@@ -1,0 +1,2 @@
+compute sqrt, if not integer, just return -1
+else add result with 1 and pow it
