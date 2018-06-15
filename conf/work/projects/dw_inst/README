@@ -29,7 +29,7 @@ bool get_and_check(PkgHandle &hdl);
  * 获取需要安装的包列表，具体的可获取信息查看pkginfo类的头部
  * 目前只支持获取名字以及版本以及描述信息
  */
-const std::vector<PkgInfo>& getpkglist(PkgHandle &hdl);
+const std::vector<PkgInfo>& getnewpkglist(PkgHandle &hdl);
 
 /*
  * 开始下载安装
@@ -37,6 +37,10 @@ const std::vector<PkgInfo>& getpkglist(PkgHandle &hdl);
  */
 int updatepkgs(PkgHandle &hdl);
 
+/*
+ * return list of local installed file
+ */
+std::vector<PkgInfo> getlocalpkglist(PkgHandle &hdl);
 
 
 文件位置：

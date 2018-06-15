@@ -1,0 +1,4 @@
+find: return item match
+remove_if:  search from begin() to end(), which matches the function type in the last param
+			then you can use class's erase function remove from the returned iterator to end
+copy_if: the same param as above

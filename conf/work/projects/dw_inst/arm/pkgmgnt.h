@@ -18,5 +18,6 @@ int load_config(int ac, char *av[]);
 bool get_and_check(PkgHandle &hdl);
 const std::vector<PkgInfo>& getnewpkglist(PkgHandle &hdl);
 int updatepkgs(PkgHandle &hdl);
+std::vector<PkgInfo> getlocalpkglist(PkgHandle &hdl);
 
 #endif

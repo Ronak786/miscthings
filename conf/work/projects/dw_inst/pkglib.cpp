@@ -152,6 +152,12 @@ const vector<PkgInfo>& getnewpkglist(PkgHandle &hdl) {
 	return hdl.get_pkglist();
 }
 
+vector<PkgInfo> getlocalpkglist(PkgHandle &hdl) {
+	vector<PkgInfo> localpkgvec;
+	getpkglist(pkgfilelocal, localpkgvec);
+	return localpkgvec;
+}
+
 void dumppkgs(PkgHandle &hdl) {
 	for(auto pkg: getnewpkglist(hdl)) {
 		showInfo(pkg);

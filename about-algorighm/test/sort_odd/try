@@ -1,0 +1,18 @@
+1: set index of odd number into an array x, save this array as y;
+sort array x use key as original number in that index
+put content of x according original index in y into original vector array
+
+2: (wrong, even num place already changed)remember in a vector odd,
+   normally sort
+   scan sorted array, if detect even num, replace vector number into that
+
+3: record odd pos slot in a vector x, do a copy of x to y, run sort on that y,
+		set y into original vector according position info in x
+   => success: ten test 1400ms,
+
+4: create an array of pointer, point to odd numbers,
+	just swap those pointed data
+
+5:(clever):
+	copy out odd numbers, sort them, copyback into odd position
+
