@@ -1,0 +1,40 @@
+目录结构使用project模式看，build.gradle里面是可以引用的库的位置，包括jar
+    以及远程库
+
+shift+f10 编译
+创建目录如果使用noactivity可能layout不能创建一个layout这样干净的名字，不要紧，
+成功创建后可以refactor里面rename改回去
+
+manifest里面添加activity的label的main那个会作为home屏幕上面的名字
+
+找到view
+        使用findviewbyid 获取id对应的view对象
+            使用setxxxlistener（new xxxx() {} );直接在参数上实现类内的覆盖函数
+toast:
+    toast.maketext(context, text, time).show()
+
+menu:
+    资源文件定义res/menu/main.xml 内部定义<item id=xxx title=xxx />
+    activity中overload onCreateOptionsmenu(menu),
+        getmenuinflator().inflate(R.menu.main, menu)
+
+    操作menu的感应：
+        onoptionsitemselected(item)
+        switch(item.getitemid) {
+        case xxx:
+        default return true;
+        }
+
+destroy:
+    finish();
+
+intent 显式:
+    Intent intent = new Intent(context, newclass.class);
+    startActivity(intent);
+隐式： 注意要删除应用重新装，不能和上面的直接混用
+    in manifest: intent-filter: action  自定义一个名字,需要你的package前缀？
+                                category 默认default
+    Intent intent = new Intent(action name);
+    intent.addcategory("xxx");
+    加入在manifest中自定义的category，也是可以的，仿照自添加action
+    注意要完全对应，除了default不用加
