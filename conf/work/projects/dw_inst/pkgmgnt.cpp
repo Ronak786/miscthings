@@ -27,10 +27,13 @@ int main(int ac, char *av[]) {
 		printf("begin check\n");
 		if (get_and_check(hdl)) {
 			printf("we have new pkgs\n");
-			dumppkgs(hdl);
 			updatepkgs(hdl);
 		}
 		uninit_handle(hdl);
+		std::vector<PkgInfo> localinfo = getlocalpkglist(hdl);
+		for (auto item: localinfo) {
+			printf("name:%s version: %s\n", item.getName().c_str(), item.getVersion().c_str());
+		}
 		sleep(5);
 	}
 	return 0;

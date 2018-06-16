@@ -61,6 +61,8 @@ static bool extract_and_install(string &pkgfile, string &pkgver);
 static void uninstallpkg(string pkgfile);
 static bool checksig(string fname, string fsig);
 static void getpkglist(string filename, vector<PkgInfo> &vstr);
+void dumppkgs(PkgHandle &hdl);
+void showInfo(PkgInfo &pkg);
 
 // demo main
 int main(int ac, char *av[]) {
@@ -146,8 +148,18 @@ bool get_and_check(PkgHandle &hdl) {
 	}
 }
 
+const vector<PkgInfo>& getnewpkglist(PkgHandle &hdl) {
+	return hdl.get_pkglist();
+}
+
+vector<PkgInfo> getlocalpkglist(PkgHandle &hdl) {
+	vector<PkgInfo> localpkgvec;
+	getpkglist(pkgfilelocal, localpkgvec);
+	return localpkgvec;
+}
+
 void dumppkgs(PkgHandle &hdl) {
-	for(auto pkg: hdl.get_pkglist()) {
+	for(auto pkg: getnewpkglist(hdl)) {
 		showInfo(pkg);
 	}
 }
@@ -156,10 +168,12 @@ void showInfo(PkgInfo& pkg) {
 	cout << pkg.show() << endl;
 }
 
-void updatepkgs(PkgHandle &hdl) {
+int updatepkgs(PkgHandle &hdl) {
+	int ret;
 	pr_info("updating\n");
-	install_and_updatelocal(hdl);
+	ret = install_and_updatelocal(hdl);
 	pr_info("end update\n");
+	return ret;
 }
 
 int install_and_updatelocal(PkgHandle &hdl) {
