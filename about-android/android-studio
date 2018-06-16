@@ -86,3 +86,17 @@ activity状态：
     singletask 如果启动的就在栈里面，把他上面的全部destroy，本身则restart
     singleinstance 放在单独的返回站，相当于一个单独应用的启动，虽然其实是和其他actviity属于同一个应用的，
             好处是多个其他activity会使用同一个这个activity共享
+
+获取当前activity的类名
+    getClass().getSimpleName();
+    技巧，利用所有activity继承一个公共的class，本身继承appcompatactvity，然后实现这个方法，
+        可以在每个类进入的时候获取名字
+
+控制所有activity的删除：
+    利用一个类，实现静态的addactivity到一个list
+    然后需要的时候对这个list的每个调用finish（）
+    为确保删除干净，而没有留在栈上，再调用android.so.killProcess(android.Process.myPid());
+
+提供给别人调用intent的接口
+    实现一个actionstart的方法，接受contenxt和数据，然后负责调用startactiity，
+    好处是别人通过参数知道可以传入和之后获取的参数数量和名字，便于多人交互

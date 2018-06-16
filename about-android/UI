@@ -1,0 +1,29 @@
+textview:
+    gravity: 设置位置 ,可以 | 指定多个值
+
+button:
+    默认大写， textAllCaps="false" 关闭这个功能
+    setonclicklistener
+
+edittext:
+    hint=xxxx 提示文字
+    maxlines 指定最大行数，这样不会不断侵占屏幕
+    getText().toString()
+
+ImageView:
+    src="@drawable/xxx" 放在drawable目录下的图片
+ProgressBar:
+    进度圈， 可以setvisibility(View.Visible, invisibile, gone) gone表示不可见同时不占用空间
+    getProgress() -> int
+    setProgress() -> int
+    attr:  max
+    style="?android:attr/progressBarStyleHorizontal" 设置水平进度条
+    可以然后可以设置进度，设置显示与不显示
+
+alterdialog
+progressdialog
+    这两个都可以显示对话框
+    前者可设置setpositive setnegative，里面使用dialoginterface.onclicklistern抽象类，
+        which表示button可以使用dialoginterface的BUTTON_POSITIVE
+
+    dialog can be dismiss() or cancel()
