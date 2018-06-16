@@ -28,13 +28,61 @@ menu:
 destroy:
     finish();
 
-intent 显式:
-    Intent intent = new Intent(context, newclass.class);
-    startActivity(intent);
-隐式： 注意要删除应用重新装，不能和上面的直接混用
-    in manifest: intent-filter: action  自定义一个名字,需要你的package前缀？
-                                category 默认default
-    Intent intent = new Intent(action name);
-    intent.addcategory("xxx");
-    加入在manifest中自定义的category，也是可以的，仿照自添加action
-    注意要完全对应，除了default不用加
+intent:
+        intent 显式:
+            Intent intent = new Intent(context, newclass.class);
+            startActivity(intent);
+        隐式： 注意要删除应用重新装，不能和上面的直接混用
+            in manifest: intent-filter: action  自定义一个名字,需要你的package前缀？
+                                        category 默认default
+            Intent intent = new Intent(action name);
+            intent.addcategory("xxx");
+            加入在manifest中自定义的category，也是可以的，仿照自添加action
+            注意要完全对应，除了default不用加
+
+            2: Intent intent = new Intent(Intent.ACTION_VIEW); 
+                intent.setData(Uri.parse("xxx"));
+                设置内置的一些id，actionview接受一个uri
+                在对应的intentfilter的<data>中可以具体设置schema, host port path mimeType
+                    来精确匹配
+
+                这里的data是用来匹配data标签的，应该也可以拿出来？
+
+        传递数据
+            intent.putExtra("keyname", data);
+            在called activity：
+                intent = getIntent();
+                intent.getStringExtra("keyname"); 获取string
+                intent.getBoolExtre("xxx"): 获取bool
+
+            
+        返回数据：
+            1 caller 设置 startactviityforresult, 传入一个id作为返回后的筛选id
+            2 callee 在需要返回的时候,比如在onBackPressed或者自定义的按钮里面
+                    intent = new intent(), intent.putExtra("key", data");
+                    setResult(RESULT_OK, intent);
+                    finish()
+            3 caller 重写onActivityResult 判断reqeustcode 筛选值，然后
+                利用传回来的intent获取数据即可
+
+activity状态：
+    create->start->resume ->pause->stop->destroy 完整周期
+    无论何时：按返回 pause->stop->destroy  重新从任务列表出来 oncreate->start->resume, 可见周期，
+    按home  pause->stop  restart->start->resume 运行周期
+    显示新的小对话框 pause -> onresume
+
+如何显示小对话框
+    在manifest中设置activity的android:theme=@style/Theme.AppTheme.Dialog
+            如果继承的不是compat的actvity，直接使用@android:style/Theme.Dialog
+
+系统保存数据：
+    如果系统移除了后台actvity，为了获取可用内存，会调用onsaveinstancestate，你可以在
+        bundle中保存数据，oncreate的时候取出，这个和intent传数据一样，也可以在
+        intent中保存整个bundle
+
+启动模式：
+    standard 多次启动会重复启动新的实例
+    singletop 如果启动的就是栈顶的一样的，直接pause然后resume
+    singletask 如果启动的就在栈里面，把他上面的全部destroy，本身则restart
+    singleinstance 放在单独的返回站，相当于一个单独应用的启动，虽然其实是和其他actviity属于同一个应用的，
+            好处是多个其他activity会使用同一个这个activity共享
