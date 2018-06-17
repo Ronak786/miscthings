@@ -27,3 +27,82 @@ progressdialog
         which表示button可以使用dialoginterface的BUTTON_POSITIVE
 
     dialog can be dismiss() or cancel()
+
+linearLayout:
+    layoutgravity: 控件在layout中的位置，
+    gravity 内容在空间中的位置
+    (仅linearlayout)layout_weight: 数值，配合width=0dp可以控制屏幕占比,占用其他所有地方
+        可以部分用这个，另外一个部分空间用wrapconentt
+
+relative:
+    layout_above/low/toleftof/torightof 控件要按照引用顺序
+    layout_alignparentright/top/left/bottom/ layout_centerinparent
+    layout_alignbottom/alignleft/alignright/aligntop 和某个控件左对左对齐
+
+framelayout:
+    重复在左上角，可以使用layoutgravity控制位置
+
+percentfragmentlayout/percentrelativelayout
+    不常用了，需要supportlibrary支持，使用layout_widthpercent等，百分比
+    推荐constranitlayout
+
+使用自定义标题栏：
+    首先自定义一个relativelayout， 然后在你的layout中
+    <incldue layout="@layout/xxx" />
+    (可以使用background设置背景）
+    然后actionbar = getsupportactionbar(); (if (actionbar)actionbar.hide())
+        隐藏原来的bar
+
+自定义控件：
+    继承原来的控件，比如linearlayout
+    然后构造里LayoutInflater.from(context).inflate(layoutid, this)
+        this表示设定的父控件，这样好处是可以预定义一些注册函数
+
+listview：
+    string []data = {xxx,zxx}
+    arrayadapter<string> = (context, android.R.simple_list_item_1, data);
+    listview.setadapter(arrayadapter);
+
+    自定义：
+    设定自己的类的arraylist，加入自己的东西
+    设定自己的arrayadapter，实现getview，这个里面：
+        通过getitem获得对那个位置的物件
+        view=layoutinflator.from(getcontenxt().inflator(xmlid, parent,false);o  
+            获得你的item扩展出来的view
+        通过view.findviewbyid获取内部的各个部件id，设置对应的值（在getitem中)
+        
+
+    优化：
+        首先getview中的convertview用来存储如果本来有的view，可以复用，
+        其次，每次都要fingviewbyid，这个可以放在一个viewholder中，
+        viewholder = new viewholder(); holder.name= xx, holder.ver = findviewbyid(xxx), view.settag(holder)
+        然后每次获取后，如果是convertview，直接使用gettag(),然后获取每个的名字即可
+        相当于缓存
+
+        设置点击：
+        listview.setonitemclicklistener() {}
+            内部使用position获取对象，然后显示
+
+
+recycleview:
+    gradle包含support中的recycle
+    写一个类继承recycle。adapter ，模板内的类型写内部类的viewholder
+    这个holder继承recyclerview的holder，用来保存位置用的，省的移植findview
+    ，然后重写oncreateviewholder,onbindviewholder, getitemcount
+    第一个用inflator创造模板的itemlayout，放到viewholder中，
+    第二个根据holder中的位置和positoin拿出list中对应的东西放到hodler的位置上
+
+    注意itemlayout的高度要是wrapcontent，不然占用整页
+
+    利用staggerred的layout可以实现瀑布流形式的排序
+
+    注册点击，这个必须在具体的view上注册，可以在createviewholder里面
+        对具体的view进行注册
+
+图片拉伸定义：
+    右键图片，draw9patch
+
+聊天对话框
+    利用item为同时有send和receive两个字layout，组合，控制显示哪个隐藏哪个
+    然后每次更新，都adapter.notifyiteninserted(size-1);
+                    recycleview.scrolltoposition(size-1);即可
