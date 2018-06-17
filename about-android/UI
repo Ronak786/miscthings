@@ -106,3 +106,44 @@ recycleview:
     利用item为同时有send和receive两个字layout，组合，控制显示哪个隐藏哪个
     然后每次更新，都adapter.notifyiteninserted(size-1);
                     recycleview.scrolltoposition(size-1);即可
+
+fragment:碎片
+    主xml里设置fragment段，名字选择对应的继承fragment的类，
+    然后类里面overload oncreateview方法，inflate具体的xml到view中，返回，即可
+
+    动态替换碎片：
+        主xml中不适用fragment这种固定的，使用framelayout，然后
+        需要替换的时候getsupportfragmentmanager()
+        begintranscation,  replace(layout.id, new Fragment), commit即可
+
+    activity获取碎片对象：
+        getfragmentmanager().findfragmentbyid(r.id.fragment) 在main的xml中定义
+    fragment获取activity：
+        getactivity() 即可
+
+    加入返回栈，transcation.addtobackstack()
+
+    生命周期
+        onattach->oncreate->oncreateview->onactivitycreated->onstart
+        ->onresume->onpause->onstop->ondestroyview->ondestroy->ondetach
+        如果没有addtobackstack,在replace remove的时候就会直接删除
+
+        注意这里所有的方法都是fragment里的，不是activity里的，
+        如果没有addtobackstack，那么onpause,onstop ondestroyview, 
+            ondeatroy, ondetach, 如果有，后两个不执行
+        不执行的话，back之后直接onactivitycreated, onstart, onresum,
+        不然完全重新开始
+
+        可以利用bundle传数据
+
+
+    限定标识符
+        作用于目录上
+        layout-small / layout-large / layout-ldpi /layout-land
+            layout-sw600dp 表示大于600dp宽度使用这个模板
+
+    单程序兼容平板 手机界面：
+        主xml 需要两个，一个单fragment，内含listview需要的layout，
+                        一个fragment + 内容fragment，
+        对于onclick时间，后者通过findfragmentid更新内容，
+                    前者则直接启动新的activity
