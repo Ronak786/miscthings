@@ -5,3 +5,25 @@
 
             然后覆盖onrequestpermissionresult, 通过最后这个resultcode之后，
                 查看result中是否有对应的Granted表示，有就访问，不然不访问
+
+content resolver
+    content.getcontentresolver()
+    query:
+            输入uri.parse("content://pkgname.provider/tablename");
+            resolver.query(uri, (columns), where xxx , []{xx,xx,xx}, ordreby)
+            返回cursora进行操作
+    insert(uri, contentvalues);
+    update(uri, contentvalues, where xxx, []{xxx});
+    delete(uri, where xxx, []{xxx});
+
+    电话簿的uri：
+        ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+
+    permission 需要manifest里写，如果危险权限，还需要动态使用
+        1 ContextCompat.checkpermission == packagemanger.permission_granted
+        2 if not, activitycompat.reqeustpermission,
+
+        3 overload onreequstpermissionresult()
+            if grantedresult = granted, then call your function
+        
+

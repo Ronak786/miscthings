@@ -60,6 +60,7 @@ percentfragmentlayout/percentrelativelayout
         this表示设定的父控件，这样好处是可以预定义一些注册函数
 
 listview：
+    最普通的
     string []data = {xxx,zxx}
     arrayadapter<string> = (context, android.R.simple_list_item_1, data);
     listview.setadapter(arrayadapter);
