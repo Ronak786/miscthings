@@ -9,6 +9,7 @@ edittext:
     hint=xxxx 提示文字
     maxlines 指定最大行数，这样不会不断侵占屏幕
     getText().toString()
+    inputType="textPasswd" 则不显示字符
 
 ImageView:
     src="@drawable/xxx" 放在drawable目录下的图片
@@ -147,3 +148,11 @@ fragment:碎片
                         一个fragment + 内容fragment，
         对于onclick时间，后者通过findfragmentid更新内容，
                     前者则直接启动新的activity
+                    
+    使用自己的layout做界面，然后一个fragment类inflate这个界面
+        然后在一个主界面的fragment段里面fragment引用这个界面
+        之后可以利用getfragmentsupportmanager的replace功能
+            找到并且替换这个fragment, 或者直接findfragemntbyid
+                 之后替换内部的
+
+

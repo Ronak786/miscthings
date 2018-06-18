@@ -1,0 +1,36 @@
+动态广播： 需要类启动才会有效
+    首先自己的类继承broadcastreceiver,实现onreceive
+    然后oncreate中intentfilter.addaction(xxxxx)
+    registerreceiver(youclass, intentfilter)
+    ondestroy 中unregisterreceiver（class）
+
+静态 对于需要权限的，需要增加uses-permission
+    右键目录直接other->broadcastreceiver,
+    manifest中有receiver项，增加intentfilter到相应事件即可
+    对于启动完成事件，需要RECEIVE_BOOT_COMPLETED注册
+
+自定义：
+    首先注册你的广播，intent-filter
+    然后需要的地方intent构造直接利用广播filter的名字
+    sendBroadCast(intent)即可
+
+    有序广播：
+        sendorderedboradcast(intent, null);
+    接受的intentfilter 设置priority=num ，高的先接受，
+        然后内部可以abortBroadcast() 终止继续传递
+
+本地广播：
+    只能发送到本地
+    LocalBroadCastManager.getinstance(this);
+    LocalBroadCastManager.sendBroadcast(intent);
+    LocalBroadCastManager.registerReceiver(xxx, intentfilter);
+    LocalBroadCastManager.unregisterreceiver()
+
+强制下线功能
+    首先做一个login界面，成功登陆进入mainactivity，然后在所有activity继承的
+    baseactivity中resume pause里面register和unregisterbroadcast，这样
+    在main中按下按钮，所有activity中最顶部的活动的那个就可以接收消息，
+
+    还需要一个用list集中所有activity的类，用于最后消除强制删除所有activity
+
+

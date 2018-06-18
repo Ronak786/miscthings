@@ -1,0 +1,67 @@
+读写文件
+        openfileoutput("name", MODE_PRIVATE) -> return fileoutputstream,
+        out = bufferwriter(new outputstreamwriter(fileoutputstream)
+        out.write(string)
+            文件存储在/data/data/package_name/files/
+
+        openfileinput(xxx) 仿照上面
+            使用TextUtils.isempty() 判断空值或者null的情况
+
+sharedpreference:
+    存储在/data/data/pagname/shared_prefs中
+    3种获取途径
+    Context.getshartedpreference() 提供文件名和模式MODE_PRIVATE only
+        activity也是context，所以也可以直接使用
+    activity.getpreference() 默认用activity的名字 ，只提供模式
+    preferencemanager.getdefaultsharedpreference()
+        使用默认包名接受context
+
+    使用的时候获取editor，putString putBoolean("key", value);
+                    editor.apply();
+
+    读取数据：
+        getsharedpreference -> pref.getString() 即可，很方便
+
+    shared.clear() 清除
+
+
+sqlite:
+    继承sqliteopenhelper 实现oncreate onugrade
+    在主activity中利用sqliteopenhelper.getwritabledatabase() 来进行创建
+
+    adb进入后，可以在/data/data/pkgname/database中找到对那个的，sqlite3
+        命令可以进入查看
+
+    更新：如果数据库文件存在，但是想利用oncreate调整表结构，那么不会执行，
+        需要使用onupgreade，里面drop table if exists xxx
+        之后重新执行oncreate即可，然后传version的时候比原来的大就行了
+
+    insert：
+        利用getwritabledatabase返回的sqlitedatabase，
+        db.insert("tablename", null, contentvalue);
+            contentvalues.put(key, value);的形式传入
+            contentvalues.clear() 清除
+
+    update:
+        db.insert("tablename", contentvalue, "xxx = ?", new String[] { xxxx})
+        第三个参数的?指代第四个参数中的可选值
+
+    delete:
+        db.delete("name", "xxx > ?" , String[]{xxxx});
+        中间是条件选择
+
+    query:
+        db.query("tablename", columns, where xxx, []{xxx}, group by, having, orderby)
+
+        获取cursor, cursor.movetofirst(), cursor.movetonext() 返回下一个直到结束返回false
+            cursor.getString(cursor.getcolumnindex("xxxx")) 获取内容
+
+    直接执行：
+        db.execSQL("insert into table (xx xx xx x ) values(? ? ? ?)",
+                new String[] {a a a a }); 的形式插入新值
+
+        对于查询：
+            db.rawquery(xxxx, null);
+
+
+

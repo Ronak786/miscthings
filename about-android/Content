@@ -1,0 +1,7 @@
+权限：
+    静态申请： <uses-persmissoin xxxxx>, 危险权限这样是不够的,需要动态申请
+    动态申请 if ContextCompat.checkselefpermission(context,, mainfest.persmissoin.callphone) != packagemanager.permission_granted
+                activitycompat.requestpermissions(context, string[]{}, 1)
+
+            然后覆盖onrequestpermissionresult, 通过最后这个resultcode之后，
+                查看result中是否有对应的Granted表示，有就访问，不然不访问
