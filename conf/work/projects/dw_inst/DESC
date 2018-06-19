@@ -1,0 +1,22 @@
+class: 
+	pkginfo : 
+		desc: contain info and methods to operate one package
+		member:
+			name, version, architecture, install date(from utc 0), size, 
+			signature type, build data, packager, vendor, summary, description
+		method:
+			install(prefix); // install into prefix, use common utils like copy in a util class(should static?)
+			uninstall(prefix);
+			get methods(.....)
+
+
+	pkghandle:
+		desc: handler to communicate with server
+		method:
+			getlocalpkglist()
+			getremotepkglist()
+			getnewpkglist() (compare local and new)
+			getlocalpkginfo(name) => PkgInfo
+			getremotepkginfo(xxxxxxxxxx) => PkgInfp
+			installpkg(a list of pkgs) (used to install one or more pkgs)
+			uninstallpkgs(a list of pkgs)

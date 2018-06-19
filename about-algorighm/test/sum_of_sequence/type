@@ -1,0 +1,5 @@
+1 for i = start, i <= end, i += step, sum += i
+
+2 trueend = end - (end - start) % mod;
+  truestart = start;
+  count = (end - start) / step + 1
