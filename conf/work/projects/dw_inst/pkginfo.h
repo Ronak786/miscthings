@@ -10,21 +10,49 @@
 
 #include <string>
 
+//name, version, architecture, install date(from utc 0), size,
+//signature type, build data, packager, vendor, summary, description
+
 class PkgInfo {
 private:
-	std::string name;
-	std::string version;
-	std::string desc;
+// private members
+	std::string _name;
+	std::string _version;
+	std::string _architecture;
+	unsigned long _installdate; // seconds start from utc 1970 0
+	unsigned long _builddata;
+	unsigned long _size;   // meatured in bytes
+	std::string _sigtype; // ecdsa	
+	std::string _packager; //author
+	std::string _summary;  // summry of desc
+	std::string _desc;  // detail desc
+
+// private functions
+	int getPkglist(std::string file, std::vector<PkgInfo> &vstr);
+
 public:
-	PkgInfo(std::string nm, std::string ver, std::string des);
+	PkgInfo(std::string name, std::string ver, std::string arch,
+			unsigned long insdata, unsigned long builddata, unsigned long size, std::string sigtype,
+			std::string packager, std::string summary, std::string desc);
 	~PkgInfo();
 
-	std::string getVersion();
+	// member get methods
 	std::string getName();
+	std::string getVersion();
+	std::string getArchitecture();
+	unsigned long getInstalldate();
+	unsigned long getBuilddate();
+	unsigned long getSize();
+	std::string getSigtype();
+	std::string getPackager();
+	std::string getSummary();
 	std::string getDesc();
 	bool operator==(const PkgInfo &one);
 	PkgInfo& operator=(const PkgInfo &one);
-	std::string show();
+
+	// install && uninstall
+	int install(std::string prefix);
+	int uninstall(std::string prefix);
 };
 
 #endif

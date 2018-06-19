@@ -20,3 +20,5 @@ class:
 			getremotepkginfo(xxxxxxxxxx) => PkgInfp
 			installpkg(a list of pkgs) (used to install one or more pkgs)
 			uninstallpkgs(a list of pkgs)
+			
+			verify(pkgname(from getname + getversion), eckey_in_buf(readfromfile), length not needed, but should protect security)
