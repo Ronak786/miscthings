@@ -427,6 +427,7 @@ int do_copy_file(std::string from, std::string to) {
 		pr_info("do_copy_file can't get dir of copy file ifs or ofs\n");
 		return -1;
 	}
+	pr_info("copy file from %s to %s\n", from.c_str(), to.c_str());
 	ofs << ifs.rdbuf();	
 	return 0;
 }
@@ -444,8 +445,6 @@ int do_copy_pkg(std::string pkgpath, std::string installdir) {
 			pr_info("makedir: %s%s\n", installdir.c_str(), pathline.c_str());
 			mkdir(tmpdir.c_str(), 0775); // make dir, we use find(1) make sure dir created before copy file
 		} else {
-			pr_info("copy: %s/src/%s to: %s%s\n", localdir.c_str(), pkgname.c_str(),
-					installdir.c_str(), pathline.c_str());
 			do_copy_file(pkgpath + "/src/" + pathline, installdir + pathline);
 		}
 	}

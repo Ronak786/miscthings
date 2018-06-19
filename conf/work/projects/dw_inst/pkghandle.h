@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include "pkginfo.h"
+#include "ftplib.h"
 
 class PkgHandle {
 private:

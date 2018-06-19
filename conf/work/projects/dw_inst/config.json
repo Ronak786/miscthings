@@ -1,6 +1,6 @@
 {
 "localpkgdir" : "localpkgs/",
-"installdir" : "destdir/",
+"prefixdir" : "destdir/",
 "remoteaddr" : "192.168.0.26:21",
 "remoteuser" : "sora",
 "remotepass" : "ssss1234",

@@ -1,1 +1,1 @@
-{"one":{"desc":"111111","name":"one","version":"1.2"},"two":{"desc":"222222","name":"two","version":"1.1"}}
+{"one":{"arch":"arm","builddate":10000,"desc":"this","insdate":10000,"name":"one","packager":"leon","sigtype":"ECDSA","size":10086,"summary":"testpkg","version":"1.2"}}

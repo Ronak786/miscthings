@@ -18,7 +18,6 @@ extern "C" {
 #endif
 
 #include "json.h"
-#include "ftplib.h"
 #include "pkghandle.h"
 #include "sigutil.h"
 
@@ -63,9 +62,10 @@ int PkgHandle::init() {
     ret = ftpclient->Chdir(_remotepkgdir.c_str());
     if (ret != 1) {
         ret = -1; 
+		pr_info("can not chdir to %s\n", _remotepkgdir.c_str());
         goto freeconnect;
     }
-	return ret;
+	return 0;
 
 freeconnect:
     ftpclient->Quit();
@@ -117,7 +117,8 @@ int PkgHandle::loadConfig(std::string confpath) { // default "" means use defaul
             } else if (it.key() == "localmeta") {
                 _localmetafile = it.value();
             } else {
-				pr_info("unknown json object: \n");
+				pr_info("unknown json object: %s\n", it.key().c_str());
+				return -1;
             }
         }
     } else {
@@ -151,7 +152,6 @@ int PkgHandle::getNewpkglist(std::vector<PkgInfo>& infolist) { //list of pkgs ne
 	getRemotepkglist(remotelist);
 	for (auto remote: remotelist) {
 		if (find(locallist.begin(), locallist.end(), remote) == locallist.end()) {
-			pr_info("added new pkg");
 			infolist.push_back(remote);
 		}
 	}
@@ -202,15 +202,15 @@ int PkgHandle::delpkgs(std::vector<PkgInfo>& pkglist) {
 	int ret = 0;
 	for (auto pkg: pkglist) {
 		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + "tar.gz";
-		snprintf(buf, sizeof(buf)-1, "rm -f %s", pkgpath.c_str(), _localpkgdir.c_str());
+		snprintf(buf, sizeof(buf)-1, "rm -f %s", pkgpath.c_str());
 		pr_info(buf); // delete tar.gz file
 
 		pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + "tar.gz.sig";
-		snprintf(buf, sizeof(buf)-1, "rm -f %s", pkgpath.c_str(), _localpkgdir.c_str());
+		snprintf(buf, sizeof(buf)-1, "rm -f %s", pkgpath.c_str());
 		pr_info(buf); // delete sig file
 //		ret = system(buf);
 	}
-	return 0;
+	return ret;
 }
 
 int PkgHandle::delpkgsdir(std::vector<PkgInfo>& pkglist) {
@@ -218,11 +218,11 @@ int PkgHandle::delpkgsdir(std::vector<PkgInfo>& pkglist) {
 	int ret = 0;
 	for (auto pkg: pkglist) {
 		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion();
-		snprintf(buf, sizeof(buf)-1, "rm -rf %s", pkgpath.c_str(), _localpkgdir.c_str());
+		snprintf(buf, sizeof(buf)-1, "rm -rf %s", pkgpath.c_str());
 //		ret = system(buf);
 		pr_info(buf);
 	}
-	return 0;
+	return ret;
 }
 
 // TODO: return the error installed index ?
@@ -257,7 +257,7 @@ bool PkgHandle::verifyPkg(std::string fullpkgname_ver, std::string pubkeypath) {
 int PkgHandle::download(std::string fname) {
     int res = 0;
 
-    pr_info("download file");
+    pr_info("download file %s\n", fname.c_str());
 
 	std::string destfilepath = _localpkgdir + "/" + fname;
     unlink(destfilepath.c_str());

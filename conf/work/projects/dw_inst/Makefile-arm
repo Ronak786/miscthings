@@ -46,4 +46,4 @@ clean:
 dataclean:
 	rm -rf destdir/*
 	rm -rf localpkgs/*
-	rm -rf remotepkgs/*.tar.gz*  remotepkgs/*.pem remotepkgs/*.json
+	rm -rf remotepkgs/*.tar.gz*  remotepkgs/*.json

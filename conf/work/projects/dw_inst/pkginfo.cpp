@@ -23,7 +23,6 @@ PkgInfo::PkgInfo(std::string name, std::string ver, std::string arch,
 	_packager(packager), _summary(summary), _desc(desc) {}
 
 PkgInfo::~PkgInfo() {
-	pr_info("in pkg %s's dtor\n", _name.c_str());
 }
 
 std::string PkgInfo::getName() {return _name; }
