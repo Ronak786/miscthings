@@ -50,3 +50,11 @@ PkgInfo& PkgInfo::operator=(const PkgInfo &one) {
 	this->_desc = one._desc;
 	return *this;
 }
+
+int PkgInfo::install(std::string pkgpath, std::string prefix) {
+	do_copy_pkg(pkgpath, prefix);
+}
+
+int PkgInfo::uninstall(std::string pkgpath, std::string prefix) {
+	uninstallpkg(pkgpath, prefix);
+}

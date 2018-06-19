@@ -101,7 +101,6 @@ int PkgHandle::loadConfig(std::string confpath) { // default "" means use defaul
         pr_info("config file read error\n");
 		return -1;
     }
-    pkgfilelocal = localdir + pkgfilelocalname;
 
     if (_daemon_flag) {
         daemon(1,0); // nochdir but close std streams
@@ -160,11 +159,54 @@ int PkgHandle::getRemotepkginfo(std::string pkgname, PkgInfo& info) {
 	return -1; // not exist
 }
 
+int PkgHandle::extractpkgs(std::vector<PkgInfo>& pkglist) {
+	char buf[128];
+	int ret = 0;
+	for (auto pkg: pkglist) {
+		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + "tar.gz";
+		snprintf(buf, sizeof(buf)-1, "tar xf %s -C %s", pkgpath.c_str(), _localpkgdir.c_str());
+		ret = system(buf);
+		if (ret != 0) {
+			return ret;
+		}
+	}
+	return 0;
+}
+
+// delete tar pkgs
+int PkgHandle::delpkgs(std::vector<PkgInfo>& pkglist) {
+	char buf[128];
+	int ret = 0;
+	for (auto pkg: pkglist) {
+		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + "tar.gz";
+		snprintf(buf, sizeof(buf)-1, "rm -f %s", pkgpath.c_str(), _localpkgdir.c_str());
+		pr_info(buf); // delete tar.gz file
+
+		pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + "tar.gz.sig";
+		snprintf(buf, sizeof(buf)-1, "rm -f %s", pkgpath.c_str(), _localpkgdir.c_str());
+		pr_info(buf); // delete sig file
+//		ret = system(buf);
+	}
+	return 0;
+}
+
+int PkgHandle::delpkgsdir(std::vector<PkgInfo>& pkglist) {
+	char buf[128];
+	int ret = 0;
+	for (auto pkg: pkglist) {
+		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion()";
+		snprintf(buf, sizeof(buf)-1, "rm -rf %s", pkgpath.c_str(), _localpkgdir.c_str());
+//		ret = system(buf);
+		pr_info(buf);
+	}
+	return 0;
+}
+
 // TODO: return the error installed index ?
 // or just return -1, then regenerate localpkglist??
 int PkgHandle::installPkgs(std::vector<PkgInfo>& pkglist) {
 	for(auto pkg: pkglist) {
-		pkg.install(_prefixdir);
+		pkg.install( _localpkgdir + pkg.getName() + "-" + pkg.getVersion, _prefixdir);
 	}
 	return 0;
 }
@@ -172,15 +214,19 @@ int PkgHandle::installPkgs(std::vector<PkgInfo>& pkglist) {
 // TODO: similar to installPkgs
 int uninstallPkgs(std::vector<PkgInfo>& pkglist) {
 	for(auto pkg: pkglist) {
-		pkg.uninstall(_prefixdir);
+		pkg.uninstall(_localpkgdir + pkg.getName() + "-" pkg.getVersion, _prefixdir);
 	}
+	delpkgsdir(pkglist); //remove dirs
 	return 0;
 }
 
 // put checksig into sigutil, turn into a static function
-bool verifyPkg(std::string pkgname_ver, std::string keybuf) { //convert from char*, so should assert count before use it
-	std::string verfile = pkgname_ver + ".sig";
-	return Sigutil.checksig(pkgname_ver.c_str(), verfile.c_str(), keybuf.c_str(), keybuf.size());
+// pass in should be a full path
+// TODO:
+// checksig need a prefix??
+bool verifyPkg(std::string fullpkgname_ver, std::string pubkeypath) { //convert from char*, so should assert count before use it
+	std::string verfile = fullpkgname_ver + ".sig";
+	return checksig(fullpkgname_ver.c_str(), verfile.c_str(), pubkeypath.c_str());
 }
 
 // need to be: request from remote ftp and save file to localdir

@@ -365,3 +365,108 @@ void dumpbuf(const unsigned char* buf, int size) {
 		}
 	}
 }
+
+// we preread pubkey into buffer ,so just passin the buffer here
+bool checksig(const char * fname, const char * fsig, const char *pubkeypath) {
+	unsigned char content[SHA256_DIGEST_LENGTH];
+	int siglen;
+	char *sig = NULL; //buffer to store signature
+	int res = 0;
+	bool ret = true;
+
+	if (get_sha256(fname, content) == -1) {
+		pr_info("can not get sha\n");
+		ret = false;
+		goto freenon;
+	}
+
+	if ((siglen = readkeyfromfile(fsig, &sig)) == -1) {
+		pr_info("can not read sig from file %s\n", fname);
+		ret = false;
+		goto freenon;
+	}
+	
+	res = ecdsa_verify(content, SHA256_DIGEST_LENGTH, (unsigned char*)sig, (unsigned int)siglen, pubkeypath);
+	switch(res) {
+	case -1:
+	  pr_info("verify error occureed\n");
+	  ret = false;
+	  break;
+	case 0:
+	  pr_info("verify fail\n");
+	  ret = false;
+	  break;
+	default:
+	  pr_info("verify success file %s, can install\n", fname);
+	  ret = true;
+	  break;
+	}
+
+	free(sig);
+freenon:
+	return ret;
+
+}
+
+int do_copy_file(std::string from, std::string to) {
+	unlink(to.c_str());
+	std::ifstream ifs(from);
+	std::ofstream ofs(to);
+	if (!ifs || !ofs) {
+		pr_info("do_copy_file can't get dir of copy file ifs or ofs\n");
+		return -1;
+	}
+	ofs << ifs.rdbuf();	
+	return 0;
+}
+
+int do_copy_pkg(std::string pkgpath, std::string installdir) {
+	std::ifstream ifslist(pkgpath + "/FILELIST.lst");
+	std::string pathline;
+	if (!ifslist) {
+		pr_info("can not copy package path");
+		return -1;
+	}
+	while (std::getline(ifslist, pathline)) {
+		if (pathline[pathline.length()-1] == '/') {
+			string tmpdir = installdir + pathline;
+			pr_info("makedir: %s%s\n", installdir.c_str(), pathline.c_str());
+			mkdir(tmpdir.c_str(), 0775); // make dir, we use find(1) make sure dir created before copy file
+		} else {
+			pr_info("copy: %s/src/%s to: %s%s\n", localdir.c_str(), pkgname.c_str(),
+					installdir.c_str(), pathline.c_str());
+			do_copy_file(pkgpath + "/src/" + pathline, installdir + pathline);
+		}
+	}
+	ifslist.close();
+	return 0;
+}
+
+int uninstallpkg(string pkgpath) {
+    ifstream ifslist(pkgpath + "/FILELIST.lst");
+    if (!ifslist) {
+        pr_info("can not open file for and uninstall, may be first install\n");
+        return 0;
+    }
+
+    vector<string> reverselines;
+    string pathline;
+    while (std::getline(ifslist, pathline)) {
+        if (pathline[pathline.length()-1] != '/') {
+            string tmpdir = installdir + pathline;
+            unlink(tmpdir.c_str());
+            cout << "unlink: " << tmpdir << endl;
+        } else {
+            reverselines.push_back(pathline); // push all dirs in reverse order
+        }
+    }
+
+    // remove dirs if empty
+    for (auto i = reverselines.rbegin(); i != reverselines.rend(); ++i) {
+        string tmpdir = installdir + *i;
+		pr_info("remove dir");
+        rmdir(tmpdir.c_str());
+    }
+	return 0;
+}
+

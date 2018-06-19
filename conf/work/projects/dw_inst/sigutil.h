@@ -63,6 +63,7 @@ int ecdsa_sign(unsigned char *content, int contentlen, unsigned char* sig, unsig
 		const char *privkeyfname, const char *pubkeyfname);
 
 /*
+ * internal function called by checksig ??
  * read pub key from file and verify
  * success: >0
  * fail: 0
@@ -70,6 +71,13 @@ int ecdsa_sign(unsigned char *content, int contentlen, unsigned char* sig, unsig
  */
 int ecdsa_verify(unsigned char *content, int contentlen, unsigned char* sig, unsigned int siglen, 
 		const char* pubkeyfname);
+
+/*
+ * check signature
+ * input: pkgfilename, pkgfilesigname, public key file name
+ * output: signature true or false
+ */
+bool checksig(const char * fname, const char * fsig, const char *pubkeypath) {
 
 #ifdef __cplusplus
 }

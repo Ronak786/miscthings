@@ -42,9 +42,11 @@ public:
 	int getNewpkglist(std::vector<PkgInfo>& reslist); //list of pkgs need upgrade/install(currently not distinguish
 	int getLocalpkginfo(std::string pkgname, PkgInfo& );
 	int getRemotepkginfo(std::string pkgname, PkgInfo&);
+	bool verifyPkg(std::string pkgname_ver, std::string keybuf); //convert from char*, so should assert count before use it
 	int installPkgs(std::vector<PkgInfo>& pkglist);
 	int uninstallPkgs(std::vector<PkgInfo>& pkglist);
-	bool verifyPkg(std::string pkgname_ver, std::string keybuf); //convert from char*, so should assert count before use it
+	int delpkgs(std::vector<PkgInfo>& pkglist); //delete xxx.tar.gz after install
+	int delpkgsdir(std::vector<PkgInfo>& pkglist); // delete xxx/ after uninstall
 };
 
 #endif
