@@ -1,12 +1,10 @@
 All: pkgmgnt input createsig
 
-sig: libsigutil.so
-
 #DFLAG := -g
 CFLAGS := -D_DEBUG
 CPPFLAGS := -DNOSSL -std=c++11 -Wall
-PKGLIBLDFLAGS := -L. -lsigutil -lcrypto
-CREATESIGLDFLAGS := -L. -lsigutil -lcrypto
+PKGLIBLDFLAGS := -L. -lcrypto
+CREATESIGLDFLAGS := -L. -lpkglib -lcrypto
 SIGLDFLAGS := -lcrypto
 
 pkghandle.o : pkghandle.cpp pkghandle.h
@@ -15,18 +13,14 @@ pkginfo.o : pkginfo.cpp pkginfo.h
 	g++ ${DFLAG} -fPIC   ${CFLAGS} ${CPPFLAGS} -o $@ -c $<
 ftplib.o: ftplib.cpp ftplib.h
 	g++ ${DFLAG} -fPIC -Wno-unused-variable -Wno-format -Wno-unused-but-set-variable -Wno-restrict ${CFLAGS} ${CPPFLAGS} -c $< -o $@
-pkglib.o: pkglib.cpp pkgmgnt.h json.h 
-	g++ ${DFLAG} -fPIC  ${CFLAGS} ${CPPFLAGS} -o $@ -c $<
 pkgmgnt.o : pkgmgnt.cpp pkgmgnt.h
 	g++ ${DFLAG} -fPIC  ${CFLAGS} ${CPPFLAGS} -o $@ -c $< 
 sigutil.o: sigutil.cpp sigutil.h
 	g++ ${DFLAG} -fPIC ${CFLAGS} ${CPPFLAGS} -o $@ -c $<
 
 
-libpkglib.so: pkghandle.o pkglib.o pkginfo.o ftplib.o libsigutil.so
+libpkglib.so: pkghandle.o pkginfo.o ftplib.o sigutil.o
 	g++ ${DFLAG} -o $@ $^ ${PKGLIBLDFLAGS} -shared
-libsigutil.so: sigutil.o
-	g++ ${DFLAG}  -o $@ $< ${SIGLDFLAGS}  -shared
 
 pkgmgnt: pkgmgnt.o libpkglib.so
 	g++ ${DFLAG} -o $@ $<  -L. -lpkglib -lsigutil
@@ -34,7 +28,7 @@ pkgmgnt: pkgmgnt.o libpkglib.so
 input: createjsonfromtext.cpp json.h
 	g++ ${DFLAG} ${CFLAGS} ${CPPFLAGS} -o $@ $<
 
-createsig: createsig.cpp libsigutil.so 
+createsig: createsig.cpp libpkglib.so
 	g++ ${DFLAG} ${CFLAGS} ${CPPFLAGS} -o $@ $< ${CREATESIGLDFLAGS}
 
 clean:

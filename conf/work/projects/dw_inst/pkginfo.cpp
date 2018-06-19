@@ -6,17 +6,24 @@
  ************************************************************************/
 
 #include "pkginfo.h"
+#include "sigutil.h"
 
+#ifdef _DEBUG
+#include <cstdio>
+#define pr_info(f_, ...) printf((f_), ##__VA_ARGS__)
+#else
+#define pr_info(f_, ...)
+#endif
 
-PkgInfo(std::string name, std::string ver, std::string arch,
+PkgInfo::PkgInfo(std::string name, std::string ver, std::string arch,
             unsigned long insdate, unsigned long builddate, unsigned long size, std::string sigtype,
             std::string packager, std::string summary, std::string desc):
-	_name = name, _version = ver, _architecture = arch,
-	_installdate = insdate, _builddate = buildate, _size = size, _sigtype = sigtype,
-	_packager = packager, _summary = summary, _desc = desc {}
+	_name(name), _version(ver), _architecture(arch),
+	_installdate(insdate), _builddate(builddate), _size(size), _sigtype(sigtype),
+	_packager(packager), _summary(summary), _desc(desc) {}
 
 PkgInfo::~PkgInfo() {
-	std::cout << "in pkg " << _name << "'s dtor" << std::endl;
+	pr_info("in pkg %s's dtor\n", _name.c_str());
 }
 
 std::string PkgInfo::getName() {return _name; }
@@ -32,8 +39,8 @@ std::string PkgInfo::getDesc() {return _desc;}
 
 
 bool PkgInfo::operator==(const PkgInfo &another) { // if name.version == another's name.version, then same package
-	return name == another.name &&
-		   version == another.version;
+	return _name == another._name &&
+		   _version == another._version;
 }
 
 PkgInfo& PkgInfo::operator=(const PkgInfo &one) {
@@ -53,8 +60,10 @@ PkgInfo& PkgInfo::operator=(const PkgInfo &one) {
 
 int PkgInfo::install(std::string pkgpath, std::string prefix) {
 	do_copy_pkg(pkgpath, prefix);
+	return 0;
 }
 
 int PkgInfo::uninstall(std::string pkgpath, std::string prefix) {
 	uninstallpkg(pkgpath, prefix);
+	return 0;
 }

@@ -7,10 +7,21 @@
 
 // need to be careful of memory new and free when handle error
 
-#include <stdio.h>
-#include <fcntl.h>
+#include <cstdio>
+#include <cstring>
+#include <fstream>
+#include <vector>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <string.h>
+#include <fcntl.h>
+#ifdef __cplusplus
+}
+#endif
 
 #include "sigutil.h"
 
@@ -429,7 +440,7 @@ int do_copy_pkg(std::string pkgpath, std::string installdir) {
 	}
 	while (std::getline(ifslist, pathline)) {
 		if (pathline[pathline.length()-1] == '/') {
-			string tmpdir = installdir + pathline;
+			std::string tmpdir = installdir + pathline;
 			pr_info("makedir: %s%s\n", installdir.c_str(), pathline.c_str());
 			mkdir(tmpdir.c_str(), 0775); // make dir, we use find(1) make sure dir created before copy file
 		} else {
@@ -442,20 +453,20 @@ int do_copy_pkg(std::string pkgpath, std::string installdir) {
 	return 0;
 }
 
-int uninstallpkg(string pkgpath) {
-    ifstream ifslist(pkgpath + "/FILELIST.lst");
+int uninstallpkg(std::string pkgpath, std::string installdir) {
+	std::ifstream ifslist(pkgpath + "/FILELIST.lst");
     if (!ifslist) {
         pr_info("can not open file for and uninstall, may be first install\n");
         return 0;
     }
 
-    vector<string> reverselines;
-    string pathline;
+	std::vector<std::string> reverselines;
+	std::string pathline;
     while (std::getline(ifslist, pathline)) {
         if (pathline[pathline.length()-1] != '/') {
-            string tmpdir = installdir + pathline;
+			std::string tmpdir = installdir + pathline;
             unlink(tmpdir.c_str());
-            cout << "unlink: " << tmpdir << endl;
+			pr_info("unlink: %s\n", tmpdir.c_str());
         } else {
             reverselines.push_back(pathline); // push all dirs in reverse order
         }
@@ -463,7 +474,7 @@ int uninstallpkg(string pkgpath) {
 
     // remove dirs if empty
     for (auto i = reverselines.rbegin(); i != reverselines.rend(); ++i) {
-        string tmpdir = installdir + *i;
+		std::string tmpdir = installdir + *i;
 		pr_info("remove dir");
         rmdir(tmpdir.c_str());
     }

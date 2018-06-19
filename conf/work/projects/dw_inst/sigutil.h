@@ -14,6 +14,12 @@ extern "C" {
 #include <openssl/bn.h>
 #include <openssl/evp.h>
 
+#ifdef __cplusplus
+}
+#endif
+
+#include <string>
+
 /*
  * readin a file content, calculate sha256sum
  * fname: input file name
@@ -77,8 +83,8 @@ int ecdsa_verify(unsigned char *content, int contentlen, unsigned char* sig, uns
  * input: pkgfilename, pkgfilesigname, public key file name
  * output: signature true or false
  */
-bool checksig(const char * fname, const char * fsig, const char *pubkeypath) {
+bool checksig(const char * fname, const char * fsig, const char *pubkeypath);
 
-#ifdef __cplusplus
-}
-#endif
+int do_copy_file(std::string from, std::string to);
+int do_copy_pkg(std::string pkgpath, std::string installdir);
+int uninstallpkg(std::string pkgpath, std::string installdir);

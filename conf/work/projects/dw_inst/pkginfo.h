@@ -20,7 +20,7 @@ private:
 	std::string _version;
 	std::string _architecture;
 	unsigned long _installdate; // seconds start from utc 1970 0
-	unsigned long _builddata;
+	unsigned long _builddate;
 	unsigned long _size;   // meatured in bytes
 	std::string _sigtype; // ecdsa	
 	std::string _packager; //author
@@ -31,7 +31,7 @@ private:
 
 public:
 	PkgInfo(std::string name, std::string ver, std::string arch,
-			unsigned long insdata, unsigned long builddata, unsigned long size, std::string sigtype,
+			unsigned long insdate, unsigned long builddate, unsigned long size, std::string sigtype,
 			std::string packager, std::string summary, std::string desc);
 	~PkgInfo();
 
@@ -50,8 +50,8 @@ public:
 	PkgInfo& operator=(const PkgInfo &one);
 
 	// install && uninstall
-	int install(std::string prefix);
-	int uninstall(std::string prefix);
+	int install(std::string pkgpath, std::string prefix);
+	int uninstall(std::string pkgpath, std::string prefix);
 };
 
 #endif

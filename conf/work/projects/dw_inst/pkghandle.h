@@ -29,7 +29,7 @@ private:
 
 // private methods
 	int getPkglist(std::string file, std::vector<PkgInfo> &vstr);
-	int download(std::fname);
+	int download(std::string fname);
 public:
 	PkgHandle();
 	~PkgHandle();
@@ -47,6 +47,7 @@ public:
 	int uninstallPkgs(std::vector<PkgInfo>& pkglist);
 	int delpkgs(std::vector<PkgInfo>& pkglist); //delete xxx.tar.gz after install
 	int delpkgsdir(std::vector<PkgInfo>& pkglist); // delete xxx/ after uninstall
+	int extractpkgs(std::vector<PkgInfo>& pkglist);
 };
 
 #endif

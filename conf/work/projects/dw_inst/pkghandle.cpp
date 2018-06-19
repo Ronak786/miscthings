@@ -5,9 +5,32 @@
 	> Created Time: 2018年06月10日 星期日 20时07分40秒
  ************************************************************************/
 
-#include "pkghandle.h"
+#include <fstream>
 
-#define pr_info(s) std::cout << s << std::endl
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <unistd.h>
+
+#ifdef __cplusplus
+}
+#endif
+
+#include "json.h"
+#include "ftplib.h"
+#include "pkghandle.h"
+#include "sigutil.h"
+
+
+#ifdef _DEBUG
+#include <cstdio>
+#define pr_info(f_, ...) printf((f_), ##__VA_ARGS__)
+#else
+#define pr_info(f_, ...)
+#endif
+
+using json = nlohmann::json;
 
 PkgHandle::PkgHandle() {
 	ftpclient = nullptr;
@@ -23,22 +46,22 @@ PkgHandle::~PkgHandle() {
 int PkgHandle::init() {
 	int ret = 0;
     ftpclient = new ftplib();
-    res = ftpclient->Connect(_remoteaddr.c_str());
-    if (res != 1) { 
-        ret = -1; 
+    ret = ftpclient->Connect(_remoteaddr.c_str());
+    if (ret != 1) { 
+		ret = -1;
         goto freeobj;
     }   
     pr_info("after connet\n");
 
-    res = ftpclient->Login(_remoteuser.c_str(), _remotepass.c_str());
-    if (res != 1) {
+    ret = ftpclient->Login(_remoteuser.c_str(), _remotepass.c_str());
+    if (ret != 1) {
         ret = -1; 
         goto freeconnect;
     }   
     pr_info("after login\n");
 
-    res = ftpclient->Chdir(_remotepkgdir.c_str());
-    if (res != 1) {
+    ret = ftpclient->Chdir(_remotepkgdir.c_str());
+    if (ret != 1) {
         ret = -1; 
         goto freeconnect;
     }
@@ -62,7 +85,7 @@ int PkgHandle::uninit() {
 }
 
 int PkgHandle::loadConfig(std::string confpath) { // default "" means use default conf inside, initialize all vars remember
-    if (confpath.equal("")) {
+    if (confpath == "") {
 		pr_info("config file emtpy, error");
 		return -1; //can not find conf file
     }   
@@ -94,7 +117,7 @@ int PkgHandle::loadConfig(std::string confpath) { // default "" means use defaul
             } else if (it.key() == "localmeta") {
                 _localmetafile = it.value();
             } else {
-                cout << "unknown json object: " << it.key() << endl;
+				pr_info("unknown json object: \n");
             }
         }
     } else {
@@ -194,7 +217,7 @@ int PkgHandle::delpkgsdir(std::vector<PkgInfo>& pkglist) {
 	char buf[128];
 	int ret = 0;
 	for (auto pkg: pkglist) {
-		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion()";
+		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion();
 		snprintf(buf, sizeof(buf)-1, "rm -rf %s", pkgpath.c_str(), _localpkgdir.c_str());
 //		ret = system(buf);
 		pr_info(buf);
@@ -206,15 +229,15 @@ int PkgHandle::delpkgsdir(std::vector<PkgInfo>& pkglist) {
 // or just return -1, then regenerate localpkglist??
 int PkgHandle::installPkgs(std::vector<PkgInfo>& pkglist) {
 	for(auto pkg: pkglist) {
-		pkg.install( _localpkgdir + pkg.getName() + "-" + pkg.getVersion, _prefixdir);
+		pkg.install( _localpkgdir + pkg.getName() + "-" + pkg.getVersion(), _prefixdir);
 	}
 	return 0;
 }
 
 // TODO: similar to installPkgs
-int uninstallPkgs(std::vector<PkgInfo>& pkglist) {
+int PkgHandle::uninstallPkgs(std::vector<PkgInfo>& pkglist) {
 	for(auto pkg: pkglist) {
-		pkg.uninstall(_localpkgdir + pkg.getName() + "-" pkg.getVersion, _prefixdir);
+		pkg.uninstall(_localpkgdir + pkg.getName() + "-" + pkg.getVersion(), _prefixdir);
 	}
 	delpkgsdir(pkglist); //remove dirs
 	return 0;
@@ -224,14 +247,14 @@ int uninstallPkgs(std::vector<PkgInfo>& pkglist) {
 // pass in should be a full path
 // TODO:
 // checksig need a prefix??
-bool verifyPkg(std::string fullpkgname_ver, std::string pubkeypath) { //convert from char*, so should assert count before use it
+bool PkgHandle::verifyPkg(std::string fullpkgname_ver, std::string pubkeypath) { //convert from char*, so should assert count before use it
 	std::string verfile = fullpkgname_ver + ".sig";
 	return checksig(fullpkgname_ver.c_str(), verfile.c_str(), pubkeypath.c_str());
 }
 
 // need to be: request from remote ftp and save file to localdir
 //      ftp initialize should do every check circle, not every file download here!!
-int PkgHandle::download(string fname) {
+int PkgHandle::download(std::string fname) {
     int res = 0;
 
     pr_info("download file");
@@ -239,7 +262,7 @@ int PkgHandle::download(string fname) {
 	std::string destfilepath = _localpkgdir + "/" + fname;
     unlink(destfilepath.c_str());
 
-    res = ftp->Get(destfilepath.c_str(), fname.c_str(), ftplib::image);
+    res = ftpclient->Get(destfilepath.c_str(), fname.c_str(), ftplib::image);
     if (res != 1) {
         return -1; // get fail
     }
@@ -249,8 +272,8 @@ int PkgHandle::download(string fname) {
 //TODO: can not let pkginfo ctor detail be packaged into just pkginfo.cpp, but have to do here
 //		do not know how to pass json objects
 // add into pkginfo should be done in pkginfo.cpp
-int PkgHandle::getPkglist(string file, std::vector<PkgInfo> &vstr) {
-    ifstream ifs(file);
+int PkgHandle::getPkglist(std::string file, std::vector<PkgInfo> &vstr) {
+	std::ifstream ifs(file);
     if (!ifs || ifs.fail()) {
         pr_info("can not get meta file, just continue\n");
         return -1;
@@ -264,5 +287,6 @@ int PkgHandle::getPkglist(string file, std::vector<PkgInfo> &vstr) {
 					pkg["insdate"], pkg["builddate"], pkg["size"], pkg["sigtype"],
 					pkg["packager"], pkg["summary"], pkg["desc"]));
     }
+	return 0;
 }
 
