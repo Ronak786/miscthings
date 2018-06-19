@@ -12,7 +12,6 @@
 #include <vector>
 #include "pkginfo.h"
 
-
 class PkgHandle {
 private:
 	// vars loaded from config file, eg installprefix, compress method(design later), meta file name,remote path...
@@ -26,19 +25,25 @@ private:
 	std::string _localpkgdir; // local download dir
 	bool _daemon_flag; // should start this process as daemon or not
 	std::string _confpath;
+	ftplib *ftpclient;
 
+// private methods
+	int getPkglist(std::string file, std::vector<PkgInfo> &vstr);
+	int download(std::fname);
 public:
 	PkgHandle();
 	~PkgHandle();
 
 	int loadConfig(std::string confpath); // default "" means use default conf inside, initialize all vars remember
-	int getLocalpkglist(std::vector<PkgInfo> resultlist);
-	std::vector<PkgInfo> getRemotepkglist();
-	std::vector<PkgInfo> getNewpkglist(); //list of pkgs need upgrade/install(currently not distinguish
-	PkgInfo getLocalpkginfo(std::string pkgname);
-	PkgInfo getRemotepkginfo(std::string pkgname);
-	int installPkgs(std::vector<PkgInfo> pkglist);
-	int uninstallPkgs(std::vector<PkgInfo> pkglist);
+	int init();
+	int uninit();
+	int getLocalpkglist(std::vector<PkgInfo>& resultlist);
+	int getRemotepkglist(std::vector<PkgInfo>& reslist);
+	int getNewpkglist(std::vector<PkgInfo>& reslist); //list of pkgs need upgrade/install(currently not distinguish
+	int getLocalpkginfo(std::string pkgname, PkgInfo& );
+	int getRemotepkginfo(std::string pkgname, PkgInfo&);
+	int installPkgs(std::vector<PkgInfo>& pkglist);
+	int uninstallPkgs(std::vector<PkgInfo>& pkglist);
 	bool verifyPkg(std::string pkgname_ver, std::string keybuf); //convert from char*, so should assert count before use it
 };
 

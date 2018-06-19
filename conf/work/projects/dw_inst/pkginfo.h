@@ -28,7 +28,6 @@ private:
 	std::string _desc;  // detail desc
 
 // private functions
-	int getPkglist(std::string file, std::vector<PkgInfo> &vstr);
 
 public:
 	PkgInfo(std::string name, std::string ver, std::string arch,
