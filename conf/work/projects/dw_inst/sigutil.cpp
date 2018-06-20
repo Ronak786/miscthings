@@ -436,7 +436,7 @@ int do_copy_pkg(std::string pkgpath, std::string installdir) {
 	std::ifstream ifslist(pkgpath + "/FILELIST.lst");
 	std::string pathline;
 	if (!ifslist) {
-		pr_info("can not copy package path");
+		pr_info("can not copy package path %s\n", pkgpath.c_str());
 		return -1;
 	}
 	while (std::getline(ifslist, pathline)) {
@@ -455,7 +455,7 @@ int do_copy_pkg(std::string pkgpath, std::string installdir) {
 int uninstallpkg(std::string pkgpath, std::string installdir) {
 	std::ifstream ifslist(pkgpath + "/FILELIST.lst");
     if (!ifslist) {
-        pr_info("can not open file for and uninstall, may be first install\n");
+        pr_info("can not open file and uninstall, may be first install\n");
         return 0;
     }
 

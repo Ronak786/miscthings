@@ -182,11 +182,11 @@ int PkgHandle::getRemotepkginfo(std::string pkgname, PkgInfo& info) {
 	return -1; // not exist
 }
 
-int PkgHandle::extractpkgs(std::vector<PkgInfo>& pkglist) {
+int PkgHandle::extractPkgs(std::vector<PkgInfo>& pkglist) {
 	char buf[128];
 	int ret = 0;
 	for (auto pkg: pkglist) {
-		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + "tar.gz";
+		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tar.gz";
 		snprintf(buf, sizeof(buf)-1, "tar xf %s -C %s", pkgpath.c_str(), _localpkgdir.c_str());
 		ret = system(buf);
 		if (ret != 0) {
@@ -196,31 +196,51 @@ int PkgHandle::extractpkgs(std::vector<PkgInfo>& pkglist) {
 	return 0;
 }
 
+int PkgHandle::downloadPkgs(std::vector<PkgInfo>& pkglist) {
+	for (auto pkg: pkglist) {
+		if (download(pkg.getName() + "-" + pkg.getVersion() + ".tar.gz") != 0) {
+			pr_info("can not get file %s\n", pkg.getName().c_str());
+			return -1;
+		}
+		if (download(pkg.getName() + "-" + pkg.getVersion() + ".tar.gz.sig") != 0) {
+			pr_info("can not get file %s signature\n", pkg.getName().c_str());
+			return -1;
+		}
+	}
+	return 0;
+}
+
 // delete tar pkgs
-int PkgHandle::delpkgs(std::vector<PkgInfo>& pkglist) {
+int PkgHandle::delPkgs(std::vector<PkgInfo>& pkglist) {
 	char buf[128];
 	int ret = 0;
 	for (auto pkg: pkglist) {
-		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + "tar.gz";
+		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tar.gz";
 		snprintf(buf, sizeof(buf)-1, "rm -f %s", pkgpath.c_str());
-		pr_info(buf); // delete tar.gz file
+//		pr_info(buf); // delete tar.gz file
+//		pr_info("\n");
+		ret = system(buf);
+		if (ret != 0) return -1;
 
-		pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + "tar.gz.sig";
+		pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tar.gz.sig";
 		snprintf(buf, sizeof(buf)-1, "rm -f %s", pkgpath.c_str());
-		pr_info(buf); // delete sig file
-//		ret = system(buf);
+//		pr_info(buf); // delete sig file
+//		pr_info("\n");
+		ret = system(buf);
+		if (ret != 0) return -1;
 	}
 	return ret;
 }
 
-int PkgHandle::delpkgsdir(std::vector<PkgInfo>& pkglist) {
+int PkgHandle::delPkgsdir(std::vector<PkgInfo>& pkglist) {
 	char buf[128];
 	int ret = 0;
 	for (auto pkg: pkglist) {
 		std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion();
 		snprintf(buf, sizeof(buf)-1, "rm -rf %s", pkgpath.c_str());
-//		ret = system(buf);
-		pr_info(buf);
+		ret = system(buf);
+//		pr_info(buf);
+//		pr_info("\n");
 	}
 	return ret;
 }
@@ -239,7 +259,6 @@ int PkgHandle::uninstallPkgs(std::vector<PkgInfo>& pkglist) {
 	for(auto pkg: pkglist) {
 		pkg.uninstall(_localpkgdir + pkg.getName() + "-" + pkg.getVersion(), _prefixdir);
 	}
-	delpkgsdir(pkglist); //remove dirs
 	return 0;
 }
 
@@ -247,9 +266,17 @@ int PkgHandle::uninstallPkgs(std::vector<PkgInfo>& pkglist) {
 // pass in should be a full path
 // TODO:
 // checksig need a prefix??
-bool PkgHandle::verifyPkg(std::string fullpkgname_ver, std::string pubkeypath) { //convert from char*, so should assert count before use it
-	std::string verfile = fullpkgname_ver + ".sig";
-	return checksig(fullpkgname_ver.c_str(), verfile.c_str(), pubkeypath.c_str());
+bool PkgHandle::verifyPkgs(std::vector<PkgInfo>& pkglist) { //convert from char*, so should assert count before use it
+	for (auto info: pkglist) {
+		std::string pkgfile = _localpkgdir + info.getName() + "-" + info.getVersion() + ".tar.gz";
+		std::string verfile = pkgfile + ".sig";
+		std::string pubkeypath = _localpkgdir + "pubkey.pem";
+		if (checksig(pkgfile.c_str(), verfile.c_str(), pubkeypath.c_str()) != true) {
+			pr_info("verify %s failed\n", info.getName().c_str());
+			return -1;
+		}
+	}
+	return 0;
 }
 
 // need to be: request from remote ftp and save file to localdir
@@ -290,3 +317,45 @@ int PkgHandle::getPkglist(std::string file, std::vector<PkgInfo> &vstr) {
 	return 0;
 }
 
+
+int PkgHandle::updateLocalpkglist(std::vector<PkgInfo> &vstr, int installflag) {
+	std::string localmetafile = _localpkgdir + _localmetafile;
+	std::ifstream ifs(localmetafile);
+    if (!ifs) {
+        pr_info("error occured when read local json in update\n");
+        return -1;
+    }
+    json obj;
+    ifs >> obj;
+
+	if (installflag == 1) {
+		for (auto item: vstr) {
+			obj[item.getName().c_str()]["name"] = item.getName();
+			obj[item.getName().c_str()]["version"] = item.getVersion();
+			obj[item.getName().c_str()]["arch"] = item.getArchitecture();
+			obj[item.getName().c_str()]["insdate"] = item.getInstalldate();
+			obj[item.getName().c_str()]["builddate"] = item.getBuilddate();
+			obj[item.getName().c_str()]["size"] = item.getSize();
+			obj[item.getName().c_str()]["sigtype"] = item.getSigtype();
+			obj[item.getName().c_str()]["packager"] = item.getPackager();
+			obj[item.getName().c_str()]["summary"] = item.getSummary();
+			obj[item.getName().c_str()]["desc"] = item.getDesc();
+		}
+	} else if (installflag == 0) { 
+		for(auto item: vstr) {
+			obj.erase(item.getName().c_str());
+		}
+	} else {
+		pr_info("install flag error %d\n", installflag);
+		return -1;
+	}
+
+	unlink(localmetafile.c_str());
+    ofstream ofs(localmetafile);
+	if (!ofs || ofs.fail()) {
+		pr_info("can not open meta file to update\n");
+		return -1;
+	}
+    ofs << obj;
+	return 0;
+}

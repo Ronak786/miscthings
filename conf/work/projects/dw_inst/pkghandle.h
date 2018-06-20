@@ -39,16 +39,18 @@ public:
 	int init();
 	int uninit();
 	int getLocalpkglist(std::vector<PkgInfo>& resultlist);
+	int updateLocalpkglist(std::vector<PkgInfo> &pkglist, int installflag);
 	int getRemotepkglist(std::vector<PkgInfo>& reslist);
 	int getNewpkglist(std::vector<PkgInfo>& reslist); //list of pkgs need upgrade/install(currently not distinguish
 	int getLocalpkginfo(std::string pkgname, PkgInfo& );
 	int getRemotepkginfo(std::string pkgname, PkgInfo&);
-	bool verifyPkg(std::string pkgname_ver, std::string keybuf); //convert from char*, so should assert count before use it
+	bool verifyPkgs(std::vector<PkgInfo>& pkglist); //verify remote got not extracted pkgs
 	int installPkgs(std::vector<PkgInfo>& pkglist);
 	int uninstallPkgs(std::vector<PkgInfo>& pkglist);
-	int delpkgs(std::vector<PkgInfo>& pkglist); //delete xxx.tar.gz after install
-	int delpkgsdir(std::vector<PkgInfo>& pkglist); // delete xxx/ after uninstall
-	int extractpkgs(std::vector<PkgInfo>& pkglist);
+	int delPkgs(std::vector<PkgInfo>& pkglist); //delete xxx.tar.gz after install
+	int delPkgsdir(std::vector<PkgInfo>& pkglist); // delete xxx/ after uninstall
+	int extractPkgs(std::vector<PkgInfo>& pkglist);
+	int downloadPkgs(std::vector<PkgInfo>& pkglist);
 };
 
 #endif
