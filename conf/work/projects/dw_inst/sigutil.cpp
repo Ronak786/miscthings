@@ -328,6 +328,7 @@ int ecdsa_sign(unsigned char *content, int contentlen, unsigned char* sig, unsig
 		pr_info("can not generate sig\n");
 		return -1;
 	}
+	pr_info("sig length is %d, contentlen is %d\n", *siglenptr, contentlen);
 
 	EC_KEY_free(priveckey);
 	return 0;

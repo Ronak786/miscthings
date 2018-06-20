@@ -1,0 +1,6 @@
+sign: use ecdsa
+compress use tar.gz use libarchive
+verify: checklast xxx byte as signature
+uncompress use libarchive
+install:in qt, use qt copydir to copy files recursively
+uninstall:
