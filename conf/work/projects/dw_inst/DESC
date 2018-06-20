@@ -22,3 +22,7 @@ class:
 			uninstallpkgs(a list of pkgs)
 			
 			verify(pkgname(from getname + getversion), eckey_in_buf(readfromfile), length not needed, but should protect security)
+
+currently:
+	install uninstall extract deletepkg deletepkgdir verify getlist(local, remote, new)  downloadpkgs interfaces have been,tested, 
+	next: need intergrate
