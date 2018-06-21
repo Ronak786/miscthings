@@ -28,8 +28,8 @@ SOURCES += \
         mainwindow.cpp \
     pkghandle.cpp \
     pkginfo.cpp \
-    pkgutils.cpp \
-    sigutil.cpp
+    sigutil.cpp \
+    pkgutil.cpp
 
 HEADERS += \
         mainwindow.h \

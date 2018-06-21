@@ -39,7 +39,7 @@ int PkgHandle::uninit() {
 	return 0;
 }
 
-int PkgHandle::loadConfig(std::string confpath) { // default "" means use default conf inside, initialize all vars remember
+int PkgHandle::loadConfig(QString confpath) { // default "" means use default conf inside, initialize all vars remember
     if (confpath == "") {
 		pr_info("config file emtpy, error");
 		return -1; //can not find conf file
@@ -88,15 +88,15 @@ int PkgHandle::loadConfig(std::string confpath) { // default "" means use defaul
 }
 
 // get list of remote pakages
-int PkgHandle::getLocalpkglist(std::vector<PkgInfo> &infolist) {
-	std::string localmetapath = _localpkgdir + "/" + _localmetafile;
+int PkgHandle::getLocalpkglist(QVector<PkgInfo> &infolist) {
+    QString localmetapath = _localpkgdir + "/" + _localmetafile;
 	return getPkglist(localmetapath, infolist);
 }
 
-int PkgHandle::getLocalpkginfo(std::string pkgname, PkgInfo& info) {
-	std::vector<PkgInfo> locallist;
+int PkgHandle::getLocalpkginfo(QString pkgname, PkgInfo& info) {
+    QVector<PkgInfo> locallist;
 	getLocalpkglist(locallist);
-	for (auto pkginfo: locallist) {
+    foreach (PkgInfo pkginfo, locallist) {
 		if (pkginfo.getName() == pkgname) {
 			info = pkginfo;
 			return 0;
@@ -105,11 +105,11 @@ int PkgHandle::getLocalpkginfo(std::string pkgname, PkgInfo& info) {
 	return -1; // not exist
 }
 
-int PkgHandle::extractPkgs(std::vector<PkgInfo>& pkglist) {
+int PkgHandle::extractPkgs(QVector<PkgInfo>& pkglist) {
     char buf[4096];
 	int ret = 0;
-	for (auto pkg: pkglist) {
-        std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tgz";
+    foreach (PkgInfo pkg, pkglist) {
+        QString pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tgz";
 		snprintf(buf, sizeof(buf)-1, "tar xf %s -C %s", pkgpath.c_str(), _localpkgdir.c_str());
         pr_info("command is %s\n", buf);
 		ret = system(buf);
@@ -121,11 +121,11 @@ int PkgHandle::extractPkgs(std::vector<PkgInfo>& pkglist) {
 }
 
 // delete tar pkgs
-int PkgHandle::delPkgs(std::vector<PkgInfo>& pkglist) {
+int PkgHandle::delPkgs(QVector<PkgInfo>& pkglist) {
 	char buf[128];
 	int ret = 0;
-	for (auto pkg: pkglist) {
-        std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tgz";
+    foreach (PkgInfo pkg, pkglist) {
+        QString pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tgz";
 		snprintf(buf, sizeof(buf)-1, "rm -f %s", pkgpath.c_str());
 //		pr_info(buf); // delete tar.gz file
 //		pr_info("\n");
@@ -135,11 +135,11 @@ int PkgHandle::delPkgs(std::vector<PkgInfo>& pkglist) {
 	return ret;
 }
 
-int PkgHandle::delPkgsdir(std::vector<PkgInfo>& pkglist, int justsrc) {
+int PkgHandle::delPkgsdir(QVector<PkgInfo>& pkglist, int justsrc) {
 	char buf[128];
 	int ret = 0;
-	for (auto pkg: pkglist) {
-        std::string pkgpath;
+    foreach (PkgInfo pkg, pkglist) {
+        QString pkgpath;
         if (justsrc != 0) {
             pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + "/src" ;
         } else {
@@ -155,46 +155,27 @@ int PkgHandle::delPkgsdir(std::vector<PkgInfo>& pkglist, int justsrc) {
 
 // TODO: return the error installed index ?
 // or just return -1, then regenerate localpkglist??
-int PkgHandle::installPkgs(std::vector<PkgInfo>& pkglist) {
-	for(auto pkg: pkglist) {
+int PkgHandle::installPkgs(QVector<PkgInfo>& pkglist) {
+    foreach(PkgInfo pkg, pkglist) {
 		pkg.install( _localpkgdir + pkg.getName() + "-" + pkg.getVersion(), _prefixdir);
 	}
 	return 0;
 }
 
 // TODO: similar to installPkgs
-int PkgHandle::uninstallPkgs(std::vector<PkgInfo>& pkglist) {
-	for(auto pkg: pkglist) {
+int PkgHandle::uninstallPkgs(QVector<PkgInfo>& pkglist) {
+    foreach(PkgInfo pkg, pkglist) {
 		pkg.uninstall(_localpkgdir + pkg.getName() + "-" + pkg.getVersion(), _prefixdir);
 	}
 	return 0;
 }
 
-// put checksig into sigutil, turn into a static function
-// pass in should be a full path
-// TODO:
-// checksig need a prefix??
-
-bool PkgHandle::verifyPkgs(std::vector<PkgInfo>& pkglist) { //convert from char*, so should assert count before use it
-	for (auto info: pkglist) {
-		std::string pkgfile = _localpkgdir + info.getName() + "-" + info.getVersion() + ".tar.gz";
-		std::string verfile = pkgfile + ".sig";
-		std::string pubkeypath = _localpkgdir + "pubkey.pem";
-        /*
-		if (checksig(pkgfile.c_str(), verfile.c_str(), pubkeypath.c_str()) != true) {
-			pr_info("verify %s failed\n", info.getName().c_str());
-			return -1;
-		}
-        */
-	}
-	return 0;
-}
 
 
 //TODO: can not let pkginfo ctor detail be packaged into just pkginfo.cpp, but have to do here
 //		do not know how to pass json objects
 // add into pkginfo should be done in pkginfo.cpp
-int PkgHandle::getPkglist(std::string file, std::vector<PkgInfo> &vstr) {
+int PkgHandle::getPkglist(QString file, QVector<PkgInfo> &vstr) {
 	std::ifstream ifs(file);
     if (!ifs || ifs.fail()) {
         pr_info("can not get meta file, just continue\n");
@@ -216,8 +197,8 @@ int PkgHandle::getPkglist(std::string file, std::vector<PkgInfo> &vstr) {
 }
 
 
-int PkgHandle::updateLocalpkglist(std::vector<PkgInfo> &vstr, int installflag) {
-	std::string localmetafile = _localpkgdir + _localmetafile;
+int PkgHandle::updateLocalpkglist(QVector<PkgInfo> &vstr, int installflag) {
+    QString localmetafile = _localpkgdir + _localmetafile;
 	std::ifstream ifs(localmetafile);
     pr_info("localmeta: %s", localmetafile.c_str());
     if (!ifs) {
@@ -228,9 +209,9 @@ int PkgHandle::updateLocalpkglist(std::vector<PkgInfo> &vstr, int installflag) {
     ifs >> obj;
 
 	if (installflag == 1) {
-		for (auto item: vstr) {
-			obj[item.getName().c_str()]["name"] = item.getName();
-			obj[item.getName().c_str()]["version"] = item.getVersion();
+        foreach (PkgInfo item, vstr) {
+            obj[item.getName().toStdString().c_str()]["name"] = item.getName().toStdString();
+            obj[item.getName().toStdString().c_str()]["version"] = item.getVersion().toStdString();
             /*
 			obj[item.getName().c_str()]["arch"] = item.getArchitecture();
 			obj[item.getName().c_str()]["insdate"] = item.getInstalldate();
@@ -244,15 +225,15 @@ int PkgHandle::updateLocalpkglist(std::vector<PkgInfo> &vstr, int installflag) {
             */
 		}
 	} else if (installflag == 0) { 
-		for(auto item: vstr) {
-			obj.erase(item.getName().c_str());
+        foreach(PkgInfo item, vstr) {
+            obj.erase(item.getName().toStdString().c_str());
 		}
 	} else {
 		pr_info("install flag error %d\n", installflag);
 		return -1;
 	}
 
-	unlink(localmetafile.c_str());
+    unlink(localmetafile.toStdString().c_str());
     std::ofstream ofs(localmetafile);
 	if (!ofs || ofs.fail()) {
 		pr_info("can not open meta file to update\n");
@@ -262,14 +243,14 @@ int PkgHandle::updateLocalpkglist(std::vector<PkgInfo> &vstr, int installflag) {
 	return 0;
 }
 
-int PkgHandle::install(std::vector<std::string>& strlist) {
-    std::vector<PkgInfo> infolist;
-    for(auto str: strlist) {
-        auto const endofname = str.find_last_of('-');
-        auto const endofversion = str.find_last_of('.');
-        std::string name = str.substr(0, endofname);
-        std::string ver = str.substr(endofname+1, endofversion - endofname -1);
-        pr_info("name is %s, ver is %s", name.c_str(), ver.c_str());
+int PkgHandle::install(QVector<QString>& strlist) {
+    QVector<PkgInfo> infolist;
+    foreach(QString str, strlist) {
+        auto const endofname = str.toStdString().find_last_of('-');
+        auto const endofversion = str.toStdString().find_last_of('.');
+        QString name = str.toStdString().substr(0, endofname);
+        QString ver = str.toStdString().substr(endofname+1, endofversion - endofname -1);
+        pr_info("name is %s, ver is %s", name.toStdString().c_str(), ver.toStdString().c_str());
         infolist.push_back(PkgInfo(name, ver));
     }
     if (extractPkgs(infolist) != 0) {
@@ -296,14 +277,14 @@ int PkgHandle::install(std::vector<std::string>& strlist) {
     return 0;
 }
 
-int PkgHandle::uninstall(std::vector<std::string> &strlist) {
-    std::vector<PkgInfo> vlocal;
-    std::vector<PkgInfo> vupdate;
+int PkgHandle::uninstall(QVector<QString> &strlist) {
+    QVector<PkgInfo> vlocal;
+    QVector<PkgInfo> vupdate;
     getLocalpkglist(vlocal);
-    for (auto str: strlist) {
-        for (auto pkg: vlocal) {
+    foreach (QString str, strlist) {
+        foreach (PkgInfo pkg, vlocal) {
             if (pkg.getName() == str) {
-                std::string pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion();
+                QString pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion();
                 pkg.uninstall(pkgpath, _prefixdir);
                 vupdate.push_back(pkg);
             }

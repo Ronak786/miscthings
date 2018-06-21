@@ -8,45 +8,42 @@
 #ifndef PKG_HANDLE
 #define PKG_HANDLE
 
-#include <string>
-#include <vector>
 #include "pkginfo.h"
+#include <QVector>
 
 class PkgHandle {
 private:
 	// vars loaded from config file, eg installprefix, compress method(design later), meta file name,remote path...
-	std::string _prefixdir;     // install dir, the prefix
-	std::string _localmetafile; //local meta file name
-	std::string _remoteaddr;
-	std::string _remoteuser;
-	std::string _remotepass;
-	std::string _remotepkgdir; // remote ftpdir
-	std::string _remotemetafile; // remote meta file name
-	std::string _localpkgdir; // local download dir
+    QString _prefixdir;     // install dir, the prefix
+    QString _localmetafile; //local meta file name
+    QString _remoteaddr;
+    QString _remoteuser;
+    QString _remotepass;
+    QString _remotepkgdir; // remote ftpdir
+    QString _remotemetafile; // remote meta file name
+    QString _localpkgdir; // local download dir
 	bool _daemon_flag; // should start this process as daemon or not
-	std::string _confpath;
+    QString _confpath;
 
 // private methods
-	int getPkglist(std::string file, std::vector<PkgInfo> &vstr);
+    int getPkglist(QString file, QVector<PkgInfo> &vstr);
 public:
 	PkgHandle();
 	~PkgHandle();
 
-	int loadConfig(std::string confpath); // default "" means use default conf inside, initialize all vars remember
+    int loadConfig(QString confpath); // default "" means use default conf inside, initialize all vars remember
 	int init();
 	int uninit();
-	int getLocalpkglist(std::vector<PkgInfo>& resultlist);
-	int updateLocalpkglist(std::vector<PkgInfo> &pkglist, int installflag);
-	int getLocalpkginfo(std::string pkgname, PkgInfo& );
-    bool verifyPkgs(std::vector<PkgInfo>& pkglist); //verify remote got not extracted pkgs
-	int installPkgs(std::vector<PkgInfo>& pkglist);
-	int uninstallPkgs(std::vector<PkgInfo>& pkglist);
-	int delPkgs(std::vector<PkgInfo>& pkglist); //delete xxx.tar.gz after install
-    int delPkgsdir(std::vector<PkgInfo>& pkglist, int justsrc); // delete xxx/ after uninstall
-	int extractPkgs(std::vector<PkgInfo>& pkglist);
-
-    int install(std::vector<std::string> &strlist); //tar.gz filenames to be installed
-    int uninstall(std::vector<std::string> &strlist); // filename to be uninstalled
+    int getLocalpkglist(QVector<PkgInfo>& resultlist);
+    int updateLocalpkglist(QVector<PkgInfo> &pkglist, int installflag);
+    int getLocalpkginfo(QString pkgname, PkgInfo& );
+    int installPkgs(QVector<PkgInfo>& pkglist);
+    int uninstallPkgs(QVector<PkgInfo>& pkglist);
+    int delPkgs(QVector<PkgInfo>& pkglist); //delete xxx.tar.gz after install
+    int delPkgsdir(QVector<PkgInfo>& pkglist, int justsrc); // delete xxx/ after uninstall
+    int extractPkgs(QVector<PkgInfo>& pkglist);
+    int install(QVector<QString> &strlist); //tar.gz filenames to be installed
+    int uninstall(QVector<QString> &strlist); // filename to be uninstalled
 };
 
 #endif

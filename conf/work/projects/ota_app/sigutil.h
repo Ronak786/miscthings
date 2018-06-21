@@ -18,7 +18,7 @@ extern "C" {
 }
 #endif
 
-#include <string>
+#include <QString>
 
 class SigUtil {
 
@@ -33,6 +33,11 @@ private:
      */
     static int get_sha256_from_file(const char *fnamel, unsigned char* result, unsigned long start, unsigned long end);
 
+    /*
+     * file structure  data + signature + siglen(1 byte)
+     * this function check this structure, return in parameter data start offset and datalen, and copy
+     *      signature into sig ptr and set siglength into siglen
+     */
     static int split_and_getsig(const char *fname, unsigned long *datastart, unsigned long *datalen,
                          unsigned char* sig, unsigned int *siglen);
     /*
@@ -84,6 +89,8 @@ public:
      * output: signature true or false
      */
     static bool verify(const char* fname, const char* pubkeypath);
+
+
     static int sign(const char* fname, unsigned char* sig, unsigned int *siglenptr,
               const char*privkeyfname, const char *pubkeyfname);
 
