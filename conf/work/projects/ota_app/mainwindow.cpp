@@ -15,11 +15,11 @@ MainWindow::MainWindow(QString confpath, QWidget *parent) :
         qDebug("can not load config");
     }
     handle->init();
-    connect(ui->pushButton, SIGNAL(clicked(bool)), this, SLOT(handleinstall()));
-    connect(ui->pushButton_2, SIGNAL(clicked(bool)), this, SLOT(handleuninstall()));
-    connect(ui->pushButton_3, SIGNAL(clicked(bool)), this, SLOT(handlegenerate()));
-    connect(ui->pushButton_4, SIGNAL(clicked(bool)), this, SLOT(handlesign()));
-    connect(ui->pushButton_5, SIGNAL(clicked(bool)), this, SLOT(handleverify()));
+    connect(ui->install, SIGNAL(clicked(bool)), this, SLOT(handleinstall()));
+    connect(ui->uninstall, SIGNAL(clicked(bool)), this, SLOT(handleuninstall()));
+    connect(ui->generate, SIGNAL(clicked(bool)), this, SLOT(handlegenerate()));
+    connect(ui->sign, SIGNAL(clicked(bool)), this, SLOT(handlesign()));
+    connect(ui->verify, SIGNAL(clicked(bool)), this, SLOT(handleverify()));
 }
 
 MainWindow::~MainWindow()
@@ -61,7 +61,7 @@ void MainWindow::handlesign() {
     }
 
     pr_info("save sig to file");
-    int fd = open("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/sigfile", O_WRONLY|O_CREAT);
+    int fd = open("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/sigfile", O_WRONLY|O_CREAT, 0600);
     if (write(fd, buf, (unsigned int)siglen) != (unsigned int)siglen) {
         pr_info("write sig failed\n");
         return;

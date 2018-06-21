@@ -251,15 +251,12 @@ bool SigUtil::verify(const char * fname, unsigned char* sig, unsigned int siglen
     res = ecdsa_verify(content, SHA256_DIGEST_LENGTH, sig, siglen, pubkeypath);
 	switch(res) {
 	case -1:
-	  pr_info("verify error occureed\n");
 	  ret = false;
 	  break;
 	case 0:
-	  pr_info("verify fail\n");
 	  ret = false;
 	  break;
 	default:
-	  pr_info("verify success file %s, can install\n", fname);
 	  ret = true;
 	  break;
 	}
@@ -278,7 +275,7 @@ bool SigUtil::verify(const char * fname, unsigned char* sig, unsigned int siglen
     }
 
     res = ecdsa_sign(content, SHA256_DIGEST_LENGTH, sig, siglenptr, privkeyfname, pubkeyfname);
-    if (res != 1) {
+    if (res != 0) {
         pr_info("can not sign successfully\n");
         return -1;
     } else {
