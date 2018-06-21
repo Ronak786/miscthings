@@ -11,6 +11,7 @@
 #include <cstring>
 #include <fstream>
 #include <vector>
+#include <algorithm>
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,7 +37,7 @@ extern "C" {
  *		0 success
  *		-1 fail
  */
-int SigUtil::get_sha256(const char *fname, unsigned char* result) {
+int SigUtil::get_sha256_from_file(const char *fname, unsigned char* result, unsigned long start, unsigned long end) {
 	SHA256_CTX ctx;
 	SHA256_Init(&ctx);
 
@@ -47,10 +48,26 @@ int SigUtil::get_sha256(const char *fname, unsigned char* result) {
 	}
 
 	unsigned char tmpbuf[READSIZ];
-	int count = 0;
-	while ((count = read(fd, tmpbuf, READSIZ)) > 0) {
-		SHA256_Update(&ctx, tmpbuf, count);
-	}
+    int count = 0;
+    unsigned long sum, alreadydone = 0;
+
+    if (end == 0L) {
+        sum = lseek(fd, 0L, SEEK_END);
+    } else {
+        sum = end - start;
+    }
+
+    lseek(fd, start, SEEK_SET);
+    while (alreadydone < sum ) {
+        unsigned long  need_read = std::min((unsigned long)READSIZ, sum - alreadydone);
+        if ((unsigned long)read(fd, tmpbuf, need_read) == need_read) {
+            SHA256_Update(&ctx, tmpbuf, count);
+        } else {
+            pr_info("can not calculate sha\n");
+            return -1;
+        }
+        alreadydone += need_read;
+    }
 	SHA256_Final(result, &ctx);
 	close(fd);
 	return 0;
@@ -238,12 +255,22 @@ int SigUtil::ecdsa_verify(unsigned char *content, int contentlen, unsigned char*
 }
 
 // we preread pubkey into buffer ,so just passin the buffer here
-bool SigUtil::verify(const char * fname, unsigned char* sig, unsigned int siglen, const char *pubkeypath) {
+bool SigUtil::verify(const char * fname, const char *pubkeypath) {
 	unsigned char content[SHA256_DIGEST_LENGTH];
 	int res = 0;
 	bool ret = true;
+    unsigned int siglen;
+    unsigned char sig[128];
+    unsigned long datastart, datalen;
 
-	if (get_sha256(fname, content) == -1) {
+    if (split_and_getsig(fname, &datastart, &datalen, sig, &siglen) != 0) {
+        pr_info("can not split and get sig and data offset\n");
+        return false;
+    }
+    pr_info("datastart %lu, len %lu, siglen %u\n", datastart, datalen, siglen);
+
+    //split file into two membuf, second one is sig, siglen, firs one is databuf, datalen
+    if (get_sha256_from_file(fname, content, datastart, datastart + datalen) == -1) {
 		pr_info("can not get sha\n");
         return false;
 	}
@@ -269,7 +296,7 @@ bool SigUtil::verify(const char * fname, unsigned char* sig, unsigned int siglen
     unsigned char content[SHA256_DIGEST_LENGTH];
     int res = 0;
 
-    if (get_sha256(fname, content) == -1) {
+    if (get_sha256_from_file(fname, content, 0L, 0L) == -1) {
         pr_info("can not get sha\n");
         return -1;
     }
@@ -335,4 +362,31 @@ bool SigUtil::verify(const char * fname, unsigned char* sig, unsigned int siglen
      return 0;
  }
 
+ int SigUtil::split_and_getsig(const char *fname, unsigned long *datastart, unsigned long *datalen,
+                      unsigned char* sig, unsigned int *siglen) {
+     *datastart = 0L;
+     int fd = open(fname, O_RDONLY);
+     if (fd == -1) {
+         pr_info("in split: can not open file %s for read\n", fname);
+         return -1;
+     }
+
+     unsigned char ch = 0;
+     lseek(fd, -1L, SEEK_END);
+     if (read(fd, &ch, 1) < 0) {
+         pr_info("can not get sig len\n");
+         return -1;
+     }
+     pr_info("sig len is %d\n", ch);
+
+     unsigned long dataend = lseek(fd, -1 * ch -1, SEEK_END);
+     *datalen = dataend - *datastart;
+     pr_info("get datalen value: %lu\n", *datalen);
+     *siglen = (unsigned long)ch;
+     if (read(fd, sig, *siglen) != *siglen) {
+         pr_info("can not read sig correctly\n");
+         return -1;
+     }
+     return 0;
+ }
 

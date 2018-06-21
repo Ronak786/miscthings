@@ -25,14 +25,16 @@ class SigUtil {
 private:
     /*
      * readin a file content, calculate sha256sum
-     * fname: input file name
+     * fname: input file name, start offset in file , end offset in file(exclusively, 0L means read until end)
      * result: output sha256sum result
      * return value:
      *		0 success
      *		-1 fail
      */
-    static int get_sha256(const char *fnamel, unsigned char* result);
+    static int get_sha256_from_file(const char *fnamel, unsigned char* result, unsigned long start, unsigned long end);
 
+    static int split_and_getsig(const char *fname, unsigned long *datastart, unsigned long *datalen,
+                         unsigned char* sig, unsigned int *siglen);
     /*
      * success: 0
      * error: -1
@@ -81,8 +83,10 @@ public:
      * input: pkgfilename, pkgfilesigname, public key file name
      * output: signature true or false
      */
-    static bool verify(const char* fname, unsigned char* sigbuf, unsigned int siglen, const char* pubkeypath);
+    static bool verify(const char* fname, const char* pubkeypath);
     static int sign(const char* fname, unsigned char* sig, unsigned int *siglenptr,
               const char*privkeyfname, const char *pubkeyfname);
+
+
 };
 

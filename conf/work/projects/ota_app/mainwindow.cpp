@@ -53,6 +53,8 @@ void MainWindow::handlesign() {
     pr_info("begin sign\n");
     unsigned char buf[128];
     unsigned int siglen;
+    unsigned char tmpbuf[4096];
+    unsigned int tmplen;
     int ret = SigUtil::sign("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/one-1.2.tgz",
                  buf, &siglen, privpath.c_str(), pubpath.c_str());
     if (ret != 0) {
@@ -61,24 +63,42 @@ void MainWindow::handlesign() {
     }
 
     pr_info("save sig to file");
-    int fd = open("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/sigfile", O_WRONLY|O_CREAT, 0600);
-    if (write(fd, buf, (unsigned int)siglen) != (unsigned int)siglen) {
+    int fdin, fdout;
+    fdin = open("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/one-1.2.tgz", O_RDONLY);
+    if (fdin == -1) {
+        pr_info("can not open input file for read\n");
+        return;
+    }
+    fdout = open("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/sigfile", O_WRONLY|O_CREAT|O_TRUNC, 0600);
+
+    // write original file
+    while ((tmplen = read(fdin, tmpbuf, sizeof(tmpbuf))) > 0) {
+        if (write(fdout, tmpbuf, tmplen) != tmplen) {
+            pr_info("write tgz file failed\n");
+            return;
+        }
+    }
+
+    // write sig data
+    if (write(fdout, buf, (unsigned int)siglen) != (unsigned int)siglen) {
         pr_info("write sig failed\n");
         return;
     }
+
+    // write sig length as last byte
+    char ch = siglen; // siglength is about (70,72)
+    if (write(fdout, &ch, 1) != 1) {
+        pr_info("can not append length into file\n");
+        return;
+    }
+    pr_info("write in sig len is %d\n", siglen);
 }
 
 void MainWindow::handleverify() {
     pr_info("begin verify\n");
-    unsigned char buf[128];
-    int siglen;
-    int fd = open("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/sigfile", O_RDONLY);
-    if ((siglen = read(fd, buf, 128)) == -1) {
-        pr_info("read sig failed\n");
-        return;
-    }
-    bool ret = SigUtil::verify("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/one-1.2.tgz",
-                   buf, (unsigned int)siglen, pubpath.c_str());
+
+    bool ret = SigUtil::verify("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/sigfile",
+                   pubpath.c_str());
     pr_info("verify result is %d", ret);
 }
 
