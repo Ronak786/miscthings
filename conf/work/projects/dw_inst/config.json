@@ -1,6 +1,6 @@
 {
-"localpkgdir" : "localpkgs/",
-"prefixdir" : "destdir/",
+"localpkgdir" : "/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/",
+"prefixdir" : "/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/destdir/",
 "remoteaddr" : "192.168.0.26:21",
 "remoteuser" : "sora",
 "remotepass" : "ssss1234",
