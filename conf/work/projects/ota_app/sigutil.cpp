@@ -23,7 +23,8 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
+#include <QFile>
+#include <QDataStream>
 #include "sigutil.h"
 #include "debug.h"
 
@@ -254,113 +255,6 @@ int SigUtil::ecdsa_verify(unsigned char *content, int contentlen, unsigned char*
 	return ret;
 }
 
-// we preread pubkey into buffer ,so just passin the buffer here
-bool SigUtil::verify(const char * fname, const char *pubkeypath) {
-	unsigned char content[SHA256_DIGEST_LENGTH];
-	int res = 0;
-	bool ret = true;
-    unsigned int siglen;
-    unsigned char sig[128];
-    unsigned long datastart, datalen;
-
-    if (split_and_getsig(fname, &datastart, &datalen, sig, &siglen) != 0) {
-        pr_info("can not split and get sig and data offset\n");
-        return false;
-    }
-    pr_info("datastart %lu, len %lu, siglen %u\n", datastart, datalen, siglen);
-
-    //split file into two membuf, second one is sig, siglen, firs one is databuf, datalen
-    if (get_sha256_from_file(fname, content, datastart, datastart + datalen) == -1) {
-		pr_info("can not get sha\n");
-        return false;
-	}
-	
-    res = ecdsa_verify(content, SHA256_DIGEST_LENGTH, sig, siglen, pubkeypath);
-	switch(res) {
-	case -1:
-	  ret = false;
-	  break;
-	case 0:
-	  ret = false;
-	  break;
-	default:
-	  ret = true;
-	  break;
-	}
-
-    return ret;
-}
-
- int SigUtil::sign(const char* fname, unsigned char* sig, unsigned int *siglenptr,
-                 const char*privkeyfname, const char *pubkeyfname) {
-    unsigned char content[SHA256_DIGEST_LENGTH];
-    int res = 0;
-
-    if (get_sha256_from_file(fname, content, 0L, 0L) == -1) {
-        pr_info("can not get sha\n");
-        return -1;
-    }
-
-    res = ecdsa_sign(content, SHA256_DIGEST_LENGTH, sig, siglenptr, privkeyfname, pubkeyfname);
-    if (res != 0) {
-        pr_info("can not sign successfully\n");
-        return -1;
-    } else {
-        pr_info("sign successfully\n");
-    }
-    return 0;
-}
-
- int SigUtil::generate_new_keypairs(const char *privkeypath, const char* pubkeypath) {
-
-     int fd, count;
-     EC_KEY *eckey;
-     char *privkeystr = NULL , *pubkeystr = NULL;
-
-     eckey = EC_KEY_new_by_curve_name(NID_secp256k1);
-     if (eckey == NULL) {
-         pr_info("can not create curve for eckey\n");
-         return -1;
-     }
-
-     pr_info("begin generate key\n");
-     if (!EC_KEY_generate_key(eckey)) {
-         pr_info("cannot generate key from curve group\n");
-         return -1;
-     }
-
-     pr_info("begin save privkey\n");
-     // save priv key
-     privkeystr = BN_bn2hex(EC_KEY_get0_private_key(eckey));
-     if ((fd = open(privkeypath, O_WRONLY|O_CREAT|O_TRUNC, 0600)) == -1) {
-         pr_info("can not open file for priv key store %s\n", privkeypath);
-         return -1;
-     }
-     count = strlen((char*)privkeystr);
-     if (write(fd, privkeystr, count) != count) {
-         pr_info("error write to file of privkey\n");
-         return -1;
-     }
-     free(privkeystr);
-     close(fd);
-
-     pr_info("begin save pubkey\n");
-     // save pub key
-     pubkeystr = EC_POINT_point2hex(EC_KEY_get0_group(eckey), EC_KEY_get0_public_key(eckey), POINT_CONVERSION_COMPRESSED, NULL);
-     if ((fd = open(pubkeypath, O_WRONLY|O_CREAT|O_TRUNC, 0600)) == -1) {
-         pr_info("can not open file for pub key store %s\n", pubkeypath);
-         return -1;
-     }
-     count = strlen(pubkeystr);
-     if (write(fd, pubkeystr, count) != count) {
-         pr_info("error write to file of pubkey\n");
-         return -1;
-     }
-     free(pubkeystr);
-     close(fd);
-     EC_KEY_free(eckey);
-     return 0;
- }
 
  int SigUtil::split_and_getsig(const char *fname, unsigned long *datastart, unsigned long *datalen,
                       unsigned char* sig, unsigned int *siglen) {
@@ -390,3 +284,107 @@ bool SigUtil::verify(const char * fname, const char *pubkeypath) {
      return 0;
  }
 
+ // we preread pubkey into buffer ,so just passin the buffer here
+ bool SigUtil::verify(QString fname, QString pubkeypath) {
+     unsigned char content[SHA256_DIGEST_LENGTH];
+     int res = 0;
+     bool ret = true;
+     unsigned int siglen;
+     unsigned char sig[128];
+     unsigned long datastart, datalen;
+
+     if (split_and_getsig(fname, &datastart, &datalen, sig, &siglen) != 0) {
+         pr_info("can not split and get sig and data offset\n");
+         return false;
+     }
+     pr_info("datastart %lu, len %lu, siglen %u\n", datastart, datalen, siglen);
+
+     //split file into two membuf, second one is sig, siglen, firs one is databuf, datalen
+     if (get_sha256_from_file(fname, content, datastart, datastart + datalen) == -1) {
+         pr_info("can not get sha\n");
+         return false;
+     }
+
+     res = ecdsa_verify(content, SHA256_DIGEST_LENGTH, sig, siglen, pubkeypath);
+     switch(res) {
+     case -1:
+       ret = false;
+       break;
+     case 0:
+       ret = false;
+       break;
+     default:
+       ret = true;
+       break;
+     }
+
+     return ret;
+ }
+
+  int SigUtil::sign(QString fname, QByteArray& sig,
+                  QString privkeyfname, QString pubkeyfname) {
+     unsigned char content[SHA256_DIGEST_LENGTH];
+     int res = 0;
+
+     if (get_sha256_from_file(fname, content, 0L, 0L) == -1) {
+         pr_info("can not get sha\n");
+         return -1;
+     }
+
+     res = ecdsa_sign(content, SHA256_DIGEST_LENGTH, sig, siglenptr, privkeyfname, pubkeyfname);
+     if (res != 0) {
+         pr_info("can not sign successfully\n");
+         return -1;
+     } else {
+         pr_info("sign successfully\n");
+     }
+     return 0;
+ }
+
+  int SigUtil::generate_new_keypairs(QString privkeypath, QString pubkeypath) {
+
+      EC_KEY *eckey;
+      char *privkeystr = NULL , *pubkeystr = NULL;
+
+      eckey = EC_KEY_new_by_curve_name(NID_secp256k1);
+      if (eckey == NULL) {
+          pr_info("can not create curve for eckey\n");
+          return -1;
+      }
+
+      pr_info("begin generate key\n");
+      if (!EC_KEY_generate_key(eckey)) {
+          pr_info("cannot generate key from curve group\n");
+          return -1;
+      }
+
+      privkeystr = BN_bn2hex(EC_KEY_get0_private_key(eckey));
+
+      pr_info("begin save privkey\n");
+      // save priv key
+      QFile privfile(privkeypath );
+      if (!privfile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+          pr_info("can not copy privfile path %s\n", privfile.toStdString().c_str());
+          return -1;
+      }
+      QDataStream outprivstream(&privfile);
+      outprivstream.writeBytes(privkeystr, strlen((char*)privkeystr));
+      privfile.close();
+      free(privkeystr);
+
+      pubkeystr = EC_POINT_point2hex(EC_KEY_get0_group(eckey), EC_KEY_get0_public_key(eckey), POINT_CONVERSION_COMPRESSED, NULL);
+
+      pr_info("begin save pubkey\n");
+      // save pub key
+      QFile pubfile(pubkeypath);
+      if (!pubfile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+          pr_info("can not copy pubfile path %s\n", pubfile.toStdString().c_str());
+          return -1;
+      }
+      QDataStream outpubstream(&pubfile);
+      outpubstream.writeBytes(pubkeystr, strlen((char*)pubkeystr));
+      pubfile.close();
+      free(pubkeystr);
+      EC_KEY_free(eckey);
+      return 0;
+  }

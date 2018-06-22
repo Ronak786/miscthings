@@ -7,7 +7,8 @@
 
 /*
  * this library just a helper lib of functions in openssl
- * , use c-type is better, should not use qt types here I think
+ * , use c-type is better, should not use qt types in private functions I think,
+ * just use them in public funcitons
  */
 #ifdef __cplusplus
 extern "C" {
@@ -35,7 +36,7 @@ private:
      *		0 success
      *		-1 fail
      */
-    static int get_sha256_from_file(fnamel, unsigned char* result, unsigned long start, unsigned long end);
+    static int get_sha256_from_file(const char *fnamel, unsigned char* result, unsigned long start, unsigned long end);
 
     /*
      * file structure  data + signature + siglen(1 byte)
@@ -85,18 +86,18 @@ public:
      * success: return 0
      * error: -1
      */
-    static int generate_new_keypairs(const char* privpath, const char *pubpath);
+    static int generate_new_keypairs(QString privpath, QString pubpath);
 
     /*
      * check signature
      * input: pkgfilename, pkgfilesigname, public key file name
      * output: signature true or false
      */
-    static bool verify(const char* fname, const char* pubkeypath);
+    static bool verify(QString fname, QString pubkeypath);
 
 
-    static int sign(const char* fname, unsigned char* sig, unsigned int *siglenptr,
-              const char*privkeyfname, const char *pubkeyfname);
+    static int sign(QString fname, QByteArray& sig,
+              QString privkeyfname, QString pubkeyfname);
 
 
 };
