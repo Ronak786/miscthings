@@ -16,6 +16,9 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
+     <widget class="QPlainTextEdit" name="textframe"/>
+    </item>
+    <item>
      <widget class="QPushButton" name="install">
       <property name="text">
        <string>install</string>

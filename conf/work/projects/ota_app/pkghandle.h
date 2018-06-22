@@ -26,14 +26,8 @@ private:
 
 // private methods
     int getPkglist(QString file, QVector<PkgInfo> &vstr);
-public:
-    PkgHandle(QString confpath = QString(""));
-	~PkgHandle();
-
-    int loadConfig(); // default "" means use default conf inside, initialize all vars remember
-	int init();
-	int uninit();
-    int getLocalpkglist(QVector<PkgInfo>& resultlist);
+    int checkPkgs(QVector<PkgInfo>& infolist, QString& pubpath);
+    int resizePkgs(QVector<PkgInfo>& pkglist);
     int updateLocalpkglist(QVector<PkgInfo> &pkglist, int installflag);
     int getLocalpkginfo(QString pkgname, PkgInfo& );
     int installPkgs(QVector<PkgInfo>& pkglist);
@@ -41,10 +35,18 @@ public:
     int delPkgs(QVector<PkgInfo>& pkglist); //delete xxx.tar.gz after install
     int delPkgsdir(QVector<PkgInfo>& pkglist, int justsrc); // delete xxx/ after uninstall
     int extractPkgs(QVector<PkgInfo>& pkglist);
+    int loadConfig(); // default "" means use default conf inside, initialize all vars remember
+
+public:
+    PkgHandle(QString confpath = QString(""));
+	~PkgHandle();
+
+    int init();
+    int uninit();
+    int getLocalpkglist(QVector<PkgInfo>& resultlist);
     int install(QVector<QString> &strlist, QString& pubpath); //tar.gz filenames to be installed
     int uninstall(QVector<QString> &strlist); // filename to be uninstalled
-    int checkPkgs(QVector<PkgInfo>& infolist, QString& pubpath);
-    int resizePkgs(QVector<PkgInfo>& pkglist);
+
 };
 
 #endif

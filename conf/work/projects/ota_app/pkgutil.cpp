@@ -6,11 +6,31 @@
 
 int do_copy_file(QString from, QString to) {
     QFile::remove(to);
-    if (QFile::copy(from, to)) {
-        return 0;
+    QFileInfo finfo(from);
+    if (!finfo.isSymLink()) {
+        pr_info("%s is not symlink\n", from.toStdString().c_str());
+        if (QFile::copy(from, to)) {
+            return 0;
+        } else {
+            return -1;
+        }
     } else {
-        return -1;
+
+        QString target = finfo.symLinkTarget();
+ //       pr_info("%s is symlink of %s\n", from.toStdString().c_str(), target.toStdString().c_str());
+        char buf[1024];
+        snprintf(buf, 1023, "cp -a %s %s", from.toStdString().c_str(), to.toStdString().c_str());
+        system(buf);
+        // qt cannot handle symlink well, use gnu version here
+        /*
+        if (QFile::link(target, to)) {
+            return 0;
+        } else {
+            return -1;
+        }
+        */
     }
+    return 0;
 }
 
 int do_copy_pkg(QString pkgpath, QString installdir) {
@@ -25,12 +45,14 @@ int do_copy_pkg(QString pkgpath, QString installdir) {
 
     while (!liststream.atEnd()) {
         pathline = liststream.readLine();
-        if (pathline[pathline.length()-1] == QChar('/')) {
-            QString tmpdir = installdir + pathline;
-            pr_info("makedir: %s%s\n", installdir.toStdString().c_str(), pathline.toStdString().c_str());
-            qdir.mkpath(tmpdir); // make dir, we use find(1) make sure dir created before copy file
+        QString fullfromline = pkgpath + "/src/" + pathline;
+        QString fulltoline = installdir + pathline;
+        QFileInfo finfo(fullfromline);
+        if (finfo.isDir()) {
+            pr_info("makedir: %s\n", fulltoline.toStdString().c_str());
+            qdir.mkpath(fulltoline); // make dir, we use find(1) make sure dir created before copy file
         } else {
-            do_copy_file(pkgpath + "/src/" + pathline, installdir + pathline);
+            do_copy_file(fullfromline, fulltoline);
         }
     }
     listfile.close();
@@ -51,12 +73,13 @@ int uninstallpkg(QString pkgpath, QString installdir) {
 
     while (!liststream.atEnd()) {
         pathline = liststream.readLine();
-        if (pathline[pathline.length()-1] != QChar('/')) {
-            QString tmppath = installdir + pathline;
-            QFile::remove(tmppath);
-            pr_info("unlink: %s\n", tmppath.toStdString().c_str());
+        QString fullline = installdir + pathline;
+        QFileInfo finfo(fullline);
+        if (!finfo.isDir()) {
+            QFile::remove(fullline);
+            pr_info("unlink: %s\n", fullline.toStdString().c_str());
         } else {
-            reverselines.push_back(pathline); // push all dirs in reverse order
+            reverselines.push_back(fullline); // push all dirs in reverse order
         }
     }
 
@@ -65,7 +88,7 @@ int uninstallpkg(QString pkgpath, QString installdir) {
     // remove dirs if empty
     QVector<QString>::reverse_iterator i;
     for(i = reverselines.rbegin(); i != reverselines.rend(); ++i) {
-        QString tmpdir = installdir + *i;
+        QString tmpdir = *i;
         pr_info("remove dir %s\n", tmpdir.toStdString().c_str());
         qdir.rmdir(tmpdir);
     }

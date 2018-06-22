@@ -26,19 +26,43 @@ MainWindow::~MainWindow()
     handle->uninit();
 }
 
-void MainWindow::handleinstall() {
+/*
+ * install flag: 1 for install, 0 for unisntall, 2 for sign;
+ */
+void MainWindow::getListFromFrame(QVector<QString>& installlist, int install) {
+    QByteArray readarray = ui->textframe->toPlainText().toUtf8();
+    QTextStream stream(&readarray);
+    QRegExp reg("\\s+");
+    while (!stream.atEnd()) {
+        QString line = stream.readLine();
+        QString name = line.section(reg, 0, 0);
+        QString version = line.section(reg, 1, 1);
+        if (install == 1) {
+            // combine into one-1.2.tgz
+            installlist.push_back(name + "-" + version + ".tgz");
+        } else if (install == 0){
+            installlist.push_back(name);
+        } else if (install == 2) {
+            installlist.push_back(name + "-" + version);
+        }
+    }
+    pr_info("installllist of %d:", install);
+    foreach(QString str, installlist) {
+        pr_info("    %s", str.toStdString().c_str());
+    }
+}
+
+void MainWindow::handleinstall() {   
     pr_info("begin handle install");
     QVector<QString> installlist;
-    installlist.push_back(QString("one-1.2.tgz"));
-//    installlist.push_back(QString("two-1.1.tgz"));
+    getListFromFrame(installlist, 1);
     handle->install(installlist, pubpath);
 }
 
 void MainWindow::handleuninstall() {
     pr_info("begin handle uninstall");
     QVector<QString> uninstalllist;
-    uninstalllist.push_back("one");
-//    uninstalllist.push_back("two");
+    getListFromFrame(uninstalllist, 0);
     handle->uninstall(uninstalllist);
 }
 
@@ -48,25 +72,33 @@ void MainWindow::handlegenerate() {
 }
 
 void MainWindow::handlesign() {
+    QString prefix = "/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/";
+    QVector<QString> signlist;
+    getListFromFrame(signlist, 2);
+    foreach(QString signstr, signlist) {
+        signOnePkg(prefix + signstr + ".tar.gz", prefix + signstr + ".tgz");
+    }
+    pr_info("sign done");
+}
+
+void MainWindow::signOnePkg(QString from, QString to) {
     pr_info("begin sign\n");
     QByteArray sigarray;
     unsigned char tmpbuf[4096];
     unsigned int tmplen;
-    int ret = SigUtil::sign(QString("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/one-1.2.tar.gz"),
-                 sigarray, privpath, pubpath);
+    int ret = SigUtil::sign(from, sigarray, privpath, pubpath);
     if (ret != 0) {
         pr_info("sign failed\n");
         return;
     }
 
-    pr_info("save sig to file");
     int fdin, fdout;
-    fdin = open("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/one-1.2.tar.gz", O_RDONLY);
+    fdin = open(from.toStdString().c_str(), O_RDONLY);
     if (fdin == -1) {
         pr_info("can not open input file for read\n");
         return;
     }
-    fdout = open("/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/one-1.2.tgz", O_WRONLY|O_CREAT|O_TRUNC, 0600);
+    fdout = open(to.toStdString().c_str(), O_WRONLY|O_CREAT|O_TRUNC, 0600);
 
     // write original file
     while ((tmplen = read(fdin, tmpbuf, sizeof(tmpbuf))) > 0) {
@@ -88,7 +120,6 @@ void MainWindow::handlesign() {
         pr_info("can not append length into file\n");
         return;
     }
-    pr_info("write in sig len is %d\n", ch);
 }
 
 

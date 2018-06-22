@@ -27,6 +27,10 @@ private slots:
     void handleuninstall();
     void handlegenerate();
     void handlesign(); // verify done during install
+
+private:
+    void getListFromFrame(QVector<QString>& installlist, int install);
+    void signOnePkg(QString from, QString to);
 };
 
 #endif // MAINWINDOW_H

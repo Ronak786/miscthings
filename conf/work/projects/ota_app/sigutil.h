@@ -24,9 +24,11 @@ extern "C" {
 #endif
 
 #include <QString>
+#include <pkghandle.h>
 
 class SigUtil {
 
+friend class PkgHandle;
 private:
     /*
      * readin a file content, calculate sha256sum
@@ -83,6 +85,7 @@ private:
 
 public:
     /*
+     * input: pubkey filepath and privatekey filepath
      * success: return 0
      * error: -1
      */
@@ -96,6 +99,13 @@ public:
     static bool verify(QString fname, QString pubkeypath);
 
 
+    /*
+     * sign one package
+     * input: package full path, a qbytearray buffer for sig store,
+     *          privatekey and publickey file path
+     * output: 0 for success, 1 for fail
+     *
+     */
     static int sign(QString fname, QByteArray& sig,
               QString privkeyfname, QString pubkeyfname);
 

@@ -1,12 +1,4 @@
-/*************************************************************************
-	> File Name: createsig.c
-	> Author: davee-x
-	> Mail: davee.naughty@gmail.com 
-	> Created Time: 2018年06月11日 星期一 21时29分38秒
- ************************************************************************/
-
 // need to be careful of memory new and free when handle error
-// should I convert all file operations in this file into qt portable types??
 
 #ifdef __cplusplus
 extern "C" {
