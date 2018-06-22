@@ -10,16 +10,6 @@
 #include "pkgutil.h"
 #include "debug.h"
 
-
-/*
-PkgInfo::PkgInfo(QString name, QString ver, QString arch,
-            unsigned long insdate, unsigned long builddate, unsigned long size, QString sigtype,
-            QString packager, QString summary, QString desc):
-	_name(name), _version(ver), _architecture(arch),
-	_installdate(insdate), _builddate(builddate), _size(size), _sigtype(sigtype),
-	_packager(packager), _summary(summary), _desc(desc) {}
-*/
-
 PkgInfo::PkgInfo(QString name, QString ver):
     _name(name), _version(ver) {}
 
@@ -43,11 +33,9 @@ PkgInfo& PkgInfo::operator=(const PkgInfo &one) {
 }
 
 int PkgInfo::install(QString pkgpath, QString prefix) {
-	do_copy_pkg(pkgpath, prefix);
-	return 0;
+    return do_copy_pkg(pkgpath, prefix);
 }
 
 int PkgInfo::uninstall(QString pkgpath, QString prefix) {
-	uninstallpkg(pkgpath, prefix);
-	return 0;
+    return uninstallpkg(pkgpath, prefix);
 }

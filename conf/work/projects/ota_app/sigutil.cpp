@@ -6,12 +6,7 @@
  ************************************************************************/
 
 // need to be careful of memory new and free when handle error
-
-#include <cstdio>
-#include <cstring>
-#include <fstream>
-#include <vector>
-#include <algorithm>
+// should I convert all file operations in this file into qt portable types??
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,6 +18,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
 #include <QFile>
 #include <QDataStream>
 #include "sigutil.h"
@@ -30,14 +26,7 @@ extern "C" {
 
 #define READSIZ 1*1024*1024
 
-/*
- * readin a file content, calculate sha256sum
- * fname: input file name
- * result: output sha256sum result
- * return value:
- *		0 success
- *		-1 fail
- */
+
 int SigUtil::get_sha256_from_file(const char *fname, unsigned char* result, unsigned long start, unsigned long end) {
 	SHA256_CTX ctx;
 	SHA256_Init(&ctx);
@@ -293,19 +282,19 @@ int SigUtil::ecdsa_verify(unsigned char *content, int contentlen, unsigned char*
      unsigned char sig[128];
      unsigned long datastart, datalen;
 
-     if (split_and_getsig(fname, &datastart, &datalen, sig, &siglen) != 0) {
+     if (split_and_getsig(fname.toStdString().c_str(), &datastart, &datalen, sig, &siglen) != 0) {
          pr_info("can not split and get sig and data offset\n");
          return false;
      }
      pr_info("datastart %lu, len %lu, siglen %u\n", datastart, datalen, siglen);
 
      //split file into two membuf, second one is sig, siglen, firs one is databuf, datalen
-     if (get_sha256_from_file(fname, content, datastart, datastart + datalen) == -1) {
+     if (get_sha256_from_file(fname.toStdString().c_str(), content, datastart, datastart + datalen) == -1) {
          pr_info("can not get sha\n");
          return false;
      }
 
-     res = ecdsa_verify(content, SHA256_DIGEST_LENGTH, sig, siglen, pubkeypath);
+     res = ecdsa_verify(content, SHA256_DIGEST_LENGTH, sig, siglen, pubkeypath.toStdString().c_str());
      switch(res) {
      case -1:
        ret = false;
@@ -325,19 +314,22 @@ int SigUtil::ecdsa_verify(unsigned char *content, int contentlen, unsigned char*
                   QString privkeyfname, QString pubkeyfname) {
      unsigned char content[SHA256_DIGEST_LENGTH];
      int res = 0;
+     unsigned char sigbuf[128] = {0};
+     unsigned int siglen = 0;
 
-     if (get_sha256_from_file(fname, content, 0L, 0L) == -1) {
+     if (get_sha256_from_file(fname.toStdString().c_str(), content, 0L, 0L) == -1) {
          pr_info("can not get sha\n");
          return -1;
      }
 
-     res = ecdsa_sign(content, SHA256_DIGEST_LENGTH, sig, siglenptr, privkeyfname, pubkeyfname);
+     res = ecdsa_sign(content, SHA256_DIGEST_LENGTH, sigbuf, &siglen, privkeyfname, pubkeyfname);
      if (res != 0) {
          pr_info("can not sign successfully\n");
          return -1;
      } else {
          pr_info("sign successfully\n");
      }
+     sig.fromRawData(reinterpret_cast<char*>(sigbuf), siglen);
      return 0;
  }
 
@@ -386,5 +378,27 @@ int SigUtil::ecdsa_verify(unsigned char *content, int contentlen, unsigned char*
       pubfile.close();
       free(pubkeystr);
       EC_KEY_free(eckey);
+      return 0;
+  }
+
+  // still need  modify int,long .. to qint64
+  int SigUtil::resize(QString fname) {
+      char sigsize;
+      QFile qfname(fname);
+      if (!qfname.open(QIODevice::ReadWrite)) {
+          pr_info("can not copy pubfile path %s\n", fname.toStdString().c_str());
+          return -1;
+      }
+      if (qfname.seek(qfname.size()-1) == false) {
+          pr_info("can not seek\n");
+          return -1;
+      }
+      if (qfname.read(&sigsize, 1) != 1) {
+          pr_info("can not read sig length\n");
+          return -1;
+      }
+      pr_info("in resize of %s , sigsize is %d\n", fname.toStdString(), sigsize);
+      qfname.resize(qfname.size() - sigsize -1);
+      qfname.close();
       return 0;
   }

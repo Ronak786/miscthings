@@ -14,4 +14,4 @@ if [ "x$dirname" == "x" ]; then
 fi
 
 (cd $dirname && find .   |  grep -v FILELIST | xargs -n 1 /bin/ls -Fd | sed  -e '1,2d' -e 's#\./src##' > FILELIST.lst)
-tar -zcf ${dirname}.tgz $dirname || rm -f ${dirname}.tgz
+tar -zcf ${dirname}.tar.gz $dirname || rm -f ${dirname}.tar.gz

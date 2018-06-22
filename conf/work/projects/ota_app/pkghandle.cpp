@@ -17,14 +17,18 @@ extern "C" {
 }
 #endif
 
-#include "json.h"
+#include <QDir>
 #include "pkghandle.h"
 #include "sigutil.h"
 #include "debug.h"
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QJsonValue>
 
-using json = nlohmann::json;
 
-PkgHandle::PkgHandle() {
+PkgHandle::PkgHandle(QString confpath): _confpath(confpath) {
+    loadConfig();
 }
 
 PkgHandle::~PkgHandle() {
@@ -39,46 +43,48 @@ int PkgHandle::uninit() {
 	return 0;
 }
 
-int PkgHandle::loadConfig(QString confpath) { // default "" means use default conf inside, initialize all vars remember
-    if (confpath == "") {
+
+//TODO: should use qt's json process lib here
+int PkgHandle::loadConfig() { // default "" means use default conf inside, initialize all vars remember
+    if (_confpath == QString("")) {
 		pr_info("config file emtpy, error");
 		return -1; //can not find conf file
     }   
 
-    std::ifstream ifs(confpath);
-    if (ifs && !ifs.fail()) { //fstream work properly and file exists
-		_confpath = confpath;
+    QByteArray val;
+    QFile file(_confpath);
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text) == false) {
+        pr_info("can not open conf file \n");
+        return -1;
+    }
+    val = file.readAll();
+    file.close();
+    QJsonDocument doc = QJsonDocument::fromJson(val);
+    QJsonObject docobj = doc.object();
 
-        json jconf;
-        ifs >> jconf; // may have exception here ??
-
-        for (json::iterator it = jconf.begin(); it != jconf.end(); ++it) {
-            if (it.key() == "localpkgdir") {
-                _localpkgdir = it.value();
-            } else if (it.key() == "prefixdir") {
-                _prefixdir = it.value();
-            } else if (it.key() == "remoteaddr") {
-                _remoteaddr = it.value();
-            } else if (it.key() == "remoteuser") {
-                _remoteuser = it.value();
-            } else if (it.key() == "remotepass") {
-                _remotepass = it.value();
-            } else if (it.key() == "remotepkgdir") {
-                _remotepkgdir = it.value();
-            } else if (it.key() == "daemonize") {
-                _daemon_flag = it.value();
-            } else if (it.key() == "remotemeta") {
-                _remotemetafile = it.value();
-            } else if (it.key() == "localmeta") {
-                _localmetafile = it.value();
-            } else {
-				pr_info("unknown json object: %s\n", it.key().c_str());
-				return -1;
-            }
+    for (QJsonObject::iterator it = docobj.begin(); it != docobj.end(); ++it) {
+        if (it.key() == "localpkgdir") {
+            _localpkgdir = it.value().toString();
+        } else if (it.key() == "prefixdir") {
+            _prefixdir = it.value().toString();
+        } else if (it.key() == "remoteaddr") {
+            _remoteaddr = it.value().toString();
+        } else if (it.key() == "remoteuser") {
+            _remoteuser = it.value().toString();
+        } else if (it.key() == "remotepass") {
+            _remotepass = it.value().toString();
+        } else if (it.key() == "remotepkgdir") {
+            _remotepkgdir = it.value().toString();
+        } else if (it.key() == "daemonize") {
+            _daemon_flag = it.value().toString();
+        } else if (it.key() == "remotemeta") {
+            _remotemetafile = it.value().toString();
+        } else if (it.key() == "localmeta") {
+            _localmetafile = it.value().toString();
+        } else {
+            pr_info("unknown json object: %s\n", it.key().toStdString().c_str());
+            return -1;
         }
-    } else {
-        pr_info("config file read error\n");
-		return -1;
     }
 
     if (_daemon_flag) {
@@ -108,9 +114,15 @@ int PkgHandle::getLocalpkginfo(QString pkgname, PkgInfo& info) {
 int PkgHandle::extractPkgs(QVector<PkgInfo>& pkglist) {
     char buf[4096];
 	int ret = 0;
+
+    if (resizePkgs(pkglist) != 0) {
+        pr_info("get data part of package error\n");
+        return -1;
+    }
+
     foreach (PkgInfo pkg, pkglist) {
         QString pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tgz";
-		snprintf(buf, sizeof(buf)-1, "tar xf %s -C %s", pkgpath.c_str(), _localpkgdir.c_str());
+        snprintf(buf, sizeof(buf)-1, "tar -zxf %s -C %s", pkgpath.c_str(), _localpkgdir.c_str());
         pr_info("command is %s\n", buf);
 		ret = system(buf);
 		if (ret != 0) {
@@ -122,22 +134,14 @@ int PkgHandle::extractPkgs(QVector<PkgInfo>& pkglist) {
 
 // delete tar pkgs
 int PkgHandle::delPkgs(QVector<PkgInfo>& pkglist) {
-	char buf[128];
-	int ret = 0;
     foreach (PkgInfo pkg, pkglist) {
         QString pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tgz";
-		snprintf(buf, sizeof(buf)-1, "rm -f %s", pkgpath.c_str());
-//		pr_info(buf); // delete tar.gz file
-//		pr_info("\n");
-		ret = system(buf);
-		if (ret != 0) return -1;
+        QFile::remove(pkgpath);
 	}
-	return ret;
+    return 0;
 }
 
 int PkgHandle::delPkgsdir(QVector<PkgInfo>& pkglist, int justsrc) {
-	char buf[128];
-	int ret = 0;
     foreach (PkgInfo pkg, pkglist) {
         QString pkgpath;
         if (justsrc != 0) {
@@ -145,19 +149,19 @@ int PkgHandle::delPkgsdir(QVector<PkgInfo>& pkglist, int justsrc) {
         } else {
             pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion();
         }
-		snprintf(buf, sizeof(buf)-1, "rm -rf %s", pkgpath.c_str());
-		ret = system(buf);
-//		pr_info(buf);
-//		pr_info("\n");
+        QDir dir(pkgpath);
+        dir.removeRecursively();
 	}
-	return ret;
+    return 0;
 }
 
 // TODO: return the error installed index ?
 // or just return -1, then regenerate localpkglist??
 int PkgHandle::installPkgs(QVector<PkgInfo>& pkglist) {
     foreach(PkgInfo pkg, pkglist) {
-		pkg.install( _localpkgdir + pkg.getName() + "-" + pkg.getVersion(), _prefixdir);
+        if (pkg.install( _localpkgdir + pkg.getName() + "-" + pkg.getVersion(), _prefixdir) != 0) {
+            return -1;
+        }
 	}
 	return 0;
 }
@@ -176,22 +180,20 @@ int PkgHandle::uninstallPkgs(QVector<PkgInfo>& pkglist) {
 //		do not know how to pass json objects
 // add into pkginfo should be done in pkginfo.cpp
 int PkgHandle::getPkglist(QString file, QVector<PkgInfo> &vstr) {
-	std::ifstream ifs(file);
-    if (!ifs || ifs.fail()) {
-        pr_info("can not get meta file, just continue\n");
+
+    QFile qfile(file);
+    if(qfile.open(QIODevice::ReadOnly | QIODevice::Text) == false) {
+        pr_info("can not open file get pkg list\n");
         return -1;
     }
+    QByteArray val = qfile.readAll();
+    qfile.close();
+    QJsonDocument doc = QJsonDocument::fromJson(val);
+    QJsonObject docobj = doc.object();
 
-    json content;
-    ifs >> content;
-
-    for (auto pkg: content) {
-        /*
-        vstr.push_back(PkgInfo(pkg["name"],pkg["version"],pkg["arch"],
-					pkg["insdate"], pkg["builddate"], pkg["size"], pkg["sigtype"],
-					pkg["packager"], pkg["summary"], pkg["desc"]));
-        */
-        vstr.push_back(PkgInfo(pkg["name"],pkg["version"]));
+    for (QJsonObject::iterator it = docobj.begin(); it != docobj.end(); ++it) {
+        QJsonArray pkg = (*it).toArray();
+        vstr.push_back(PkgInfo(pkg["name"].toString(),pkg["version"]).toString());
     }
 	return 0;
 }
@@ -199,60 +201,57 @@ int PkgHandle::getPkglist(QString file, QVector<PkgInfo> &vstr) {
 
 int PkgHandle::updateLocalpkglist(QVector<PkgInfo> &vstr, int installflag) {
     QString localmetafile = _localpkgdir + _localmetafile;
-	std::ifstream ifs(localmetafile);
-    pr_info("localmeta: %s", localmetafile.c_str());
-    if (!ifs) {
-        pr_info("error occured when read local json in update\n");
+    QFile qfile(localmetafile);
+    if(qfile.open(QIODevice::ReadOnly | QIODevice::Text) == false) {
+        pr_info("can not open file for get update pkg list\n");
         return -1;
     }
-    json obj;
-    ifs >> obj;
+
+    QJsonDocument doc = QJsonDocument::fromJson(qfile.readAll());
+    qfile.close();
+    QJsonObject docobj = doc.object();
 
 	if (installflag == 1) {
         foreach (PkgInfo item, vstr) {
-            obj[item.getName().toStdString().c_str()]["name"] = item.getName().toStdString();
-            obj[item.getName().toStdString().c_str()]["version"] = item.getVersion().toStdString();
-            /*
-			obj[item.getName().c_str()]["arch"] = item.getArchitecture();
-			obj[item.getName().c_str()]["insdate"] = item.getInstalldate();
-			obj[item.getName().c_str()]["builddate"] = item.getBuilddate();
-			obj[item.getName().c_str()]["size"] = item.getSize();
-			obj[item.getName().c_str()]["sigtype"] = item.getSigtype();
-			obj[item.getName().c_str()]["packager"] = item.getPackager();
-            obj[item.getName().c_str()]["summary"] = item.getSummary();
+            QJsonObject tmpobj{{"name", item.getName()}, {"version", item.getVersion()}};
+            docobj.insert(item.getName(), tmpobj);
 
-			obj[item.getName().c_str()]["desc"] = item.getDesc();
-            */
 		}
 	} else if (installflag == 0) { 
         foreach(PkgInfo item, vstr) {
-            obj.erase(item.getName().toStdString().c_str());
+            docobj.remove(item.getName());
 		}
 	} else {
 		pr_info("install flag error %d\n", installflag);
 		return -1;
 	}
 
-    unlink(localmetafile.toStdString().c_str());
-    std::ofstream ofs(localmetafile);
-	if (!ofs || ofs.fail()) {
-		pr_info("can not open meta file to update\n");
-		return -1;
-	}
-    ofs << obj;
+    // write qjsondocument doc into file
+    if(qfile.open(QIODevice::WriteOnly | QIODevice::Truncate) == false) {
+        pr_info("can not open file for get update pkg list write\n");
+        return -1;
+    }
+    qfile.write(doc.toJson());
+    qfile.close();
+
 	return 0;
 }
 
-int PkgHandle::install(QVector<QString>& strlist) {
+int PkgHandle::install(QVector<QString>& strlist, QString& pubpath) {
     QVector<PkgInfo> infolist;
     foreach(QString str, strlist) {
-        auto const endofname = str.toStdString().find_last_of('-');
-        auto const endofversion = str.toStdString().find_last_of('.');
-        QString name = str.toStdString().substr(0, endofname);
-        QString ver = str.toStdString().substr(endofname+1, endofversion - endofname -1);
+        QRegExp sep("[-.]");
+        QString name = str.section(sep, 0,0);
+        QString ver =  str.section(sep, 1,1);
         pr_info("name is %s, ver is %s", name.toStdString().c_str(), ver.toStdString().c_str());
         infolist.push_back(PkgInfo(name, ver));
     }
+
+    if(checkPkgs(infolist, pubpath) != 0) {
+        pr_info("verify failed pkgs\n");
+        return -1;
+    }
+
     if (extractPkgs(infolist) != 0) {
         pr_info("can not extract pkgs\n");
         return -1;
@@ -299,5 +298,24 @@ int PkgHandle::uninstall(QVector<QString> &strlist) {
         return -1;
     }
     return 0;
+}
+
+int PkgHandle::checkPkgs(QVector<PkgInfo>& infolist, QString& pubpath) {
+    foreach(PkgInfo pkg, infolist) {
+        if (!SigUtil::verify(_localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tgz", pubpath)) {
+            pr_info("verify %s failed\n", pkg.getName().toStdString().c_str());
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int PkgHandle::resizePkgs(QVector<PkgInfo>& pkglist) {
+    foreach(PkgInfo pkg, pkglist) {
+        if (!SigUtil::resize(_localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tgz")) {
+            pr_info("resize %s failed\n", pkg.getName().toStdString().c_str());
+            return -1;
+        }
+    }
 }
 

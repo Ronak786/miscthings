@@ -19,15 +19,14 @@ public:
 private:
     Ui::MainWindow *ui;
     PkgHandle *handle;
-    std::string privpath = "/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/privkey";
-    std::string pubpath = "/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/pubkey";
+    QString privpath = "/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/privkey";
+    QString pubpath = "/home/sora/gitbase/miscthings/conf/work/projects/dw_inst/localpkgs/pubkey";
 
 private slots:
     void handleinstall();
     void handleuninstall();
     void handlegenerate();
-    void handlesign();
-    void handleverify();
+    void handlesign(); // verify done during install
 };
 
 #endif // MAINWINDOW_H

@@ -41,7 +41,7 @@ int uninstallpkg(QString pkgpath, QString installdir) {
     QFile listfile(pkgpath + "/FILELIST.lst");
     if (!listfile.open(QIODevice::ReadOnly)) {
         pr_info("can not open file and uninstall, may be first install\n");
-        return 0;
+        return -1;
     }
 
     QVector<QString> reverselines;
@@ -67,7 +67,7 @@ int uninstallpkg(QString pkgpath, QString installdir) {
     for(i = reverselines.rbegin(); i != reverselines.rend(); ++i) {
         QString tmpdir = installdir + *i;
         pr_info("remove dir");
-        rmdir(tmpdir.c_str());
+        qdir.rmdir(tmpdir);
     }
     return 0;
 }
