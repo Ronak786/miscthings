@@ -75,7 +75,8 @@ int SigUtil::readkeyfromfile(const char* fname, char** bufptr) {
 	}
 	count = lseek(fd, 0L, SEEK_END);
 	lseek(fd, 0L, SEEK_SET);
-	buf = (char*)malloc(count);
+    buf = (char*)malloc(count+1);
+    memset(buf, 0, count+1);
 	if (buf == NULL) {
 		pr_info("can not alloc mem for file %s key read\n", fname);
 		return -1;
@@ -105,6 +106,7 @@ int SigUtil::readpriveckey(EC_KEY **priveckeyptr, const char *privkeypath, const
 		pr_info("can not read privkey\n");
 		return -1;
 	}
+    pr_info("priv key buf is :%s:\n", keybuf);
 	BIGNUM *privbignum = NULL;
 	if (BN_hex2bn(&privbignum, keybuf) == 0) {
 		pr_info("create big num fail\n");
@@ -155,6 +157,7 @@ int SigUtil::readpubeckey(EC_KEY **pubeckeyptr, const char* pubkeypath) {
 		pr_info("can not read pubkey\n");
 		return -1;
 	}
+    pr_info("pub key buf is :%s:\n", keybuf);
 	if ((pubkey = EC_POINT_hex2point(EC_KEY_get0_group(pubeckey), keybuf, pubkey, NULL)) == NULL) {
 		pr_info("can not convert from hex to ecpoint\n");
 		return -1;
@@ -203,6 +206,7 @@ int SigUtil::ecdsa_sign(unsigned char *content, int contentlen, unsigned char* s
 		pr_info("can not generate sig\n");
 		return -1;
 	}
+    pr_info("in sign, sig buf is :%s:\n", sig);
 	pr_info("sig length is %d, contentlen is %d\n", *siglenptr, contentlen);
 
 	EC_KEY_free(priveckey);
@@ -232,6 +236,7 @@ int SigUtil::ecdsa_verify(unsigned char *content, int contentlen, unsigned char*
 	}
 
 	// do verify
+    pr_info("in verify, siglen is %d, sig is :%s:\n", siglen, sig);
 	ret = ECDSA_verify(0, content, contentlen, sig, siglen, pubeckey);
 	if (ret == -1) {
 		pr_info("verify error\n");
@@ -270,6 +275,7 @@ int SigUtil::ecdsa_verify(unsigned char *content, int contentlen, unsigned char*
          pr_info("can not read sig correctly\n");
          return -1;
      }
+     pr_info("in split, read sig :%s:\n", sig);
      return 0;
  }
 
@@ -322,14 +328,16 @@ int SigUtil::ecdsa_verify(unsigned char *content, int contentlen, unsigned char*
          return -1;
      }
 
-     res = ecdsa_sign(content, SHA256_DIGEST_LENGTH, sigbuf, &siglen, privkeyfname, pubkeyfname);
+     res = ecdsa_sign(content, SHA256_DIGEST_LENGTH, sigbuf, &siglen,
+                      privkeyfname.toStdString().c_str(), pubkeyfname.toStdString().c_str());
      if (res != 0) {
          pr_info("can not sign successfully\n");
          return -1;
      } else {
          pr_info("sign successfully\n");
      }
-     sig.fromRawData(reinterpret_cast<char*>(sigbuf), siglen);
+     // set raw data just shallow copy, so we use replace here !!
+     sig.replace(0, sig.size(), QByteArray(reinterpret_cast<char*>(sigbuf), siglen));
      return 0;
  }
 
@@ -352,30 +360,31 @@ int SigUtil::ecdsa_verify(unsigned char *content, int contentlen, unsigned char*
 
       privkeystr = BN_bn2hex(EC_KEY_get0_private_key(eckey));
 
-      pr_info("begin save privkey\n");
       // save priv key
-      QFile privfile(privkeypath );
+      QFile privfile(privkeypath);
       if (!privfile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-          pr_info("can not copy privfile path %s\n", privfile.toStdString().c_str());
+          pr_info("can not copy privfile path %s\n", privkeypath.toStdString().c_str());
           return -1;
       }
       QDataStream outprivstream(&privfile);
-      outprivstream.writeBytes(privkeystr, strlen((char*)privkeystr));
+      // use writerawdata instead of writebyte
+      outprivstream.writeRawData(privkeystr, strlen((char*)privkeystr));
       privfile.close();
+      pr_info("write privkey :%s:\n", privkeystr);
       free(privkeystr);
 
       pubkeystr = EC_POINT_point2hex(EC_KEY_get0_group(eckey), EC_KEY_get0_public_key(eckey), POINT_CONVERSION_COMPRESSED, NULL);
 
-      pr_info("begin save pubkey\n");
       // save pub key
       QFile pubfile(pubkeypath);
       if (!pubfile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-          pr_info("can not copy pubfile path %s\n", pubfile.toStdString().c_str());
+          pr_info("can not copy pubfile path %s\n", pubkeypath.toStdString().c_str());
           return -1;
       }
       QDataStream outpubstream(&pubfile);
-      outpubstream.writeBytes(pubkeystr, strlen((char*)pubkeystr));
+      outpubstream.writeRawData(pubkeystr, strlen((char*)pubkeystr));
       pubfile.close();
+      pr_info("write pubkey :%s:\n", pubkeystr);
       free(pubkeystr);
       EC_KEY_free(eckey);
       return 0;
@@ -397,7 +406,7 @@ int SigUtil::ecdsa_verify(unsigned char *content, int contentlen, unsigned char*
           pr_info("can not read sig length\n");
           return -1;
       }
-      pr_info("in resize of %s , sigsize is %d\n", fname.toStdString(), sigsize);
+      pr_info("in resize of %s , sigsize is %d\n", fname.toStdString().c_str(), sigsize);
       qfname.resize(qfname.size() - sigsize -1);
       qfname.close();
       return 0;

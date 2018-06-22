@@ -10,7 +10,7 @@
 #include "pkgutil.h"
 #include "debug.h"
 
-PkgInfo::PkgInfo(QString name, QString ver):
+PkgInfo::PkgInfo(const QString &name, const QString &ver):
     _name(name), _version(ver) {}
 
 PkgInfo::~PkgInfo() {

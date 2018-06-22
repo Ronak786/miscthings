@@ -30,15 +30,15 @@ void MainWindow::handleinstall() {
     pr_info("begin handle install");
     QVector<QString> installlist;
     installlist.push_back(QString("one-1.2.tgz"));
-    installlist.push_back(QString("two-1.1.tgz"));
-    handle->install(installlist);
+//    installlist.push_back(QString("two-1.1.tgz"));
+    handle->install(installlist, pubpath);
 }
 
 void MainWindow::handleuninstall() {
     pr_info("begin handle uninstall");
     QVector<QString> uninstalllist;
     uninstalllist.push_back("one");
-    uninstalllist.push_back("two");
+//    uninstalllist.push_back("two");
     handle->uninstall(uninstalllist);
 }
 

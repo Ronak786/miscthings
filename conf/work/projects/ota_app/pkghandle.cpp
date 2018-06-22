@@ -5,18 +5,6 @@
 	> Created Time: 2018年06月10日 星期日 20时07分40秒
  ************************************************************************/
 
-#include <fstream>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include <unistd.h>
-
-#ifdef __cplusplus
-}
-#endif
-
 #include <QDir>
 #include "pkghandle.h"
 #include "sigutil.h"
@@ -75,21 +63,16 @@ int PkgHandle::loadConfig() { // default "" means use default conf inside, initi
             _remotepass = it.value().toString();
         } else if (it.key() == "remotepkgdir") {
             _remotepkgdir = it.value().toString();
-        } else if (it.key() == "daemonize") {
-            _daemon_flag = it.value().toString();
         } else if (it.key() == "remotemeta") {
             _remotemetafile = it.value().toString();
         } else if (it.key() == "localmeta") {
             _localmetafile = it.value().toString();
         } else {
             pr_info("unknown json object: %s\n", it.key().toStdString().c_str());
-            return -1;
+   //         return -1;
         }
     }
 
-    if (_daemon_flag) {
-        daemon(1,0); // nochdir but close std streams
-    }
     return 0;
 }
 
@@ -122,7 +105,7 @@ int PkgHandle::extractPkgs(QVector<PkgInfo>& pkglist) {
 
     foreach (PkgInfo pkg, pkglist) {
         QString pkgpath = _localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tgz";
-        snprintf(buf, sizeof(buf)-1, "tar -zxf %s -C %s", pkgpath.c_str(), _localpkgdir.c_str());
+        snprintf(buf, sizeof(buf)-1, "tar -zxf %s -C %s", pkgpath.toStdString().c_str(), _localpkgdir.toStdString().c_str());
         pr_info("command is %s\n", buf);
 		ret = system(buf);
 		if (ret != 0) {
@@ -170,7 +153,8 @@ int PkgHandle::installPkgs(QVector<PkgInfo>& pkglist) {
 int PkgHandle::uninstallPkgs(QVector<PkgInfo>& pkglist) {
     foreach(PkgInfo pkg, pkglist) {
 		pkg.uninstall(_localpkgdir + pkg.getName() + "-" + pkg.getVersion(), _prefixdir);
-	}
+        pr_info("handle unisntall pkg %s\n", pkg.getName().toStdString().c_str());
+    }
 	return 0;
 }
 
@@ -186,14 +170,13 @@ int PkgHandle::getPkglist(QString file, QVector<PkgInfo> &vstr) {
         pr_info("can not open file get pkg list\n");
         return -1;
     }
-    QByteArray val = qfile.readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(qfile.readAll());
     qfile.close();
-    QJsonDocument doc = QJsonDocument::fromJson(val);
     QJsonObject docobj = doc.object();
 
     for (QJsonObject::iterator it = docobj.begin(); it != docobj.end(); ++it) {
-        QJsonArray pkg = (*it).toArray();
-        vstr.push_back(PkgInfo(pkg["name"].toString(),pkg["version"]).toString());
+        QJsonObject pkg = it.value().toObject();
+        vstr.push_back(PkgInfo(pkg["name"].toString(),pkg["version"].toString()));
     }
 	return 0;
 }
@@ -215,6 +198,7 @@ int PkgHandle::updateLocalpkglist(QVector<PkgInfo> &vstr, int installflag) {
         foreach (PkgInfo item, vstr) {
             QJsonObject tmpobj{{"name", item.getName()}, {"version", item.getVersion()}};
             docobj.insert(item.getName(), tmpobj);
+            pr_info("add name %s into json\n", item.getName().toStdString().c_str());
 
 		}
 	} else if (installflag == 0) { 
@@ -231,6 +215,8 @@ int PkgHandle::updateLocalpkglist(QVector<PkgInfo> &vstr, int installflag) {
         pr_info("can not open file for get update pkg list write\n");
         return -1;
     }
+    // set new updated obj as main of doc
+    doc.setObject(docobj);
     qfile.write(doc.toJson());
     qfile.close();
 
@@ -242,7 +228,7 @@ int PkgHandle::install(QVector<QString>& strlist, QString& pubpath) {
     foreach(QString str, strlist) {
         QRegExp sep("[-.]");
         QString name = str.section(sep, 0,0);
-        QString ver =  str.section(sep, 1,1);
+        QString ver =  str.section(sep, 1,-2);
         pr_info("name is %s, ver is %s", name.toStdString().c_str(), ver.toStdString().c_str());
         infolist.push_back(PkgInfo(name, ver));
     }
@@ -312,10 +298,11 @@ int PkgHandle::checkPkgs(QVector<PkgInfo>& infolist, QString& pubpath) {
 
 int PkgHandle::resizePkgs(QVector<PkgInfo>& pkglist) {
     foreach(PkgInfo pkg, pkglist) {
-        if (!SigUtil::resize(_localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tgz")) {
+        if (SigUtil::resize(_localpkgdir + pkg.getName() + "-" + pkg.getVersion() + ".tgz") != 0) {
             pr_info("resize %s failed\n", pkg.getName().toStdString().c_str());
             return -1;
         }
     }
+    return 0;
 }
 

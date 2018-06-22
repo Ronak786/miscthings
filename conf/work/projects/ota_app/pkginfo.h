@@ -22,7 +22,8 @@ private:
 // private functions
 
 public:
-    PkgInfo(QString name, QString ver);
+    PkgInfo(): _name(QString("name")), _version(QString("version")) {}
+    PkgInfo(const QString &name, const QString &ver);
 	~PkgInfo();
 
 	// member get methods

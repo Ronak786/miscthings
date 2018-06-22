@@ -52,9 +52,9 @@ int uninstallpkg(QString pkgpath, QString installdir) {
     while (!liststream.atEnd()) {
         pathline = liststream.readLine();
         if (pathline[pathline.length()-1] != QChar('/')) {
-            QString tmpdir = installdir + pathline;
-            qdir.rmdir(tmpdir);
-            pr_info("unlink: %s\n", tmpdir.toStdString().c_str());
+            QString tmppath = installdir + pathline;
+            QFile::remove(tmppath);
+            pr_info("unlink: %s\n", tmppath.toStdString().c_str());
         } else {
             reverselines.push_back(pathline); // push all dirs in reverse order
         }
@@ -63,10 +63,10 @@ int uninstallpkg(QString pkgpath, QString installdir) {
     listfile.close();
 
     // remove dirs if empty
-    QVector<QString>::iterator i;
+    QVector<QString>::reverse_iterator i;
     for(i = reverselines.rbegin(); i != reverselines.rend(); ++i) {
         QString tmpdir = installdir + *i;
-        pr_info("remove dir");
+        pr_info("remove dir %s\n", tmpdir.toStdString().c_str());
         qdir.rmdir(tmpdir);
     }
     return 0;
