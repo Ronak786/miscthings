@@ -74,3 +74,13 @@ setpriority(NotificationCompat.priority_max/min/low/high/default)
             2content://
             3file:// 这两种直接解析即可
         解析就是传给contentresolver处理query，获取路径
+
+音频
+    MediaPlayer
+        setdataresource
+        start pause stop relese
+        注意获取外部路径environment.getexternalstoreagedirectory
+        获取权限writeexternalstoreage
+
+视频
+    videoview

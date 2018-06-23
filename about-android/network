@@ -1,0 +1,7 @@
+add permission internet
+webview:
+    标签支持内嵌浏览器功能：
+    setjavascriptenabled
+    setwebviewclient(new webviewclient)
+        希望跳转后任然在webview中
+    loadurl(展示内容）
