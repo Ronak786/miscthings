@@ -27,3 +27,18 @@ content resolver
             if grantedresult = granted, then call your function
         
 
+自定义provider：
+    选择other-》content provider
+    也可以自己manifest里添加，authority就是名字，name指定对应的类
+
+    继承contentprovider实现query, delete udpate delete gettype
+        最后这个具体形式是vnd.adnroid.cursor.dir(item)/vnd.(authority_name).表名
+
+    使用urimatcher构造每个authority 加上后面的部分的uri，
+    后面是表名+id ，可以*表示所有字符， #表示所有数字
+    然后每个query等里面urimatcher.match(uri) 更具对应分配的id进行识别执行
+        对应的数据库操作
+
+    利用uri.getpathsegment.get(0)/get(1) 可以获取后面那段自定义部分的id或者名字
+
+    注意关闭cursor
