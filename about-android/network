@@ -5,3 +5,98 @@ webview:
     setwebviewclient(new webviewclient)
         希望跳转后任然在webview中
     loadurl(展示内容）
+
+ScrollView:
+    里面的东西超过一个屏幕，可以滚动
+
+发送网络 httpconnectionurl
+    get：
+        url = new url(xxx);
+        url.openconnection -> httpurlconnection
+        connection.setxxxtimeout.setrequestmethod(get)
+        connection.getinputstream
+        bufferedreader(new inputstreamreader(inputstream)
+        getline xxxxxxxx
+        即可
+        最后reader.close()
+        connection.close()
+
+    post:
+        setrequestmethod
+        dataoutputstream(connection.getoutputstream)
+        out.writebytes(xx=yy&zz=aa);
+
+
+发送网络okhttp
+    使用找网上这个项目添加gradle
+    然后client = new okhttpclient();
+    new request.builder().url("xxx").build();
+    client.newCall(request).execute() => Response
+    String = response.body().string()
+    即可 不用关闭
+
+解析xml：
+    1 xmlpullparser：
+        xmlpullparserfactory.newinstalce()
+        factory.newpullparser() -> parser.
+        parser.setinput(stringreader(string));
+        parser.geteventtype() :
+            while (!xmlpullparser.end_document) {
+                if type == START_TAG:
+                    get tagname = parser.getname();
+                    get text = parser.nexttext();
+                if (type = end_tag)
+                    get name = xxx
+                    
+                type = parser.next(); 这样就可以继续获取下一个tag的类型了
+            }
+
+    2 SAX
+        首先继承defaulthandler 实现startdocuemnt enddocument startelement
+            endelement,characters 这些方法
+        然后主类中saxparserfactory.newinstance().newsaxparser.getxmlreader();
+        reader.setcontenthandler(handler);
+        reader.parse(inputsource(stringreader(data)));
+
+解析json
+    1 jsonobject:
+        jsonarray = new jsonarray(data); jsonarray.length() iterate
+        jsonobject = jsonarray.getjsonobject(index);
+        jsonobject.getString("xxx");即可
+
+    2 gson:
+        gson = new gson();
+        gson.fromjson(data, Person.class)
+        对于解析数组 gson.fromjson(data, new TypeToken<List<Person>>())
+            这里的Persion是自定义的和对应json结构相符合的类，之后可以利用
+            类里面自己做工作
+
+起线程：
+    1
+    new Thread(new Runable(){
+     run() {
+     sxxxx
+     }
+     ).start() 这样即时开线程
+     
+     然后线程里可以调用其他函数，而那个函数可以强制在主线程里设置东西，使用
+     function() {
+        runOnUIThread(new Runable() {
+            run() {
+                set xxx 即可
+            }
+        });
+     }
+
+    2
+     对于httpurlconnection 可以在调用函数的时候传入一个自定义接口，
+        然后启动线程后内部调用这个接口也是可以的,回调
+
+    3
+    使用okhttp：
+        client.newcall(request).enqueue(callback);
+            这里的callback是实现的okhttp3.callback接口
+                内部实现onresponse onfailure接口函数
+
+    注意：
+        这些都是在子线程上运行的，还是要使用onuithread
