@@ -1,7 +1,0 @@
-sign: use ecdsa
-compress use tar.gz use libarchive, add sig to tail, then add siglength to tail as one byte
-verify: check  late byte as siglength, checklast xxx byte as signature
-uncompress the rest use libarchive, (can we just uncompress from file start? or need copy to another)
-install: search localdir, if have pre-version package, uninstall it, 
-		in qt, use qt copydir to copy files recursively
-uninstall: remove files and dirs listed in files list, then remove it-self

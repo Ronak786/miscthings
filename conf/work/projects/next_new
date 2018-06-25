@@ -1,5 +1,0 @@
-config.json: have prefix install dir
-pkghandle:
-have: pkglist in json(maybe use sqlite plugin better)(constructed into pkginfo into memory for internal process)
-install: input: installpkgname
-uninstall: packagename
