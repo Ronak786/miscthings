@@ -1,0 +1,52 @@
+线程：
+    构造runable的接口实现run，然后thread（runable）类型即start()
+
+异步消息处理：
+    1
+            runonuithread(runable) {
+            xxxx
+            }
+    2
+        主线程创建handler，然后实现handle message
+            非主线程利用handler.sendmessage,即可
+            内部使用message queue 以及looper管理queue
+
+    3 async_task<inputtype, progressbar_type, outputtype>
+        实现onpreexecute(), doinbackground(),
+            onprogressudpate( background调用publishprogress的时候调用）
+            onpostexecute() 接受返回值，更细ui
+
+        主线程中class().execute()即可
+
+    4 service:
+        实现service的oncreate, onstartcommand ondelete:
+            这些在startService的时候会调用
+                stopService需要对应调用或者stopSelf();不然服务不会停止
+        建立联系：
+            在服务中创建继承Binder的类，然后onbinder返回这个binder实例
+            在bindService的时候，指定intent的同时，指定一个Serviceconnection类，
+                实现onserviceonnection, onservciedisconnection,
+                会返回前面onbind的时候返回的那个服务里的实例，这样就可以
+                控制服务了
+
+        服务只会启动一次，以后startservice只会不断调用onstartcommand
+        bindservice也会启动servcie，如果没启动，并且unbind 和stopservice都会
+        销毁服务的！！
+
+    前台服务：
+        会显示在前台一个图标状态的服务，如ss，可以避免内存不足被回收
+
+        服务的oncreate中构造intent pendingintent，然后，启动一个notification，
+        最后startForeground(1, notification) 即可
+
+    服务的耗时部分：
+        应该任然使用thread运行于后台，不然服务任然是在前台：
+        =而且结束后不要忘了内部执行stopself（）
+
+        方便的方法：
+        intentservice：
+            继承一个intentservice，实现onhandleintent， ondestroy，
+                无参构造中要调用父类的有参构造，传入名字
+
+                handleintent里面可以实现对应需要实现的线程中的东西
+        

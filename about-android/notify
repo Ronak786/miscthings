@@ -1,0 +1,86 @@
+notificationmanager manager = (notificationmanager)getsystemservice(notification_service) 获取通知管理
+Notification notify = new NotificationCompat.Builder(this).setcontenttitle
+    .setcontenttext.setwhen.setsmallicon.setlargeicon.build()
+    manager.notify(1, notification) 就可以了
+
+>=sdk26之后，需要使用notivication而不是compat，而且需要传入除this之外的一个channel
+用notificationchannel建立，然后再manager中create，然后这里上面设置channel的字符串
+
+pendingintent
+    首先设置intent，然后pendingintent.getactivity(this, 0, intent. 0)
+    然后build notification的时候setcontentintent就行了
+    就可以点击通知然后启动新活动了
+    还要设置setautocancel(true) 或者manager.setcancel(id) 
+        就是notify传入的id，这样点击后活动栏的小图标就消失了
+
+setSound(Uri.fromFile(new File(/xxxxxxx))) 设置手机中音乐文件的声音
+setvibrate（new long[]{xx,xx,xx,xx))一次排列静止，震动，静止，震动。。。毫秒
+    need permission vibrate
+setlights设置led颜色，闪，灭时间
+
+setDefaults(notificationCompat.default_all) 设置默认
+setStyle(new NotificationCompat.BigTextStyle()/BitPictiureStyle.bittext()/bitpicture ("xxxxxx" /BitmapFactory.decodeResource(getResources(), R.drawable.big_image))
+分别设置长文本或者大图片
+
+setpriority(NotificationCompat.priority_max/min/low/high/default)
+    高优先级会自动显示下拉效果
+
+
+
+应用调用摄像头：
+    首先利用File创建一个文件，可以放在getExternalCacheDir()这个是应用特定的外部存储路径，
+    然后File.createnewfile
+    然后设定imageuri = Uri.fromFile(path) 
+        or >=7.0: FileProvider.getUriForFile(this, "providername(自定义一个）",imageuri);
+
+    然后intent(android.media.action.image_capture).putextra(
+        MediaStore.EXTRA_OUTPUT, imageUri) 这样可以设定存储路径，
+        startactivityforresult
+
+    in onactivityresult:
+        BitmapFactory.decodeStream(getcontentresolver().openinputstream(imageuri))
+        imageview.setbitmap(bitmap)即可
+
+    再manifest中设定<provider
+                        name="android.support.v4.content.FileProvider"
+                        authorities="自定义的那个"
+                        exported="false"
+                        grantUriPermissions="true"
+                        <meta-data
+                            name="android.support.FILE_PROVIDER_PATHS"
+                            resource="@xml/file_paths" />
+                        然后创建xml文件
+                <?xml version="1.0" encoding="utf-8"?>
+                <paths xmlns:android="http://schemas.android.com/apk/res/android">
+                    <external-path name="image" path="" />
+                </path>
+                这个用来设定具体的共享路径，默认全sd卡
+                兼容4.4还需要permission设置允许WRITE_EXTERNAL_STORAGTE
+                    之后是不需要的，之前需要
+
+打开图片库：
+    首先需要write_extrenal_storege 权限检验
+        然后intent("android.intent.action.GET_CONTENT).setType("image/*");
+        startavtivityforresult，这个时候就可以选择图片了
+
+    选择玩之后会返回，然后4.4之后返回的图片地址uri需要解析，之前的直接
+        contentresolver.query即可，就可以获取图片地址
+
+        对于4.4之后的，需要：
+            1判断是否docid：
+                DocumentsContract.getDocumentId(uri);
+                if (com.android.providers.media.documents.equals(uri.getauthority)
+                else download下
+            2content://
+            3file:// 这两种直接解析即可
+        解析就是传给contentresolver处理query，获取路径
+
+音频
+    MediaPlayer
+        setdataresource
+        start pause stop relese
+        注意获取外部路径environment.getexternalstoreagedirectory
+        获取权限writeexternalstoreage
+
+视频
+    videoview
