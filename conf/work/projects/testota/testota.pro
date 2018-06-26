@@ -24,7 +24,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        mainwindow.cpp
+        mainwindow.cpp \
+    main.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,3 +40,5 @@ HEADERS += \
 
 FORMS += \
         mainwindow.ui
+
+LIBS += -L$$PWD/ -lpkglib -lcrypto
