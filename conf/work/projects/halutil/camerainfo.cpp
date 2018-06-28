@@ -12,3 +12,9 @@ CameraInfo::CameraInfo() {
 
 CameraInfo::~CameraInfo() {
 }
+
+int CameraInfo::getImage(cv::Mat& mat) {
+	cv::Mat mat_empty;
+	mat = mat_empty;
+	return 0;
+}

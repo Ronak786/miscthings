@@ -9,12 +9,13 @@
 
 #include "halutil.h"
 
-int HalUtil::getAvailWifiList(std::vector<WifiInfo> & vinfo) {
+std::vector<WifiInfo> HalUtil::getAvailWifiList() {
+	std::vector<WifiInfo> vinfo;
 	std::string cmdstr = "iwlist wlp3s0 scanning | egrep '(ESSID|Signal level=)' | sed  'N;s/\\n/ /'";
 	std::FILE* fp = popen(cmdstr.c_str(), "r");
 	if (!fp) {
 		printf("read pipe error\n");
-		return -1;
+		return vinfo;
 	}
 
 	// used to store result line
@@ -25,11 +26,29 @@ int HalUtil::getAvailWifiList(std::vector<WifiInfo> & vinfo) {
 	int level;
 	while (std::fgets(buf, sizeof(buf)-1, fp) != NULL) {
 		if ((count = std::sscanf(buf, " Quality=%s Signal level=%d dBm ESSID:%s\n", quality, &level, essid)) != 3) {
-			return -2;
+			return vinfo;
 		}
 		vinfo.push_back(WifiInfo(quality, level, essid));
 	}
 	std::fclose(fp);
 
+	return vinfo;
+}
+
+CameraInfo* HalUtil::openCamera() {
+	return new CameraInfo();
+}
+
+int HalUtil::closeCamera(CameraInfo *info) {
+	delete info;
+	return 0;
+}
+
+LteInfo* HalUtil::openLte() {
+	return new LteInfo();
+}
+
+int HalUtil::closeLte(LteInfo *info) {
+	delete info;
 	return 0;
 }

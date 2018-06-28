@@ -32,10 +32,10 @@ std::string WifiInfo::getEssid() {
 }
 
 // currently we have no error check
-int	WifiInfo::activate(std::string& essid, std::string& pass) {
+int	WifiInfo::activate(std::string pass) {
 	std::ofstream ofs(_conffile, std::ios::out | std::ios::trunc);	
 	ofs << "network {" << std::endl;
-	ofs << "	ssid=\"" << essid << "\"" << std::endl;
+	ofs << "	ssid=\"" << _essid << "\"" << std::endl;
 	ofs << "	psk=\"" << pass << "\"" << std::endl;
 	ofs << "}" << std::endl;
 	ofs.close();
@@ -43,14 +43,14 @@ int	WifiInfo::activate(std::string& essid, std::string& pass) {
 	return 0;
 }
 
-int	WifiInfo::deactivate(std::string& essid) {
+int	WifiInfo::deactivate() {
 	std::remove(_conffile.c_str());
 	system("killall dhcpcd");
 	return 0;
 }
 
 // return string in xxx.xx/xx
-int	WifiInfo::getIpInfo(std::string &ip) {
-	ip = "192.168.0.123/24";
-	return 0;
+std::string	WifiInfo::getIp() {
+	return std::string("192.168.0.123/24");
 }
+

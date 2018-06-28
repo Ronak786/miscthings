@@ -8,10 +8,15 @@
 #ifndef CAMERAINFO_H
 #define CAMERAINFO_H
 
+#include <opencv2/opencv.hpp>
+
 class CameraInfo {
 
+private:
+	// should have private init/open/uninit/close function here when called from halutil::open/close
 public:
 	CameraInfo();
 	~CameraInfo();
+	int getImage(cv::Mat& mat); //get picture may fail, so use return value here
 };
 #endif

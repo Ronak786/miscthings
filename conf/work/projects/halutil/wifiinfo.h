@@ -9,6 +9,7 @@
 #ifndef WIFIINFO_H
 #define WIFIINFO_H
 #include <string>
+#include <vector>
 
 class WifiInfo {
 private:
@@ -22,8 +23,9 @@ public:
 	std::string getQuality();
 	int			getLevel();
 	std::string getEssid();
-	int			activate(std::string& essid, std::string& pass);
-	int			deactivate(std::string& essid);
-	int			getIpInfo(std::string& ip);
+	int			activate(std::string pass);
+	int			deactivate();
+	std::string	getIp();
+
 };
 #endif
