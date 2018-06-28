@@ -1,0 +1,25 @@
+/*************************************************************************
+	> File Name: halutil.h
+	> Author: davee-x
+	> Mail: davee.naughty@gmail.com 
+	> Created Time: Thu 28 Jun 2018 10:35:15 AM CST
+ ************************************************************************/
+
+
+#ifndef WIFIINFO_H
+#define WIFIINFO_H
+#include <string>
+
+class WifiInfo {
+private:
+	std::string _quality;
+	int			_level;
+	std::string _essid;
+public:
+	WifiInfo(std::string quality, int level, std::string essid);
+	~WifiInfo();
+	std::string getQuality();
+	int			getLevel();
+	std::string getEssid();
+};
+#endif
