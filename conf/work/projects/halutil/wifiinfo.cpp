@@ -8,6 +8,7 @@
 
 #include "halutil.h"
 #include <fstream>
+#include <cstdio>
 
 WifiInfo::WifiInfo(std::string quality, int level, std::string essid):
 		_quality(quality), _level(level), _essid(essid) {
@@ -31,7 +32,7 @@ std::string WifiInfo::getEssid() {
 }
 
 // currently we have no error check
-int	WifiInfo::activate(std::string essid, std::string pass) {
+int	WifiInfo::activate(std::string& essid, std::string& pass) {
 	std::ofstream ofs(_conffile, std::ios::out | std::ios::trunc);	
 	ofs << "network {" << std::endl;
 	ofs << "	ssid=\"" << essid << "\"" << std::endl;
@@ -42,13 +43,14 @@ int	WifiInfo::activate(std::string essid, std::string pass) {
 	return 0;
 }
 
-int	WifiInfo::deactivate() {
-	unlink(_conffile.c_str());
+int	WifiInfo::deactivate(std::string& essid) {
+	std::remove(_conffile.c_str());
 	system("killall dhcpcd");
 	return 0;
 }
 
 // return string in xxx.xx/xx
 int	WifiInfo::getIpInfo(std::string &ip) {
-	return std::string("192.168.0.123/24");
+	ip = "192.168.0.123/24";
+	return 0;
 }

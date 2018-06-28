@@ -9,6 +9,7 @@
 #ifndef HALUTIL_H
 #define HALUTIL_H
 #include "wifiinfo.h"
+#include <vector>
 
 class HalUtil {
 public:

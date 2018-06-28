@@ -22,8 +22,8 @@ public:
 	std::string getQuality();
 	int			getLevel();
 	std::string getEssid();
-	int			activate();
-	int			deactivate();
-	int			getIpInfo();
+	int			activate(std::string& essid, std::string& pass);
+	int			deactivate(std::string& essid);
+	int			getIpInfo(std::string& ip);
 };
 #endif
