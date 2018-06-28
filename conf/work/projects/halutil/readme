@@ -1,0 +1,87 @@
+class HalUtil {
+	static CameraInfo* openCamera();			// open camera
+	static int closeCamera(CameraInfo *info);	// close camera
+
+	static LteInfo* openLte();					// open lte
+	static int closeLte(LteInfo *info);			// close lte
+
+	// get wifiinfo list and return, static method
+	static std::vector<WifiInfo>  getAvailWifiList(); //get a list for wifi info
+};
+/*************************************************************************
+	> File Name: halutil.h
+	> Author: davee-x
+	> Mail: davee.naughty@gmail.com 
+	> Created Time: Thu 28 Jun 2018 10:35:15 AM CST
+ ************************************************************************/
+
+
+#ifndef WIFIINFO_H
+#define WIFIINFO_H
+#include <string>
+#include <vector>
+
+class WifiInfo {
+private:
+	std::string _conffile;
+	std::string _quality;
+	int			_level;
+	std::string _essid;
+public:
+	WifiInfo(std::string quality, int level, std::string essid);
+	~WifiInfo();
+	std::string getQuality();
+	int			getLevel();
+	std::string getEssid();
+	int			activate(std::string pass);
+	int			deactivate();
+	std::string	getIp();
+
+};
+#endif
+/*************************************************************************
+	> File Name: camerainfo.h
+	> Author: davee-x
+	> Mail: davee.naughty@gmail.com 
+	> Created Time: Thu 28 Jun 2018 02:44:22 PM CST
+ ************************************************************************/
+
+#ifndef CAMERAINFO_H
+#define CAMERAINFO_H
+
+#include <opencv2/opencv.hpp>
+
+class CameraInfo {
+
+private:
+	// should have private init/open/uninit/close function here when called from halutil::open/close
+public:
+	CameraInfo();
+	~CameraInfo();
+	int getImage(cv::Mat& mat); //get picture may fail, so use return value here
+};
+#endif
+/*************************************************************************
+	> File Name: camerainfo.h
+	> Author: davee-x
+	> Mail: davee.naughty@gmail.com 
+	> Created Time: Thu 28 Jun 2018 02:44:22 PM CST
+ ************************************************************************/
+
+#ifndef LTEINFO_H
+#define LTEINFO_H
+
+#include <string>
+
+class LteInfo {
+
+private:
+	// should have private init/open/uninit/close function here when called from halutil::open/close
+
+public:
+	LteInfo();
+	~LteInfo();
+	std::string getIp(); // return ip addr
+	int getSignalStrength(); // return signal strength
+};
+#endif
