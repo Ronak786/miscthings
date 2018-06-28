@@ -1,0 +1,2 @@
+iwlist wlp3s0 scanning | egrep '(ESSID|Signal level=)' | sed  'N;s/\n/ /'
+count = sscanf(buf, " Quality=%s Signal level=%d dBm ESSID:%s\n", quality, &level, essid)) != 3)
