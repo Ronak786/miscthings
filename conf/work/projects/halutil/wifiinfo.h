@@ -12,6 +12,7 @@
 
 class WifiInfo {
 private:
+	std::string _conffile;
 	std::string _quality;
 	int			_level;
 	std::string _essid;
@@ -21,5 +22,8 @@ public:
 	std::string getQuality();
 	int			getLevel();
 	std::string getEssid();
+	int			activate();
+	int			deactivate();
+	int			getIpInfo();
 };
 #endif
