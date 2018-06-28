@@ -39,7 +39,7 @@ int	WifiInfo::activate(std::string pass) {
 	ofs << "	psk=\"" << pass << "\"" << std::endl;
 	ofs << "}" << std::endl;
 	ofs.close();
-	system("dhcpcd"); // start dhcpcd
+	system("dhcpcd > /dev/null 2>&1 "); // start dhcpcd
 	return 0;
 }
 

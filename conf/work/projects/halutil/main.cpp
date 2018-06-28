@@ -25,6 +25,7 @@ int main() {
 	CameraInfo *cptr = HalUtil::openCamera();
 	cv::Mat matpic;
 	int res = cptr->getImage(matpic);
+	std::printf("success get image\n");
 	// show image ....
 	HalUtil::closeCamera(cptr);
 	/*********************camera***************************/
@@ -33,9 +34,8 @@ int main() {
 	LteInfo *lptr = HalUtil::openLte();
 	std::string lteIp = lptr->getIp();
 	int lteSignalStrength = lptr->getSignalStrength();
-	std::
+	std::printf("lte ip is %s, sig strength is %d\n", lteIp.c_str(), lteSignalStrength);
 
-	// show image ....
 	HalUtil::closeLte(lptr);
 	/*********************lte***************************/
 
