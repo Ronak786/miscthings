@@ -1,4 +1,3 @@
 otaapp original intergated ota app
 pkglib lib file form otaapp
 testota test from otaapp use lib from pkglib, need to add lib from pkglib currently
-

@@ -1,87 +1,33 @@
-class HalUtil {
-	static CameraInfo* openCamera();			// open camera
-	static int closeCamera(CameraInfo *info);	// close camera
+Demo 参照main.cpp
 
-	static LteInfo* openLte();					// open lte
-	static int closeLte(LteInfo *info);			// close lte
+class HalUtil {
+	static CameraInfo* openCamera();			// 打开相机
+	static int closeCamera(CameraInfo *info);	// 关闭相机
+
+	static LteInfo* openLte();					// 打开lte，联网
+	static int closeLte(LteInfo *info);			// 关闭lte
 
 	// get wifiinfo list and return, static method
-	static std::vector<WifiInfo>  getAvailWifiList(); //get a list for wifi info
+	static std::vector<WifiInfo>  getAvailWifiList(); // 获取wifi列表
 };
-/*************************************************************************
-	> File Name: halutil.h
-	> Author: davee-x
-	> Mail: davee.naughty@gmail.com 
-	> Created Time: Thu 28 Jun 2018 10:35:15 AM CST
- ************************************************************************/
 
-
-#ifndef WIFIINFO_H
-#define WIFIINFO_H
-#include <string>
-#include <vector>
-
+// wifi信息结构
 class WifiInfo {
-private:
-	std::string _conffile;
-	std::string _quality;
-	int			_level;
-	std::string _essid;
-public:
-	WifiInfo(std::string quality, int level, std::string essid);
-	~WifiInfo();
-	std::string getQuality();
-	int			getLevel();
-	std::string getEssid();
-	int			activate(std::string pass);
-	int			deactivate();
-	std::string	getIp();
+	std::string getQuality(); // 获取信号质量 xx/xx的格式
+	int			getLevel();   // 获取信号强度
+	std::string getEssid();	  // 获取ssid
+	int			activate(std::string pass);  // 打开wifi， 参数传入密码字符串
+	int			deactivate();   // 关闭wifi
+	std::string	getIp();		// 打开WiFi后调用，获取ip   xx.xx.xx.xx/xx的形式
 
 };
-#endif
-/*************************************************************************
-	> File Name: camerainfo.h
-	> Author: davee-x
-	> Mail: davee.naughty@gmail.com 
-	> Created Time: Thu 28 Jun 2018 02:44:22 PM CST
- ************************************************************************/
-
-#ifndef CAMERAINFO_H
-#define CAMERAINFO_H
-
-#include <opencv2/opencv.hpp>
 
 class CameraInfo {
-
-private:
-	// should have private init/open/uninit/close function here when called from halutil::open/close
-public:
-	CameraInfo();
-	~CameraInfo();
-	int getImage(cv::Mat& mat); //get picture may fail, so use return value here
+	int getImage(cv::Mat& mat); // 打开摄像头后调用，获取图片，为opencv的 Mat类的格式
 };
-#endif
-/*************************************************************************
-	> File Name: camerainfo.h
-	> Author: davee-x
-	> Mail: davee.naughty@gmail.com 
-	> Created Time: Thu 28 Jun 2018 02:44:22 PM CST
- ************************************************************************/
 
-#ifndef LTEINFO_H
-#define LTEINFO_H
-
-#include <string>
 
 class LteInfo {
-
-private:
-	// should have private init/open/uninit/close function here when called from halutil::open/close
-
-public:
-	LteInfo();
-	~LteInfo();
-	std::string getIp(); // return ip addr
-	int getSignalStrength(); // return signal strength
+	std::string getIp();	// 返回IP地址
+	int getSignalStrength(); // 返回信号强度
 };
-#endif
