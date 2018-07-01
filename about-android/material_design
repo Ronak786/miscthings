@@ -69,8 +69,13 @@ SwipeRefreshLayout
 
 CollapsingToolbarlayout:
     这个是可以折叠的toolbar，随着上下移动可以折叠或者展开内部
+    这个必须再appbar里面，appbar必须再coordinatgelayout里面
 
 nestscrollview
     这个用来配置coordiantelayout，外部使用那个，内部使用这个而不是scrollview
     响应折叠事件
 
+
+设置背景融合：
+    自对外层到需要的标签的每个标签属性加上fitssystemwindow="true"
+    然后manifest中设置activity的theme为自定义的@android:color/transparent
