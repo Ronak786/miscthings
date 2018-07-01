@@ -7,14 +7,14 @@ android.support.v7.widget.toolbar:
     然后可以显示菜单，这一showasaction never永远在弹出里，always永远在上面
 
 
-drawerlayout:
+drawerlayout: 内部布局一般使用navigationview
     需要设置layout gravity属性，一般start，表示从左到右，
     然后第一个组件是主要，第二个组件是滑出来的
     ，然后可以设置setdislapyhomeasupenable, sethomeasupindicator(图标）
     这样就可以在onoptionitemselected里捕获id。home，然后指定
         drawerlayout。opendrawer(GravityCompat.START)来启动了
 
-navigationview
+navigationview, 
     使用这个来布局drawerlayout中的菜单，
     implement 'com.android.support:design:26.1.0'
     在navview中设置app：menu=@menu/menufilename
@@ -34,3 +34,43 @@ circleimageview：
 menu:
     <group  checkableBehavior="single">
         组菜单，表示只能单选
+
+
+floatingactonbutton: 悬浮按钮
+    设置gravity bottom|end表示右下角
+    elevation 指定高度，悬浮高度，会有阴影
+
+Scackbar:
+    makeText 这个可以设置setaction比如undo，
+    在底部显示，
+    还有，需要把包含需要调整的空间的layout改成coordinatelayout，
+        这个加强了frame layout，可以自动上移被遮挡的按钮
+
+
+Coordiantelayout
+    高级framelayout，监控自动调整上下移动控件防遮挡
+CardView:
+    高级版的framelayout ， 用来设置阴影和圆角，可以放在gridlayout中使用
+
+滚动遮挡:
+    将不想遮挡的toolbar放入appbarlayout中，
+    然后recyclerview中指定app:layout_behavior="@string/appbar_scrolling_view_behavior"用来通知滚动信息
+
+    还可以toolbar中layout_scrollflag监听滚动信息，scroll 向上时隐藏，
+        enteralways，向下时出现， snap滚到一半时候自动判断
+
+SwipeRefreshLayout
+    包含需要刷新的控件，然后设置listener
+        内部覆盖onfresh，里面可以开线程干活，然后onuitghread再
+            回来设置ui的东西
+
+    setcolorschemeresources 设置下拉刷新的颜色
+
+
+CollapsingToolbarlayout:
+    这个是可以折叠的toolbar，随着上下移动可以折叠或者展开内部
+
+nestscrollview
+    这个用来配置coordiantelayout，外部使用那个，内部使用这个而不是scrollview
+    响应折叠事件
+
