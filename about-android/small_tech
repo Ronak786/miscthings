@@ -1,0 +1,58 @@
+小技巧：
+    获取context，
+    1 可以传入，
+    2 继承application类，oncreate中获取这个记好，
+        然后需要的时候利用方法返回，
+        这个类再manifest中<application name=全名这里写>
+
+
+    序列化自定义类：
+        implements Serializable, 然后实现get set法
+        之后intent putextra放入，
+            getserializableextra(xxx)即可
+
+    Parcelable
+        继承parcelasble，实现describeContents
+            writetoparcel
+            定义一个parcelable.creator<classname> CREATOR= new Parcelable.Creator
+                <classname> () {
+                createFromparcel-> return your class
+                newArray() {
+                return an arrya of your class of size ;
+                }
+
+            intent.getparcelableextra(xx)
+           这个效率更高
+
+    定时任务：
+        alarmmanager = getsystemservice(alamr_service)
+        然后可以设置pendingintent以及时间，就会在
+            那个时间启动一个新服务
+
+        alarm.set/setexact 后者更加准时
+
+    doze模式：这个模式是省电用的，如果这个下也要alarm比较准时，
+        那个使用setandallowwhileidle
+        
+    
+    多屏幕模式：
+        长按方块键，可以分屏，分屏之后操纵不同部分，会进入暂停而不是stop，
+        但是改变窗口还是会重建，
+            可以通过configchanges="orientation|keyboarhidden|screensize|screenlayout" 不重启而是调用onConfigurationChanged()函数
+
+        禁用多屏：
+            resizableActivity=false 加入到application标签就行了
+            sdk<=23: 需要screenorientation=protrait这样禁止横屏，同时禁止了分屏
+
+
+    lambda:
+        app/build.grale:
+            android{
+                compileOptions{
+                    sourceCompatibility JavaVersion.VERSION_1_8
+                    targetCompatibility JavaVersion.VERSION_1_8
+            }
+
+        对于只有一个函数实现的接口，可以
+            xxx = (paramlist) -> {
+            }; 来直接写实现, list可以不用参数类型
