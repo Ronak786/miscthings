@@ -1,0 +1,36 @@
+android.support.v7.widget.toolbar:
+    首先manifest中theme设置为noactionbar，
+    然后这里这个需要设置background背景色以及theme为深色，以及弹出菜单为浅色，
+        为了好看，
+        最后oncreate里setsupportactionbar(toolbar)即可
+
+    然后可以显示菜单，这一showasaction never永远在弹出里，always永远在上面
+
+
+drawerlayout:
+    需要设置layout gravity属性，一般start，表示从左到右，
+    然后第一个组件是主要，第二个组件是滑出来的
+    ，然后可以设置setdislapyhomeasupenable, sethomeasupindicator(图标）
+    这样就可以在onoptionitemselected里捕获id。home，然后指定
+        drawerlayout。opendrawer(GravityCompat.START)来启动了
+
+navigationview
+    使用这个来布局drawerlayout中的菜单，
+    implement 'com.android.support:design:26.1.0'
+    在navview中设置app：menu=@menu/menufilename
+    app：headerlayout=@layout/xxx 
+        设置layout——gravity
+
+    然后create中navview.setcheckitem 这是默认选中的项目，
+    setnavigationitemselectedlistener，设置监听，和click一样的，
+        里面可以closedrawers()来关闭选单，或者其他的
+
+
+
+circleimageview：
+    一个用来圆形化图片的工具view
+    implement 'de.hdodenhof:circleimagevie:2.1.0'
+
+menu:
+    <group  checkableBehavior="single">
+        组菜单，表示只能单选
