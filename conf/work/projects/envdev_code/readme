@@ -12,3 +12,11 @@
 
 	./Configure linux-armv4 -march=armv7 shared no-asm --prefix=/opt/openssl for openssl install
 	./configure PKG_CONFIG_PATH=/opt/libcurl/lib/pkgconfig:/opt/libarchive/lib/pkgconfig:/opt/expat/lib/pkgconfig:/opt/openssl/lib/pkgconfig --prefix=/opt/pacman --host=arm-L1S902-linux-gnueabi  for pacman install  (disable manual if not wanted, a2x is needed for this)
+
+
+
+
+on board up to down:
+num mode: 1-9, 0,							tab, function_key, esc, space(used for press button)
+alpha mode : a-z, capslock,					tab, function_key, esc, space
+navigation mode: up ,down, left, right,		 tab, functionkey, esc, space

@@ -19,6 +19,8 @@
 #include <vector>
 #include <map>
 
+#define KEY_CUSTOM_UNUSED 254
+
 bool samefield(const __u16 c1, const __u16 c2);
 __u16 changecurcode(__u16 code);
 void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &sec);
@@ -51,6 +53,8 @@ static std::map<__u16,__u16> sec;
 
 int main(int ac, char *av[]) {
 	const char * evname = "/dev/input/event2"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
+	// used in x86 laptop test
+//	const char * evname = "/dev/input/event3"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
 	const char * fifoname = "/dev/event100";
 
 	std::vector<const char*> fdvec; // currently only test one
@@ -145,7 +149,7 @@ void handleKey(std::vector<const char*> fdvec, int fdf) {
 					switch (ie.code) {
 						case KEY_LEFT:
 							if (ie.value == 0) { // handle model change after key pop
-								mode = (mode+1)%2; // current only number and alpha mode
+								mode = (mode+1)%3; // current only number and alpha mode and navigation mode
 								alarm(0); //cancel any alarm
 								lastcode = (__u16)-1;
 								printf("changing mode to %d\n", mode);
@@ -167,7 +171,8 @@ void handleKey(std::vector<const char*> fdvec, int fdf) {
 									}
 									break;
 								}
-
+									
+								// handle mode 1's alpha transform
 								if (mode == 1 && (ie.code >= KEY_1 && ie.code <= KEY_8
 											|| ie.code == KEY_NUMERIC_STAR
 											|| ie.code == KEY_NUMERIC_POUND)) { // we have char change 
@@ -234,22 +239,20 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
 	vec[1][KEY_DOWN] = KEY_TAB;
 	vec[1][KEY_RIGHT] = KEY_ESC;
     
-	// no symbol yet
-	/*
-    vec[2][KEY_1] = KEY_A;
-    vec[2][KEY_2] = KEY_D;
-    vec[2][KEY_3] = KEY_G;
-    vec[2][KEY_4] = KEY_J;
-    vec[2][KEY_5] = KEY_M;
-    vec[2][KEY_7] = KEY_P;
-    vec[2][KEY_8] = KEY_S;
-    vec[2][KEY_NUMERIC_STAR] = KEY_V;
-    vec[2][KEY_NUMERIC_POUND] = KEY_Y;
-    vec[2][KEY_UP] = KEY_CAPSLOCK;
+	// navigation key
+//    vec[2][KEY_1] = KEY_CUSTOM_UNUSED;
+    vec[2][KEY_2] = KEY_UP;
+//    vec[2][KEY_3] = KEY_CUSTOM_UNUSED;
+    vec[2][KEY_4] = KEY_LEFT;
+//    vec[2][KEY_5] = KEY_CUSTOM_UNUSED;
+    vec[2][KEY_7] = KEY_RIGHT;
+//    vec[2][KEY_8] = KEY_CUSTOM_UNUSED;
+    vec[2][KEY_NUMERIC_STAR] = KEY_DOWN;
+//    vec[2][KEY_NUMERIC_POUND] = KEY_CUSTOM_UNUSED;
+//    vec[2][KEY_UP] = KEY_CUSTOM_UNUSED;
     vec[2][KEY_ENTER] = KEY_ENTER;
 	vec[2][KEY_DOWN] = KEY_TAB;
 	vec[2][KEY_RIGHT] = KEY_ESC;
-	*/
 
     sec[KEY_A] = KEY_B;
     sec[KEY_B] = KEY_C;
