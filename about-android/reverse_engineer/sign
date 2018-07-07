@@ -1,0 +1,24 @@
+https://developer.android.com/studio/publish/app-signing#signapp
+
+
+1	keytool -genkey -keystore mury.keystore -validity 10000 -alias mury
+	jarsigner  -keystore mury.keystore -verbose app-debug.apk mury
+
+2
+ openssl genrsa -out key.pem 1024
+ openssl req -new -key key.pem -config openssl.cnf -out request.pem
+ openssl x509 -req -days 9999 -in request.pem -signkey key.pem -out certificate.pem
+openssl pkcs8 -topk8 -outform DER -in key.pem -inform PEM -out key.pk8 -nocrypt
+
+java -jar signapk.jar certificate.pem key.pk8 your-app.apk  your-signed-app.apk
+
+
+3 google:
+	keytool -genkey -v -keystore my-release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias my-alias
+	zipalign -v -p 4 my-app-unsigned.apk my-app-unsigned-aligned.apk
+	apksigner sign --ks my-release-key.jks --out my-app-release.apk my-app-unsigned-aligned.apk
+
+
+4 in aosp:
+	buid/target/product/security:
+		java -jar xx.jar  xx.x509.pem xx.pk8 input  xx.signed.apk

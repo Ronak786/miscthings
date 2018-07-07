@@ -1,0 +1,39 @@
+执行通过zygote，和system server通信，fork一个zygote进程
+	注意同样系统进程和非zygote进程也是他fork出来的
+
+之后交给虚拟机，载入类，校验，找到入口，执行字节码。
+
+编译使用jit即时转换为机器码，通过trace方式先编译
+	热路路径，加快速度
+
+
+apktool d/b
+	build 之后需要签名，具体见sign文件
+
+解析dex文件
+	backsmail smail
+	java -jar baksmail  d xx.dex
+	java -jar smail b outdir   -o result.dex
+
+register number will be set in method structure when parse into dex from .java
+
+v name method:
+	v0 v1 v2 ... .局部变量
+	vi vi+1 ... v{last} 参数
+
+p name method:
+	v0 v1 .... local var
+	p1 p2 ...   param
+
+dex data type:
+	V void
+	Z boolean
+	B byte S short C char I int J long F float D double L object(Lpackagename/objname;) [ array
+
+	method:    methodname(param)returntype:   method(III)Z   -> Boolean method(int,int,int);
+#virtual method #direct method    represents  virtual or not virtual method
+field:      Fieldnmae:fieldtype
+
+
+	classtype;->methodname(xxxxx)Z
+	classtype;->fieldname:fieldtype

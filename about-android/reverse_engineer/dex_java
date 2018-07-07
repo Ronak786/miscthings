@@ -1,0 +1,5 @@
+java to dex:
+	javac xxx   -o java.class
+	dx --dex output=xxx xx.class   : get dex
+	dexdump -d xx.dex  : show dex detail
+	javap -c -classpath.  xx   : show java .class detail
