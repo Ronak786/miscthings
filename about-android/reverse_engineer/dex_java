@@ -3,3 +3,9 @@ java to dex:
 	dx --dex output=xxx xx.class   : get dex
 	dexdump -d xx.dex  : show dex detail
 	javap -c -classpath.  xx   : show java .class detail
+
+dex file format:
+	dex header: struct DexHeader {}
+		has  a map at mapoff offset, inside it, 
+		has all kinds of data types' offset and number 
+		like string, classname, field , data .....

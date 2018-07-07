@@ -1,0 +1,25 @@
+see https://source.android.com/devices/tech/dalvik/dalvik-bytecode
+see http://pallergabor.uw.hu/androidblog/dalvik_opcodes.html
+op dest, source
+	move-wide/from16 vA, vB
+		wide: data length is 64bit, 
+		from16: source is 16bit(AAAA) ,normally 8bit
+
+	const/xx   operate const number
+
+	monitor-enter  va acquire lock
+	monitor-exit va  exit lock
+
+	check-cast cast va into type @cccc, if error, exception
+	instance-of va, vb, type@cccc, if is instance, va = 1, else va = 0
+	new-instance va, type@bbbb should not be array
+
+	array-length ....
+
+
+field operation:
+	iget va, vab, field@cccc   instance get
+	sget va, field@ccc   static get
+
+method operation:
+	invoke-virtual/super/direct/static/interface {vc,vd,ve}/{vc...vf}, meth@cccc
