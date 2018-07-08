@@ -1,0 +1,7 @@
+ida_pro  : static analysis
+	information get from error string
+	featured function like toast
+	sequence check from up to down
+	code import dymanicly
+	stack trace print
+	method calling frequences profiling

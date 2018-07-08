@@ -1,0 +1,25 @@
+in object method call:
+	iput-object v0(dest register), v1(current class this), class->Filed:type
+
+
+inner class:
+	this$0  outerest class
+	this$1 this$2 step from outer to inner
+
+annonimous class:
+	will use  Mainactivity$1.smali   something like this
+
+switch:
+	packed-switch p0, offset
+		at current_pos + offset ,we have a switch data struct tells us
+			how many cases and their key value and their target offset 
+			from current_pos
+	sparsed-switch 
+		this cases not sequence numbers
+
+try catch:
+	will have some virtual try block for catch in catch block
+
+
+reverse_engineer:
+	find key words, key functions like finish killProcess()

@@ -21,3 +21,7 @@ odex:
 	a super struct contain dex, convenient for latter execute
 	have a odex header, and tailing dependencies lib names, dex class lookup chunk
 		method/field/class map chunk, end chunk
+
+dexopt optimize processing:
+	read, check and verify crc and signature, rewrite codes
+		into volative and quick instructions
