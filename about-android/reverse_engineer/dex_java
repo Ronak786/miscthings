@@ -9,3 +9,15 @@ dex file format:
 		has  a map at mapoff offset, inside it, 
 		has all kinds of data types' offset and number 
 		like string, classname, field , data .....
+
+dex has dex format:
+	a header include all fileds array and size, a map size
+	and data, every instruction can be decoded by from android website's bytecode,
+	remember  all structure in dexclass.h use leb128 instead of u4,
+		leb128 every 8bit's topbit is 1: next byte used, else, just currentbyte,
+			effective bit only 7
+
+odex:
+	a super struct contain dex, convenient for latter execute
+	have a odex header, and tailing dependencies lib names, dex class lookup chunk
+		method/field/class map chunk, end chunk
