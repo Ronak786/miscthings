@@ -5,3 +5,8 @@ ida_pro  : static analysis
 	code import dymanicly
 	stack trace print
 	method calling frequences profiling
+
+dex2jar: then use jd-gui to get java code
+androguard: analysis dex files
+apktool
+baksmali
