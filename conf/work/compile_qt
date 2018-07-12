@@ -14,3 +14,8 @@ font in lib/fonts:
 #######################################################################
 
 ../qt-everywhere-opensource-src-5.9.5/configure -release  -device linux-par64g-g++ -device-option CROSS_COMPILE=/opt/x-tools/arm-L1S902-linux-gnueabi/bin/arm-L1S902-linux-gnueabi-  -sysroot /opt/x-tools/arm-L1S902-linux-gnueabi/arm-L1S902-linux-gnueabi/sysroot  -opensource -confirm-license -make libs -prefix /usr/local/qt5pi -extprefix /opt/fbcustom/qt5pi -hostprefix /opt/fbcustom/qt5 -no-use-gold-linker -skip qtwebengine -no-opengl -shared -optimize-size -v 
+
+
+
+qt repository:
+	http://download.qt-project.org/online/qtsdkrepository/windows_x86/root/qt
