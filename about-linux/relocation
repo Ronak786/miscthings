@@ -65,3 +65,8 @@ copy relocation:
             这里会调用.init_array .preinit_array段的函数，
             可以__attribute__((section(".init_array"))) typeof(xx) *_xx =xx来加入
                 （第一第二个串可以交换位置）
+
+
+
+
+

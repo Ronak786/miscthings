@@ -1,0 +1,12 @@
+首先源码顶层目录下递归编译结合各个目录下的builtin.io lib.a，链接成vmlinux
+然后arch目录下的compressed中把vmlinux拷贝过来，objcopy=》vmlinux.bin =>vmlinux.bin.gz 压缩，然后被mkpiggy 成一个汇编文件，整个当作数据，这个和header misc等文件
+构成一个大的elf文件，然后objcopy这个，变成binary（上面objcopy仅仅去掉comment），
+然后制作setup.elf变成objcopy为setup.bin，然后直接两部分拼起来变成bzimage
+
+整个除setup.bin以外的部分的起始部分在未压缩的header_32.S中的指定的.header.text
+的startup_32入口开始
+
+
+rootfs:
+    需要libs下的C库，用cp -d可以按链接复制的，
+    还需要编译器名字下的lib下的so库，这些也会用到的
