@@ -1,0 +1,67 @@
+重定位首先信息有两种格式，一种addend在数据位置上，一种在重定位结构体里，
+    intel使用前者多
+    另外重定位解决有两种，一种S+A 用于静态数据
+                        一种S+A-P 减去修改数据的位置的值
+                            用于函数地址修改，因为可以直接把
+                            最后的值用于call指令，这个只接受相对位移
+
+    汇编之后的符号表中，每个段都可以有一个对应的重定位段，
+        里面是段中需要链接时候重定位的符号位置和符号本身的索引信息等信息
+
+使用动态库：
+    .dynamic 段会记录需要的so库文件
+    .rel.dyn 记录需要重定位的变量
+    .rel.plt 记录需要重定位的函数
+
+copy relocation:
+    链接的时候先定义在bss一个全局变量，动态加载使用的时候再
+    把真实的值拷贝过去 
+
+   具体原因：
+
+
+交叉编译工具链：
+    C99标准需要hosted环境支持freestanding环境，所以
+    1 binutil自给自足利用host工具编出来交叉版本
+    2 gcc 编译一个freestanding版本，（需要binutil）
+    3 利用gcc编译一个glibc
+    4 利用glibc编译完整gcc
+
+    binutils:
+        设置host build target不同（主要后者）就行了，withsysroot为你的root位置，
+        其中libs目录下有ldscripts里面.x主要用到， -N ld参数指定使用.xbn
+
+    freestanding gcc:
+        --disable-shared 取消动态库的编译，因为没有可用的c库
+        缺少的libgcc_eh.a 用libgcc。a代替，这个是超集
+
+    linux header:
+        make mrproper
+        make arch=i386 INSTALL_HDR_PATH=xxx/include headers_install
+
+    install gawk on ubuntu
+
+     glibc:
+        这个编译的是taget上的库，所以host是之前的target参数，
+        还需要欺骗编译器thread和ctor支持再free的gcc中都有
+        libc_cv_forced_unwind libc_cv_c_cleanup = yes
+        libc_cv_ctros_headers = yes
+        make install_root=xxx install
+
+    gcc 完整版
+        crtbegin end 由gcc提供，crti 1，n 由glibc提供
+
+        注：make -p 显示make需要的编译变量默认值
+            pkgconfig autoconf使用这个，使用pkg_config_path可以添加路径
+                加上/usr/share/pkgconfig /usr/lib/pkgconfig /usr/local/lib/pkgconfig
+                使用pkg_config_libdir可以屏蔽传统路径
+
+            libtool 删除。la文件防止错误的主机链接，这样不用libtool
+                而是直接ld去寻找
+
+            gcc -dumpspecs 展示使用的链接策略，根据nostartfile nostdlib freestanding 等参数有不同的策略:
+
+        glibc 提供_start初始函数，然后内部调用glibc的init，
+            这里会调用.init_array .preinit_array段的函数，
+            可以__attribute__((section(".init_array"))) typeof(xx) *_xx =xx来加入
+                （第一第二个串可以交换位置）
