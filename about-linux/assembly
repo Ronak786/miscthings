@@ -1,0 +1,17 @@
+if ... else if .. else:
+	cmp
+	jnz (to else)
+
+switch:
+	cmp
+	je
+	cmp
+	je
+	cmp
+	je
+
+	loc1:
+	jmp end
+	loc2:
+	jmp end
+	....
