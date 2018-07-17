@@ -1,0 +1,28 @@
+module.dep.bin
+    modprobe使用的，模块互相依赖的树
+module.alias.bin
+    udev使用，udev可以收到设备消息，根据alias，传给modprobe，去找这个文件
+    然后找到对应的模块，然后找dep文件加载，
+    
+    然后内核还会再发uevent，这次是驱动加载完成了的时候，就可以用来
+        执行设备链接等创建了
+
+udev rules:
+    80-drivers.rule 用来加载驱动
+    如果程序不在lib udev下面，需要全路径
+
+    对于冷启动的时候就存在的设备，使用udevadmin --trigger action
+        来向sys目录下的设备的uevent写入add，让他们重新发出添加信息
+
+    udev文件修改可以动态检测到，使用的是inotify
+
+    depmod -b rootdir  kernel-version(3.7.4) 可以生成指定目录下存放依赖
+
+
+    switch root:
+        首先udevadm control --exit 停止udevd
+        然后mount -n --move /dev/ /root/dev （/sys /proc /run）
+            移动到未来的root下，run是udev需要的
+
+        然后利用二进制程序删除/下的文件，然后chroot到新目录中
+            执行sbin/init 就是switch root的功能
