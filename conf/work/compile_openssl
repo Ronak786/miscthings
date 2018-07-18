@@ -1,0 +1,3 @@
+CC=xxxx ./config no-asm shared
+
+in Makefile  remove all  "-m64"   change PLATFORM= to arm
