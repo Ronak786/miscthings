@@ -12,3 +12,16 @@ thiscall:
 		*this will pass by stack instead of reg
 
 		and __cdecl the caller responsible for balance the stack
+
+
+argument pass:
+	when pass object: copy object and do ctro(ifneeded) to that copied object, function return 
+		then dtor that object
+	when return object:
+		first caller allocate on stack space to store tmp object, pass addr into calling func,
+		calling func return will copy back to that addr, attention: this is tmp object addr:
+
+		when tmpobject will be calcualated like func().xx.xx, or copy to some other caller's local location
+
+		because passed in allocated space belongs to argument and belongs to calling func, 
+			so should copy to a tmp object first !!!
