@@ -25,3 +25,10 @@ argument pass:
 
 		because passed in allocated space belongs to argument and belongs to calling func, 
 			so should copy to a tmp object first !!!
+
+pattern_recognize:
+	if use [reg], [reg+4] .... to address value , maybe it is an object's this-> ...
+	or mayby it is  array[xx]  if every member is same size
+
+*this:
+	ctor will return *this  in assembly
