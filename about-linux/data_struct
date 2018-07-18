@@ -1,2 +1,14 @@
 align: = Min(biggest of data member type, struct default align size)
 	this include you #pragma (packed) setted size, also should set use min(xx,xx)
+
+	data struct member align use that struct's member's align size instead of struct size
+
+thiscall:
+	this method used to c++ call member function, 
+	the first arg *this passed by register ecx, and pop from stack by the called function instead 
+		of caller in usual normal function call!!
+
+	we can also declare member fucntion as __stdcall(thiscall can not be used outside of c++ libs),
+		*this will pass by stack instead of reg
+
+		and __cdecl the caller responsible for balance the stack
