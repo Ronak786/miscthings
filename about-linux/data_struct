@@ -1,0 +1,2 @@
+align: = Min(biggest of data member type, struct default align size)
+	this include you #pragma (packed) setted size, also should set use min(xx,xx)
