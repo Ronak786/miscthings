@@ -1,0 +1,29 @@
+首先是只会cpuidle的 0进程，这个就是启动时候自己初始化taskstruct的进程，
+会在一个init thtread union中记录内核的栈地址以及thread info，这个内部
+会由task struct的指针，但是现在都是在另一个专用的taskstruct指针里获取
+current的，这样更快。
+
+1 进程，这个就是kernel thread出来的执行init的那个进程，从0fork 然后exec过来的
+
+调度：
+    分为停止类， rt， cfq， idle四种，第一种是cpu plugin之类工作的进程。
+    0 一开始是cfq，fork出1后变成idle的，优先级最低。
+
+页表：
+    初始化由两个阶段，第一个阶段是还没有初始化内存的时候，因为各种初始化繁琐，yongc语言方便, 所以先建立一个临时页表，里面只有内核页面，由于跳转的时候intel需要
+    跳转指令同时在虚拟和物理地址上都有，所以内核临时页表会在恒等映射（低地址），
+    和3G偏移处都放一份，然后跳转。
+        初始化的时候，做的就是在brk base的地方建立页表，然后页目录指向那个地方，
+        记录在init page table里面，这里放临时的目录，
+        后面swappg table dir 的地方再放初始化好内存之后的重建的完整的页目录
+
+
+执行elf：
+    使用对应的loader判断头部，然后读取elf的program header表，获得表中
+    load类型的段，配置各个vm area struct，而不会立刻加载所有。
+    栈： 在内核区下面，有aslr随机技术, 可以randomize_va_space 的proc文件里
+        关闭，最大似乎是MAX_GAP大小
+    动态库，内存映射区域, 这片区域映射so库之类的
+    堆： set brk开始往上，也有大小限制的，头部可以随机
+    bss：首先code data段的开始结尾都有align限制，如果data的结尾align之后
+        覆盖的那个空区域bss足够了，就不会建立bss段，否则会
