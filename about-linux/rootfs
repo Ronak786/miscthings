@@ -1,0 +1,8 @@
+网络注意使用lspci根据对应的编号找到sysfs下的uevent，然后找到pid vid，在内核搜索驱动， 
+
+安装iproute  （有ip 命令） iputil（有ping命令） 可以去掉部分make 目标如果不需要
+
+安装openssh （需要zlib openssl） ，技巧：利用系统变量定义CC ld 以及sysroot等，这样
+    可以直接prefix， make make install ，假装本地编译的交叉编译很方便
+
+    需要挂在mount -t devpts devpts /dev/pts ， keygen dsa rsa ecdsa 到/etc/ssh/ssh_host_rsa_key 这些， 然后配置允许root 允许空密码等，然后还写passwd 和 group文件，这样就可以ssh登陆了, (ip 配好）

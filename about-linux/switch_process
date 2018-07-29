@@ -24,3 +24,5 @@ page fault:
 只读段：
     gcc -z,relro   gcc -dumpspecs 显示所有
     这样可以把got段， （非got.plt段）在加载重定位后设置为只读，减少溢出攻击的可能
+
+
