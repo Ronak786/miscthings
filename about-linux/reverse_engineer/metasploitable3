@@ -1,0 +1,8 @@
+安装按照github上来，其中 openjdk下载以及vagrant-ssh下载会失败，可以手动下载，放到resources目录下的具体dir下
+
+openjdk 首先
+    Go to this link here: https://github.com/downloads/alexkasko/openjdk-unofficial-builds/openjdk-1.6.0-unofficial-b27-windows-amd64.zip
+    然后保存在resources open-jdk下，
+    修改jdk脚本第一行为copy /Y "C:\vagrant\resources\open-jdk\openjdk-1.6.0-unofficial-b27-windows-amd64.zip" "C:\Windows\Temp\openjdk-1.6.0-unofficial-b27-windows-amd64.zip"
+
+    vagrant。up也同样即可
