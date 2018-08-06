@@ -1,0 +1,18 @@
+
+1, in in place you want to refer: just use   ":/style/default.qss"
+
+
+2 in qss:
+	QPushButton  {
+		color : rgb(100,200,100);
+		background-color : black;
+	}
+
+3 in place want to use, 
+	QFile qss(":/style/default.qss");
+	qss.open(QFile:ReadOnly);
+	qApp->setStyleSheet(qss.readAll());
+	qss.close();
+
+4 border-image:
+	QString("border-image: url(%1) 0 %2 0 %3; width: %4; height: %5;}".arg(path).arg(

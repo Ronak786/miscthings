@@ -1,0 +1,2 @@
+set pixmap:
+	QLable *lable->setPixmap(QPixmap(QString(":/image/xx.png")));

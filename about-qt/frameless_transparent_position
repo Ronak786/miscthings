@@ -1,0 +1,10 @@
+set transparent and frameless:
+	setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHing);
+	setAttribute(Qt::WA_NoSystemBackground, true);
+	setAttribute(Qt::WA_TranslucentBackground, true);
+
+window.move(QApplication::desktop()->screen()->rect().center());
+
+
+widget close slot: 
+	close();

@@ -1,0 +1,7 @@
+1, in qt.pro: RESOURCES += resource.qrc
+2, in resource.qrc: <!DOCTYPE RCC><RCC version="1.0"> <qresource>
+						<file>style/default.qss</file>
+						</qresource>
+						</RCC>  
+						note: style/ is the dir start from build dir
+
