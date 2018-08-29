@@ -52,9 +52,9 @@ static std::map<__u16,__u16> sec;
 // test, we use 
 
 int main(int ac, char *av[]) {
-	const char * evname = "/dev/input/event2"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
+//	const char * evname = "/dev/input/event2"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
 	// used in x86 laptop test
-//	const char * evname = "/dev/input/event3"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
+	const char * evname = "/dev/input/event3"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
 	const char * fifoname = "/dev/event100";
 
 	std::vector<const char*> fdvec; // currently only test one
@@ -147,7 +147,7 @@ void handleKey(std::vector<const char*> fdvec, int fdf) {
 					}
 
 					switch (ie.code) {
-						case KEY_LEFT:
+						case KEY_F1:
 							if (ie.value == 0) { // handle model change after key pop
 								mode = (mode+1)%3; // current only number and alpha mode and navigation mode
 								alarm(0); //cancel any alarm
@@ -173,9 +173,7 @@ void handleKey(std::vector<const char*> fdvec, int fdf) {
 								}
 									
 								// handle mode 1's alpha transform
-								if (mode == 1 && (ie.code >= KEY_1 && ie.code <= KEY_8
-											|| ie.code == KEY_NUMERIC_STAR
-											|| ie.code == KEY_NUMERIC_POUND)) { // we have char change 
+								if (mode == 1 && (ie.code >= KEY_1 && ie.code <= KEY_9)) { // we have char change 
 									ie.code = mvec[mode][ie.code];
 									if (!samefield(lastcode, ie.code)) {
 										alarm(delaytime);
@@ -208,36 +206,36 @@ void handleKey(std::vector<const char*> fdvec, int fdf) {
 
 void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &sec) {
     // for numerical
-    // KEY_LEFT is special, used to switch mode
-    // KEY_UP caps lock
+    // KEY_F1 is special, used to switch mode
+    // KEY_0 caps lock
     // KEY_ENTER use just as enter
     vec[0][KEY_1] = KEY_1; // KEY_0 is with 1
     vec[0][KEY_2] = KEY_2;
     vec[0][KEY_3] = KEY_3;
     vec[0][KEY_4] = KEY_4;
     vec[0][KEY_5] = KEY_5;
-    vec[0][KEY_7] = KEY_6;
-    vec[0][KEY_8] = KEY_7;
-    vec[0][KEY_NUMERIC_STAR] = KEY_8;
-    vec[0][KEY_NUMERIC_POUND] = KEY_9;
-    vec[0][KEY_UP] = KEY_0;
-    vec[0][KEY_ENTER] = KEY_SPACE;
-	vec[0][KEY_DOWN] = KEY_TAB;
-	vec[0][KEY_RIGHT] = KEY_ESC;
+    vec[0][KEY_6] = KEY_6;
+    vec[0][KEY_7] = KEY_7;
+    vec[0][KEY_8] = KEY_8;
+    vec[0][KEY_9] = KEY_9;
+    vec[0][KEY_0] = KEY_0;
+    vec[0][KEY_DELETE] = KEY_DELETE;
+	vec[0][KEY_ESC] = KEY_ESC;
+	vec[0][KEY_SPACE] = KEY_SPACE;
 
     vec[1][KEY_1] = KEY_A;
     vec[1][KEY_2] = KEY_D;
     vec[1][KEY_3] = KEY_G;
     vec[1][KEY_4] = KEY_J;
     vec[1][KEY_5] = KEY_M;
-    vec[1][KEY_7] = KEY_P;
-    vec[1][KEY_8] = KEY_S;
-    vec[1][KEY_NUMERIC_STAR] = KEY_V;
-    vec[1][KEY_NUMERIC_POUND] = KEY_Y;
-    vec[1][KEY_UP] = KEY_CAPSLOCK;
-    vec[1][KEY_ENTER] = KEY_SPACE;
-	vec[1][KEY_DOWN] = KEY_TAB;
-	vec[1][KEY_RIGHT] = KEY_ESC;
+    vec[1][KEY_6] = KEY_P;
+    vec[1][KEY_7] = KEY_S;
+    vec[1][KEY_8] = KEY_V;
+    vec[1][KEY_9] = KEY_Y;
+    vec[1][KEY_0] = KEY_CAPSLOCK;
+    vec[1][KEY_DELETE] = KEY_DELETE;
+	vec[1][KEY_ESC] = KEY_ESC;
+	vec[1][KEY_SPACE] = KEY_SPACE;
     
 	// navigation key
 //    vec[2][KEY_1] = KEY_CUSTOM_UNUSED;
@@ -245,14 +243,14 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
 //    vec[2][KEY_3] = KEY_CUSTOM_UNUSED;
     vec[2][KEY_4] = KEY_LEFT;
 //    vec[2][KEY_5] = KEY_CUSTOM_UNUSED;
-    vec[2][KEY_7] = KEY_RIGHT;
-//    vec[2][KEY_8] = KEY_CUSTOM_UNUSED;
-    vec[2][KEY_NUMERIC_STAR] = KEY_DOWN;
-//    vec[2][KEY_NUMERIC_POUND] = KEY_CUSTOM_UNUSED;
-//    vec[2][KEY_UP] = KEY_CUSTOM_UNUSED;
-    vec[2][KEY_ENTER] = KEY_ENTER;
-	vec[2][KEY_DOWN] = KEY_TAB;
-	vec[2][KEY_RIGHT] = KEY_ESC;
+    vec[2][KEY_6] = KEY_RIGHT;
+//    vec[2][KEY_7] = KEY_CUSTOM_UNUSED;
+    vec[2][KEY_8] = KEY_DOWN;
+//    vec[2][KEY_9] = KEY_CUSTOM_UNUSED;
+//    vec[2][KEY_0] = KEY_CUSTOM_UNUSED;
+    vec[2][KEY_DELETE] = KEY_DELETE;
+	vec[2][KEY_ESC] = KEY_ESC;
+	vec[2][KEY_SPACE] = KEY_SPACE;
 
     sec[KEY_A] = KEY_B;
     sec[KEY_B] = KEY_C;
@@ -285,7 +283,7 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
 }
 
 
-// check whether c1 and c1 belong to the same button on phone kbd
+// check whether c1 and c2 belong to the same button on phone kbd
 bool samefield(const __u16 c1, const __u16 c2) {
     bool status = false;
     if (c1 == KEY_A || c1 == KEY_B || c1 == KEY_C) 

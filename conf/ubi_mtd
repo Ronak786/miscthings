@@ -1,0 +1,9 @@
+mknod mtd device
+
+ubiformat /dev/mtdxxx
+
+ubiattach /dev/ubi_ctrl -m number
+
+ubimkvol /dev/ubi{number} -N data_vol -s size
+
+mount -t ubifs ubi{number}:data_vol /xxx
