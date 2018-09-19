@@ -1,7 +1,37 @@
 in java, every thing is base type OR reference !!!
 
 basic type :boolean char(16) byte int long float double void, has corresponding  autobox reference type
-random:
-	rand = new Random(base_num); rand.nextInt(up_limit); rand.nextFloat();
+
+class:
+	random:
+		rand = new Random(base_num); rand.nextInt(up_limit); rand.nextFloat();
+
+method:
+	equals:  default behavior:   compare reference id(address?)
+	range(num) :  0,1,2,3,4....num-1
+
+type:
+	123L-> long 
+	123F-> float
+	123D-> double
+	0x12-> hex
+	0121-> octol
+	Long.toBinaryString/ Integer.toBinaryString -> get binary string
+	10e-2f -> 10^(-2)  e/E -> 10 not ln!!
+
+>> << >>>:
+	byte short char >>> will first auto convert to int, then move
+	if again assign to a byte type, will cut last n bit as result, 
+		then if again print, then extend that byte to int, then print, so -1 will again print as -1
+
+
+conversion:	
+	narrorw to wide type is auto, but the reverse must explicitly done
+	bool can not be converted
+	class convert is special
+
+foreach:
+	for(type var: array/container) {
+	}
 
 
