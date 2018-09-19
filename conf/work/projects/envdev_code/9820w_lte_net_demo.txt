@@ -9,7 +9,7 @@ shell中运行 PhoneServerAtTest
 open0 open1为打开对应通道，详细请看下代码PhoneServerAtTest.c
 通道打开后，可发送AT。
 
-AT+CGDCONT=1,"IP","CMNET"
+AT+CGDCONT=1,"IP","CMNET" "wonet"
 at+csq 查信号
 
 下面是sim0上网的基本AT流程：

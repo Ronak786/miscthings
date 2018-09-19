@@ -1,0 +1,7 @@
+in java, every thing is base type OR reference !!!
+
+basic type :boolean char(16) byte int long float double void, has corresponding  autobox reference type
+random:
+	rand = new Random(base_num); rand.nextInt(up_limit); rand.nextFloat();
+
+
