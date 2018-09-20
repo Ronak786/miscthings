@@ -51,6 +51,23 @@ method:
 		static final  private function have no duotai, field have not duotai
 		do not call duotai function  in ctor
 
+	abstract class: inherit that and implement is needed, otherwise still abstract
+	interface :  youcan conrver up, field are static and final implicitly, this is public
+				interface can extends interface
+
+				class in the interface automatically becomes static 
+
+	inner class:
+		outer class {
+			innter class {
+			}
+		}
+		refer:  outer.inner 
+		inner can access all outer member
+
+		inner non static class ctor must be called from outer's object:
+			Outer.Inner in = obj.new  Inner();
+
 	
 
 type:
