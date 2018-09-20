@@ -73,3 +73,17 @@ foreach:
 	for(type var: array/container) {
 	}
 
+
+
+package:
+import:
+	package used to isolate .class files, should be put in hierachy of dirs whose base dir is in CLASSPATH
+	.class in same package can use each other without prefix ,
+	others should use import xxx to use
+
+	import static  -> just import static vars and objs and funcs in the .class
+
+	default access privilege:
+		inside package, access all pakage and public
+		outside package, all inside ones are private, can not access
+	
