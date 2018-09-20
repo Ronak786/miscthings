@@ -47,6 +47,10 @@ method:
 	non static initialize:
 			{ }
 
+	duotai:
+		static final  private function have no duotai, field have not duotai
+		do not call duotai function  in ctor
+
 	
 
 type:
@@ -86,4 +90,20 @@ import:
 	default access privilege:
 		inside package, access all pakage and public
 		outside package, all inside ones are private, can not access
+
+	same directory:
+		in default package
+
+	protected:
+		same package can also access proctected  members of other class
 	
+	class should only be public or default, if you do not want others to instantiate object,
+		set ctor to private
+
+inherit:
+	@Override : claim you are overriding some method, 
+	this will not mask any base class method
+
+load sequence:
+	base, inherit:
+		first base static, then inherit static, then base ctor, then inherit ctor
