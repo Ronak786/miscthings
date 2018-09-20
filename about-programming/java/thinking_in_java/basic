@@ -10,6 +10,20 @@ method:
 	equals:  default behavior:   compare reference id(address?)
 	range(num) :  0,1,2,3,4....num-1
 
+	overload:
+		param must different, if can narrow to wide convertion, then maybe used , char -> int, 5->int
+			and wide to narrow must explicit convert, otherwise error
+
+	this:
+		call ctor in ctor,  class(xxx) {
+								this(yyy,zzz);
+							}   must be first sentence;
+	finalize():
+			this method used like free malloc()'s mem, or some error check in object deletion,
+			should call super(finialize());
+		
+			System.gc();  forcely garbage collection;
+
 type:
 	123L-> long 
 	123F-> float
@@ -33,5 +47,4 @@ conversion:
 foreach:
 	for(type var: array/container) {
 	}
-
 
