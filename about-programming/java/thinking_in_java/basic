@@ -6,6 +6,22 @@ class:
 	random:
 		rand = new Random(base_num); rand.nextInt(up_limit); rand.nextFloat();
 
+	array:
+		int[] a = {xx,xx,xx,xx,xx,}
+		Integer[] b = {new Integer(3), 5(autobox),}
+		Array.toString(a); can print a array in format of string
+
+		variable args:
+			func(Object... args) {
+				for(String obj: args) {}
+			}
+
+	enum:
+		public enum xxx { aa,bb,cc,dd,ee};
+
+		reference:   xxx.aa;   
+		print:   xxx.aa.ordinal();
+
 method:
 	equals:  default behavior:   compare reference id(address?)
 	range(num) :  0,1,2,3,4....num-1
@@ -23,6 +39,15 @@ method:
 			should call super(finialize());
 		
 			System.gc();  forcely garbage collection;
+
+	member object initialization before ctor called
+
+	static initialize always start when load a new class file:
+			static { }
+	non static initialize:
+			{ }
+
+	
 
 type:
 	123L-> long 
