@@ -1,0 +1,54 @@
+crw-r--r--    1 root     root      245,   0 Jan  1 00:29 /dev/stty_lte0
+crw-r--r--    1 root     root      245,   1 Jan  1 00:29 /dev/stty_lte1
+crw-r--r--    1 root     root      245,   2 Jan  1 00:29 /dev/stty_lte2
+crw-r--r--    1 root     root      245,   3 Jan  1 00:29 /dev/stty_lte3
+crw-r--r--    1 root     root      245,   4 Jan  1 00:29 /dev/stty_lte4
+
+for i in 0 1 2 3 4 ; do mknod /dev/stty_lte$i c 245 $i ; done
+echo 4 4 1 7 > /proc/sys/kernel/printk
+
+
+at+sptestmodem=6,254
+OK
+
+at+sfun=5
+at+sfun=4
+OK
+
+at+csq
++CSQ:99,30
+OK
+
+at+cgdcont=1,"ip","cmnet"
+OK
+
+at+cgpco=0,"name","password",1,1
+OK
+
+AT+CGEQREQ=1,2,0,0,0,0,2,0,"1e4","0e0",3,0,0
+OK
+
+AT+SPREATTACH
+OK
+
+AT+CGDATA="M-ETHER",1
+CONNECT
+
+AT+CGDCONT?
++CGDCONT:1,"IP","cmnet.mnc002.mcc460.gprs","10.12.132.205",0,0,"211.143.147.120","112.5.230.54"
++CGDCONT:2,"IP","CMNET","0.0.0.0",0,0,"0.0.0.0","0.0.0.0"
++CGDCONT:3,"IP","CMNET","0.0.0.0",0,0,"0.0.0.0","0.0.0.0"
++CGDCONT:4,"IP","CMNET","0.0.0.0",0,0,"0.0.0.0","0.0.0.0"
++CGDCONT:5,"IP","CMNET","0.0.0.0",0,0,"0.0.0.0","0.0.0.0"
++CGDCONT:6,"IP","CMNET","0.0.0.0",0,0,"0.0.0.0","0.0.0.0"
++CGDCONT:7,"IP","CMNET","0.0.0.0",0,0,"0.0.0.0","0.0.0.0"
++CGDCONT:8,"IP","CMNET","0.0.0.0",0,0,"0.0.0.0","0.0.0.0"
++CGDCONT:9,"IP","CMNET","0.0.0.0",0,0,"0.0.0.0","0.0.0.0"
++CGDCONT:10,"IP","CMNET","0.0.0.0",0,0,"0.0.0.0","0.0.0.0"
++CGDCONT:11,"IPV4V6","IMS","0.0.0.0",0,0,"0.0.0.0","0.0.0.0"
+OK
+
+
+配置路由
+ip route add default via 10.12.132.205 dev seth_lte0
+
