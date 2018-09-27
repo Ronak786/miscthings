@@ -1,0 +1,6 @@
+add a xx.ui in Forms
+in your .h file, include ui_xx.h and claim  namespace Ui { class xxx(your class name)};
+	and in your class, Ui::xxx  *ui;
+in your .cpp file, ctor: ui(new Ui::xxx),   ui->setup(this);
+
+becareful  ui class name is Capitalized first word

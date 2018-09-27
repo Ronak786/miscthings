@@ -6,6 +6,7 @@ crw-r--r--    1 root     root      245,   4 Jan  1 00:29 /dev/stty_lte4
 
 for i in 0 1 2 3 4 ; do mknod /dev/stty_lte$i c 245 $i ; done
 echo 4 4 1 7 > /proc/sys/kernel/printk
+echo 1 4 1 7 > /proc/sys/kernel/printk
 
 
 at+sptestmodem=6,254

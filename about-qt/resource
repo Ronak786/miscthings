@@ -5,3 +5,10 @@
 						</RCC>  
 						note: style/ is the dir start from build dir
 
+
+add rc file of windows: used to set .exe's desc and icon ...
+method 1: 
+	create a version.h and your .rc file and then RC_FILE += xxx in .pro
+method 2:
+	VERSION = XXX , qmake will auto create a rc file
+	RC_ICON = xxx to set in .pro
