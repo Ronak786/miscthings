@@ -1,0 +1,6 @@
+in order to use qt object in frame, use parent.qt...... to use
+
+use qt webengine to ocnnect to qt c++ objects
+	webpage.set channel, channel.add(object),
+	then you copy qt source's webchannel.js into your project resource, 
+	and new the webchannel.js
