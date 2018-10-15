@@ -12,6 +12,11 @@ insmod /lib/modules/linecamera.ko
 mknod /dev/cam c 243 0
 cd /persist/tmp
 
+mknod /dev/stty_lte0 c 245 0
+mknod /dev/stty_lte1 c 245 1
+mknod /dev/stty_lte2 c 245 2
+
+
 
 at+sptestmodem=6,254
 OK

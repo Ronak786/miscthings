@@ -4,6 +4,9 @@ ubiformat /dev/mtdxxx
 
 ubiattach /dev/ubi_ctrl -m number
 
+mknod /dev/ubi0 c xx xx
+
 ubimkvol /dev/ubi{number} -N data_vol -s size
+	then under /sys you get ubi0_data_vol  dir
 
 mount -t ubifs ubi{number}:data_vol /xxx
