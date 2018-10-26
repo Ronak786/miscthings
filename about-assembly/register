@@ -21,3 +21,7 @@ mov ss , ax
 add ax, bx   两条会同时执行，debug 的T在执行修改ss的指令后，会紧接着执行
 	下一条指令, 因为debug的t会引发单不中断，这个会保存一些寄存器如cs ip，所以需要用到栈，
 	所以你设置的栈会立刻被用上记住！！！，也所以要连下一条默认的设置sp一起执行
+
+
+debug: P used when loop, or call or jmp, 
+		otherwise use T enough
