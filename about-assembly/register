@@ -1,0 +1,18 @@
+ax bx cx dx di si sp bp cs ip psw
+
+msdos  debug
+	d segment:offset   :show
+	t execute where cs, ip
+	r cs  : modify cs
+	u  interprete as assembly
+	a write into assembly
+	e modify data
+
+mov ax, [1]   [1]: means  ds:[1]
+
+segment reg: modify
+	mov ds, ax
+	mov ds, [1]
+
+jmp seg:off 
+jmp off
