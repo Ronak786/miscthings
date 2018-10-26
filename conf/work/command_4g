@@ -4,11 +4,11 @@ crw-r--r--    1 root     root      245,   2 Jan  1 00:29 /dev/stty_lte2
 crw-r--r--    1 root     root      245,   3 Jan  1 00:29 /dev/stty_lte3
 crw-r--r--    1 root     root      245,   4 Jan  1 00:29 /dev/stty_lte4
 
-for i in 0 1 2 3 4 ; do mknod /dev/stty_lte$i c 245 $i ; done
+for i in 0 1 2 3 4 ; do mknod /dev/stty_lte$i c 245 $i ; mknod /dev/spipe_lte$i c 248 $i; done
 echo 4 4 1 7 > /proc/sys/kernel/printk
 echo 1 4 1 7 > /proc/sys/kernel/printk
 echo 3 4 1 7 > /proc/sys/kernel/printk
-insmod /lib/modules/linecamera.ko
+insmod /persist/tmp/linecamera.ko
 mknod /dev/cam c 243 0
 cd /persist/tmp
 

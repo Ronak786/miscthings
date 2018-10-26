@@ -1,0 +1,34 @@
+
+echo 3 4 1 7 > /proc/sys/kernel/printk
+
+
+for i in 0 1 2 3 4 ; do mknod /dev/stty_lte$i c 245 $i ; mknod /dev/spipe_lte$i c 248 $i ; done
+
+gropmagran:
+modemDemo:AT+SPSWITCHDATACARD=1,0
+modemDemo:ATS0=1
+modemDemo:AT+SFUN=5
+modemDemo:AT+SPTESTMODEM=1,254
+modemDemo:AT+SFUN=4
+
+gropmagran:
+at+csq
++CSQ:99,30
+OK
+ 
+at+cgdcont=1,"ip","cmnet"
+OK
+ 
+at+cgpco=0,"name","password",1,1
+OK
+ 
+AT+CGEQREQ=1,2,0,0,0,0,2,0,"1e4","0e0",3,0,0
+OK
+ 
+AT+SPREATTACH
+OK
+ 
+AT+CGDATA="M-ETHER",1
+CONNECT
+ 
+AT+CGDCONT?
