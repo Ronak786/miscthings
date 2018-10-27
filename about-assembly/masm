@@ -1,1 +1,23 @@
+assume cs: codecs, ds: codeds:, ss: codess
+	 mov ax, codecs 段名就是标记，就是地址
+	这个是需要的，assume不会去主动填写段名到寄存器
 mov ax, 0fff0h  最前面的0是需要的，不然masm会识别成变量，然后报错
+
+语法奇特
+	mov ax, [0] 表示把0 赋值给 ax
+	mov ax, ds:[0] 表示一个内存地址里的内容，
+	也可以mov bx, 0, mov ax, [bx] 
+		
+	这个和直接debug里编写程序不一样，太奇怪了
+
+定义数据
+	dw xx,xx,xx,xx,xx,xx 定义的是双字节
+	start：
+
+	end start
+	end后面加上的是程序入口位置，不然
+		程序会从载入第一条指令开始执行的
+
+分配段：
+	分配段的时候，是按照１６字节对齐的，因为
+	段地址必须１６字节对齐呀，偏移１６位的

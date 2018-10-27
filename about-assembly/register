@@ -7,6 +7,10 @@ msdos  debug
 	u  interprete as assembly
 	a write into assembly
 	e modify data
+	p 运行到当前指令结束，包括跳过loop
+	g addr  ， 运行到指定地址为止，指定那条不运行
+	P used when loop, or call or jmp, 
+		otherwise use T enough
 
 mov ax, [1]   [1]: means  ds:[1]
 
@@ -23,5 +27,18 @@ add ax, bx   两条会同时执行，debug 的T在执行修改ss的指令后，�
 	所以你设置的栈会立刻被用上记住！！！，也所以要连下一条默认的设置sp一起执行
 
 
-debug: P used when loop, or call or jmp, 
-		otherwise use T enough
+loop:
+	cx -= 1, 
+	if (cx != 0) {
+			jump to label;
+	} else {
+		break;
+	}
+	用法
+	mov cx, 123
+	label: add ax, 2
+		   loop label, 运行123次
+
+
+dos 中程序刚载入，ds指向开头，然后有256字节的psp区域，
+	之后才是真正你的所有代码区域，所以cs = ds +１０ｈ
