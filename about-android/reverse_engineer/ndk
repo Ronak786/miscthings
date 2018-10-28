@@ -1,0 +1,22 @@
+编译：
+	-Itoollchain/xxx/prebuilt/linux_x86_64/lib/gcc/xxx/include-fixed
+	-Iplatform/android-14/usr/include
+	-LplatFORM/android-14/usr/lib
+	-lgcc
+	-nostdlib
+	-Bdynamic
+	-lc
+	libs/crtbegin_dynamic.o libs/crtend_dynamic.o
+
+链接脚本
+	在编译器目录下的lib下的ldscript中的一个
+	动态静态都是从crtbegin 的_start中开始的，
+	里面会初始化C库，然后执行main
+
+	如果是动态链接，那个首先启动的是system/bin/linker
+		这个从begin。S启动，内部预载入库，然后启动对应的程序的
+			start函数
+	
+	动态链接库：
+		使用crtbegin_so.o crtend_so.o 这两个会在载入的时候
+			做一些工作，是放在动态链接库内的加载卸载入口

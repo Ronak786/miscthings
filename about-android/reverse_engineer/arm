@@ -1,0 +1,34 @@
+gas:
+	.section name, flag, %type,flag_specific_args
+	.section .rodata
+	.text
+	.section .note.GNU-stack,"",%progbits
+
+	arm mode r0-r14 general  r15 pc
+	thumb mode r0-r7  r11-r14 specifl reg, r15 pc
+
+	.file "file"
+	.aligh  x ==> 2^x  align
+	.type main,%function
+	.word value
+	.size  symbol, .-symbol  means this symbol's size(function size)
+	.ident  nothing just comment
+
+	arg pass:
+		r0-r3, r0 used as return value also
+
+	addr:
+		mov r0, #111 #0x20   instant addr
+
+
+	每个指令都有条件跟在后面
+	还有stmai bi 这种可以load或者strore进按顺序的寄存器
+
+	支持neon 和vfp 扩展指令
+		首先LOCAL——ARM——NEON= TRUE
+		然后 TARGET_ARCH_ABI = ARMEABI-V7A 才行
+		然后$(call import-module, androud/cpufeatures)
+		include "cpu-features.h"
+		然后android_getCpuFamily()
+		android_getCpuFeatures()
+		android_getCpuCount()

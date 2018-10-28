@@ -73,3 +73,34 @@ call far ptr label:
 	push cs, push ip, jmp far ptr label
 call word ptr []; == call addr
 call dword ptr [];  == far ptr
+	call 不能短转移，一定是设置ip的
+
+
+标号： 数据标签都是十六位的
+	a: db 'abcde' 
+	mov ax, offset a
+
+	a db 'abcde'
+	mov  a, 'c'  这种标号还代表了长度
+	mov a[2], 'e'
+
+	带冒号的是地址标号，只能在代码段
+
+	可以把数据标号直接当做地址使用,还可以用来定义成为数据，
+		a db 1,2,3,4,5
+		b dw 0
+		c dw a, b  定义了a b偏移地址
+
+		c dd a, b 定义了a b的偏移和段地址
+			相当于 c dd offset a, seg a, offset b, seg b
+
+		使用：直接定制表格
+			label db 'xxxxxxx'
+			使用
+			label[si]
+			
+masm 处理jmp
+	各种jmp只要在最小范围内，都按照最小范围递增来处理，
+	能short就short的偏移，不然就near，再不行就far，
+	如果jmp在标号前面，会预留位置，所以如果后期用了最小
+		处理，会多出一些nop
