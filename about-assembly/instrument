@@ -1,0 +1,77 @@
+div:
+  dividor: 8bit, 
+  dividing: ax, 
+  result, al : quote
+		  ah: remainder
+
+  dividor: 16bit
+  dividing: dx, ax
+  result: ax :quote
+		  dx : remainder
+
+mul
+  al, result ax
+  ax, result ax, dx(higher)
+
+procedure:
+	call xxx
+
+xxx: aa
+	bb
+	ret
+
+psw:
+	zf: add sub mul div inc or and , if result is 0, zf = 1
+		else zf = 0;
+	pf: if result 's has even number of 1, then pf = 1, else 0
+	sf: if negative, 1, else 0
+	cf: unsigned, if 进位  or 借位, cf = 1, else = 0
+		inc do not effect cf !!
+	of: 有符号溢出，上或者下溢出, 
+		cf of 变化没关系的
+
+adc 
+sbb  use cf when do add and sub
+
+cmp : do sub, but not save result, only affect psw
+	for unsigned: zf = 1,  ax == bx
+				  cf = 1,  ax < bx
+				  zf = 0, ax != bx
+				  cf = 0, ax >= bx
+	for sign:	  sf = 1, of = 0,  ax < bx !!
+				  sf = 1, of = 1,  ax > bx
+				  sf = 0, of = 1, ax < bx !!
+				  sf = 0, of = 0, ax >= bx(see zf)
+				of = 1 意思是实际正负和这里逻辑sf表达的正负
+					正好相反
+
+je jne  zf
+jb jnb cf
+ja jna cf zf
+
+					df: 方向，置位表示-1 ，否则+1， si di
+					cld(clear) , std(set)
+
+					movsb movsw 执行一次 from ds:si to es:di
+					rep movsb, rep movsw 执行cx次
+
+中断：
+	中断向量表256项，在0地址处，
+	存放地址共4个字节
+	中断过程：
+		取得类型码
+		pushf
+		psw中tf if置位0
+		push cs
+		push ip
+		ip = 类型码*4  cs = *4+2
+
+		return: iret  (pop ip, pop cs, popf)
+		
+	更改中断处理函数：
+		更改中断向量，
+		把你的函数复制到内存中，注意数据放在同一个段里，
+		通过段头的jmp short跳到数据后面去，要相对位移才行
+
+		tf cpu处理完一条指令后，检测tf的值，如果1，就产生
+			1号中断，设置tf=0，if=0

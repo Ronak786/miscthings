@@ -6,18 +6,70 @@ mov ax, 0fff0h  最前面的0是需要的，不然masm会识别成变量，然�
 语法奇特
 	mov ax, [0] 表示把0 赋值给 ax
 	mov ax, ds:[0] 表示一个内存地址里的内容，
-	也可以mov bx, 0, mov ax, [bx] 
+	mov ax, [bx]
+	mov ax, [bx + 20]  or mov ax, 20[b]
+	mov ax, [bx + si] , mov ax, [bx + di], 
+	mov ax, [bx][si]
+	mov ax, [bx + si + 20], 20[bx] [si]
+	mov ax, [bp + si/di]
+	bp 对应段地址在ｓｓ中，不同于ｂｘ
+	存取内存的只能是这些寄存器，其他那些不行的
+	也可以mov bx, 0, 
 		
 	这个和直接debug里编写程序不一样，太奇怪了
 
 定义数据
 	dw xx,xx,xx,xx,xx,xx 定义的是双字节
+	db 1,2,3,4
+	db 'abcd'
+	dd 双字
+	db 3 dup ('123','456') :
+			123456123456123456
+	dd 3 dup(0)  :0,0,0
+
 	start：
 
 	end start
 	end后面加上的是程序入口位置，不然
 		程序会从载入第一条指令开始执行的
 
+	mov al, 'a' 也可以
+
 分配段：
 	分配段的时候，是按照１６字节对齐的，因为
 	段地址必须１６字节对齐呀，偏移１６位的
+
+指明内存区域的长度
+	mov byte ptr ds: [0], 1
+	mov word ptr ds: [0], 2
+
+mov ax, offset label
+mov ax,	offset a - offset b, 传入差
+	传递标号处的地址
+	汇编器可以处理+ - * / , mov ax, (5+2)/33
+
+jmp 
+	段内： jmp short label, 机器码里面是相对于当前ip的值，
+		也就是下一条指令的相对偏移，范围是-128 , 127
+	段内附近：
+		jmp near ptr label (16bit)
+	段间：
+		jmp far ptr cs:ip
+
+	jmp ax ,  ( in section)
+	jmp word ptr [xxx]
+	jmp dword ptr [xxx]   (双子，高地址是cs）
+	jcxz xxx ; jump only when cx is 0 (short)
+
+dos display: b800:0000 ffff
+
+ret: pop ip
+retf: pop ip, pop cs
+call addr: (16bit)
+	push ip / ip,cs
+	jmp ip / ip,cs
+
+call far ptr label:
+	push cs, push ip, jmp far ptr label
+call word ptr []; == call addr
+call dword ptr [];  == far ptr
