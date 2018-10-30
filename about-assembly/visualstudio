@@ -1,0 +1,2 @@
+in debug->window->memory:
+	use &var  , rapidly jump to var's place

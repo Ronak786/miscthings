@@ -1,0 +1,80 @@
+caution:
+	be careful use different size of same register, 
+	mov eax, 0
+	mov ax, 0x0ff
+	add ax, 1
+	now  eax is still 0
+
+
+protected mode:
+
+	example:
+
+	.i386
+	.model flat,stdcall
+
+	.stack 4096
+	EndProcess PROTO, dwExitCode:DWORD
+
+	.data
+	alabel LABEL WORD ; then alabel == array but  alabel[0] refer to a word instead of a dword
+	array DWORD 12345678h, 22222222h
+	ptrarray DWORD array ; save pointer
+	a dword ?   
+
+	.data? ; this will not occupy any capacity
+	a dowrd ? 
+
+	;typedef
+	bptr TYPEDEF ptr byte
+	pword typedef ptr word
+	pdword typedef ptr dword
+
+	ptr1 pbyte array
+
+	.code 
+	main PROC
+	mov eax, offset array
+	ALIGN 4 ; align 4 offset in address
+	mov ax, SIZEOF array  (4 * 2)
+	mov ax, TYPE array ; 4 (dword)
+	mov ax, LENGTHOF array; 2 (items)
+		when array is defined two line, use   
+			array dword 1,2,3,4,5,
+						6,7,8,9,0, then length is 10
+	mov eax, dword ptr [4]
+	mov eax, array[esi * TYPE array]
+	mov eax, ptr1
+	mov al, [ptr1]  now ptr1 is a byte pointer pointing to dword array!!
+
+	main ENDP
+
+
+
+procedure:
+	name  PROC USES ebx, ecx  ; uses will auto generate push and pop in this procedure
+	.
+	.
+	.
+	ret
+	name  ENDP
+	labels only can be jumped in the same proc,
+		or you can use label::  , this is global label
+
+
+
+instrument:
+	pushfd
+	popfd  eflags
+
+	pushad 32bit  
+	popad   
+	pusha 16bit a c d b sp bp si di
+	popa
+
+	in real mode:
+		loop: cx, loopd :ecx, loopw: cx
+
+	in win32 mode:
+		loop: ecx
+
