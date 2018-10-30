@@ -148,3 +148,8 @@ bool:
 
 	loopz loopnz
 	loope loopne   if ecx > 0 &&  zf == 1   ( or zf == 0)  , then jump
+
+	有限状态机，转化为汇编很容易
+
+	shl shr sal sar   rol ror  rcl rcr 
+		所有都会影响cf标记，但是只有rcl rcr 会把循环移动到cf中，把cf移动到填充的位上
