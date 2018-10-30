@@ -102,3 +102,46 @@ shl, shr
 ret n
 	pop ip
 	add sp, n
+
+bool:
+	win64 bool:  if source is 32, dest 64 only affect lower 32bit
+				if source is less than 32, dest 64 affect all
+	and:
+		always clear  c and o,  and ax, ax ,then you can test other cflags to test value of ax(>0 <0 == 0?)
+	or:
+		always clear c and o,    and ax, ax ,then you can test other cflags to test value of ax(>0 <0 == 0?)
+	xor:
+		x ^ y ^ y = x !!!
+		x ^ 0 == 0 and pf flag will be set, so this will test pf 奇偶校验
+		a ^ b  奇偶特性和a b拼起来的一样，因为xor把对应位置的一起消掉了，剩下的再合并了起来
+	not:
+		do not affect flag
+	test == and
+	cmp = sub     but not affect real number
+		cmp unsigned : == zf = 1, cf = 0
+						< zf = 0, cf = 1
+						> zf = 0, cf = 0
+			signed   :== zf = 1
+					 >   sf = 0, of = 0 or zf = 1, of = 1
+					 <	 sf = 1, of = 0 or sf = 0, of = 1
+
+	set zf:
+		test al, 0 zf = 1
+		and al, 0 zf = 1
+		or al, 1  zf = 0
+
+	set sf:
+		or al, 80h sf = 1
+		and al, 7fh sf = 0
+	set cf:
+		stc
+		clc
+	set of
+		mov al, 7f
+		inc al   of = 1
+		or eax, 0  of = 0
+
+	jz jnz jp jnp jc jnc jo jno js jns
+	jcxz jecxz jrcxz
+	ja jb jnbe jae jnb , these will combine zf , cf , of, so no worry about that!!
+	jg jl 

@@ -7,6 +7,6 @@ in 64mode:
 
 	call win32 api:
 		args pass by rcx ,rdx, r8 r9
-		when use stack, after being called ,because pushed 8 byte address, you should also 
+		when use stack, after being called by system api ,because pushed 8 byte address, you should also 
 			sub 8byte, to align 16byte, 
 			then before call subproc, sub 32byte as shadow place for ,then call,!!!
