@@ -153,3 +153,19 @@ bool:
 
 	shl shr sal sar   rol ror  rcl rcr 
 		所有都会影响cf标记，但是只有rcl rcr 会把循环移动到cf中，把cf移动到填充的位上
+		如果移动后符号和以前不一样，of置位
+		shld shrd  移动目的，缺的用源补， 样子是 目的 源 这样拼起来
+
+	mul 
+		乘法结果如果高位不为0， cf标记设置
+
+stack frame call style:
+	C call style:
+		caller: push args,
+		call xxx
+		caller: add sp, sizeof(args)
+
+	stdcall style:
+		caller: push args,
+		call xxx:
+			ret  n
