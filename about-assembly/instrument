@@ -145,3 +145,6 @@ bool:
 	jcxz jecxz jrcxz
 	ja jb jnbe jae jnb , these will combine zf , cf , of, so no worry about that!!
 	jg jl 
+
+	loopz loopnz
+	loope loopne   if ecx > 0 &&  zf == 1   ( or zf == 0)  , then jump
