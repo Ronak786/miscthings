@@ -104,3 +104,43 @@ masm 处理jmp
 	能short就short的偏移，不然就near，再不行就far，
 	如果jmp在标号前面，会预留位置，所以如果后期用了最小
 		处理，会多出一些nop
+
+
+LOCAL :
+	定义局部变量在过程开始
+	main PROC
+		LOCAL temp:dword, swap:byte
+		LOCAL temparray[10]:word
+
+	ENTER 8, 0
+	LEAVE  8表示sub esp, 8 预留，这个可以用local代替然后设置变量
+
+
+lea ax, [bx+4] 可以用来做计算，不会去引用的，也可以用来取地址
+
+PROC:
+	label PROC [Uses registers registers2], parameter:type, paratemter:type, .... 可换行，然后内部可以使用这些参数名字
+	参数都是双字，结尾的ret会自动变成ret n*4
+
+	OPTION PROC:PRIVATE
+	PUBLIC xx,xx,xx,xx  
+		这样本文件所有过程不可见，但是public指明的可见
+
+	外部引用
+		EXTERN name@number:PROC 外部声明，nubmer表示参数总长度（要*4的）
+
+		EXTERN name:type 声明变量
+			定义的地方PUBLIC XX ， XX
+						XX = YYYY即可
+
+	或者所有地方INCLUDE XX.INC in which, externdef
+	具体定义的文件里进行定义
+
+	xxx PROTO , parap:type, .... 用于声明, in .inc file
+		定义的地方直接用上面的proc定义即可
+
+	USES 使用寄存器，声明了就会事先push，事后pop但是这个在push ebp, mov esp, ebp之前，所以
+		mov eax, [ebp +8] 这种用法就不能用了，配合uses！！
+
+	传递参数：
+		 字符变量push直接是4字节，但是变量名的话需要movxz 到eax之类里面，不然push错误
