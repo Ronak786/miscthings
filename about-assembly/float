@@ -27,3 +27,5 @@ fldz   push 0.0
 fst  store, 是复制不是pop
 fstp  : fst and pop
 fist   store and convert to integer
+
+fadd : st0 added to st1 and pop st0

@@ -144,3 +144,11 @@ PROC:
 
 	传递参数：
 		 字符变量push直接是4字节，但是变量名的话需要movxz 到eax之类里面，不然push错误
+
+
+内嵌汇编
+__asm {
+	TYPE  return unit type size
+	LENGTH return array item nums
+	SIZE  return whole size
+}
