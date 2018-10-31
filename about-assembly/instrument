@@ -169,3 +169,42 @@ stack frame call style:
 		caller: push args,
 		call xxx:
 			ret  n
+
+
+cld
+std : reverse direction
+movsb/w/d  si -> di
+cmpsb		compare si and di   : jump   ja,  repe 
+scasb		compare al/ax/eax to di : repne  (repeat until not equal) + jnz 跳出完全不匹配的情况
+stosb		store ax to di
+lodsb		load di to ax
+rep			repeat until cx is 0
+repz/repe   until cx 0 and or zf != 0
+repnz/repne until cx 0 or zf == 0
+
+
+结构体
+XXX STRUCT
+	A BYTE "xxxxx"
+	ALIGN WORD    // align 获得更好的性能
+	X WORD ?
+	Y WORD ?
+	D BYTE 30 dup(0)
+	ALIGN DWORD
+	E dword 0,0,0,0
+XXX ENDS
+使用： 
+	ALIGN DWORD
+	var XXX <yy,,zz, 2 dup(0)(仅仅初始化数组中的两个> ,可以跳过字段
+			还可以{}
+			还可以 <> 默认字段
+
+	引用： var.fielename
+
+macro:
+	xxx MACRO param1, param2
+	...
+	...
+	ENDM
+
+	调用： XXX
