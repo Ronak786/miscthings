@@ -1,0 +1,18 @@
+memory:
+	long mode:
+		64bit : cs(only attribute), fs, gs(only addr),  ds es ss (ignore, assume no use, just 0)
+			virtual addr->paging->phy addr
+		compatibility mode:
+			addr + selector -> extending to 64bit -> paging -> phy addr 64bit
+
+	legacy mode: 
+		protected :  addr + selector(segmentation)->[paging] -> phyaddr 32bit
+		virutal 8086 addr + selector (20bit) -> [paging] -> phyaddr 32bit
+		real mode addr + selector (20bit) -> phyaddr 32bit (from 31 to 19 is 0)
+
+	ip relative address offset:
+		support 32bit +-, so +- 2GB offset
+
+	near pointer : effective address (just the offset part)
+	far pointer : selector + effective address
+		these are the same in 64bit mode
