@@ -1,0 +1,29 @@
+float 1 8 23
+double 1 11 52
+extended double 1 15 64
+
+1 : sign
+8 : 你的指数+ 127 得到写入的值，
+去掉全0 全1， 这两宗用于 无穷（其他都是0，除了符号） 以及 nan（小数第一位是0或者1，其他随便）
+23： 规范： 小数点后的二进制
+	非规范：太小了，那就不断移动小数点直到 1~254 - 127 => -126 ~ 127 可表示，再表示
+
+fpu:
+	栈的形式，st0栈顶 ，每次压入数，0会变到1的位置，操作府再取出数
+	一共8个，push多了，覆盖就绕回
+
+fild   二进制整数转换为浮点到st
+fbld  bcd
+fld 加载实数到st寄存器顶端， 可以是另一个st，也可以是内存
+
+fld1  push 1.0
+fldl2t push log2(10)
+fldl2e push log2(e)
+fldpi
+fldlg2  log10（2）
+fldln2  loge(2)
+fldz   push 0.0
+
+fst  store, 是复制不是pop
+fstp  : fst and pop
+fist   store and convert to integer

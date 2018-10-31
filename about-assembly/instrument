@@ -202,7 +202,8 @@ XXX ENDS
 	引用： var.fielename
 
 macro:
-	xxx MACRO param1, param2
+	xxx MACRO param1, param2:REQ(必须存在的参数）
+	ECHO xx xx xx  写到输出
 	...
 	...
 	ENDM
