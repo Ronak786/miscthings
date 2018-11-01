@@ -1,0 +1,26 @@
+#include <windows>
+#include <tchar.h>  // for unicode
+
+use wide code or ascii code:
+	in C language, strlen == wcslen for wchar_t
+
+	in windows, _T(x) == _TEXT(x)  == L"xxxx" if unicode
+								   == "xxxxx" if ascii
+
+	TCHAR as char or wchar_t
+	PTCHAR as char* or wchar_t *
+	TEXT(x) as __TEXT(x) as _T(x)
+
+	LPCSTR  : long pointer of const string, long用于古老的16位系统中表示段加偏移，现在不用管，直接用
+		
+	sprint swprint -> _stprintf
+	_stprintf, _sntprintf 通用版本 相对于w或者a版本
+	_vsntprintf
+
+	_sntprintf(format , ...) {
+		va_list xxx;
+		va_start(xxx, format);
+		_vsntprintf(buffer, size, format, xxx);, 所有缓冲区都用TCHAR 【】 或者 TEXT（）；
+	}
+
+
