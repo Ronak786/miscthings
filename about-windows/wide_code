@@ -22,5 +22,5 @@ use wide code or ascii code:
 		va_start(xxx, format);
 		_vsntprintf(buffer, size, format, xxx);, 所有缓冲区都用TCHAR 【】 或者 TEXT（）；
 	}
-
-
+		note:
+			the size should be sizeof(buffer) / sizeof(TCHAR) !!
