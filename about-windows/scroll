@@ -1,0 +1,35 @@
+winmain -> registerclass (wndclass (set winproc))
+
+message处理： 1， getmessage->translatemessage->dispatchmessage
+			  2, 直接被windows调用wndproc函数指定消息
+
+
+1 scroll old:
+	wm_size : get client area size
+	wm_create: gettextmetrics, char width, height ...
+	wm_vscroll: loword(wparam) get action:
+					setscrollpos(hwnd, sb_vert, pos, true);
+					invalidaterect(hwnd, null, true);
+						(this will cause wm_paint message)
+	wm_paint:
+			textout(xxxx) according position calculated 
+				in wm_vscroll
+
+2 scroll modern:
+	wm_size:
+		setscrollinfo of SIF_RANGE | SIF_PAGE
+	wm_vscroll:
+		getscrollinfo, get current pos and action,
+			calculate new position,
+			call scrollwindow(xxxx) to scroll  bar
+			call updatewindow() to send wm_paint
+
+	wm_paint:
+		use getscrollinfo to get current position
+			calculate current should_draw lines,
+			draw them
+
+	wm_destroy:
+		postquitmessage(0):
+
+	return defwindowproc(hwmd, message, wparam, lparma);

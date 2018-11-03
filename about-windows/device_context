@@ -1,0 +1,49 @@
+getDC		get
+releaseDC	release
+
+getwindowdc : get whole window(not just client area )dc
+	message: wm_ncpaint
+
+createdc(driver, device, output, data)
+deletedc
+
+information context: just info, can not write
+	createic
+
+craetecompatibledc:
+	a memory device dc
+
+getdevicecaps:
+	just like getsystemmetrics , get device's capability
+		but not just for screen, can also for printer!!
+
+分辨率：
+	这里规定 = 总像素除以总长度单位，所以分辨率的意思是
+		单位度量内的像素总数
+	
+
+字体高度：
+	getdevicecaps HORZRES  VERTRES 表示像素的长宽，
+	字体一般通过点的高度决定，一个点1/72英寸， 固定
+	一个字符通过gettextmetrics得到是tmheight高度，
+	减去重音符号的tminternalleading之后得到
+	而行间距会比这个大一点，保持j这种字符不会上下链接
+
+字体大小
+	字可以调节大小，调节的是os内部设定的每英寸像素数量，
+	如果调大，就是设置每英寸像素增多，这样乘以1/72，就得到
+	字占用的像素的多少了，显示像素就多了，就大了
+
+保存设备环境和回复
+	1, wndclass.style = CS_OWNDC
+		这样每个窗口都有自己的一套属性，不会丢失
+	2, saveDC, restoredc(hdc, -1)
+		传入save的返回值恢复到那一次
+		传入-1恢复到前一次
+
+setpixel
+getpixel(hdc, x, y) return color  RGB(x,x,x) 0 black, 255 white
+
+画直线
+	polyline(hdc, point array, sizeof(array))
+		自动跑到点的位置开始划线
