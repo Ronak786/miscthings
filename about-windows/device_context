@@ -47,3 +47,30 @@ getpixel(hdc, x, y) return color  RGB(x,x,x) 0 black, 255 white
 画直线
 	polyline(hdc, point array, sizeof(array))
 		自动跑到点的位置开始划线
+
+	rectangle(hcd, left, top, right, bottom)
+	ellipse(hcd, l, t, r, b) 内接在矩形里的椭圆
+	roundrect(hcd, l, t, r, b, x, y)
+		矩形四个角上变成椭圆对应的4边，圆角矩形
+		x y指定椭圆长宽
+	arc(hcd, l, t, r, b, xstart, ystart, xend, yend)
+		指定椭圆上对应弧的起始终结地方
+	chord 加上一条弦
+	pie  一个扇形
+
+选择笔：
+	selectobject(hdc, getstockobject(WHITE_PEN OR BLACK_PEN OR NULL PEN))
+	返回之前的笔，如果之前没保存，可以在这里删除
+
+创建笔：
+	createpen(penstyle, width, color)
+	deleteobject(hpen);
+
+	setbkcolor /getbkcolor
+	setbkmode  /getbkmode
+		设置虚线空隙的颜色和背景色的关系
+
+画刷
+	hbrush = getstockobject(WHITE_BURSH);
+	selectobject(hdc, getstockobjet(null_brush))无填充
+	选择填充后，那些rectangle等函数就会填充非白色了

@@ -1,0 +1,21 @@
+wm_setfocus
+wm_killfocus:
+	当前窗口正在成为焦点窗口或失去
+
+wm_keydown:
+wm_syskeydown:(alt-tab ...应用交给系统def处理)
+	系统和非系统按键按下，如果持续按下，就是连续的down消息
+	wparam 虚拟码， lparam其他数据
+
+	虚拟码是一套独立于键盘布局的码，使用VK——XXXX来表示
+	数字和字符还是普通ascii的大小
+
+getkeystate(vk_xxx)
+		获取某建状态，如shift
+		注意这个获取的是调用这个函数之前的键盘状态，不能
+		获取当前实时状态的， ??
+
+wm_char:
+	translatemessage 所产生的message信息，
+	包含了组合shift得到的对应字符的编码，不然只会产生
+	键盘上有的虚拟码，而大小写没有的

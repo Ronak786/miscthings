@@ -1,0 +1,1 @@
+sendmessage(hwnd, mesg, wparam, lparam);
