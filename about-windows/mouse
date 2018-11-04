@@ -1,0 +1,8 @@
+getsystemmetrics(sm_mousepresent) 鼠标存在
+getsystemmetrics(sm_cmounsebuttons) 鼠标按钮个数
+	wndclass.hcursor = loadcursor(null, IDC_ARROW)
+
+wm_lbuttondblclk
+	double click , 需要wndclass.style = CS_DBLCLKS
+	这样就会接收到双击事件，具体是第二次点击发出的事件
+		是双击的按下而不是单独的按下
