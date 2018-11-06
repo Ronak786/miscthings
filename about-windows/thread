@@ -1,0 +1,31 @@
+CreateThread(xxx)  raw api
+_beginthread/ex: better
+	_endthread/ex
+临界区 只用于一个进程，所以比mutex light_weight
+	Critical_Section cs;
+	initializecriticalseciton(&cs);
+	entercriticalsection(&cs);
+	leave....(&cs);
+	delete....(&cs);
+
+event:
+	setevent(hevent);
+	resetevent(hevent);
+	waitforobject(hevent, infinity)   就是condition 一样的东西
+
+thread local storeage:
+	index = tlsalloc();
+	tlssetvalue(index, globalalloc(gptr, sizeof(your_struct)));
+
+	use:
+		ptr = tlsgetvalue(index);
+
+	release:
+		globalfree(tlsgetvalue(index));
+
+	release index:
+		tlsfree(index);
+
+	更方便使用：
+		__declspec(thread) static/nonstatic int a = 2;
+	

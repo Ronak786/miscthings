@@ -1,0 +1,4 @@
+dll 后缀名可以自己改，只有.dll的可以windows自动加载，否则必须使用loadlibrary加载o
+dllmain()
+	用于初始化，reason参数第一次进入内存是attach，可以让你初始化
+										detach 可以让你准备清理
