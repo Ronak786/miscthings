@@ -1,0 +1,3 @@
+system subwindow:
+	like TEXT("Button")
+	when click, 会向父窗口发送wm_command, 父窗口的proc可以处理消息利用lparam, wparam

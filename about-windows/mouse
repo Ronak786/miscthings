@@ -6,3 +6,13 @@ wm_lbuttondblclk
 	double click , 需要wndclass.style = CS_DBLCLKS
 	这样就会接收到双击事件，具体是第二次点击发出的事件
 		是双击的按下而不是单独的按下
+
+screentoclient
+clienttoscreen转换屏幕坐标和客户区坐标
+getcursorpos
+setcursorpos使用屏幕坐标设置
+
+wndclass
+	中cbwndextra 可以额外分配一个空间，用来在每个窗口里设置自己的空间，
+	具体在内部使用setwindowlong(hwnd, 0, 0)  get(hwnd, 0)来设置获取
+		0 表示hwndfirst  即第一个

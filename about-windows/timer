@@ -1,0 +1,9 @@
+1 settimer(hwmd , id, interval , null)
+killtimer(hwnd, id)
+
+2 settimer(hwnd, id, interval, callback_func)
+	callback(hwnd_of_settimer_window, message(wm_timer), id, count of timer from system start)
+
+3 int id = settimer(null, 0, interval, callback)
+  killtimer(null, id)
+
