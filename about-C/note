@@ -1,0 +1,21 @@
+comment:
+	/*
+	
+    */
+
+input/output:
+	scanf  %f %g %e are the same!!  will read  "- number . number e  - number"
+		%i input: xx  十进制
+				011  八进制
+				0xa2  十六进制
+				
+	scanf will skip all blank in input!!  (except %c)
+
+	空白：输入中的空白：这个可选，格式串中一个空白可以对应输入中多个空白或者0个空白，
+		但是一定格式串至少一个空白（多个相当于一个），不然对应输入不能有空白
+
+c99:
+	/ 向0取整
+	% 和被除数符号相同
+
+
