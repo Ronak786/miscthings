@@ -70,6 +70,11 @@ c99:
 		'\33' 8进制
 		'\xab' 16进制
 
+	转换提升
+		如果其中一个浮点, 另一个 float->double->long double
+		全是整形，首先提升到int, 然后 int -> unsigned int-> long int- >unsigned long
+							如果unsigned int 对 long int, 全部变成 unsigned long
+
 
 函数：
 	getchar putchar   比scanf 更快 , 而且返回int类型
