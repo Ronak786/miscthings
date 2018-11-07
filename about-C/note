@@ -79,6 +79,22 @@ c99:
 		全是整形，首先提升到int, 然后 int -> unsigned int-> long int- >unsigned long
 							如果unsigned int 对 long int, 全部变成 unsigned long
 
+	数组初始化
+		指定初始化 int a[] = {1,2,3, [8]=20, [10]=40}; 会推断大小
+			注意使用指定位置的后果是下一个是指定之后的位置，和枚举初始化一样
+		define size ((int)(sizeof(a) / sizeof(a[0])))
+
+		变长数组
+			a[n];  不能静态，不能初始化
+
+		函数变长数组：
+			int func(int n, int a[]) or int a[n] or int a[*] or int [] 都可以
+			int func(int a[static 3]) 保证至少3个元素
+
+		复合字面量
+			int func((int []){1,2,3,4}) 这样传数组 or (int[10]{1,2,3,4,5})
+
 
 函数：
 	getchar putchar   比scanf 更快 , 而且返回int类型
+
