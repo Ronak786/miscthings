@@ -44,6 +44,10 @@ c99:
 	检查limits.h 可以查看不同类型值的大小
 	新增long long , unsigned long long, 至少64位
 
+	sizeof return size_t, printf  %zu 
+
+	16进制 浮点  0x1.bp3 指数表示的是二的幂
+
 
 数据类型书写
 	123
