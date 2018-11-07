@@ -8,6 +8,11 @@ input/output:
 		%i input: xx  十进制
 				011  八进制
 				0xa2  十六进制
+
+		浮点：
+			float  %e g f
+			double %le lf lg (只用于scanf, not used in printf, c99 can but no effect)
+			long double %Le Lf Lg  print Le Lf Lg
 				
 	scanf will skip all blank in input!!  (except %c)
 
@@ -16,6 +21,15 @@ input/output:
 	printf %.2   d  至少两个数字
 				s 至少两个字符
 				f 至少两个小数
+
+	读写无符号
+		%u %o %x
+	读写小整数
+		%hd hu ho hx
+	读写长整数
+		%ld lu lo lx
+	读写长长整数 c99
+		%lld u o x
 
 c99:
 	/ 向0取整
@@ -28,4 +42,34 @@ c99:
 	goto 不能绕过变长数组声明
 
 	检查limits.h 可以查看不同类型值的大小
+	新增long long , unsigned long long, 至少64位
 
+
+数据类型书写
+	123
+	012
+	0xab
+	123U  unsigned
+	123L  long
+	123UL  
+	123LL  long long 
+	123ULL unsigned long long
+
+	float double longdouble
+	float _Complex, double xxx , longdouble xxx
+
+	常量
+		十进制  int long longlong 中最小
+		8 16进制 int unsigned , long, u long, longlong, ulonglong中最小
+		浮点 默认double
+			float 强制 用 F后缀
+			long double 强制用 L后缀
+			十六进制浮点也是0x开头
+
+	转义：
+		'\33' 8进制
+		'\xab' 16进制
+
+
+函数：
+	getchar putchar   比scanf 更快 , 而且返回int类型
