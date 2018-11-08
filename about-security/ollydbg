@@ -1,0 +1,22 @@
+ctrl+f2 restart
+f7 step into
+f8 step over  
+ctrl+f9 exec until return(stop on return)
+ctrl+g  check code or memory, only used when not running
+f4     run until reach positon under cursor
+;		添加注释
+右键 search for->user defined comment  找用户定义注释
+:      add label
+f2		set/unset  break point 断点
+f9		run until break point
+*		show eip position
+-		显示上一个光标位置
++		显示下一个光标位置
+enter	非运行时进入call， 可以配合- +找到上一个位置
+
+menu:
+	view->breakpoints 查看设置的断点
+	user defined comment 中红色为当前位置，其他是用户定义注释位置
+
+note:
+	设置label后，所有引用那个地址的地方都变成对应的label
