@@ -245,3 +245,29 @@ _Pragma("xxxxxx")   代替#pragma 因为是运算符，就可以用在宏定义�
 	fseek ftell 老 用fgetpos fsetpos较好
 
 	isspace isalnum  ispunct 这些合起来就是可打印字符
+
+	strpbrk 第一个在参数中的位置
+	strspn 第一个不在参数中的位置
+	strtok 分割字符串，第一次要原字符串，后面不需要
+
+signal:
+	信号可以abort 或者raise产生,除此之外的不要调用库函数和静态变量
+
+stdarg.h
+	va_list li;
+	va_start(li)
+	int a = va_arg(li, int);
+	va_end(li)
+
+	vprintf vsnprintf
+	vscanf vsscanf  用于包装可变参数自定义函数
+
+	atexit() 注册exit的时候调用的函数
+	_Exit() 不调用atexit的以及不出发信号
+	abort 这个和上面都不会atexit函数，也不会清理缓冲区
+
+	clock() return clock_t,  you can divice CLOCK_PER_SEC
+	difftime() return two time's difference
+
+inttypes.h
+	int_least8_t   uint_fast8_t 之类
