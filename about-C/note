@@ -221,3 +221,27 @@ _Pragma("xxxxxx")   代替#pragma 因为是运算符，就可以用在宏定义�
 	stddef.h
 		ptrdiff_t size_t
 		offsetof(struct s, a) 返回偏移
+
+	fopen(filename)   文件名windows中可以是 c:/表示防止\的转义问题
+	    模式的 a+ w+ r+中读写模式的转换需要一个定位操作，不然不行
+		对于文本文件，输入的行标记永远是换行，输出会相应转换
+			二进制文件不会
+	freopen 关闭原来的流，同时在其上打开新文件作为流的源头
+
+	tmpfile return FILE*
+	tmpname  return a name of string 可以用来产生新文件
+
+	fflush() 刷新缓冲区
+	setvbuf() 设置缓冲区
+
+	remove()
+	rename() 处理文件名
+
+	clearerr(FILE*)
+	feof 应该先读，失败后，再测试这个
+	ferror
+
+
+	fseek ftell 老 用fgetpos fsetpos较好
+
+	isspace isalnum  ispunct 这些合起来就是可打印字符
