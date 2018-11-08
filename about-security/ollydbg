@@ -1,3 +1,4 @@
+配置文件，可用随书的ollydbg.ini
 ctrl+f2 restart
 f7 step into
 f8 step over  
@@ -13,6 +14,8 @@ f9		run until break point
 -		显示上一个光标位置
 +		显示下一个光标位置
 enter	非运行时进入call， 可以配合- +找到上一个位置
+ctrl+e  选中数据区可以修改
+空格	选中代码区可以修改汇编(其实都可以用空格，超方便）
 
 menu:
 	view->breakpoints 查看设置的断点
@@ -20,3 +23,22 @@ menu:
 
 note:
 	设置label后，所有引用那个地址的地方都变成对应的label
+
+查找入口的方法:
+	1 代码执行，不断按f8，找到具体入口，然后设断点
+		重来，进入那个里面再f8，一层一层找
+	2 找字符串，右键search for  ， all string找到字符串的
+		使用位置, 还可以在底下的data dump窗口找到unicode字符串修改
+	3 search for   all intermodule call 找到messageboxw的调用位置
+	4 有时exe被压缩，ollydbg找不到os调用的api，这时使用
+		右键 name in all modules，键盘搜索messageboxw，然后打断点
+		然后f4运行到这里，再运行出去（ctrl f9）好像不管用，f8吧，
+		或者看stack那里的返回值就能找到了
+
+修改数据：
+	数据区找到位置，鼠标选中，然后ctrl+e更改，去掉keep size
+	可以更长，记住最后十六禁止区域加入00 00 unicode的字符串结尾
+
+保存文件 到新的exe
+	选中新的数据区域修改，右键copy to executable， 然后弹出窗口
+	继续右键save file即可
