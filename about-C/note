@@ -98,3 +98,32 @@ c99:
 函数：
 	getchar putchar   比scanf 更快 , 而且返回int类型
 
+macro:
+	#xxx 转换为字符串， #define mad(x)  #x 如果传入空，则产生空字符串
+	a##b   转为ab,    #define mac(a,b) a##b 
+	注意 # ##两边的宏本身不会扩展，所以 mac(a, mac(b,c))这种会变成amac(b,c), 
+		需要定义 #define mac2(a,b) mac(a,b) 然后使用mac2(a, mac2(b,c)) 变成 abc
+
+	可变参数宏
+		#define pr(fmt, ...) printf(fmt, __VA_ARGS__) 即可
+		#define pr(fmt, ...) printf(fmt, ## __VA_ARGS__) 这个gnu中更好，因为没有可变参数的时候不需要额外的逗号
+
+	__FILE__
+	__LINE__
+	__func__ 
+	__DATE__
+	__TIME__
+
+	#if xxx   定义且不为0
+	#ifdef  == #if defined 是否定义
+#error   错误信息编译
+_Pragma("xxxxxx")   代替#pragma 因为是运算符，就可以用在宏定义了，不然宏本身是不能二次执行的
+
+	#include "/root/xxxx.h" 完整路径 "d:\xxx\xxx.h"
+		#define MACRO "xx.h"
+		#include MACRO
+
+	gcc -DAA=xxx  如果需要定义字符串，需要\"传入引号，如果定义的东西有空格，需要本身shell上外面加引号
+
+多文件
+	extern int a[]  数组声明省略大小
