@@ -217,3 +217,7 @@ _Pragma("xxxxxx")   代替#pragma 因为是运算符，就可以用在宏定义�
 	头文件inttypes.h包含了print scanf时候的具体标志如PRId
 	禁用宏
 		c = (getchar)() 就不会被替换了
+
+	stddef.h
+		ptrdiff_t size_t
+		offsetof(struct s, a) 返回偏移
