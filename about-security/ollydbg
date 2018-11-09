@@ -17,9 +17,17 @@ enter	非运行时进入call， 可以配合- +找到上一个位置
 ctrl+e  选中数据区可以修改
 空格	选中代码区可以修改汇编(其实都可以用空格，超方便）
 
+数据区：
+	代码或者栈区选中地址，右键 followin dump可以显示在数据区对应的数据显示
+	右键数据区long 可以转化到ascii 显示每个地址，这种可以显示unicode，
+		转换回来选择hex hex 16
+
 menu:
 	view->breakpoints 查看设置的断点
 	user defined comment 中红色为当前位置，其他是用户定义注释位置
+
+栈区：
+	右键 可以选择地址表示相对于ebp 方便查看
 
 note:
 	设置label后，所有引用那个地址的地方都变成对应的label
@@ -35,6 +43,9 @@ note:
 		然后f4运行到这里，再运行出去（ctrl f9）好像不管用，f8吧，
 		或者看stack那里的返回值就能找到了
 
+找函数调用入口
+	一般都是一堆nop下面
+
 修改数据：
 	数据区找到位置，鼠标选中，然后ctrl+e更改，去掉keep size
 	可以更长，记住最后十六禁止区域加入00 00 unicode的字符串结尾
@@ -42,3 +53,8 @@ note:
 保存文件 到新的exe
 	选中新的数据区域修改，右键copy to executable， 然后弹出窗口
 	继续右键save file即可
+
+设置
+	options->debuggin options-> disasm ==> show default segment show size of memory operand 
+		去掉就不会显示没用的word ptr 以及 段寄存器了，因为保护模式下都是0，没啥用
+	选择analysis1中的show args and locals 可以把本身传参数的ebp+xxx变成直观的local  args等
