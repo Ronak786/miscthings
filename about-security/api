@@ -1,4 +1,9 @@
+cdecl (default in C promgramming)  caller  balance stack: add esp, xx
+stdcall  callee balance stack: ret xx
+fastcall , like stdcall, except first 2 param passed using ecx and edx (used in c++ calling conversion pass this point)
+
 messagebox 显示消息
 getwindowtext getdlgitemtext 获取框中内容
+
 
 
