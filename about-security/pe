@@ -1,0 +1,104 @@
+可以用peid pelord等工具看，也可以直接使用ollydbg
+	直接view中memory，找到peheader双击就行了，或者
+	右键dump in cpu，然后data区域右键special -》pehead
+
+
+	pe按节分，无用的如debug节放在最后面不会加载
+		加载到内存后section从page开头开始！
+		在文件里的section对齐一般是磁盘扇区大小对齐
+
+	开头是dos头，用来在dos用兼容执行，会链接一个dos stub程序进去，
+		头64字节，在masm32的windows。inc里有结构体image dos header
+		头上是MZ的magic，尾部是lfanew这个表示小端顺序的pe头的开始位置
+
+		pe头 PE  pe文件， NE 16位 文件， LE windows3.x文件，LX os/2文件
+
+		在windowsinc中可以找到 pe 头为image nt headers
+			里面可以找到入口等信息：magic 4字节，然后
+				一个file头20字节，然后可选头244字节，
+					其中image data directory在96字节后
+
+				之后，也就是pe头开头之后f8h字节处是段开头，
+				ascii是.text， 每个段描述32+8 = 40字节
+				可以通过imagebase， raw offset rawsize
+					计算virtualaddr virtualsize
+
+				这里的virtual，是相对地址，相对于base的
+				base只是推荐地址，被占用会改的记住
+
+			头中有用的域
+				file aligment , seciton align in file
+				section alignment, section align in memory
+				imagebase,	load base preferred
+				entrypoint,
+				sizeofimage, size in memory
+				sizeofheaders(all headers), size of all in file - sizeof all sections
+				
+
+			image directory table里就是各种表的rva地址和长度
+
+	接下来是段描述头image_section_header_struct
+		virtualsize virtual address(relative to image base)
+		raw size(size on disk rounded up to file alignment)
+		raw pointer(raw offset of section, if 0, bss data)
+		可以通过找ascii的段名直接找到段描述结构
+
+	接下来是各个段，开头要对齐文件对齐的字节位置
+		其中 resource section可以通过resource hacker来修改
+		edata  exported functions
+		idata	imported funcs
+		.debug  include debug infos,but directorys in .rdata
+		.reloc 重定位表，用于load之后imagebase不对的情况下，
+			内部的绝对地址引用的更改
+
+	export table:
+		首先一个描述表位置在pe里面指定的export table
+			的位置处，然后这个表里面有各种处于edata
+			段中的地址表的信息
+		导出表里面有地址表，索引是序列号，
+		还有名字表和序列号表，这两个同步二分搜索，
+			通过名字得到序列号，就可以找到地址表里的对应地址了。
+		还可以直接通过序列号搜索地址表，只要到处的是序列号而不是
+			名字就行了，不过不好维护
+			指定的nbase是内部寻找会减去的序列号base，这样外部
+			可以自定义base
+
+		导出传递：
+			一个模块导出的函数是另一个模块要导出的函数，
+			这样做为了保证兼容性，在导出地址表里面不是函数的
+			位置，而是实际函数所在类及内部函数的名称
+
+	import table
+		image_import_descriptor
+		首先根据pe找到一组这种固定长度的借口，最后一个清零。
+			表示的是一个引入的dll
+		然后在结构第一项和最后一项都是同样的指向的
+			一组结构体数组，同样清零结构体表示结尾，
+			里面每个表示当前dll中引入的一个函数
+			image_thunk_data32
+
+			为什么要两个同样的导入函数结构数组？
+			因为可能历史原因，每个数组只有名字和index域，
+			所以import的时候第一个用来修改成地址，第二个
+			保持不变，用来作为名字的查找
+			有时候这些在只读段里面，load的时候会暂时改成
+			读写段，修改完再改回去
+				注意：这个结构体只有一个元素，要么是一个
+				序列号，要么是一个rva地址of一个image import byname
+				结构体，这个里面是名字
+				通过最高位的1来区分，有1就是基序列号，没有就是
+				一个地址，
+
+		dllimport 这个标记告诉编译器这个函数是从其他dll引入的，
+			所以最好使用call [xxx] 到thunkdata结构体的方法去调用，
+			而不是call xxx
+				xxx ： jump 【xxxx】到结构体里
+
+		bound imports:
+			这个利用编译器的bind程序在编译链接的时候就加入
+			improt的函数的地址修订，同时记录时间匹配，不匹配
+			就重新load
+
+			bound的结构是先查看的，因为有时候只有这里有，
+				就算进入到普通结构体中，还是会查看time字段
+				再次看bound是否有，因为查看bound和普通是并行的
