@@ -16,6 +16,10 @@ f9		run until break point
 enter,右键follow	非运行时进入call， 可以配合- +找到上一个位置, 
 ctrl+e  选中数据区可以修改
 空格	选中代码区可以修改汇编(其实都可以用空格，超方便）
+ctrl+n  显示导入的函数
+右键breakpoint hardware onaccess 这个可以在任意位置插入断电
+	然后只要访问到这个东西（不一定是执行到），就会中断，
+	很方便
 
 数据区：
 	代码或者栈区选中地址，右键 followin dump可以显示在数据区对应的数据显示

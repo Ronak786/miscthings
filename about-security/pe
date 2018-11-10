@@ -102,3 +102,32 @@
 			bound的结构是先查看的，因为有时候只有这里有，
 				就算进入到普通结构体中，还是会查看time字段
 				再次看bound是否有，因为查看bound和普通是并行的
+
+	dll 总是导入到7xxxxxxx的地方 再网上就是kernel的地方了
+
+
+修改文件： 加入可执行代码
+	1 修改pe更改执行段的大小，然后后面可以放入自己的程序
+	2 原来的段不够，那就利用lordpe更改最后的那个段的属性，
+		更改大小，记得要改pe头里的sizeofimage， 
+			optionhead里的sizeofcode，sizeofinitialiseddata
+			都要更改添加
+	3 添加新段，段数量加1， 2里的大小也要加，然后是自己加入
+		全0 的数据，然后更改段描述符，raw和virtual的位移，大小
+		要紧接着上一个，并且对齐file 以及对齐virutal
+
+修改文件： 加入新的导入函数库
+	1 如果原来的地方的imager import directory不够位置放入新的dir，
+		那就在idata的末尾找一块地方，全部复制过去，然后只要修改
+		pe中import相关头里的rva就行了，还有idata的virtual大小
+
+	2 添加具体的dll和函数， 需要添加一个image name的结构体包含函数
+		名字，然后是一个thunk结构体包含前面那个的地址，
+		然后是在1中的directgory的first thunk域中包含这里的thunk的地址
+
+打包的文件
+	在打包开始的pushad之后的栈顶插入硬访问断点，然后执行，
+	在解包结束的地方会暂停，这个就是原来函数执行的地方了
+
+	可以在其他地方放入自己的代码，然后在解压完跳转到自己的地方，
+	然后做自己的事情，再跳回去
