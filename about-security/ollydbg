@@ -13,7 +13,7 @@ f9		run until break point
 *		show eip position
 -		显示上一个光标位置
 +		显示下一个光标位置
-enter	非运行时进入call， 可以配合- +找到上一个位置
+enter,右键follow	非运行时进入call， 可以配合- +找到上一个位置, 
 ctrl+e  选中数据区可以修改
 空格	选中代码区可以修改汇编(其实都可以用空格，超方便）
 
@@ -54,7 +54,10 @@ note:
 	选中新的数据区域修改，右键copy to executable， 然后弹出窗口
 	继续右键save file即可
 
+	一次只能保存一块地方，可以保存完再打开新文件重新保存
+
 设置
 	options->debuggin options-> disasm ==> show default segment show size of memory operand 
 		去掉就不会显示没用的word ptr 以及 段寄存器了，因为保护模式下都是0，没啥用
 	选择analysis1中的show args and locals 可以把本身传参数的ebp+xxx变成直观的local  args等
+	help 里面选择win32.hlp  api文件，然后可以打开帮助
