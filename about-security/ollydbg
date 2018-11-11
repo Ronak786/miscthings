@@ -3,13 +3,15 @@ ctrl+f2 restart
 f7 step into
 f8 step over  
 ctrl+f9 exec until return(stop on return)
+shift+f9 exec pass execption
+alt+f9  return to user
+f9		run until break point
 ctrl+g  check code or memory, only used when not running
 f4     run until reach positon under cursor
 ;		添加注释
 右键 search for->user defined comment  找用户定义注释
 :      add label
 f2		set/unset  break point 断点
-f9		run until break point
 *		show eip position
 -		显示上一个光标位置
 +		显示下一个光标位置
@@ -75,9 +77,22 @@ note:
 	选择analysis1中的show args and locals 可以把本身传参数的ebp+xxx变成直观的local  args等
 	help 里面选择win32.hlp  api文件，然后可以打开帮助
 
+	options->debugging ->exception 可以通过add range
+		屏蔽掉整个一个范围内所有的异常，记住勾选上面的钩子
+
 
 插件
 	解压后放入插件的目录里dll即可
 
 技巧
-	修改entrypoint可以修改代码开始的地方
+	1 修改entrypoint可以修改代码开始的地方
+	2 不要一直去想着查字符串，一般都是加密的，查不到的，
+		可以调试到打开一个messagebox，然后暂停ollydbg，然后
+		按alt+f9返回用户，这样再关闭对话框，debugger会跳到
+		用户态调用messagebox的地方
+		然后可以针对显示的message信息进行跳转修改
+	3 ollydbg search搜索只会搜索code段的string，所以要点击memory，
+		然后search ，然后搜索，会全内存搜索的, 有些是ascii的，有些
+			是unicode，注意有时候会搜到7开头的内存去，这个应该是不对的，
+			可能映射进去的，不要管那些，应该在你的imagebase附近的
+	4 右键data区字符串开头可以找到find reference引用位置
