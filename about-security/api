@@ -3,6 +3,10 @@ stdcall  callee balance stack: ret xx
 fastcall , like stdcall, except first 2 param passed using ecx and edx (used in c++ calling conversion pass this point)
 
 messagebox 显示消息
+	阻止调用：
+		1 直接取消所有的调用代码
+		2 更改其中的windwo handle到一个非法制（null是合法的）
+			那样messagebox就不会显示了
 getwindowtext getdlgitemtext 获取框中内容
 
 

@@ -13,18 +13,15 @@ f9		run until break point
 *		show eip position
 -		显示上一个光标位置
 +		显示下一个光标位置
+enter,右键follow	非运行时进入call， 可以配合- +找到上一个位置, 
 ctrl+e  选中数据区可以修改
 空格	选中代码区可以修改汇编(其实都可以用空格，超方便）
 ctrl+n  显示导入的函数
 alt + backspace  撤销undo
-enter,右键follow	非运行时进入call， 可以配合- +找到上一个位置, 
 右键breakpoint hardware onaccess 这个可以在任意位置插入断电
 	然后只要访问到这个东西（不一定是执行到），就会中断，
 	很方便
-右键  help symbolic name 可以找到名字的函数的帮助
-选中一段代码，右键binary fillwith nop 可以清空位nop指令
 双击eflag的标记可以改变标记的值！！！
-	调试的时候可以利用这个更改跳转路径，很好用
 
 单击左边有大于符号的地方会出现一条跳转到当前地方的线
 	说明这个是跳转过来的，可以从下面的窗口找到跳转命令位置
@@ -37,7 +34,6 @@ enter,右键follow	非运行时进入call， 可以配合- +找到上一个位�
 menu:
 	view->breakpoints 查看设置的断点
 	user defined comment 中红色为当前位置，其他是用户定义注释位置
-	那个 / 表示查看当前所有的patch修改
 
 栈区：
 	右键 可以选择地址表示相对于ebp 方便查看
@@ -74,10 +70,3 @@ note:
 		去掉就不会显示没用的word ptr 以及 段寄存器了，因为保护模式下都是0，没啥用
 	选择analysis1中的show args and locals 可以把本身传参数的ebp+xxx变成直观的local  args等
 	help 里面选择win32.hlp  api文件，然后可以打开帮助
-
-
-插件
-	解压后放入插件的目录里dll即可
-
-技巧
-	修改entrypoint可以修改代码开始的地方

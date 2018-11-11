@@ -30,7 +30,7 @@
 				file aligment , seciton align in file
 				section alignment, section align in memory
 				imagebase,	load base preferred
-				entrypoint,
+				entrypoint,, 修改这个可以修改代码开始的地方
 				sizeofimage, size in memory
 				sizeofheaders(all headers), size of all in file - sizeof all sections
 				
@@ -104,6 +104,11 @@
 				再次看bound是否有，因为查看bound和普通是并行的
 
 	dll 总是导入到7xxxxxxx的地方 再网上就是kernel的地方了
+
+恶意修改：
+	pe中的一些值如size of code 等， export table addr 等
+		在正常执行的时候如果没值，可以执行的，但是调试器会报错，
+		用advanced ollydbg 插件可以不报错，这个是用来反调试的
 
 
 修改文件： 加入可执行代码
