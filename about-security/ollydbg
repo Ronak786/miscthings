@@ -1,7 +1,9 @@
 配置文件，可用随书的ollydbg.ini
 ctrl+f2 restart
 f7 step into
+ctrl+f7  可以展示f7的过程, 可以用这个找到显示界面，然后按-逐步返回，途中记录jmp的地方
 f8 step over  
+ctrl+f8  animator over, 可以展示f8的过程
 ctrl+f9 exec until return(stop on return)
 shift+f9 exec pass execption
 alt+f9  return to user
@@ -96,3 +98,9 @@ note:
 			是unicode，注意有时候会搜到7开头的内存去，这个应该是不对的，
 			可能映射进去的，不要管那些，应该在你的imagebase附近的
 	4 右键data区字符串开头可以找到find reference引用位置
+
+中断
+	软中断，就是f2设置的插入的int3，硬件中断，这个写在硬件debug寄存器里的地址，会触发int1
+	硬中断的好处是可以设置在不是code的里面，软的不能保存的，重载就没了
+		对于系统库如mfc，可以menu->debug->select import libs添加位置
+		右键breakpoint->hardware on execution
