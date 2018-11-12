@@ -1,4 +1,5 @@
 配置文件，可用随书的ollydbg.ini
+f12  pause , 然后可以按K 找到call stack！！
 ctrl+f2 restart
 f7 step into
 ctrl+f7  可以展示f7的过程, 可以用这个找到显示界面，然后按-逐步返回，途中记录jmp的地方
@@ -42,6 +43,7 @@ menu:
 	view->breakpoints 查看设置的断点
 	user defined comment 中红色为当前位置，其他是用户定义注释位置
 	那个 / 表示查看当前所有的patch修改
+	view->call stack OR  K in menu will show call stack trace
 
 栈区：
 	右键 可以选择地址表示相对于ebp 方便查看
