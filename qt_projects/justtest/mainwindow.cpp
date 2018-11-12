@@ -21,9 +21,9 @@
 #endif
 
 
-MainWindow::MainWindow(int gap, int usleep, int pheight, QWidget *parent) :
+MainWindow::MainWindow(int gap, int usleep, int pheight, int flip, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),  _gap(gap), _usleep(usleep)
+    ui(new Ui::MainWindow),  _gap(gap), _usleep(usleep), _flip(flip == 1 ? true : false)
 {
     ui->setupUi(this);
 
@@ -164,20 +164,29 @@ void MainWindow::recvImgData(QByteArray data_orig, int width_orig, int height)
 
 //    ui->label->setPixmap(QPixmap::fromImage(QImage((const uchar*)data.data(), width_orig / interval, height / interval ,QImage::Format_Indexed8)));
 //      ui->label->setPixmap(QPixmap::fromImage(QImage((const uchar*)data_orig.data(), width_orig, height  ,QImage::Format_Indexed8).transformed(QMatrix().rotate(90))));
-    ui->label->setPixmap(QPixmap::fromImage(QImage((const uchar*)data_orig.data(), width_orig, height  ,QImage::Format_Indexed8)));
+    QImage showimg = QImage ((const uchar*)data_orig.data(), width_orig, height  ,QImage::Format_Indexed8).mirrored(_flip, false);
+
+    ui->label->setPixmap(QPixmap::fromImage(showimg));
 
     // set count
     static int picCount = 0;
     ui->label_2->setText(QString("count: ") + QString::number(++picCount));
 
     static int count = 0;
-    QImage decodeImg = QImage((const uchar*)data_orig.data(), width_orig, height  ,QImage::Format_Indexed8).scaledToWidth(3*width_orig);
+    QImage decodeImg = showimg.scaledToWidth(4*width_orig);
 //    test_decode(data_orig.data(), width_orig, height);
     qDebug() << "the width is " << decodeImg.width() << " the height is " << decodeImg.height();
-    test_decode((char*)decodeImg.bits(), decodeImg.width(), decodeImg.height());
+    if (!test_decode((char*)decodeImg.bits(), decodeImg.width(), decodeImg.height()) ) { // test code not sucess with desired flip
+        QImage decodeImgInnerFlip = decodeImg.mirrored(true, false);
+        if (test_decode((char*)decodeImgInnerFlip.bits(), decodeImgInnerFlip.width(), decodeImgInnerFlip.height())) {
+            qDebug() << "flip recognize success";
+        }
+    } else {
+        qDebug() << "origin recoginze success";
+    }
     QImageWriter writer("/data/tmp/tmpimg" + QString::number(++count) + QString(".png"));
     writer.setFormat("png");
-    writer.write(QImage((uchar*)data_orig.data(), width_orig, height, QImage::Format_Indexed8));
+    writer.write(showimg);
 
 
 }
@@ -209,7 +218,7 @@ void MainWindow::saveImg() {
     writer.write(ui->label->pixmap()->toImage());
 }
 
-void MainWindow::test_decode(char* dataptr, int cols, int rows) {
+bool MainWindow::test_decode(char* dataptr, int cols, int rows) {
     std::string ymlname = "/data/conf/algorithm_parameters_v01.yml";
     int bitarray[91], bound[4];
     uint8_t model_id = 0;
@@ -222,7 +231,7 @@ void MainWindow::test_decode(char* dataptr, int cols, int rows) {
             bound, 4);
         if (ret < 0) {
             printf("can not decode %d\n", ret);
-            return;
+            return false;
         }
 
 //        printf("get byte code: \n");
@@ -241,9 +250,10 @@ void MainWindow::test_decode(char* dataptr, int cols, int rows) {
             count++;
             printf("count %d, success get serial :%s:\n", count, serial);
             ui->label_3->setText(QString("serial :") + QString(serial) + QString(" count: " ) + QString::number(count));
+            return true;
         }
     }
 
-    return;
+    return false;
 }
 

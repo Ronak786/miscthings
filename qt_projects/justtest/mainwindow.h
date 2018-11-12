@@ -18,9 +18,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(int gap, int usleep, int pheight, QWidget *parent = 0);
+    explicit MainWindow(int gap, int usleep, int pheight, int flip, QWidget *parent = 0);
     ~MainWindow();
-    void test_decode(char *dataptr, int cols, int rows);
+    bool test_decode(char *dataptr, int cols, int rows);
 protected:
     void keyPressEvent(QKeyEvent* event) override;
 
@@ -37,6 +37,7 @@ private:
     int mImgHeight;
     int _gap;
     int _usleep;
+    bool _flip;
 
 public slots:
     void recvImg(QImage);
