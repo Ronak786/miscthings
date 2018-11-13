@@ -30,6 +30,8 @@ enter,右键follow	非运行时进入call， 可以配合- +找到上一个位�
 选中一段代码，右键binary fillwith nop 可以清空位nop指令
 双击eflag的标记可以改变标记的值！！！
 	调试的时候可以利用这个更改跳转路径，很好用
+右键reference search for text string 可以找code中字符串，再ctrl+l可以继续搜索
+	记住是从当前选中行开始找的！！
 
 单击左边有大于符号的地方会出现一条跳转到当前地方的线
 	说明这个是跳转过来的，可以从下面的窗口找到跳转命令位置
