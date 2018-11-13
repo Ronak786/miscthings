@@ -8,3 +8,4 @@ first wpa_supplicant:
 
 
 then use wpa_cli
+	wpa_cli -p path_to_socket_file(a directory)
