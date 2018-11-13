@@ -1,0 +1,10 @@
+first wpa_supplicant:
+	create a file wpa_supplicant.conf
+		specify update_config ....
+
+	then   wpa_supplicant -i xxx  -c path_to_your_conf_file   &
+
+	now you have a wpa supplicant daemon now
+
+
+then use wpa_cli
