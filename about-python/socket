@@ -1,0 +1,13 @@
+you can use pyqt5,  
+
+qtcpsocket;
+sock.listen(xxx);
+tcpserver.newConnection.connect(handle);
+
+in handle:
+	getpendingconnetion()
+	readyread.connect(readfunc)
+	
+in readfunc:
+	readall
+	write ......
