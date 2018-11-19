@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resource/battery.png</file>
+        <file>resource/battery1.png</file>
+        <file>resource/battery2.png</file>
+        <file>resource/battery3.png</file>
+        <file>resource/battery4.png</file>
+        <file>resource/battery5.png</file>
+        <file>resource/battery6.png</file>
+        <file>resource/battery7.png</file>
+        <file>resource/battery8.png</file>
+        <file>resource/battery9.png</file>
+        <file>resource/battery10.png</file>
+        <file>resource/battery_empty.png</file>
+        <file>resource/cal.png</file>
+        <file>resource/date.png</file>
+        <file>resource/file.png</file>
+        <file>resource/set.png</file>
+        <file>resource/signal.png</file>
+        <file>resource/signal1.png</file>
+        <file>resource/signal2.png</file>
+        <file>resource/signal3.png</file>
+        <file>resource/signal4.png</file>
+    </qresource>
+</RCC>

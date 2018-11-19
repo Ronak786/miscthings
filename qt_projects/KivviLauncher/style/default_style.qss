@@ -1,0 +1,63 @@
+/************widget config****************/
+QWidget{
+     font: 60pt "AR PL UKai CN";
+/*    background-color: rgb(68, 80, 84);*/
+    background-color: rgb(35, 31, 32);
+/*    background-color: skyblue;*/
+    color: rgb(255, 255, 255);
+}
+
+QLabel{
+    font: 60pt "AR PL UKai CN";
+    background-color: rgb(45, 41, 42);
+}
+
+QLineEdit{
+    color: rgb(255, 255, 255);
+    background-color: rgb(85, 81, 82);
+}
+
+QWidget#MainMenu{
+    background-color: rgb(45, 41, 42);
+    color: rgb(255, 255, 255);
+}
+
+QListWidget#listWidget{
+     font: 60pt "AR PL UKai CN";
+}
+
+QPushButton{
+    font: 60pt "AR PL UKai CN";
+    color: rgb(255,255,255);
+    background-color: rgb(100, 100, 100);
+/*    background-color: rgb(35, 31, 32);*/
+}
+
+QPushButton:enabled:pressed{
+    background: rgb( 40,166,222);
+}
+
+
+/*QListWidget{
+    border:1px solid gray;
+    color:white;
+}
+QListWidget::Item{
+    padding-top:-2px;
+    padding-bottom:-1px;
+}
+QListWidget::Item:hover{
+    background:skyblue;
+    padding-top:0px;
+    padding-bottom:0px;
+}
+QListWidget::item:selected{
+    background:lightgray;
+    color:blue;
+}
+QListWidget::item:selected:!active{
+    active{
+    border-width:0px;
+    background:lightgreen;
+    }
+}*/
