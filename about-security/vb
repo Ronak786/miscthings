@@ -1,0 +1,10 @@
+registration 通常使用的比较函数
+	__vbaVarTstEq
+	__vbaVarTstNe
+	__vbaVarCmpEq
+
+	__vbaStrCmp
+	__vbaStrComp
+	__vbaStrCompVar
+
+	

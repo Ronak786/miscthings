@@ -10,6 +10,8 @@ shift+f9 exec pass execption
 alt+f9  return to user
 f9		run until break point
 ctrl+g  check code or memory, only used when not running
+ctrl+n  search names in current module, 然后可以找到模块内的名字,右键可以设置所有地方断点
+										还可以右键获取函数取消全部断点
 f4     run until reach positon under cursor
 ;		添加注释
 右键 search for->user defined comment  找用户定义注释
