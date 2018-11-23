@@ -7,6 +7,7 @@
 #include <QThread>
 #include <QMatrix>
 #include <QSize>
+#include <QFile>
 
 #ifdef __linux__
 
@@ -14,6 +15,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/mman.h>
+#include <linux/ioctl.h>
+#include <sys/ioctl.h>
+#include <linux/types.h>
 
 
 
@@ -26,6 +31,12 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/videoio/videoio.hpp>
 
+#define IOTYPE 'W'
+#define LINECAMNONE_START _IO(IOTYPE,0x01)
+#define LINECAMNONE_STOP  _IO(IOTYPE,0x02)
+#define LINECAMGET_INDEX  _IOR(IOTYPE,0x11,__u32)
+#define LINECAMPUT_INDEX  _IOW(IOTYPE,0x21,__u32)
+
 
 // while get fixed length of data from spi
 // append data into image data buf, add count value,
@@ -35,8 +46,12 @@
 
 
 Worker::Worker(int usleep, int pheight):
-    _usleep(usleep), _pheight(pheight), _quitflag(false) {
+    _usleep(usleep), _pheight(pheight), _quitflag(false), _needprint(false) {
     qDebug() << "worker start";
+
+    if (QFile::exists("/data/_tmplist")) {
+        _needprint = true;
+    }
 
 }
 
@@ -51,101 +66,100 @@ void Worker::run() {
 
 }
 
-#define WIDTH 498
+// we have 3 bytes head of every 5000 bytes
+#define WIDTH 500
+#define HEIGHT 20
+#define SHOWHEIGHT 480
+#define NUMBUFS 2
+#define FRAMEHEAD 8
 
 #ifdef _WIN32
 
 #elif __linux__
 
 void Worker::runarm() {
-    barr.reserve(1500*1000*10);
-
     int fd;
-    if ((fd = open("/dev/cam", O_RDONLY)) == -1) {
+    int index;
+    int size = HEIGHT * WIDTH + FRAMEHEAD;   //every 10 lines have 8 bytes head, 50 times 8
+    char *mmapbuf = NULL;
+    int ret;
+    if ((fd = open("/dev/cam", O_RDWR)) == -1) {
         qDebug() << "can not open camere device";
         return;
     }
 
-    int index;
-    char txData[WIDTH +8];
-    char rxData[sizeof(txData)];
+    if ((mmapbuf = (char*)mmap(NULL, size*NUMBUFS, PROT_READ, MAP_SHARED, fd, 0)) == (void*)-1) {
+        qDebug() << "mmap failed\n" << strerror(errno);
+        return;
+    }
 
-    memset(txData, 0xa2, sizeof(txData));
-    txData[0] = 0xa1;
 
-    // 0 before start record or after check,
-    //1 continue to add picture
-    int condition = 0;
-    int picHeight = _pheight; // height is just 150 pixels
-    int collectedHeight = 0;
-    int count = 0;
-
-    char  dumb[WIDTH];
-    memset(dumb, 0x0, WIDTH);
-
+    if ((ret = ioctl(fd, LINECAMNONE_START, 0)) != 0) {
+        qDebug() << "can not start, just break out" << ret;
+        return;
+    }
     while (!isInterruptionRequested()) {
-        qDebug() << "in worker loop";
-         if (++count % 100 == 0) {
+//        qDebug() << "in worker loop";
             QApplication::processEvents();
-         }/*
-         if (write(fd, "0", 1) != 0) {
-             qDebug() << "can not start, just break out";
-             break;
-         }
-         */
-        if(read(fd, NULL, sizeof(rxData)) == sizeof(rxData))
-        {
+            barr.clear();
 
-            for(index=0; index<5; index++)
-            {
-                if(!memcmp(rxData +index, "\x00\xff\x01", 3))
+            // currently receving will mix with valid and invalid lines
+            int curline = 0;
+            while (!isInterruptionRequested() && curline < SHOWHEIGHT / HEIGHT) {   // 480 / 10 == 48
+                if (ioctl(fd, LINECAMGET_INDEX, &index))
                 {
-                    switch (condition) {
-                        case 0: // check if can start, pixels
-                            if (blkscr(rxData + index + 3, WIDTH)) {
-                                break; // not start and still black, just continue
-                            }
-                            condition = 1; // not black screen, start to attach
-
-                            barr.clear(); // start collect from scratch
-                            // append five line of black, make picture not at top border line
-    //                        barr.append(QByteArray(dumb, WIDTH));
-                            collectedHeight = 0; // reset height to 0
-
-                        // fall through
-                        case 1: // continue to add
-//                            cv::Mat tmpmat1(1, WIDTH, CV_8UC1, rxData +index+3);
-
-//                            barr.append(QByteArray((const char*)(tmpmat1.data), tmpmat1.total()));
-                            barr.append(QByteArray((const char*)(rxData+index+3), WIDTH));
-                            if (++collectedHeight >= picHeight) {
-                                emit sendImgData(barr, WIDTH, picHeight);
-                                condition = 0; // return to state black screen
-                            }
-
-                            break;
-                        default:
-                            qDebug() << "condition error";
-                            break;
+                    qDebug() << "some error happened inside kernel get index";
+                    continue;
+                } else {
+                    if (_needprint) {
+                        qDebug() << "begin print from node " << index;
                     }
-                    break; // break of for
+                    // read from mmap's index buffer[index], print out, over
+                    debugPrint(mmapbuf + (index-1) * size, size);
+                    char *startpos = mmapbuf + (index-1) * size;
+                    if (startpos[0] == 0x00 && startpos[1] == 0xff && startpos[2] == 0x01) {
+                        if (_needprint) {
+                            qDebug() << "append line " << curline;
+                        }
+                        if (curline == 0) {
+                            barr = QByteArray(startpos+3, size - FRAMEHEAD);
+//                            barr.append(3-FRAMEHEAD, (char)0x00);
+                        } else {
+                            barr.append(startpos+3, size-FRAMEHEAD); // the first will be share , not copy !!
+//                            barr.append(3 - FRAMEHEAD, (char)0x00); // fill up to 10 lines with black
+                        }
+                        ++curline;
+                    }
+                }
+
+                if (ioctl(fd, LINECAMPUT_INDEX, &index)) {
+                    qDebug() << "error write back index " << index;
+                    break;
                 }
             }
-            if(index>=5) {
-//                qDebug() << "data error";
+
+            if (isInterruptionRequested()) {
+                break;
             }
 
-        } else {
-            qDebug() << "can not read";
-        }
+            qDebug() << "begin to emit signal";
+            emit sendImgData(barr, WIDTH, SHOWHEIGHT);
 
         if (_usleep) {
             QThread::usleep(_usleep);
         }
     }
 
+    if (munmap(mmapbuf, size*NUMBUFS) != 0) {
+        qDebug() << "unmap failed";
+        return;
+    }
+    if (ioctl(fd, LINECAMNONE_STOP, 0)) {
+        qDebug() << "can not stop, just break out";
+        return;
+    }
     close(fd);
-    emit finished();
+//    emit finished();
     qDebug() << "done scan";
 }
 
@@ -153,6 +167,27 @@ void Worker::runarm() {
 
 void Worker::setquit() {
     _quitflag = true;
+}
+
+void Worker::debugPrint(char *buf, int size) {
+    int line = 32;
+    static int count = 0;
+    if (_needprint) {
+        qDebug() << "print start" << ++count;
+        // print every head place
+
+        for (int i = 0; i < line; ++i) {
+            printf("%02x ", buf[i]);
+        }
+        putchar('\n');
+        for (int i = line; i >0 ; --i) {
+            printf("%02x ", buf[size - i]);
+        }
+        putchar('\n');
+        putchar('\n');
+
+        qDebug() << "print done";
+    }
 }
 
 

@@ -12,6 +12,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include <exception>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -58,65 +60,33 @@ DialogCamera::~DialogCamera() {
 void DialogCamera::recvImgData(QByteArray data_orig, int width_orig, int height)
 {
 
-//    QByteArray data;
-//    int interval = 2;
-//    int width = width_orig / interval;
-//    int total = width_orig / interval * height;
-//    data.reserve(total);
-//    int gap = _gap;
-//    for (int line = 0; line < height; ++line) {
-//        for (int col = 0; col < width_orig; ++col) {
-//            QByteRef tmpchar = data_orig[line*width_orig + col];
-//            if ((int)data_orig[line*width_orig + col ] > gap) {
-//                tmpchar = 255;
-//                break;
-//            } else {
-//                tmpchar = 0;
-//            }
-//            if (line % interval == 0 && col % interval == 0) {
-//                data.append(tmpchar);
-//            }
-//        }
-//    }
+//    QImage showimg = QImage ((const uchar*)data_orig.data(), width_orig, height  ,QImage::Format_Indexed8).mirrored(_flip, false);
+    QImage decodeImg = QImage ((const uchar*)data_orig.data(), width_orig, height, QImage::Format_Indexed8);
 
-//    ui->label->setPixmap(QPixmap::fromImage(QImage((const uchar*)data.data(), width_orig / interval, height / interval ,QImage::Format_Indexed8)));
-//      ui->label->setPixmap(QPixmap::fromImage(QImage((const uchar*)data_orig.data(), width_orig, height  ,QImage::Format_Indexed8).transformed(QMatrix().rotate(90))));
-    QImage showimg = QImage ((const uchar*)data_orig.data(), width_orig, height  ,QImage::Format_Indexed8).mirrored(_flip, false);
-
-    ui->label->setPixmap(QPixmap::fromImage(showimg));
+    ui->label->setPixmap(QPixmap::fromImage(decodeImg).scaledToWidth(width_orig / 4));
 
     // set count
     static int picCount = 0;
     ui->label_2->setText(QString("count: ") + QString::number(++picCount));
 
     static int count = 0;
-    QImage decodeImg = showimg.scaledToWidth(4*width_orig);
-//    test_decode(data_orig.data(), width_orig, height);
-    qDebug() << "the width is " << decodeImg.width() << " the height is " << decodeImg.height();
+//    qDebug() << "the width is " << decodeImg.width() << " the height is " << decodeImg.height() << "count " << data_orig.size();
     if (!test_decode((char*)decodeImg.bits(), decodeImg.width(), decodeImg.height()) ) { // test code not sucess with desired flip
-        QImage decodeImgInnerFlip = decodeImg.mirrored(true, false);
-        if (test_decode((char*)decodeImgInnerFlip.bits(), decodeImgInnerFlip.width(), decodeImgInnerFlip.height())) {
-            qDebug() << "flip recognize success";
-        }
+//        QImage decodeImgInnerFlip = decodeImg.mirrored(true, false);
+//        if (test_decode((char*)decodeImgInnerFlip.bits(), decodeImgInnerFlip.width(), decodeImgInnerFlip.height())) {
+//            qDebug() << "flip recognize success";
+//        }
+        qDebug() << "recognize failed";
     } else {
         qDebug() << "origin recoginze success";
     }
-    QImageWriter writer("/data/tmp/tmpimg" + QString::number(++count) + QString(".png"));
-    writer.setFormat("png");
-    writer.write(showimg);
-
-
+//    QImageWriter writer("/data/tmp/tmpimg" + QString::number(++count) + QString(".png"));
+//    writer.setFormat("png");
+//    writer.write(decodeImg);
 }
 
 void DialogCamera::shout()
 {
-//    mFlagImgDataUsed = true;
-
-//    ui->label->setPixmap(QPixmap::fromImage(QImage((const uchar*)mImgData.data(), mImgWidth, mImgHeight, QImage::Format_Indexed8)));
-
-//    ui->scrollArea->verticalScrollBar()->setSliderPosition(ui->scrollArea->verticalScrollBar()->maximum());
-
-//    mFlagImgDataUsed = false;
     qDebug() << "1s";
 
 }
@@ -145,15 +115,22 @@ bool DialogCamera::test_decode(char* dataptr, int cols, int rows) {
     uint8_t model_id = 0;
     char serial[9] = {0};
     static int count = 0;
+    int ret = 0;
 
 /*	for(int i = 0; i < 10; ++i)*/ {
-        int ret = nanoid_hexagon_recognition((unsigned char*)dataptr, rows, cols, 1,
-            const_cast<char*>(ymlname.c_str()), bitarray, 91,
-            bound, 4);
-        if (ret < 0) {
-            printf("can not decode %d\n", ret);
+        try {
+            ret = nanoid_hexagon_recognition((unsigned char*)dataptr, rows, cols, 1,
+                const_cast<char*>(ymlname.c_str()), bitarray, 91,
+                bound, 4);
+            if (ret < 0) {
+//                printf("can not decode %d\n", ret);
+                return false;
+            }
+        } catch (std::exception &e) {
+            printf("exception happened in recognition\n");
             return false;
         }
+
 
 //        printf("get byte code: \n");
 //        for (int k = 0; k < 91; ++k) {

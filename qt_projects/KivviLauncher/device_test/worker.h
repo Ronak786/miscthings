@@ -44,13 +44,15 @@ private:
         return true;
     }
 
+    void debugPrint(char *buf, int size);
+
 
 
 private:
-    QVector<QByteArray>  qb;
     QByteArray barr;
     int _usleep;
     int _pheight;
+    bool _needprint;
 
 public:
     bool _quitflag;

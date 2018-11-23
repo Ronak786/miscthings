@@ -30,7 +30,7 @@ void DialogCameraTest::keyPressEvent(QKeyEvent *event) {
         break;
     case Qt::Key_2: // start camera, currently just ignore
         qDebug() << "before start dialogcamera";
-        dialogcamera = new DialogCamera(10,1000,140,1);
+        dialogcamera = new DialogCamera(10,0,140,1);
         dialogcamera->exec();
         qDebug() << "after close dialogcamera";
         break;
