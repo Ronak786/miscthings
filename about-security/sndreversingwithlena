@@ -1,0 +1,4 @@
+10:
+	search __vbastrcmp 可以找到register的时候比对的地方，往下找到具体的密码，输入即可
+	然后利用字符串搜索在text中找到Get rid of, 然后往下f8 找到具体出msgbox的地方，可以看到上面的
+	push eax，所以call 改称mov eax 1 即可取消对话框，还需要往下找到vbaend的地方，跳过，不然直接退出
