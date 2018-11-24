@@ -18,3 +18,6 @@ smartchecker
 vb decompiler
 	这个可以反编译，找到每个对话框对应的函数模块，
 	根据这个到ollydbg中找到位置
+
+veoveo:
+	这个可以使能任意按钮，用于某些按钮没有默认可以按的时候
