@@ -8,3 +8,13 @@ registration 通常使用的比较函数
 	__vbaStrCompVar
 
 	
+smartchecker  
+	这个可以查看点击之后的消息，然后选中某条，再选中全部消息
+	（黄色）可以查看更详细
+	反反：
+		程序会搜索smartchecker字符串，这时候可以ollydbg打开，修改
+		字符串，然后保存，防止反抗
+
+vb decompiler
+	这个可以反编译，找到每个对话框对应的函数模块，
+	根据这个到ollydbg中找到位置
