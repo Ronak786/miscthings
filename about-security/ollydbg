@@ -38,6 +38,8 @@ enter,右键follow	非运行时进入call， 可以配合- +找到上一个位�
 	可以找到对应修改地址的地方，特别适合修改某个值来判断注册的地方
 	然后set break on every command 然后重新执行看哪边是第一次执行到的地方
 	这个可以用于找到注册的某个地址判定位置
+上方的E按钮可以立刻转入某个模块，比如main模块，这个在跑到系统模块里的时候
+	可以用来返回
 
 
 单击左边有大于符号的地方会出现一条跳转到当前地方的线
@@ -114,6 +116,12 @@ note:
 	6 有时候找注册直接找registration语句，还有有些地方是跳转过来的，
 		利用push addr， ret的技巧，这个可以通过右键然后find reference找到
 		然后上下查找敏感字符串
+	7 可以右键search inter module call找api调用，然后右键set on every
+		command 可以在所有地方设置断点
+		一般是getdlgitemtext getwindowtext getprivateprofilestring
+		getprivateprofileint  reqqueryvalueex writeprivateprifolestring
+		writeprivateprofileint 这些用来获取输入框的内容
+		或者ctrl n 扎到当前模块里的名字
 
 补丁：
 	低级：直接修改jmp的地方跳过注册失败
