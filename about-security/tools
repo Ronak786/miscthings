@@ -15,3 +15,5 @@ pe 工具
 	lordpe 修改pe文件的大小或者权限等, 可以比对两个pe的类似程度
 	ollydbg 可以view memory查看pe
 		可以ctrl +n查看导入导出函数，找到thunk table
+	wark 
+		可以修改段的属性比如可执行等
