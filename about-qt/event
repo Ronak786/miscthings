@@ -1,0 +1,5 @@
+传递事件给父亲
+	QWidget::keypressevent(code)
+
+	或者 parent: install event filter, 然后实现eventfilter的方法，可以获取子的事件
+		然后focuxnextchild
