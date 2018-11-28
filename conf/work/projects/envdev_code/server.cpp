@@ -52,9 +52,9 @@ static std::map<__u16,__u16> sec;
 // test, we use 
 
 int main(int ac, char *av[]) {
-//	const char * evname = "/dev/input/event2"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
+	const char * evname = "/dev/input/event2"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
 	// used in x86 laptop test
-	const char * evname = "/dev/input/event3"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
+//	const char * evname = "/dev/input/event3"; // we can test which is keyboard use method in qt qevdevkeyboardhandler.cpp
 	const char * fifoname = "/dev/event100";
 
 	std::vector<const char*> fdvec; // currently only test one
@@ -219,9 +219,9 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
     vec[0][KEY_8] = KEY_8;
     vec[0][KEY_9] = KEY_9;
     vec[0][KEY_0] = KEY_0;
-    vec[0][KEY_DELETE] = KEY_DELETE;
+    vec[0][KEY_DELETE] = KEY_BACKSPACE;
 	vec[0][KEY_ESC] = KEY_ESC;
-	vec[0][KEY_SPACE] = KEY_SPACE;
+	vec[0][KEY_SPACE] = KEY_ENTER;
 
     vec[1][KEY_1] = KEY_A;
     vec[1][KEY_2] = KEY_D;
@@ -233,9 +233,9 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
     vec[1][KEY_8] = KEY_V;
     vec[1][KEY_9] = KEY_Y;
     vec[1][KEY_0] = KEY_CAPSLOCK;
-    vec[1][KEY_DELETE] = KEY_DELETE;
+    vec[1][KEY_DELETE] = KEY_BACKSPACE;
 	vec[1][KEY_ESC] = KEY_ESC;
-	vec[1][KEY_SPACE] = KEY_SPACE;
+	vec[1][KEY_SPACE] = KEY_ENTER;
     
 	// navigation key
 //    vec[2][KEY_1] = KEY_CUSTOM_UNUSED;
@@ -248,9 +248,9 @@ void initDict(std::vector<std::map<__u16,__u16>> &vec, std::map<__u16,__u16> &se
     vec[2][KEY_8] = KEY_DOWN;
 //    vec[2][KEY_9] = KEY_CUSTOM_UNUSED;
 //    vec[2][KEY_0] = KEY_CUSTOM_UNUSED;
-    vec[2][KEY_DELETE] = KEY_DELETE;
+    vec[2][KEY_DELETE] = KEY_BACKSPACE;
 	vec[2][KEY_ESC] = KEY_ESC;
-	vec[2][KEY_SPACE] = KEY_SPACE;
+	vec[2][KEY_SPACE] = KEY_ENTER;
 
     sec[KEY_A] = KEY_B;
     sec[KEY_B] = KEY_C;

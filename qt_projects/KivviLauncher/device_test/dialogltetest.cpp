@@ -40,6 +40,7 @@ void DialogLteTest::start4G()
         return;
     }
     buf[num] = '\0';
+    pclose(fp);
 
 
     // set gw
@@ -67,6 +68,7 @@ void DialogLteTest::stop4G() {
     if (!started) {
         return;
     }
+    qDebug() << "begin stop";
     system("/data/bin/start4G x");
     ui->plainTextEdit->appendPlainText(QString("stop 4g\n"));
     started = false;

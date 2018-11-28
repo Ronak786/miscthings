@@ -58,7 +58,9 @@ SOURCES += \
     device_test/dialogaudiotest.cpp \
     device_test/dialograser.cpp \
     device_test/dialogcamera.cpp \
-    device_test/worker.cpp
+    device_test/worker.cpp \
+    device_test/passdialog.cpp \
+    device_test/mylistwidget.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -95,7 +97,9 @@ HEADERS += \
     device_test/dialogcamera.h \
     third_part/include/Decoder.h \
     third_part/include/NDCode_Image_Recognition.h \
-    device_test/worker.h
+    device_test/worker.h \
+    device_test/passdialog.h \
+    device_test/mylistwidget.h
 
 FORMS += \
         mainwindow.ui \
@@ -119,7 +123,8 @@ FORMS += \
     device_test/dialogbttest.ui \
     device_test/dialogaudiotest.ui \
     device_test/dialograser.ui \
-    device_test/dialogcamera.ui
+    device_test/dialogcamera.ui \
+    device_test/passdialog.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/third_part/lib/release/ -lqrencode
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/third_part/lib/debug/ -lqrencode

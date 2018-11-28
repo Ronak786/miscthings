@@ -99,6 +99,7 @@ void Worker::runarm() {
         return;
     }
     while (!isInterruptionRequested()) {
+          int print_limit = 0;
 //        qDebug() << "in worker loop";
             QApplication::processEvents();
             barr.clear();
@@ -106,6 +107,7 @@ void Worker::runarm() {
             // currently receving will mix with valid and invalid lines
             int curline = 0;
             while (!isInterruptionRequested() && curline < SHOWHEIGHT / HEIGHT) {   // 480 / 10 == 48
+                                QThread:msleep(1000);
                 if (ioctl(fd, LINECAMGET_INDEX, &index))
                 {
                     qDebug() << "some error happened inside kernel get index";
@@ -129,6 +131,11 @@ void Worker::runarm() {
 //                            barr.append(3 - FRAMEHEAD, (char)0x00); // fill up to 10 lines with black
                         }
                         ++curline;
+                    } else {
+                        if (++print_limit > 24) {
+                            print_limit = 0;
+                            qDebug() << "error get result from kernel";
+                        }
                     }
                 }
 
@@ -136,6 +143,7 @@ void Worker::runarm() {
                     qDebug() << "error write back index " << index;
                     break;
                 }
+
             }
 
             if (isInterruptionRequested()) {

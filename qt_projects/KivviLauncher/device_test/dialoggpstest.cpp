@@ -38,6 +38,7 @@ DialogGpsTest::DialogGpsTest(QWidget *parent) :
 DialogGpsTest::~DialogGpsTest()
 {
     delete ui;
+    m_Timer->deleteLater();
     m_SerialPort->close();
     qDebug() << "Serial Port Close Succ";
 }

@@ -64,7 +64,14 @@ MainWindow::~MainWindow()
 {
     delete ui;
 
-    m_Timer->stop();
+//    m_Timer->stop();
+    m_Timer->deleteLater();
+    m_DeviceMobileSignal->deleteLater();
+    m_DeviceSystemTime->deleteLater();
+    m_DeviceBattery->deleteLater();
+
+    m_DialogDeviceTest->deleteLater();
+    m_DialogSystemSetting->deleteLater();
 }
 
 void MainWindow::updateSignalLevel()
@@ -112,6 +119,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         //this->close();
         break;
     case Qt::Key_Escape:
+        close();
         break;
     case Qt::Key_Space:
         break;
