@@ -9,6 +9,7 @@
 #include <QKeyEvent>
 #include "device_test/dialograser.h"
 #include "device_test/dialogcamera.h"
+#include <QTimer>
 
 namespace Ui {
 class DialogCameraTest;
@@ -21,15 +22,18 @@ class DialogCameraTest : public QDialog
 public:
     explicit DialogCameraTest(QWidget *parent = 0);
     ~DialogCameraTest();
-    void keyPressEvent(QKeyEvent *event) override;
+//    void keyPressEvent(QKeyEvent *event) override;
+
 
 private slots:
+    void needquit();
 
 
 private:
     Ui::DialogCameraTest *ui;
     DialogRaser *dialograser;
     DialogCamera *dialogcamera;
+    QTimer *timer;
 
 };
 

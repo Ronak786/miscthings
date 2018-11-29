@@ -16,7 +16,7 @@ DialogDeviceTest::DialogDeviceTest(QWidget *parent) :
     m_DialogBatteryTest = new DialogBatteryTest();
     m_DialogGpsTest = new DialogGpsTest();
 //    m_DialogLedTest = new DialogLedTest();
-    m_DialogCameraTest = new DialogCameraTest();
+//    m_DialogCameraTest = new DialogCameraTest();
 //    m_DialogWlanTest = new DialogWlanTest();
     m_DialogLteTest = new DialogLteTest();
     m_DialogBtTest = new DialogBtTest();
@@ -29,8 +29,6 @@ DialogDeviceTest::~DialogDeviceTest()
     m_DialogLCDTest->deleteLater();
     m_DialogBatteryTest->deleteLater();
     m_DialogGpsTest->deleteLater();
-    m_DialogCameraTest->deleteLater();
-    m_DialogWlanTest->deleteLater();
     m_DialogLteTest->deleteLater();
     m_DialogBtTest->deleteLater();
     delete ui;
@@ -58,7 +56,9 @@ void DialogDeviceTest::keyPressEvent(QKeyEvent *event)
         m_DialogBatteryTest->exec();
         break;
     case Qt::Key_5:
+        m_DialogCameraTest = new DialogCameraTest();
         m_DialogCameraTest->exec();
+        m_DialogCameraTest->deleteLater();
         break;
     case Qt::Key_6:
         m_DialogGpsTest->exec();
@@ -67,7 +67,6 @@ void DialogDeviceTest::keyPressEvent(QKeyEvent *event)
         m_DialogWlanTest = new DialogWlanTest();
         m_DialogWlanTest->exec();
         m_DialogWlanTest->deleteLater();
-        //m_DialogQRCodeTest->exec();
         break;
     case Qt::Key_8:
         m_DialogBtTest->exec();

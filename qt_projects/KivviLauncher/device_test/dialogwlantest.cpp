@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QNetworkConfigurationManager>
 #include <QProcess>
+#include <QFile>
+#include <QDir>
 
 
 
@@ -18,9 +20,13 @@ DialogWlanTest::DialogWlanTest(QWidget *parent) :
     _showedit->setReadOnly(true);
     ui->verticalLayout->addWidget(_showedit);
     this->setWindowFlags(Qt::FramelessWindowHint);
-    system(ifup);
 
-    system(addnework);
+
+    if (!QFile::exists("/tmp/.kivvi_network_added")) {
+        system(ifup);
+        system(addnework);
+        system("touch /tmp/.kivvi_network_added");
+    }
     connect(_mlist, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(handlePress(QListWidgetItem*)));
     _mlist->setFocus();
     qDebug() << "after constructor";

@@ -33,7 +33,7 @@ void PassDialog::keyPressEvent(QKeyEvent *event) {
         accept();
         break;
     default:
-        qDebug() << "get " << event->key();
+//        qDebug() << "get " << event->key();
         QDialog::keyPressEvent(event);
         break;
     }

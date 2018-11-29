@@ -98,16 +98,15 @@ void Worker::runarm() {
         qDebug() << "can not start, just break out" << ret;
         return;
     }
+    qDebug() << "begin loop";
     while (!isInterruptionRequested()) {
           int print_limit = 0;
 //        qDebug() << "in worker loop";
             QApplication::processEvents();
             barr.clear();
-
             // currently receving will mix with valid and invalid lines
             int curline = 0;
             while (!isInterruptionRequested() && curline < SHOWHEIGHT / HEIGHT) {   // 480 / 10 == 48
-                                QThread:msleep(1000);
                 if (ioctl(fd, LINECAMGET_INDEX, &index))
                 {
                     qDebug() << "some error happened inside kernel get index";
@@ -115,28 +114,31 @@ void Worker::runarm() {
                 } else {
                     if (_needprint) {
                         qDebug() << "begin print from node " << index;
+                        // read from mmap's index buffer[index], print out, over
+                        debugPrint(mmapbuf + (index-1) * size, size);
                     }
-                    // read from mmap's index buffer[index], print out, over
-                    debugPrint(mmapbuf + (index-1) * size, size);
+
                     char *startpos = mmapbuf + (index-1) * size;
-                    if (startpos[0] == 0x00 && startpos[1] == 0xff && startpos[2] == 0x01) {
-                        if (_needprint) {
-                            qDebug() << "append line " << curline;
-                        }
-                        if (curline == 0) {
-                            barr = QByteArray(startpos+3, size - FRAMEHEAD);
-//                            barr.append(3-FRAMEHEAD, (char)0x00);
-                        } else {
-                            barr.append(startpos+3, size-FRAMEHEAD); // the first will be share , not copy !!
-//                            barr.append(3 - FRAMEHEAD, (char)0x00); // fill up to 10 lines with black
-                        }
-                        ++curline;
-                    } else {
-                        if (++print_limit > 24) {
-                            print_limit = 0;
-                            qDebug() << "error get result from kernel";
+                    int i;
+                    for (i = 0; i < 5; ++i) {
+                        if (startpos[i] == 0x00 && startpos[i+1] == 0xff && startpos[i+2] == 0x01) {
+                            if (_needprint) {
+                                qDebug() << "append line " << curline;
+                            }
+                            if (curline == 0) {
+                                barr = QByteArray(startpos+i+3, size - FRAMEHEAD);
+                            } else {
+                                barr.append(startpos+i+3, size-FRAMEHEAD); // the first will be share , not copy !!
+                            }
+                            ++curline;
+                            break;
                         }
                     }
+//                    if (i == 5 && ++print_limit > 24) {
+//                        print_limit = 0;
+//                        qDebug() << "error get result from kernel";
+
+//                    }
                 }
 
                 if (ioctl(fd, LINECAMPUT_INDEX, &index)) {
@@ -167,7 +169,6 @@ void Worker::runarm() {
         return;
     }
     close(fd);
-//    emit finished();
     qDebug() << "done scan";
 }
 
@@ -180,22 +181,20 @@ void Worker::setquit() {
 void Worker::debugPrint(char *buf, int size) {
     int line = 32;
     static int count = 0;
-    if (_needprint) {
-        qDebug() << "print start" << ++count;
-        // print every head place
+    qDebug() << "print start" << ++count;
+    // print every head place
 
-        for (int i = 0; i < line; ++i) {
-            printf("%02x ", buf[i]);
-        }
-        putchar('\n');
-        for (int i = line; i >0 ; --i) {
-            printf("%02x ", buf[size - i]);
-        }
-        putchar('\n');
-        putchar('\n');
-
-        qDebug() << "print done";
+    for (int i = 0; i < line; ++i) {
+        printf("%02x ", buf[i]);
     }
+    putchar('\n');
+    for (int i = line; i >0 ; --i) {
+        printf("%02x ", buf[size - i]);
+    }
+    putchar('\n');
+    putchar('\n');
+
+    qDebug() << "print done";
 }
 
 

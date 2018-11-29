@@ -50,7 +50,8 @@ void DialogKeypadTest::keyPressEvent(QKeyEvent *event)
     case Qt::Key_9:
         ui->pushButton_9->setStyleSheet("background-color:red");
         break;
-    case Qt::Key_Space:
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
         ui->pushButton_Enter->setStyleSheet("background-color:red");
         break;
     case Qt::Key_Escape:
@@ -66,7 +67,7 @@ void DialogKeypadTest::keyPressEvent(QKeyEvent *event)
         ui->pushButton_8->setStyleSheet("background-color:white");
         ui->pushButton_9->setStyleSheet("background-color:white");
         ui->pushButton_Enter->setStyleSheet("background-color:white");
-        this->close();
+        accept();
         break;
     case Qt::Key_Delete:
         break;

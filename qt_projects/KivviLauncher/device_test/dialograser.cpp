@@ -10,3 +10,11 @@ DialogRaser::DialogRaser(QWidget *parent):
 
 DialogRaser::~DialogRaser() {
 }
+
+void DialogRaser::startRaser() {
+
+}
+
+void DialogRaser::stopRaser() {
+
+}

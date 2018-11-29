@@ -23,7 +23,7 @@ public:
     bool test_decode(char *dataptr, int cols, int rows);
 
 protected:
-    void keyPressEvent(QKeyEvent* event) override;
+//    void keyPressEvent(QKeyEvent* event) override;
 
 private:
     Ui::DialogCamera *ui;
@@ -43,7 +43,7 @@ signals:
 
 public slots:
     void recvImgData(QByteArray data, int width, int height);
-    void shout();
+    void testquit(); // testgpio of quit
     void saveImg();
 };
 

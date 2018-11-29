@@ -20,8 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_DeviceSystemTime = new DeviceSystemTime();
     m_DeviceBattery = new DeviceBattery();
 
-    m_DialogDeviceTest = new DialogDeviceTest();
-    m_DialogSystemSetting = new DialogSystemSetting();
+
 
     updateSignalLevel();
     updateSystemDatetime();
@@ -64,14 +63,11 @@ MainWindow::~MainWindow()
 {
     delete ui;
 
-//    m_Timer->stop();
     m_Timer->deleteLater();
     m_DeviceMobileSignal->deleteLater();
     m_DeviceSystemTime->deleteLater();
     m_DeviceBattery->deleteLater();
 
-    m_DialogDeviceTest->deleteLater();
-    m_DialogSystemSetting->deleteLater();
 }
 
 void MainWindow::updateSignalLevel()
@@ -95,11 +91,15 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_0:
         break;
-    case Qt::Key_1:
+    case Qt::Key_1:       
+        m_DialogSystemSetting = new DialogSystemSetting();
         m_DialogSystemSetting->exec();
+        m_DialogSystemSetting->deleteLater();
         break;
     case Qt::Key_2:
-        m_DialogDeviceTest->exec();
+        m_DialogDeviceTest = new DialogDeviceTest();
+        m_DialogDeviceTest->exec();        
+        m_DialogDeviceTest->deleteLater();
         break;
     case Qt::Key_3:
         break;
@@ -116,10 +116,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     case Qt::Key_9:
         break;
     case Qt::Key_Delete:
-        //this->close();
         break;
     case Qt::Key_Escape:
-        close();
         break;
     case Qt::Key_Space:
         break;

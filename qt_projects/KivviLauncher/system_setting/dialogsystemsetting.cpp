@@ -25,7 +25,6 @@ void DialogSystemSetting::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
     case Qt::Key_1:
-        //m_DialogSystemInfo->exec();
         m_DialogSystemUpdate->exec();
         break;
     case Qt::Key_2:
@@ -47,7 +46,7 @@ void DialogSystemSetting::keyPressEvent(QKeyEvent *event)
         m_DialogPassword->exec();
         break;
     case Qt::Key_Escape:
-        this->close();
+        this->accept();
         break;
     }
 }

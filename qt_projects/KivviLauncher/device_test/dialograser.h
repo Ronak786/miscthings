@@ -13,6 +13,8 @@ class DialogRaser : public QDialog
 public:
     DialogRaser(QWidget *parent = NULL);
     ~DialogRaser();
+    void startRaser();
+    void stopRaser();
 
 private:
     Ui::DialogRaser *ui;
