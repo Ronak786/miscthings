@@ -5,6 +5,8 @@
 #include <QTimer>
 #include <QtSerialPort/QSerialPort>
 #include <QString>
+#include <QMutex>
+#include <QTextStream>
 
 namespace Ui {
 class DialogGpsTest;
@@ -32,6 +34,7 @@ private:
     QTimer      *m_Timer;
     QSerialPort *m_SerialPort;
     QString     m_GpsData;
+    QMutex *mutex;
 };
 
 #endif // DIALOGGPSTEST_H

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <ui_dialograser.h>
+#include <QSerialPort>
 
 namespace Ui {
 class DialogRaser;
@@ -18,6 +19,9 @@ public:
 
 private:
     Ui::DialogRaser *ui;
+    QSerialPort *m_SerialPort;
+    bool _opened;
+    bool _started;
 
 };
 

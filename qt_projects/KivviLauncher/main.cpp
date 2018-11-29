@@ -9,6 +9,7 @@ int main(int argc, char *argv[])
     //qputenv("QT_QPA_PLATFORM", "linuxfb:size=800x480;mmsize=162x121");
     //qputenv("QT_QPA_PLATFORM", "linuxfb:size=800x480;mmsize=800x480");
     qputenv("QT_QPA_PLATFORM", "linuxfb:size=240x320;mmsize=240x320");
+    system("ulimit -n 65536"); // set open file limit
 
     QApplication a(argc, argv);
     MainWindow w;

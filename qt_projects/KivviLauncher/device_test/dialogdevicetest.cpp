@@ -11,10 +11,10 @@ DialogDeviceTest::DialogDeviceTest(QWidget *parent) :
     this->setWindowFlags(Qt::FramelessWindowHint);
 
     m_DialogKeypadTest = new DialogKeypadTest();
-    m_DialogQRCodeTest = new DialogQRCodeTest();
+//    m_DialogQRCodeTest = new DialogQRCodeTest();
     m_DialogLCDTest = new DialogLCDTest();
     m_DialogBatteryTest = new DialogBatteryTest();
-    m_DialogGpsTest = new DialogGpsTest();
+//    m_DialogGpsTest = new DialogGpsTest();
 //    m_DialogLedTest = new DialogLedTest();
 //    m_DialogCameraTest = new DialogCameraTest();
 //    m_DialogWlanTest = new DialogWlanTest();
@@ -25,10 +25,10 @@ DialogDeviceTest::DialogDeviceTest(QWidget *parent) :
 DialogDeviceTest::~DialogDeviceTest()
 {
     m_DialogKeypadTest->deleteLater();
-    m_DialogQRCodeTest->deleteLater();
+//    m_DialogQRCodeTest->deleteLater();
     m_DialogLCDTest->deleteLater();
     m_DialogBatteryTest->deleteLater();
-    m_DialogGpsTest->deleteLater();
+//    m_DialogGpsTest->deleteLater();
     m_DialogLteTest->deleteLater();
     m_DialogBtTest->deleteLater();
     delete ui;
@@ -61,7 +61,9 @@ void DialogDeviceTest::keyPressEvent(QKeyEvent *event)
         m_DialogCameraTest->deleteLater();
         break;
     case Qt::Key_6:
+        m_DialogGpsTest = new DialogGpsTest();
         m_DialogGpsTest->exec();
+        m_DialogGpsTest->deleteLater();
         break;
     case Qt::Key_7:
         m_DialogWlanTest = new DialogWlanTest();

@@ -11,6 +11,10 @@ DialogGpsTest::DialogGpsTest(QWidget *parent) :
 
     this->setWindowFlags(Qt::FramelessWindowHint);
 
+    mutex = new QMutex();
+
+    system("echo 1  > /sys/kernel/debug/sprd-regulator/vddsdio/enable");
+
     m_Timer = new QTimer();
     m_SerialPort = new QSerialPort();
     m_SerialPort->setPortName("/dev/ttyS2");
@@ -39,7 +43,10 @@ DialogGpsTest::~DialogGpsTest()
 {
     delete ui;
     m_Timer->deleteLater();
+    m_SerialPort->clear();
     m_SerialPort->close();
+    m_SerialPort->deleteLater();
+    delete mutex;
     qDebug() << "Serial Port Close Succ";
 }
 
@@ -50,10 +57,12 @@ void DialogGpsTest::readGpsData()
     buffer = m_SerialPort->readAll();
     if (!buffer.isEmpty())
     {
-        m_GpsData += tr(buffer);
+        mutex->lock();
+        m_GpsData += tr(buffer); // this result in a deep copy
+
+        mutex->unlock();
+
     }
-
-
     buffer.clear();
 
 }
@@ -141,11 +150,13 @@ QString DialogGpsTest::gpsDate(QString str)
 
 void DialogGpsTest::getGpsInfo()
 {
-    QString temp, str;
+    QString str;
+    mutex->lock();
+    QTextStream stream(&m_GpsData);
 
-    for (int i = 0; i < 100; i++)
+    while (!stream.atEnd())
     {
-        QByteArray array = m_SerialPort->readLine();
+        QString array = stream.readLine();
 
         if (array.length() != 0)
         {
@@ -190,8 +201,7 @@ void DialogGpsTest::getGpsInfo()
                 }
             }
         }
-
     }
-
-    //array.clear();
+    m_GpsData.clear();
+    mutex->unlock();
 }

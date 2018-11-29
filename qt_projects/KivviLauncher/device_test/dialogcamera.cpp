@@ -82,6 +82,7 @@ void DialogCamera::testquit()
     QFile file("/sys/class/gpio/gpio145/value");
     file.open(QIODevice::ReadOnly);
     file.read(tmpbuf, sizeof(tmpbuf));
+    file.close();
     qDebug("value is %d\n",  tmpbuf[0]);
 
     if(tmpbuf[0] == 0x31) { // begin unpress
