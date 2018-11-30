@@ -25,17 +25,22 @@
 #include <linux/list.h>
 #include <linux/wait.h>
 #include <linux/delay.h>
+#include <linux/atomic.h>
 
 #define CAMNAME "linecam"
 #define NUMBUFS 2
-#define READPERTIME 10
-#define FRAMEHEAD 6
+//#define READPERTIME 1
 #define IOTYPE 'W'
 
 #define LINECAMNONE_START _IO(IOTYPE,0x01)
 #define LINECAMNONE_STOP  _IO(IOTYPE,0x02)
 #define LINECAMGET_INDEX _IOR(IOTYPE,0x11, u32)
 #define LINECAMPUT_INDEX _IOW(IOTYPE,0x21, u32)
+
+/*
+ * need to do:
+ * readpertime as a param
+ */
 
 // add from first place, remove from head's prev place,
 // so use  list_add, list_del
@@ -65,9 +70,13 @@ struct linecamdev
 static struct linecamdev *camdev;
 static int read_lines = 1;
 static int read_width = 1;
+static int frame_head = 4;
 static struct task_struct *ts = NULL;
+static atomic_t runcatch = ATOMIC_INIT(0);
 static struct camnode camnodes[NUMBUFS];
-static DECLARE_WAIT_QUEUE_HEAD(thread_closequeue);
+static wait_queue_head_t thread_closequeue;
+static int after_stop = 0;
+//static DECLARE_WAIT_QUEUE_HEAD(thread_closequeue);
 
 static int mmap_thread(void *no_used) {
 	struct camnode *tmpnode;
@@ -76,73 +85,79 @@ static int mmap_thread(void *no_used) {
 	struct linecamdev *dev = camdev;
 	int ret = 0;
 	int iter;
-	int bufferlen = read_lines * read_width + FRAMEHEAD * read_lines / READPERTIME;
+	int bufferlen = read_lines * read_width + frame_head ;
 
+	pr_info("start mmap\n");
 	while (!kthread_should_stop()) {
-		pr_info("start loop in kernel\n");
-		spin_lock(&dev->free_list.camlock);
-		if (list_empty(&dev->free_list.list)) {
-			pr_info("start wait in mmap_thread\n");
-			// if empty wait for completion for ready from mmap function
-			spin_unlock(&dev->free_list.camlock);
-			// unlock and wait may corrupt??
-
-			wait_event_interruptible(dev->free_list.camqueue, !list_empty(&dev->free_list.list));
-
-			spin_lock(&dev->free_list.camlock);   // if interrupted
-			if (list_empty(&dev->free_list.list)) {
-				pr_info("empty in freelist continue\n");
-				continue;
-			}
-			// have nodes, lock again
-		}
-
-		// retrieve from free_list a buffer
-		tmpnode = list_entry(dev->free_list.list.prev, struct camnode, list);
-		list_del(dev->free_list.list.prev);
-		spin_unlock(&dev->free_list.camlock);
-		pr_info("get node %d\n", tmpnode->index);
-
-		// fixme: modify, read 10 lines(5000bytes) every time, and read 50 times sum up to 500 lines
-		// sleep 10ms every 10 line
-		
-		memset(camdev->mmapbuf + bufferlen * (tmpnode->index-1), 0, bufferlen);
-//		ret = 0;
-		for (iter = 0; iter < read_lines / READPERTIME; iter++) {
-			memset(&msg, 0, sizeof(msg));
-			memset(&xfer, 0, sizeof(xfer));
-			spi_message_init(&msg);
-			spi_message_add_tail(&xfer, &msg);
-			xfer.bits_per_word = 8;
-			xfer.len = read_width * READPERTIME + FRAMEHEAD; // whole len for dma
-			xfer.tx_buf = camdev->sendbuf;
-			xfer.rx_buf = camdev->mmapbuf + bufferlen * (tmpnode->index-1) + xfer.len * iter; // current pos
-
-			ret = spi_sync(camdev->spidev, &msg);
-			if (ret != 0) {
-				break;
-			} else {
-				pr_info("success get iteration: %d\n", iter);
-			}
-			mdelay(20);
-		}
-		// check for read error and format error
-		if (ret != 0) { // if spi failed, add back to free_list
-			pr_alert("can not spi_sync\n");
+//		pr_info("in should not stop\n");
+		if (atomic_read(&runcatch)) { // begin catch
 			spin_lock(&dev->free_list.camlock);
-			// should not have problem here ??
-			list_add(&tmpnode->list, &dev->free_list.list);
+			if (list_empty(&dev->free_list.list)) {
+	//			pr_info("start wait in mmap_thread\n");
+				// if empty wait for completion for ready from mmap function
+				spin_unlock(&dev->free_list.camlock);
+				// unlock and wait may corrupt??
+
+				wait_event_interruptible(dev->free_list.camqueue, !list_empty(&dev->free_list.list));
+
+				spin_lock(&dev->free_list.camlock);   // if interrupted
+				if (list_empty(&dev->free_list.list)) {
+					pr_info("empty in freelist continue\n");
+					spin_unlock(&dev->free_list.camlock);
+					continue;
+				}
+				// have nodes, lock again
+			}
+
+			// retrieve from free_list a buffer
+			tmpnode = list_entry(dev->free_list.list.prev, struct camnode, list);
+			list_del(dev->free_list.list.prev);
 			spin_unlock(&dev->free_list.camlock);
+	//		pr_info("get node %d\n", tmpnode->index);
+
+	//		memset(camdev->mmapbuf + bufferlen * (tmpnode->index-1), 0, bufferlen);
+	//		ret = 0;
+	//		for (iter = 0; iter < 1; iter++) {  // after modify one read once
+				memset(&msg, 0, sizeof(msg));
+				memset(&xfer, 0, sizeof(xfer));
+				spi_message_init(&msg);
+				spi_message_add_tail(&xfer, &msg);
+				xfer.bits_per_word = 8;
+				xfer.len = read_width * read_lines + frame_head; // whole len for dma
+				xfer.tx_buf = camdev->sendbuf;
+				xfer.rx_buf = camdev->mmapbuf + bufferlen * (tmpnode->index-1) + xfer.len * iter; // current pos
+
+				ret = spi_sync(camdev->spidev, &msg);
+				if (ret != 0) {
+					break;
+				} else {
+	//				pr_info("success get iteration: %d\n", iter);
+				}
+	//		}
+			// check for read error and format error
+			if (ret != 0) { // if spi failed, add back to free_list
+				pr_alert("can not spi_sync\n");
+				spin_lock(&dev->free_list.camlock);
+				// should not have problem here ??
+				list_add(&tmpnode->list, &dev->free_list.list);
+				spin_unlock(&dev->free_list.camlock);
+			} else {
+	//			pr_info("put node into work list start\n");
+				// add into work list
+				spin_lock(&dev->work_list.camlock);
+				// should not have problem here ??
+				list_add(&tmpnode->list, &dev->work_list.list);
+				spin_unlock(&dev->work_list.camlock);
+				wake_up_interruptible(&dev->work_list.camqueue);
+			}
+			mdelay(12);
 		} else {
-			pr_info("put node into work list start\n");
-			// add into work list
-			spin_lock(&dev->work_list.camlock);
-			// should not have problem here ??
-			list_add(&tmpnode->list, &dev->work_list.list);
-			spin_unlock(&dev->work_list.camlock);
-			wake_up_interruptible(&dev->work_list.camqueue);
+			set_current_state(TASK_INTERRUPTIBLE);
+			schedule_timeout(2*HZ);
 		}
 	}
+	pr_info("stop mmap\n");
+	after_stop = 1;
 	wake_up_interruptible(&thread_closequeue);
 	return 0;
 }
@@ -199,10 +214,10 @@ static int read_idx(struct file *fptr) {
 	struct linecamdev *dev = (struct linecamdev*)fptr->private_data;
 	struct camnode *tmpnode;
 
-	pr_info("start read\n");
+//	pr_info("start read\n");
 	spin_lock(&dev->work_list.camlock);
 	while (list_empty(&dev->work_list.list)) {
-		pr_info("start wait in chr_read\n");
+//		pr_info("start wait in chr_read\n");
 		// if empty wait for completion for ready from mmap function
 		spin_unlock(&dev->work_list.camlock);
 
@@ -210,7 +225,7 @@ static int read_idx(struct file *fptr) {
 		// have nodes, lock again
 		spin_lock(&dev->work_list.camlock);
 		if (list_empty(&dev->work_list.list)) {
-			pr_info("error list work empty!!\n");
+//			pr_info("error list work empty!!\n");
 			continue;
 		}
 	}
@@ -220,7 +235,7 @@ static int read_idx(struct file *fptr) {
 	spin_unlock(&dev->work_list.camlock);
 
 	ret = tmpnode->index;
-	pr_info("return node %d\n", ret);
+//	pr_info("return node %d\n", ret);
 	return ret;
 }
 
@@ -228,7 +243,7 @@ static int chr_mmap(struct file *fptr, struct vm_area_struct *vma) {
 	struct linecamdev *dev = (struct linecamdev*)fptr->private_data;
 	unsigned long pfn_start = (virt_to_phys(dev->mmapbuf) >> PAGE_SHIFT) + vma->vm_pgoff;
 
-	pr_info("mmap size is %d\n", vma->vm_end - vma->vm_start);
+	pr_info("mmap size is %lu\n", vma->vm_end - vma->vm_start);
 	if (remap_pfn_range(vma, vma->vm_start, pfn_start,
 		vma->vm_end - vma->vm_start,
 		vma->vm_page_prot)) {
@@ -243,23 +258,24 @@ static long chr_ioctl(struct file *fptr, unsigned int cmd, unsigned long arg) {
 	long ret = 0;
 	int *argp = (int*)arg;
 	u8 *ptr;
-	int bufferlen = read_lines * read_width + FRAMEHEAD * read_lines / READPERTIME;
+	int bufferlen = read_lines * read_width + frame_head;
 
 	switch (cmd) {
 	case LINECAMNONE_START:
-		pr_info("start thread\n");
-		ts = kthread_run(mmap_thread, NULL, "fill_mmap");	
-		if (ts == NULL) {
-			pr_info("can not start thread\n");
-			ret = -4;
+		pr_alert("start catch\n");
+		if (atomic_read(&runcatch) == 1) {
+			atomic_set(&runcatch, 0);
+			set_current_state(TASK_INTERRUPTIBLE);
+			pr_alert("before timeout\n");
+			schedule_timeout(HZ); // in case not stop normally
+			pr_alert("after timeout\n");
 		}
+		cam_init_list(dev, 0); // reinit list to starter status
+		atomic_set(&runcatch, 1);
 		break;
 	case LINECAMNONE_STOP:
-		pr_info("stop thread\n");
-		ret = kthread_stop(ts);
-		interruptible_sleep_on(&thread_closequeue);
-		ts = NULL;
-		cam_init_list(dev, 0); // reinit list to starter status
+		pr_alert("stop catch\n");
+		atomic_set(&runcatch, 0);
 		break;
 	case LINECAMGET_INDEX:
 		if (!argp) {
@@ -269,23 +285,14 @@ static long chr_ioctl(struct file *fptr, unsigned int cmd, unsigned long arg) {
 			if (ret > 0) {
 				*argp = ret;
 				ret = 0;
-				pr_info("read get node %d\n", *argp);
-/*
-	ptr = dev->mmapbuf;
-	pr_alert("test print %02x %02x %02x %02x %02x\n", ptr[0], ptr[1], ptr[2], ptr[3], ptr[4]);
-	ptr = dev->mmapbuf + bufferlen;
-	pr_alert("test print second %02x %02x %02x %02x %02x\n", ptr[0], ptr[1], ptr[2], ptr[3], ptr[4]);
-*/
 			}
 		}
 		break;
 	case LINECAMPUT_INDEX:
-		pr_info("start pushback %d\n", *argp);
 		spin_lock(&dev->free_list.camlock);
 		// should not have problem here ??
 		list_add(&camnodes[*argp-1].list, &dev->free_list.list);
 		spin_unlock(&dev->free_list.camlock);
-		pr_info("begin wakeup  free list\n");
 		wake_up_interruptible(&dev->free_list.camqueue);
 		break;
 	default:
@@ -324,11 +331,12 @@ static int camdev_probe(struct spi_device *spi)
 		goto ERROR3;
 	}
 
+	init_waitqueue_head(&thread_closequeue);
     // set and add NUMBUFS lists into free_list, index is 1, 2
 	// may have proble assign lock
 	cam_init_list(camdev, 1);
 
-	camdev->mmapbuf = kzalloc((read_lines * read_width + FRAMEHEAD * read_lines / READPERTIME)  * NUMBUFS, GFP_KERNEL);
+	camdev->mmapbuf = kzalloc((read_lines * read_width + frame_head)  * NUMBUFS, GFP_KERNEL);
 	if (!camdev->mmapbuf) {
 		pr_info("can not mmap allocal buf\n");
 		goto ERROR3;
@@ -365,19 +373,13 @@ static int camdev_probe(struct spi_device *spi)
 		ret = -EFAULT;
 		goto ERROR0;
 	}
-	camdev->sendbuf = (u8*)kzalloc(read_width * READPERTIME + FRAMEHEAD , GFP_KERNEL);
+	camdev->sendbuf = (u8*)kzalloc(read_width * read_lines + frame_head , GFP_KERNEL);
 	if (!camdev->sendbuf) {
 		pr_info("can not allocate kernel buffer for linecamerea send\n");
 		ret = -EFAULT;
 		goto ERROR0;
 	}
 
-// initialize every line in sendbuf with head 0xa1
-/*
-    for(i = 0; i < read_lines; ++i) {
-	*(camdev->sendbuf + i * (read_width+8)) = 0xa1;
-    }
-*/
 	camdev->sendbuf[0] = 0xa1;
     
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0)
@@ -385,6 +387,14 @@ static int camdev_probe(struct spi_device *spi)
 #else
 	dev_set_drvdata(&spi->dev, camdev);
 #endif
+
+	// start kthread
+	ts = kthread_run(mmap_thread, NULL, "fill_mmap");	
+	if (ts == NULL) {
+		pr_info("can not start thread\n");
+		ret = -4;
+		goto ERRORM1;
+	}
 
 	return 0;
 ERRORM1:
@@ -407,6 +417,14 @@ static int __devexit camdev_remove(struct spi_device *spi)
 {
 	struct linecamdev *priv = dev_get_drvdata(&spi->dev);
 
+	if (ts != NULL) {
+		kthread_stop(ts);
+		pr_info(" before stop ts\n");
+//		interruptible_sleep_on(&thread_closequeue);
+		wait_event_interruptible(thread_closequeue, after_stop == 1);
+		pr_info(" after stop ts\n");
+		ts = NULL;
+	}
 	unregister_chrdev_region(priv->cdevptr->dev, 1);
 	cdev_del(priv->cdevptr);
 	kfree(priv->sendbuf);
@@ -449,8 +467,10 @@ module_exit(camdev_exit);
 
 module_param(read_lines, int, 0644);
 module_param(read_width, int, 0644);
-MODULE_PARM_DESC(read_lines, "how many lines will be read, also line width should be readlines+8");
-MODULE_PARM_DESC(read_width, "how many pixel will be read one time, actually is width+8");
+module_param(frame_head, int, 0644);
+MODULE_PARM_DESC(read_lines, "how many lines will be read, also line width should be readlines");
+MODULE_PARM_DESC(read_width, "how many pixel will be read one time, actually is width");
+MODULE_PARM_DESC(frame_head, "how many bytes will be read as frame head");
 MODULE_DESCRIPTION("LineCamera test driver");
 MODULE_AUTHOR("cynovo");
 MODULE_LICENSE("GPL");
