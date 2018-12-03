@@ -4,7 +4,9 @@ ctrl+f2 restart
 f7 step into
 ctrl+f7  可以展示f7的过程, 可以用这个找到显示界面，然后按-逐步返回，途中记录jmp的地方
 f8 step over  
-ctrl+f8  animator over, 可以展示f8的过程
+ctrl+f8  animator over, 可以展示f8的过程, use f7 to stop
+ctrl+f11  == ctrl+f7 but not show
+ctrl+f12  == ctrl+f8 but not show
 ctrl+f9 exec until return(stop on return)
 shift+f9 exec pass execption
 alt+f9  return to user
