@@ -1,0 +1,25 @@
+need just one root item, can be anything like window or image
+
+signal:
+	onSignalName
+property:
+	onPropertyChanged
+
+self property:
+	property int aaa: 24
+	width : 20 + aaa
+
+funciton:
+	function xxx() {
+	}  like javascript
+
+	onXXXChanged:  console.log("xxx")  // print on debug log 
+
+focus: true
+	necessary for Key handling
+
+alias
+	property alias xx : origin_xx  // used to export a property
+
+signal:
+	signal xxx // create your own signal
