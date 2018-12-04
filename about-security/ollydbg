@@ -133,6 +133,9 @@ note:
 	10 对于那些会消失的窗口，出现后，立刻按暂停，然后查看call stack
 	11 找空白数据区域，可以在memory中data段找，然后设置hardware break on write
 		测试是否被程序使用，然后自己用
+	12 压缩器的终点，寻找跳转到正常代码之前的地方，这个可以找pushad 对应的popad
+		在push后找到stack的memdump的地方，设置hardwarepoint， on access，然后执行，
+		会在执行完popad之后跳转返回
 
 补丁：
 	低级：直接修改jmp的地方跳过注册失败
