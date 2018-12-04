@@ -108,6 +108,11 @@
 
 	dll 总是导入到7xxxxxxx的地方 再网上就是kernel的地方了
 
+	重定位表
+		这个是一系列的image relocationtable， 开头是base，然后是blocksize
+			(blocksize - 8 )/2就是这个base下的一个块中的重定位数量，然后
+			下面是每两个字节表示一个偏移位置，知道结束这个块，为0
+
 恶意修改：
 	pe中的一些值如size of code 等， export table addr 等
 		在正常执行的时候如果没值，可以执行的，但是调试器会报错，

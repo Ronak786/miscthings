@@ -1,0 +1,2 @@
+after win vista, ASLR
+	use random load addresss for exe and dll and sys(driver)

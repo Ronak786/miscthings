@@ -136,6 +136,7 @@ note:
 	12 压缩器的终点，寻找跳转到正常代码之前的地方，这个可以找pushad 对应的popad
 		在push后找到stack的memdump的地方，设置hardwarepoint， on access，然后执行，
 		会在执行完popad之后跳转返回
+	
 
 补丁：
 	低级：直接修改jmp的地方跳过注册失败
