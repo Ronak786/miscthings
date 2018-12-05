@@ -158,4 +158,4 @@ note:
 		还有各种指令的长短
 
 hook
-	debugging ->events->break on new module 可以在新的模块的地方停下来，用来找新模块
+	debugging ->events->pause/break on new module 可以在新的模块的地方停下来，用来找新模块

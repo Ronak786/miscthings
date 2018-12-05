@@ -17,3 +17,6 @@ pe 工具
 		可以ctrl +n查看导入导出函数，找到thunk table
 	wark 
 		可以修改段的属性比如可执行等
+
+debugview
+	可以查看系统里所有程序的outputdebugstring()输出
