@@ -117,6 +117,9 @@
 	pe中的一些值如size of code 等， export table addr 等
 		在正常执行的时候如果没值，可以执行的，但是调试器会报错，
 		用advanced ollydbg 插件可以不报错，这个是用来反调试的
+	pe 中的raw point of data, virtual offset都是有对齐的，如果故意用不对其的值，那么
+		装载的时候会强制取模对其
+	对于winupack, import table这个要注意所在section的结尾地址，超过的部分不会映射到内存中！！
 
 
 修改文件： 加入可执行代码
