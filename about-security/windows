@@ -1,2 +1,16 @@
 after win vista, ASLR
 	use random load addresss for exe and dll and sys(driver)
+
+hook:
+	1
+		setwindowshookex
+		unhookwindowshookex
+		需要模块instance，如果在模块内部，可以使用dlmain中获取instance
+		在hook中return 1表示暂停hoook链，到此位置，截断消息，否则return Callnexthookex继续其他hook
+
+	2
+		openprocess -> virualallocex(create mem in target process) -> writeprocessmemory(write data into
+				target process's mem) -> getproceaddress of loadlibrary(在所有系统中首次加载位置都是一样的，
+					而系统启动的时候早就加载了，只需要映射，加载会随机取地址，映射都是一样的:w
+					-> createremotethread(target_process,  func_pointer, param) .... 调用载入函数，
+					最后就可以调用到dllmain，然后注入了

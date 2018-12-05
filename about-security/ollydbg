@@ -157,3 +157,5 @@ note:
 		注意添加的代码在代码段，数据放在数据段
 		还有各种指令的长短
 
+hook
+	debugging ->events->break on new module 可以在新的模块的地方停下来，用来找新模块
