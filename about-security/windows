@@ -20,6 +20,22 @@ hook:
 		loadappinit_dll = 1
 		after reboot, will inject into every process by user32.dll
 
+普通code注入：
+	1 C代码
+		代码为threadfunc， data通过param传入，两者都要virtualallocex分配,前者可以通过把函数地址相减得到
+		需要复制的大小，然后复制,最后也是通过createremotethread的方法执行的
+		一般需要传入loadlibrary getprocaddress的地址，这个所有进程的都一样，
+		注意：设置ollydbg的debug event的break on thread 可以在新县城执行的时候暂停
+	2 汇编
+		这个先在masm或者ollydbg中写好（可以写个简单C程序然后在ollydbg中打开然后手写）
+		需要的硬编码数据可以是直接传入的，也可以是通过内部使用push的技巧传入栈（每次4字节，小端传）
+		最后push esp就可以了,当作字符串地址
+
+		传入字符串：
+			1 直接push 到栈上，最后push esp即可传入字符串地址
+			2 如果当前代码下面一个地址就是字符串，那么直接call 到接下来的代码处，就可以push入接下来的地址，
+			同时跳到接下来要运行的地方实际去call真正的函数
+
 查找指定名字进程中的指定dll
 	1 createtoolhelp32snapshot(th32cs_snapall, null) 
 		process32first, process32next 来找到指定名字的process的pid
