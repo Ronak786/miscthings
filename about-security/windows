@@ -36,6 +36,12 @@ hook:
 			2 如果当前代码下面一个地址就是字符串，那么直接call 到接下来的代码处，就可以push入接下来的地址，
 			同时跳到接下来要运行的地方实际去call真正的函数
 
+api hook:
+	劫持api的调用
+	1 修改iat
+	2 修改目标dll的eat
+	3 注入dll的时候搜索修改call的地址
+
 查找指定名字进程中的指定dll
 	1 createtoolhelp32snapshot(th32cs_snapall, null) 
 		process32first, process32next 来找到指定名字的process的pid
