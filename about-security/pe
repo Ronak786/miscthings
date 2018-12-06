@@ -137,6 +137,12 @@
 		那就在idata的末尾找一块地方，全部复制过去，然后只要修改
 		pe中import相关头里的rva就行了，还有idata的virtual大小
 
+		或者添加新的section，或者扩展最后的一个section
+		注意添加importable所在section的write权限，因为需要修改iat表的
+			(iat有从impor table -> thunkdata(address) -> import by name
+			 如果datadirectory中存在image directory_entry_iat, 那么可以不用修改
+			 权限就可以在指定section中写iat，
+
 	2 添加具体的dll和函数， 需要添加一个image name的结构体包含函数
 		名字，然后是一个thunk结构体包含前面那个的地址，
 		然后是在1中的directgory的first thunk域中包含这里的thunk的地址

@@ -40,3 +40,11 @@ mem alloc:
 			return false; // found, so return false
 		else 
 			return true; // continue search
+
+
+消息：
+	wm_dropfiles
+		产生拖拽文件的消息，传入路径
+
+dll:
+	如果要自己制作只有dllmain又用的dll，需要一个dummy的dllexport函数，不然一个都没有，可能塞不进你需要的进程
