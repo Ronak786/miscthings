@@ -1,0 +1,7 @@
+opensc has opensc-libpkcs.so  , this one have basic opensc functions libp11 will use
+	so in libp11, you use functions in libp11.h, then they will connect to that opensc-libpkcs.so,
+	see example dir in libp11 srcdir for detail usage
+
+libp11 has engine libpkcs.so
+	in openssl, you load engine, get method from engin, then it will auto call libp11 functions internally
+	and realise functions of openssl in hardware
