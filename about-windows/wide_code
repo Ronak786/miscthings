@@ -27,5 +27,22 @@ use wide code or ascii code:
 
 	string.h:
 		_tcslen
-		_tcscpy_s
+		_tcscpy_s,
 		_tcscat_s
+			这两个在数量不对时直接报错，不会复制，如果需要尽力复制，使用tcscchcat这种
+		_countof  数组元素个数，与sizeof不同
+
+		strformatbytesize  : convert into to string
+
+		comparestring 这个比较根据当地的习惯，慢一点
+		comparestringordinal  这个比较序数，快
+
+		不要使用printf %s %S, 使用multibytetowidechar, widechartomultibyte
+			这里两个source那里可以设置长度-1，会自动判断，destiionation那里先设置0，
+			获取需要的长度，（注意towitechar的版本需要返回的数量*每个字符的长度），
+			然后分配空间，第二次再获取，
+			tomultibyte的还有pdefaultchar设置不能转换时的默认字符，pfusededefaultchar(true|false)
+			设置是否使用了不能转换，用来检测的
+
+		malloc 这个通用
+		heapalloc(getprocessheap(),xxxx)  这个更快一点

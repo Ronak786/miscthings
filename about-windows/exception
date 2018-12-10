@@ -1,0 +1,4 @@
+set_invalid_parameter_handler()
+	设置自己的异常处理函数，然后程序开头调用_CrtSetReportMode(_CRT_ASSERT,0),
+	然后函数里还要throw出来，在你的程序里catch，这样就可以不让debug中出现debug assertion failed的
+	框了，release会直接崩溃
