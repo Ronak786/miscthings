@@ -1,0 +1,17 @@
+内核对象
+	内核对象属于整个内核，而不是一个进程，本身有引用计数，创建函数里有一个security_attributes结构体，
+	不然可能是用户对象或者gdi对象
+	sysinternalssuite 中的winobj可以查看 objecttype
+
+	handle 这个其实是一个进程的内核对象表中的索引，要移位才是真实索引
+
+	继承：
+		首先创建内核对象的时候传入securityattribute的interithandle设置true
+		然后createprocess的时候设置interithandle true这样就可以把父进程的表中对应对象复制
+		到子进程的表中，同样位置，
+		然后还要通过命令行参数传入handle的值，或者通过环境变量，getenvironmentvariable获取也可以
+			或者父进程等待子进程初始化完成后传入消息告知handle
+
+		动态设置继承flag，
+			sethandleinformation
+			sethandleinformation 用来测试

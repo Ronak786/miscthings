@@ -46,3 +46,7 @@ use wide code or ascii code:
 
 		malloc 这个通用
 		heapalloc(getprocessheap(),xxxx)  这个更快一点
+
+
+		测试unicode
+			istextunicode() 测试的越多，越准确
