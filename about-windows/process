@@ -1,0 +1,26 @@
+进程
+	linker 的选项指定/SUBSYSTEM：WINDOWS OR CONSOLE来区分是命令行还是gui程序，
+		这个可以去掉，这样会自己判断，主要用于不同的mian函数名字
+			windows: ascii _tWinMain(WinMain)
+					unicode _tWinMain(wWinMain)
+
+			cui: ascii _tmain(Main)
+				uni	unicode _tmain(Wmain)
+
+		可以通过getenvironmentstring/ getmodulename/ getcommandline 获取命令行参数，
+			程序名， 环境变量，而不是通过初始化函数使用的全局变量，这样比较保险
+			freeenvironmentstrings  以TEXT('\0') 结尾
+			expandenvironmentstring 扩展拥有可替换字符 %xxx% 的字符串为替换后的字符串
+
+			结束的时候通过_onexit调用注册的函数
+
+		hmodule == hinstance
+			都是进程的或者dll的handle
+
+		getmodulehandle(null) 返回主调进程的地址，作为handle
+			加字符串则是对应载入模块的地址
+		getmodulehandleex 则返回指定函数所在的模块基地值
+
+	命令行参数
+		getcommandlinew -> commandlinetoargv 可以返回字符串指针
+			要使用heapfree释放
