@@ -24,3 +24,8 @@ use wide code or ascii code:
 	}
 		note:
 			the size should be sizeof(buffer) / sizeof(TCHAR) !!
+
+	string.h:
+		_tcslen
+		_tcscpy_s
+		_tcscat_s
