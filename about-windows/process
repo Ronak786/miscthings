@@ -12,6 +12,10 @@
 			freeenvironmentstrings  以TEXT('\0') 结尾
 			expandenvironmentstring 扩展拥有可替换字符 %xxx% 的字符串为替换后的字符串
 
+		进程在每个驱动器上都有默认目录，通过getfullpathname 获取，C：filename的方法
+			会让api取获取环境变量里的home路径，没有就是根目录
+
+
 			结束的时候通过_onexit调用注册的函数
 
 		hmodule == hinstance
@@ -24,3 +28,9 @@
 	命令行参数
 		getcommandlinew -> commandlinetoargv 可以返回字符串指针
 			要使用heapfree释放
+
+createprocess:
+	true返回可能因为dll载入失败导致程序退出仍然
+	cmdline 参数要是可修改的注意
+
+	getprocessid getthreadid getprocessidofthread
