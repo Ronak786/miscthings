@@ -15,3 +15,19 @@
 		动态设置继承flag，
 			sethandleinformation
 			sethandleinformation 用来测试
+
+	命名对象：
+		create的时候可以取名字，不过如果名字存在，会返回alreadly exists， 如果类型不一样，会invalid handle，
+		如果一样，那就是返回那个存在的对象，
+		可以用open* 函数来代替，这样只会打开不会创建了
+
+	命名空间
+		运行终端服务的windows每个终端服务有自己的空间，可以在创建名字的时候使用Global\\name Local\\name来明确指定
+		放入的空间，默认自己的空间
+		利用createprivatenamespace 配合boundarydescriptor创建自己的空间，然后可以在里面和上面一样创建对象，
+			这样防止名字覆盖
+
+	复制handle
+		duplicatehandle(srcprohandle, srchandle, targetprohandle, targethandle ..)
+		把source的复制到dest进程中，src可以是主调进程自己
+		还可以和linux的dup一样，给自己复制一个handle，只读用
