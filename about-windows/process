@@ -34,3 +34,9 @@ createprocess:
 	cmdline 参数要是可修改的注意
 
 	getprocessid getthreadid getprocessidofthread
+
+endprocess 的方法：
+	正常返回
+	exitprocess 从某个线程调用, 显示的调用这个会导致析沟函数没有被调用，
+		要从主调函数正常返回，  mainthread的返回会调用exitprocess，使得所有线程失败
+	terminateprocess从某个进程调用
