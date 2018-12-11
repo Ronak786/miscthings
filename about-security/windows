@@ -43,6 +43,8 @@ api hook:
 	2 修改目标dll的eat
 	3 注入dll的时候搜索修改call的地址
 	4 利用debug的方法attach的时候修改int3， 收取break execption来修改
+	5 直接hook内部的call 指令，而不是iat表，先hook 修改原api开头为jmp新地址，然后call的时候恢复,
+		然后调用元api，然后重新修改，然后返回
 
 查找指定名字进程中的指定dll
 	1 createtoolhelp32snapshot(th32cs_snapall, null) 
