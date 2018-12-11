@@ -41,6 +41,7 @@ api hook:
 	1 修改iat
 	2 修改目标dll的eat
 	3 注入dll的时候搜索修改call的地址
+	4 利用debug的方法attach的时候修改int3， 收取break execption来修改
 
 查找指定名字进程中的指定dll
 	1 createtoolhelp32snapshot(th32cs_snapall, null) 
@@ -70,3 +71,18 @@ mem alloc:
 
 dll:
 	如果要自己制作只有dllmain又用的dll，需要一个dummy的dllexport函数，不然一个都没有，可能塞不进你需要的进程
+
+
+debug
+	debugactiveprocess  attach到pid的进程上调试
+	waitfordebugevent   等待debug事件发生
+	continuedebugevent 继续运行，用于停止后
+		event:  1 oncreateprocessevent 通过createprocessdebuginfo  struct 可以
+			获取process的信息
+			readprocessmemory可以获取指定进程指定地址的信息，debug权限是可以的
+			writeprocessmemory可以写入，这里写入0xcc 用来int3
+				2 exceptiondebugevent 用来
+					可以通过CONTEXT结构体 getthreadcontext()获取环境，这个里面可以有
+						esp等等值, 然后你可以读写栈
+				
+
