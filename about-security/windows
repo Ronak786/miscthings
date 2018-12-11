@@ -39,6 +39,7 @@ hook:
 api hook:
 	劫持api的调用
 	1 修改iat
+		virtualprotect 修改的时候会用到，需要暂时更改iat所在段的那一块的属性，不然不能写
 	2 修改目标dll的eat
 	3 注入dll的时候搜索修改call的地址
 	4 利用debug的方法attach的时候修改int3， 收取break execption来修改
@@ -86,3 +87,5 @@ debug
 						esp等等值, 然后你可以读写栈
 				
 
+api:
+	getmodulehandle() 返回当前进程的基地值，可以找到pe头
