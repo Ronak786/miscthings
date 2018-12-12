@@ -91,3 +91,10 @@ debug
 
 api:
 	getmodulehandle() 返回当前进程的基地值，可以找到pe头
+
+隐藏进程
+	进程获取createtoolhelp32snapshot, enumprocess -> 都是通过zwquerysysteminformation
+	通过creattoolhelp32snapshot找到所有需要注入的进程，然后注入, 记住virtualproctec更改代码段的读写特性
+		这个不能修改将来的创建的新进程
+	2 通过createprocess内部的zwresumethread， 这个没有文档，会在新进程开始前运行，可以hook这个
+		hook createprocess的时候就是调用原函数，然后利用返回的process handle进行loadlibrary操作即可
