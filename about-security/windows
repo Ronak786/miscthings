@@ -145,3 +145,8 @@ tls:
 		#pragma data_seg() 
 	即可
 		
+
+teb:
+	线程环境块， 这个线程的块，其实在fs描述符指定的地方，可以debug看，
+	可以通过这个找到peb指针，进程环境块，用于反调试
+	通过ntcurrentteb()获取
