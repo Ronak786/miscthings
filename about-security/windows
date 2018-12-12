@@ -58,6 +58,11 @@ api hook:
 		process32first, process32next 来找到指定名字的process的pid
 	2 createtoolhelp32snapshot(th32cs_snapmodule, pid) 
 		process32first, process32next 来找到指定pid的所有模块的名字
+
+会话：
+	windows 6内核的系统vista 7 8 中系统进程在会话0， 每个用户一个会话，隔离他们，
+		但是不能防止opeprocess virutalprotect等操作
+		但是createremotethread不能再跨越会话了
 	
 
 mem alloc:
@@ -105,3 +110,23 @@ api:
 		这个不能修改将来的创建的新进程
 	2 通过createprocess内部的zwresumethread， 这个没有文档，会在新进程开始前运行，可以hook这个
 		hook createprocess的时候就是调用原函数，然后利用返回的process handle进行loadlibrary操作即可
+
+
+WOW64
+	这个是64位系统下运行32位程序需要的一些组建，这个运行再用户太的，库名字和64位的一样，
+	再getsytemdirectory(system32) shgetspecialfoldelpath(program_file(x86))的时候，wow64会截获请求
+	把名字修改位返回system32 但实际上返回的是syswow64,这个是为了保持所有程序的一致性！！
+
+	注册表的修改也是这样，不过有时候会共用，这个要注意
+
+x64指令
+	call 采用相对地址而不是绝对，目标= 当前 + 6（call长度） + 指令里的value
+
+	传参rcx rdx r8 r9 或者 xmm0~3实数，不是用bp，所以传参使用mov而不是push
+		但是栈上仍然会保留那段给4个参数的空间
+
+aslr 随即地址
+	这个可以通过cff explorer的修改功能修改 file header中的reloc stripped 为选中
+		或者optional header中的dll character中的dll move为不选中，都可以取消aslr
+
+	
