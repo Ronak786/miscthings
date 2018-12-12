@@ -45,6 +45,13 @@ api hook:
 	4 利用debug的方法attach的时候修改int3， 收取break execption来修改
 	5 直接hook内部的call 指令，而不是iat表，先hook 修改原api开头为jmp新地址，然后call的时候恢复,
 		然后调用元api，然后重新修改，然后返回
+	6 5中的方法在每次调用的时候都要unhook然后调用原方法，但是在ntdll中一些方法前面有至少7字节的区域，
+		其中5字节空，2字节作为调用头部但是没用，所以可以修改5字节为jmp指令到你的func，2字节为jmp到5字节的开头，
+		这样就可以不用运行时修改了，只需要调用的时候注意多加两字节再调，
+	7 对于短小的独立func，可以复制到用户区，然后修改原来地方为一个jmp，然后自由调用
+	8 resumethread 这个比createprocess方便，这个在创建完后恢复运行的时候调用
+		注意新线程内inject后要unhook，然后调用原来的resume，然后调用hook恢复resume的inject
+		注意是在父亲里面createprocess系列函数内部调用的，这个还是父线程调用的哦
 
 查找指定名字进程中的指定dll
 	1 createtoolhelp32snapshot(th32cs_snapall, null) 
