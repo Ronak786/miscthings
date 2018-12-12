@@ -63,6 +63,8 @@ api hook:
 	windows 6内核的系统vista 7 8 中系统进程在会话0， 每个用户一个会话，隔离他们，
 		但是不能防止opeprocess virutalprotect等操作
 		但是createremotethread不能再跨越会话了
+		需要使用ntcreatethreadex 和zwcreatethreadex一样，然后选择不要suspend启动，
+			因为如果这样，导致不同会话的不能启动恢复
 	
 
 mem alloc:
@@ -130,3 +132,16 @@ aslr 随即地址
 		或者optional header中的dll character中的dll move为不选中，都可以取消aslr
 
 	
+tls:
+	这个是会再线程和进程创建销毁的时候执行的函数，和dllmain的参数一样，可以注册多个，
+	再optionsal direcotyr中的index 9中的指定地址
+
+	利用ollydbg的break on systembreakpoint，然后在pe头里找地址，然后打断点，不然在ep停止，
+	此时tls已经执行过了
+
+	使用
+		#pragme data_seg(".CRT$XLX")  
+		PIMAGE_TLS_CALLBACK[] ={func1, func2, 0};
+		#pragma data_seg() 
+	即可
+		
