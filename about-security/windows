@@ -174,4 +174,6 @@ peb
 		excpetion_single_step
 			单步模式会产生的异常,设置eflags 的tf可以引发
 
-	seh是一个exception_registration_record的结构体链表，每个里面有一个exceptino_disposition结构体
+	seh是一个exception_registration_record的结构体链表，每个里面有一个exception_disposition结构体
+		存有异常码，地址等，还有寄存器环境复制，修改其中的eip可以跳转继续运行。
+
