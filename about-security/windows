@@ -146,7 +146,32 @@ tls:
 	即可
 		
 
-teb:
+teb: 通过windbg查看
 	线程环境块， 这个线程的块，其实在fs描述符指定的地方，可以debug看，
 	可以通过这个找到peb指针，进程环境块，用于反调试
 	通过ntcurrentteb()获取
+
+peb
+	teb + 30h
+	主要有用成员：
+		isbeingdebugged : used by api isdebuggerpresent()
+		imagebaseaddress: used by api getmodulehandler(NULL)
+		ldr: 这个结构体里面有3个链表连接所有载入的模块
+		proccessheap
+		ntglobalflag : 这两个在调试的时候会有特殊值
+
+
+异常处理：
+	普通运行，如果有异常，抛给程序，如果有seh，处理掉，没有，报错
+	调试过程中，如果异常，抛给调试者，你可以修改指令，设置新ep等方法修改，然后继续运行，
+		或者 直接抛给被调试者，如果没人处理，也会报错
+
+	断点 exception_breakpoint
+		== int3 设置的时候会把对应代码第一字节改为0xcc，这个没有显示，如果dump出来
+			是可以看到的(dump的是rva地址）
+		如果直接修改，就会异常，如果注册表设置默认调试器，会挑出来的
+
+		excpetion_single_step
+			单步模式会产生的异常,设置eflags 的tf可以引发
+
+	seh是一个exception_registration_record的结构体链表，每个里面有一个exceptino_disposition结构体
