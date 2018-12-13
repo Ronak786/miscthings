@@ -175,5 +175,16 @@ peb
 			单步模式会产生的异常,设置eflags 的tf可以引发
 
 	seh是一个exception_registration_record的结构体链表，每个里面有一个exception_disposition结构体
-		存有异常码，地址等，还有寄存器环境复制，修改其中的eip可以跳转继续运行。
+		存有异常码，地址等，还有寄存器环境复制，修改其中的eip可以跳转继续运行。used by getthreadcontext()
+		函数返回可以继续执行或者继续下一个seh处理
 
+		使用 __try __except __finally 可以插入新的seh代码
+			同时使用汇编也可以，注意registration结构体第一项是prev指针，这个是倒过来的
+			所以 push @myhandler
+				 push dword ptr fs:[0]
+				 mov  fs:[0], esp 即可
+
+		发生异常，查找teb块开头的seh结构体链表，然后一个一个找异常函数处理
+
+	一个try对应一个except，通常放入栈中，每个会运行两边，第二遍unwindflag设置，用来作清楚工作。
+		函数结束会把当前 函数中的弹出，具体的看   “深入解析结构化异常处理 by matt pietrek"
