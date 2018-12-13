@@ -175,6 +175,10 @@ peb
 		7 ntqueryobject 可以查看当前内核所有对象，里面有debug对象，
 			破解：可以手动修改结果或者hook函数
 
+	分离调试进程
+		zwsetinformationthread 设置参数threadhidefromdebugger可以让调试其找不到进程通信
+		debugactiveprocessstop 可以分离进程
+
 异常处理：
 	普通运行，如果有异常，抛给程序，如果有seh，处理掉，没有，报错
 	调试过程中，如果异常，抛给调试者，你可以修改指令，设置新ep等方法修改，然后继续运行，
