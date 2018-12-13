@@ -1,0 +1,2 @@
+{prefix} operator modr/m sib offset immediate_number
+	sib offset used when operand is from memory

@@ -63,7 +63,7 @@ api hook:
 	windows 6内核的系统vista 7 8 中系统进程在会话0， 每个用户一个会话，隔离他们，
 		但是不能防止opeprocess virutalprotect等操作
 		但是createremotethread不能再跨越会话了
-		需要使用ntcreatethreadex 和zwcreatethreadex一样，然后选择不要suspend启动，
+		破解：需要使用ntcreatethreadex 和zwcreatethreadex一样，然后选择不要suspend启动，
 			因为如果这样，导致不同会话的不能启动恢复
 	
 
@@ -160,6 +160,20 @@ peb
 		proccessheap
 		ntglobalflag : 这两个在调试的时候会有特殊值
 
+	调试检测
+		1 peb->beingdebugged
+		2 peb->ldr 这个在heap中，往下找，空白区域xp中会填充fefefefe debug的时候
+		3 heap结构体中flag forceflag也会不同，这个和2中的都可以int 3 然后 attach这样可以不会出现, 都只能xp
+		4 ntglobalflag 会有标志
+		5 ntqueryinformationprocess(
+				传入procesdebugport 返回的0 非调试， ffffffff调试状态
+			check remotedebugpresent就是用的这个
+				传入processdebugobjecthandle, 返回调试handle
+				传入processdebugflags 返回1 调试状态
+			这些可以通过api hook来hook这个api来更改结果
+		6 ntquerysysteminformation 这个检测系统的debug状态，win7要再修改bcdeditexe配置:
+		7 ntqueryobject 可以查看当前内核所有对象，里面有debug对象，
+			破解：可以手动修改结果或者hook函数
 
 异常处理：
 	普通运行，如果有异常，抛给程序，如果有seh，处理掉，没有，报错
