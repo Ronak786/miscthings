@@ -180,6 +180,10 @@ peb
 		zwsetinformationthread 设置参数threadhidefromdebugger可以让调试其找不到进程通信
 		debugactiveprocessstop 可以分离进程
 
+	动态反调试
+		1 int3 同时注册对应seh，内部定向ip，如果被调试其捕获，那么就没有跳转，然后报错推出
+			通过ollydbg设置ignore int3来回避
+
 异常处理：
 	普通运行，如果有异常，抛给程序，如果有seh，处理掉，没有，报错
 	调试过程中，如果异常，抛给调试者，你可以修改指令，设置新ep等方法修改，然后继续运行，
@@ -207,3 +211,7 @@ peb
 
 	一个try对应一个except，通常放入栈中，每个会运行两边，第二遍unwindflag设置，用来作清楚工作。
 		函数结束会把当前 函数中的弹出，具体的看   “深入解析结构化异常处理 by matt pietrek"
+
+windbg
+	配合virtualkd可以加速windbg调试
+	visualkernel 通过vs调试linux内核
