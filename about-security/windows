@@ -205,8 +205,11 @@ peb
 		压缩元ope的地方，解压运行，然后删除，然后跳转继续运行
 		api重定向，这个把系统api复制到其他地方运行，我们的断点就没用了
 		debuger block || nanomite
-			这种技术利用父进程启动调试子进程工作，子进程产生异常被父进程
-			截获然后修改子进程继续运行，
+			1 这种技术利用父进程启动调试子进程工作，子进程产生异常被父进程
+				截获然后修改子进程继续运行，
+			2 在父进程处理完子进程的解码之后，汇编父进程产生代码修改子进程的开头区域无限循环，
+				然后执行子进程，然后debugactivateprocessstop() detach掉，然后我们
+				再ollydbg attach上去,即可
 
 
 异常处理：
@@ -244,3 +247,20 @@ windbg
 服务创建
 	管理界面的服务gui 控制scm 来控制执行服务，执行main ，里面会返回， 然后设置服务朱函数
 		朱函数然后运行，设置自己的状态，然后开始运行即可
+
+	调试服务
+		1 通过修改ep处两字节的代码为eb fe，也就是jmp自己，这样无限循环，
+			然后启动服务，然后attach，运行，修改回去，就可以继续调试了，
+			还要修改service启动timeout serviepipetimeout 默认30s短
+		2 手动执行服务的主代码，直接执行handle中的代码，这个有时候会报错，
+			需要沟掉mem access violation In ollydbg
+		3 父子进程不同ep的应对方法
+			1 可以修改子进程入口头部为无限循环，
+			2 修改头部位0xcc 引发int3，之前要设置ollydbg为just in time调试其，
+				然后attach上去，再修改
+			3 直接修改子进程ep地址
+
+		4 pe替换
+			unmapviewofsection 用来卸载pe印象
+			修改peb中的imagebase，为新载入的image的base
+			writeprotectmemory将pe镜像不断写入新的地方
