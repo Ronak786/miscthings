@@ -183,6 +183,12 @@ peb
 	动态反调试
 		1 int3 同时注册对应seh，内部定向ip，如果被调试其捕获，那么就没有跳转，然后报错推出
 			通过ollydbg设置ignore int3来回避
+		2 利用最后的top exception fileter，这个可以通过setunhandlerexcpetiontifler来设置，
+			当有异常，没有用户自己的excpetionfilter的时候，就会调用这个，首先是你的unhandlerexcpetionfileter，
+			然后会传入ntqueyrinformationprocess的判定debug的结果，会在这个里面测试是否debug状态
+		3 利用rdtsc 获取时间，计时，然后比对，如果超过一段一时间，说明在调试（代码运行曼）
+			rdtsc/ntqueryperformance/gettickcount
+
 
 异常处理：
 	普通运行，如果有异常，抛给程序，如果有seh，处理掉，没有，报错
