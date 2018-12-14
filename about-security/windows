@@ -188,6 +188,14 @@ peb
 			然后会传入ntqueyrinformationprocess的判定debug的结果，会在这个里面测试是否debug状态
 		3 利用rdtsc 获取时间，计时，然后比对，如果超过一段一时间，说明在调试（代码运行曼）
 			rdtsc/ntqueryperformance/gettickcount
+		4 利用popfd pushfd修改eflags内的tf，然后只要再执行一条指令任意，就会触发single_step_exception,
+			如果被调试其吃掉，就会走不正常代码然后失败
+			可以修改选选项忽略这个异常
+		5 利用int 2d 这个内核调试指令，如果调试阶段，那么会忽略下一个一字节，继续运行
+			而再正常运行时不会这样，会发生异常
+		6 设置断点一般会再api头部，同时设置后实际内存会变成0xcc ，程序会检测这个，
+			所以尽量不要在程序开头设置断点
+		7 计算代码区域的校验
 
 
 异常处理：
