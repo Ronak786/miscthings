@@ -240,3 +240,7 @@ peb
 windbg
 	配合virtualkd可以加速windbg调试
 	visualkernel 通过vs调试linux内核
+
+服务创建
+	管理界面的服务gui 控制scm 来控制执行服务，执行main ，里面会返回， 然后设置服务朱函数
+		朱函数然后运行，设置自己的状态，然后开始运行即可
