@@ -7,3 +7,16 @@ permission check:
 	higher layer: check package manager
 	lower layer: check uid gid
 	access system resource: check calling process's uid gid
+
+permisssion == gid:
+	every embeded permission is a gid, defined as a groupname in android_filesystem_config.h,
+	then in /etc/permisssion/platform.xml permisssion is binded by groupname,
+	<assign_permisssion> used to assign permisssion to special uid processes(mostly system process)
+
+when start a app:
+	set supplimentary gid (permisssion)
+	set limit of resource
+	set uid gid euid egid
+	set capabilities
+	set schedule policy
+	set process name ...
