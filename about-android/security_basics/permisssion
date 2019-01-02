@@ -32,8 +32,8 @@ dynamic permissson check:
 	dynamic:deal by packagemanagerservice, through pid, uid ,  get package's permission group and check
 		the permission is granted in it
 	static: when sending intent, deal by activitymanagerservice, same routine
-		activity: check when startactivity
-		service: check when start, bind, stop
+		activity: check when startactivity,   you can set permission for it
+		service: check when start, bind, stop  you can set permission for it
 		content provider: check when read/write
 		broadcast: check when receiving, if not match, just ignore
 			protected broadcast app should have system/root privileges
@@ -41,4 +41,14 @@ dynamic permissson check:
 shareduserid
 	can be run in same process
 	designed when develop, system have some embeded shareuid,  system,bluetooth....
-		
+	if use same user id, permisssion granted to this id will auto permitted to this app
+	attr: process specify activities run in same process
+
+dynamicly add permisssion
+	pm.addpermisssoin, 
+	require:  must belong to a permission tree user defined, only can be granted to user itself
+		or user's same sharedid package?? what is package define permisssion?
+
+component private/public:
+	default private:  use  exported=true to make it public, or intent-filter will make it public,
+		and set exported=false make it private again
