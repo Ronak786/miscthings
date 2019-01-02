@@ -1,0 +1,11 @@
+package manage:
+	packageinstaller: from google ship, then packageinstaller will just install
+			from local apk, this is unknown source!!!
+	adb shell pm install:
+		this will not check unknonw source
+	packagemanagerservice:
+		system(uid) service, export com.android.pm.packagemanager in sdk for outer to use
+	installer:
+		used by service to talk to root privilege process /dev/socket/installd->installd to 
+		do root privileged job
+
