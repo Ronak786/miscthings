@@ -27,3 +27,13 @@ supplimentary gid AND linux capabilities:
 	aid_net_raw == cap_net_raw
 	aid_net_admin == cap_net_admin   This is the true nature of permisssion to system resource
 		in include/linux/andorid_aid.h
+
+dynamic permissson check:
+	dynamic:deal by packagemanagerservice, through pid, uid ,  get package's permission group and check
+		the permission is granted in it
+	static: when sending intent, deal by activitymanagerservice, same routine
+		activity: check when startactivity
+		service: check when start, bind, stop
+		content provider: check when read/write
+		broadcast: check when receiving, if not match, just ignore
+			protected broadcast app should have system/root privileges
