@@ -37,3 +37,8 @@ dynamic permissson check:
 		content provider: check when read/write
 		broadcast: check when receiving, if not match, just ignore
 			protected broadcast app should have system/root privileges
+
+shareduserid
+	can be run in same process
+	designed when develop, system have some embeded shareuid,  system,bluetooth....
+		
