@@ -53,6 +53,15 @@ dynamicly add permisssion
 	require:  must belong to a permission tree user defined, only can be granted to user itself
 		or user's same sharedid package?? what is package define permisssion?
 
+	context.grantpermisssion/revokepermisssion
+		or in Intent, set flag flag_grant_read_uri_permisssion, 
+			the callee process can contentresolver.takepersistableuriperisssion() to make it persist through reboot
+
 component private/public:
 	default private:  use  exported=true to make it public, or intent-filter will make it public,
 		and set exported=false make it private again
+
+pending intent:
+	this encapsulate an intent and action and infos such as permission ....
+	can be passed to others, eg. notification manager, so it can berun as the origin activity's
+		invoked activity
