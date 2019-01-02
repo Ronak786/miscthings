@@ -1,0 +1,7 @@
+normal uid used as application id, 
+	physical uid is 0 for the first user,  every user has private data in /data/system/user/<id>
+	uid maintinaed by kernel, further detail permission claimed in androidmanifest.xml
+
+every app runs in its uid scope, so access is denied from others
+
+selinux forces white list, only allowed then can access
