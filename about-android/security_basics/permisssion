@@ -35,8 +35,12 @@ dynamic permissson check:
 		activity: check when startactivity,   you can set permission for it
 		service: check when start, bind, stop  you can set permission for it
 		content provider: check when read/write
+			<path_permission> used priority higher then normal permisssion, ,if have this
+				one can query that content path without other read/write prmission owned
 		broadcast: check when receiving, if not match, just ignore
 			protected broadcast app should have system/root privileges
+			sender specify permission, so receiver should have permission to receive
+			receiver specify permission, so sender should have permission to send broadcast to it
 
 shareduserid
 	can be run in same process
