@@ -2,3 +2,8 @@ normal permission : like net_stat ...  granted auto default when install package
 dangerous permisssoin: read_sms ... granted when confirmed by you from screen
 	signature: most strict, only same cert can share
 	signature or system: after 4.4, only package under /system/priv-app can share
+
+permission check:
+	higher layer: check package manager
+	lower layer: check uid gid
+	access system resource: check calling process's uid gid
