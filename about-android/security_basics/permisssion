@@ -5,8 +5,10 @@ dangerous permisssoin: read_sms ... granted when confirmed by you from screen
 
 permission check:
 	higher layer: check package manager
-	lower layer: check uid gid
+	lower layer: check uid supplimentary gid
 	access system resource: check calling process's uid gid
+
+	socket: use socket(fd, sol_socket, so_peercred, xxxx) to get remote 's uid gid .. .to check
 
 permisssion == gid:
 	every embeded permission is a gid, defined as a groupname in android_filesystem_config.h,
@@ -20,3 +22,8 @@ when start a app:
 	set capabilities
 	set schedule policy
 	set process name ...
+
+supplimentary gid AND linux capabilities:
+	aid_net_raw == cap_net_raw
+	aid_net_admin == cap_net_admin   This is the true nature of permisssion to system resource
+		in include/linux/andorid_aid.h
