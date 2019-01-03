@@ -65,3 +65,5 @@ pending intent:
 	this encapsulate an intent and action and infos such as permission ....
 	can be passed to others, eg. notification manager, so it can berun as the origin activity's
 		invoked activity
+
+自定义权限先到先定义，后到ignore, 所以一定要把高优先级的先安装，不然后安装的高优先级被忽略了

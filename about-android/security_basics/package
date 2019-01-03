@@ -9,3 +9,25 @@ package manage:
 		used by service to talk to root privilege process /dev/socket/installd->installd to 
 		do root privileged job
 
+	
+install a app:
+	packageinstaller first use packageinstalleractivity check Unknow Source,then use JarFile
+		check completeness in meta-info dir;then call InstallAppProgress to Call packagemanagerservice,
+		which will call installpackagexxxxx()
+	in installpackagexxxxx():
+		call mediacontainerservcie to copy package ,
+		then call packagemanagerservice to tell installd to set uid gid, make userdata dir, copy native
+			libs
+		then generate optimized dex,
+		then add to package.xml, record permisssions, install dir....
+		then register components and permisssions
+
+update:
+	first check old and new signature
+	then:
+		non-system package:
+			remove previous one, add new one in package.xml
+		system package:
+			the one in system partition will not be removed unless ota system update,
+			a new <update_package> label will put under package.xml original <package> label
+			and new apk installing into /data
