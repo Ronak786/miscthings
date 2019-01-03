@@ -31,3 +31,7 @@ update:
 			the one in system partition will not be removed unless ota system update,
 			a new <update_package> label will put under package.xml original <package> label
 			and new apk installing into /data
+
+install encrypted package:
+	adb install --algo 'xxxx' --key xxx --iv xxxx *.apk
+	encrypted by openssl: openssl enc -aes-128-cbc -K key -iv iv  -in *.apk -out **.apk
