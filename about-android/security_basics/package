@@ -35,3 +35,8 @@ update:
 install encrypted package:
 	adb install --algo 'xxxx' --key xxx --iv xxxx *.apk
 	encrypted by openssl: openssl enc -aes-128-cbc -K key -iv iv  -in *.apk -out **.apk
+
+付费应用
+	使用转发锁定，也就是不可复制，应用有两部分，一部分资源全局访问，代码则放在只有system可以看到的地方，
+		而且使用了加密容器，当然root还是可以提取的
+	安装时mediacontainerservcie 通过mountservice创建需要的加密目录，然后挂在起来访问，当作安全容器
