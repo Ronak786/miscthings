@@ -127,7 +127,6 @@ static int gettok() {
 	return ThisChar;
 }
 
-
 static int CurTok;
 static int getNextToken() {
 	return CurTok = gettok();
