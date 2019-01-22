@@ -3,6 +3,7 @@
 link css
 1 <head> <link rel="stylesheet" href="style.css"> </head>
 2 <tab style="attr:value;">  just like css
+<background-image:url('xxxx')>
 
 
 <a href=xxxx  target="_blank"> this will open a new tab instead open in current tab
@@ -16,4 +17,13 @@ id
 
 
 text-decoration:none  : with no underline
+
+
+<map>  used in image   
+<area shape xxx   coords xxx alt xxx href xxxx> 用来再统一张图片不同区域链接不同超链接
+
+<picture>
+	<source media=xxx  scrset=xxxx>
+	<img src=xxx>
+</picture> 根据一定条件显示不同的图片
 
