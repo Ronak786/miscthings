@@ -60,3 +60,10 @@ list:
 <iframe src=xxx name=kkkk></iframe> the src is web page addr, the name can be used below
 <a href="xxxx", target="kkkk">saldkfjdsa</a>   
 	now click href ,target page will shown in the iframe tab
+
+
+javasript:
+	<script src=xxxxx>  
+	or <script> xxxxx </script>
+
+	<noscript>xxxxx  just like <img  alt=xxxx>
