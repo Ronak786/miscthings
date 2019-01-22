@@ -6,6 +6,10 @@ link css
 
 
 <a href=xxxx  target="_blank"> this will open a new tab instead open in current tab
+a:hover
+a:active
+a:visited
+a:link  (normal)
 
 id
 	<a herf="#id"> 
