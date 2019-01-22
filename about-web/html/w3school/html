@@ -11,6 +11,8 @@ a:hover
 a:active
 a:visited
 a:link  (normal)
+嵌套标签 li a:hover {
+}
 
 id
 	<a herf="#id"> 
@@ -27,3 +29,34 @@ text-decoration:none  : with no underline
 	<img src=xxx>
 </picture> 根据一定条件显示不同的图片
 
+
+
+table:
+	<table> <tr> (row) <th> (head)  <td> (data)
+
+	css: 
+		table#id tr:nth-children(odd/event) { 根据奇偶行
+		}
+
+list:
+	<ul style="list-style-type:xxx">
+		<li>
+
+	<ol>
+		<li type=""
+
+	<dl>
+		<dt>
+		<dd> description list, like:
+		aaaaa
+			-bbbbbb
+
+	use <li style="float:left"> make list item horizon
+
+
+<div>  used to 指定一个块
+<span> used to 指定一些word
+
+<iframe src=xxx name=kkkk></iframe> the src is web page addr, the name can be used below
+<a href="xxxx", target="kkkk">saldkfjdsa</a>   
+	now click href ,target page will shown in the iframe tab
