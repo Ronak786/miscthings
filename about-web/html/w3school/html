@@ -68,3 +68,8 @@ javasript:
 	or <script> xxxxx </script>
 
 	<noscript>xxxxx  just like <img  alt=xxxx>
+
+meta
+	<meta  name=xxx  content=xxxx>
+	<meta  name="viewport" content="width=device-width, initial-scale=1.0">
+		this will let image show better on small screen device
