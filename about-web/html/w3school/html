@@ -1,0 +1,15 @@
+<hr>   one line
+
+link css
+1 <head> <link rel="stylesheet" href="style.css"> </head>
+2 <tab style="attr:value;">  just like css
+
+
+<a href=xxxx  target="_blank"> this will open a new tab instead open in current tab
+
+id
+	<a herf="#id"> 
+
+
+text-decoration:none  : with no underline
+
