@@ -64,6 +64,7 @@ list:
 
 javasript:
 	<script src=xxxxx>  
+		document.getElementById/getElementByClass.style.fontSize   or .src (img)
 	or <script> xxxxx </script>
 
 	<noscript>xxxxx  just like <img  alt=xxxx>
