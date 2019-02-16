@@ -1,0 +1,33 @@
+normal mode
+S   删除一行然后编辑模式
+C	删除到行尾然后编辑模式
+@:  执行上次 command命令
+&	执行上次替换命令
+@x  执行宏 x代表qx的时候宏的按键
+cd %:h 可以跳转到当前打开文件的目录
+[count]ctrl-a [count]ctrl-x
+set nrformats=   是的默认数字加减不是八进制的
+gU gu g~ 用于大小写翻转，后面跟返回 如aw or gUU
+ga  显示当前字符的编码
+= > < 用于平移， ==为自动缩进
+[count]!!用命令结果替换count行
+gR R 前者遇到tab不会产生缩进，后者会，尽量用前者
+
+insert mode
+ctrl-h  backspace
+ctrl-w  delete a word
+ctrl-u  delete to head of line
+ctrl-o  switch into normal mode for just one comand and switch back
+what is your name?
+ctrl-r{registers}  插入寄存器的内容
+ctrl-rctrl-p{registers}  插入寄存器的内容,更智能缩进分析
+ctrl-r=3+15 可以写入计算结果
+ctrl-v u{hex} 可以输入unicode, 利用ga获取具体的hex
+ctrl-v {xxx} 直接输入字符 三位需要
+ctrrl-v{tab} 会输出tab 不管expandtab设置与否
+ctrl-k{char}{char} 输出由两个字符组成的字符, :h digraph-default
+
+插件：
+commentary.vim   利用 \\ap  \\\ 来注释一个段落或者一行
+textobj-entire   利用ae替代 ggG 所表示的全文 \\ae
+
