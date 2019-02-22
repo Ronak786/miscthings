@@ -31,3 +31,29 @@ ctrl-k{char}{char} 输出由两个字符组成的字符, :h digraph-default
 commentary.vim   利用 \\ap  \\\ 来注释一个段落或者一行
 textobj-entire   利用ae替代 ggG 所表示的全文 \\ae
 
+
+vitual mode
+viw vaw vit  选中一个word， 或者包括外部空格，或者tag内的部分
+gv 选中上次选中的部分
+
+ex mode:
+:2d  删除2行
+:2,3p print2 3行
+:%p print所有行
+:/xxx/+n,/yyy/-np
+1 fist line, $ last line, 0 before first line
+. current line, 'm  包含标记m的行, '<  '> virsual start /end
+% whole file
+:t/:co/:copy  复制， :6t. 把第六行复制到当前底下, 读作to
+					:t6  当前行复制到6行底下
+:m  移动 
+
+:normal 执行normal模式下的指令， 可以:%normal i// 来给所有行加注释
+									或者ctrl-v 4j I //
+:@:  repeat last ex command
+:@@  repeat last @xxx command
+ctrl -o ctrl-i jump list create by :bn :bp
+	set wildmode=longest,list //bash like
+
+	set wildmenu  // zsh like
+	set wildmode=full  
