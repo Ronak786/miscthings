@@ -36,6 +36,10 @@ vitual mode
 viw vaw vit  选中一个word， 或者包括外部空格，或者tag内的部分
 gv 选中上次选中的部分
 
+help:
+:h filename-modifier 文件名相关修饰
+:h cmdline-special
+
 ex mode:
 :2d  删除2行
 :2,3p print2 3行
@@ -52,8 +56,70 @@ ex mode:
 									或者ctrl-v 4j I //
 :@:  repeat last ex command
 :@@  repeat last @xxx command
-ctrl -o ctrl-i jump list create by :bn :bp
+ctrl-o ctrl-i jump list create by :bn :bp :bf(first) :bl(last) b{num}
 	set wildmode=longest,list //bash like
 
 	set wildmenu  // zsh like
 	set wildmode=full  
+:ctrl-r ctrl-w/a  可以插入当前文本单词在ex中
+	同时如果之前搜索过，或者按了*,那么替换的时候可以留空原词
+:ctrl-r % 可以填充当前文件名
+: 或者/之后，可以按ctrl-p ctrl-n来遍历前后的命令历史
+q: q/可以开一个窗口查看之前的：以及/的命令
+	ctrl-f 可以命令行编辑切换到命令行窗口编辑
+两命令结合 w | on
+:q quit the current window
+:shell exit 启动shell内置，如果终端不支持作业的话
+:r !ls 可以读入命令结果
+:w !sh 可以逐行执行文本命令
+	:h rename-files
+!! or :{range}! 可以把范围内作为命令输入，然后结果输出到范围上
+	或者V模式选中然后！， 或者 !2+ 这种选中一下两行
+
+about-files:
+	:ls   list buffers
+	:args  list args, the same as buffes some time
+		:args **/*.js **/*.asp
+		:args `shell command`  :h backtick-expansion
+		use :next :prev to traverse(in unpaired.vim, use [a ]a)
+	<c-^>  switch between current file and alternative file, tagged with '#'
+	:bufdo  bd[elete]  num num num... or 4,10bd
+		use :bnext :bprev to traverse(in unpaired.vim, use [b ]b)
+	通配 :h wildcard :h starstar-wildcard
+		* 匹配当前目录
+		**/* 匹配所有目录
+	:set hidden 可以不保存就切换缓冲区
+	:e! 可以重新载入磁盘，取消修改
+	:qa!  cancel all modification
+	:wa   store all modification
+	:wn		write current and start edit the next file
+		or :argdo write
+	:vs filename :sp filename
+	<c-w>c == :close
+	<c-w>o == :on[ly]
+	:h window-resize
+		<c-w>=  equal siez
+		<c-w>_  expand max current
+		<c-w>|  expand max current vertically
+
+	:tabedit  每个tag有多个窗口，lcd切换窗口路径 :windo lcd 切换整个
+		tag口的路径
+		<c-w>T 移动当前窗口到新的tab
+		:tabn[ext] [N]  or [N]gt
+		:tabm[ove] [N] move当前tab到第几个，默认最后一个
+
+	:e %:h<tab> 可以打开当前活动窗口文件目录的遍历
+		:e %% 也会扩展为目录
+		:e 不存在的路径之后
+			:!mkdir -p %:h [%%]
+			:w
+
+	:find 可以直接查找文件打开
+		需要设置路径 set path+=xxx/**  包含子目录
+	
+netrw:
+	vim自带目录插件，利用:e. 或者：E(进入当前修改文件的目录）进入，还可以读写网络文件
+		见vimcast theme15
+		:Sex :Vex :sp. :vs. 直接打开目录新buffer
+
+	
