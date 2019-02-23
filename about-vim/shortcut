@@ -116,10 +116,41 @@ about-files:
 
 	:find 可以直接查找文件打开
 		需要设置路径 set path+=xxx/**  包含子目录
+
+	如何写入root权限文件
+		:w !sudo tee % > /dev/null
 	
 netrw:
 	vim自带目录插件，利用:e. 或者：E(进入当前修改文件的目录）进入，还可以读写网络文件
 		见vimcast theme15
 		:Sex :Vex :sp. :vs. 直接打开目录新buffer
-
 	
+动作命令
+	:h motion.txt
+	j k l h 移动上下左右，但是gj gk gl gh可以在一行wrap到第二行的时候
+		移动一个屏幕航而不是实际航
+	w b 移动到单词开头，e be 移动到单词结尾
+		对应大写字母会把非空白都当成单词一部分，包括符号标点
+		( { 跳转到上一句 或上一段开头
+	f F t T
+	/查找， 可以和d配合 如 d/ta<cr> 可以删除知道ta出现的地方
+	visual 中：
+		vi} -> a] -> i" -> at( xml tag）
+	daw diw caw diw   das(sentence) dap(paragraph) a会附带删除一个空格，
+	`` 上次跳转位置
+	`. 上次修改位置
+	`< `> 上次高亮位置
+	`^上次插入位置
+	`[ `] 上次修改复制位置
+	在ex模式中`换成'
+	修改匹配的括号的时候，最好先%跳转到另一个，修改好了，``返回
+	tpopt/vim-surround 可以用来添加选定文字周围括号，双引等
+
+跳转
+	ctrl-i 向前跳转， 和tab是一样的注意！！！, ctrl-o跳转向后
+	g; g, 用来在改变列表中跳转
+	gi 进入上次插入的地方，然后修改模式进入， 不进入的话用`^
+	gf 跳转指定名字的到对应文件处, 具体路径是set path可以查看，添加
+	:grep :vimgrep /xxx/ g j 
+		后者然后利用cl 显示 cc [count] 跳转， cn [count] 相对跳转到
+			对应的位置
