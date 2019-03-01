@@ -1,0 +1,156 @@
+normal mode
+S   删除一行然后编辑模式
+C	删除到行尾然后编辑模式
+@:  执行上次 command命令
+&	执行上次替换命令
+@x  执行宏 x代表qx的时候宏的按键
+cd %:h 可以跳转到当前打开文件的目录
+[count]ctrl-a [count]ctrl-x
+set nrformats=   是的默认数字加减不是八进制的
+gU gu g~ 用于大小写翻转，后面跟返回 如aw or gUU
+ga  显示当前字符的编码
+= > < 用于平移， ==为自动缩进
+[count]!!用命令结果替换count行
+gR R 前者遇到tab不会产生缩进，后者会，尽量用前者
+
+insert mode
+ctrl-h  backspace
+ctrl-w  delete a word
+ctrl-u  delete to head of line
+ctrl-o  switch into normal mode for just one comand and switch back
+what is your name?
+ctrl-r{registers}  插入寄存器的内容
+ctrl-rctrl-p{registers}  插入寄存器的内容,更智能缩进分析
+ctrl-r=3+15 可以写入计算结果
+ctrl-v u{hex} 可以输入unicode, 利用ga获取具体的hex
+ctrl-v {xxx} 直接输入字符 三位需要
+ctrrl-v{tab} 会输出tab 不管expandtab设置与否
+ctrl-k{char}{char} 输出由两个字符组成的字符, :h digraph-default
+
+插件：
+commentary.vim   利用 \\ap  \\\ 来注释一个段落或者一行
+textobj-entire   利用ae替代 ggG 所表示的全文 \\ae
+
+
+vitual mode
+viw vaw vit  选中一个word， 或者包括外部空格，或者tag内的部分
+gv 选中上次选中的部分
+
+help:
+:h filename-modifier 文件名相关修饰
+:h cmdline-special
+
+ex mode:
+:2d  删除2行
+:2,3p print2 3行
+:%p print所有行
+:/xxx/+n,/yyy/-np
+1 fist line, $ last line, 0 before first line
+. current line, 'm  包含标记m的行, '<  '> virsual start /end
+% whole file
+:t/:co/:copy  复制， :6t. 把第六行复制到当前底下, 读作to
+					:t6  当前行复制到6行底下
+:m  移动 
+
+:normal 执行normal模式下的指令， 可以:%normal i// 来给所有行加注释
+									或者ctrl-v 4j I //
+:@:  repeat last ex command
+:@@  repeat last @xxx command
+ctrl-o ctrl-i jump list create by :bn :bp :bf(first) :bl(last) b{num}
+	set wildmode=longest,list //bash like
+
+	set wildmenu  // zsh like
+	set wildmode=full  
+:ctrl-r ctrl-w/a  可以插入当前文本单词在ex中
+	同时如果之前搜索过，或者按了*,那么替换的时候可以留空原词
+:ctrl-r % 可以填充当前文件名
+: 或者/之后，可以按ctrl-p ctrl-n来遍历前后的命令历史
+q: q/可以开一个窗口查看之前的：以及/的命令
+	ctrl-f 可以命令行编辑切换到命令行窗口编辑
+两命令结合 w | on
+:q quit the current window
+:shell exit 启动shell内置，如果终端不支持作业的话
+:r !ls 可以读入命令结果
+:w !sh 可以逐行执行文本命令
+	:h rename-files
+!! or :{range}! 可以把范围内作为命令输入，然后结果输出到范围上
+	或者V模式选中然后！， 或者 !2+ 这种选中一下两行
+
+about-files:
+	:ls   list buffers
+	:args  list args, the same as buffes some time
+		:args **/*.js **/*.asp
+		:args `shell command`  :h backtick-expansion
+		use :next :prev to traverse(in unpaired.vim, use [a ]a)
+	<c-^>  switch between current file and alternative file, tagged with '#'
+	:bufdo  bd[elete]  num num num... or 4,10bd
+		use :bnext :bprev to traverse(in unpaired.vim, use [b ]b)
+	通配 :h wildcard :h starstar-wildcard
+		* 匹配当前目录
+		**/* 匹配所有目录
+	:set hidden 可以不保存就切换缓冲区
+	:e! 可以重新载入磁盘，取消修改
+	:qa!  cancel all modification
+	:wa   store all modification
+	:wn		write current and start edit the next file
+		or :argdo write
+	:vs filename :sp filename
+	<c-w>c == :close
+	<c-w>o == :on[ly]
+	:h window-resize
+		<c-w>=  equal siez
+		<c-w>_  expand max current
+		<c-w>|  expand max current vertically
+
+	:tabedit  每个tag有多个窗口，lcd切换窗口路径 :windo lcd 切换整个
+		tag口的路径
+		<c-w>T 移动当前窗口到新的tab
+		:tabn[ext] [N]  or [N]gt
+		:tabm[ove] [N] move当前tab到第几个，默认最后一个
+
+	:e %:h<tab> 可以打开当前活动窗口文件目录的遍历
+		:e %% 也会扩展为目录
+		:e 不存在的路径之后
+			:!mkdir -p %:h [%%]
+			:w
+
+	:find 可以直接查找文件打开
+		需要设置路径 set path+=xxx/**  包含子目录
+
+	如何写入root权限文件
+		:w !sudo tee % > /dev/null
+	
+netrw:
+	vim自带目录插件，利用:e. 或者：E(进入当前修改文件的目录）进入，还可以读写网络文件
+		见vimcast theme15
+		:Sex :Vex :sp. :vs. 直接打开目录新buffer
+	
+动作命令
+	:h motion.txt
+	j k l h 移动上下左右，但是gj gk gl gh可以在一行wrap到第二行的时候
+		移动一个屏幕航而不是实际航
+	w b 移动到单词开头，e be 移动到单词结尾
+		对应大写字母会把非空白都当成单词一部分，包括符号标点
+		( { 跳转到上一句 或上一段开头
+	f F t T
+	/查找， 可以和d配合 如 d/ta<cr> 可以删除知道ta出现的地方
+	visual 中：
+		vi} -> a] -> i" -> at( xml tag）
+	daw diw caw diw   das(sentence) dap(paragraph) a会附带删除一个空格，
+	`` 上次跳转位置
+	`. 上次修改位置
+	`< `> 上次高亮位置
+	`^上次插入位置
+	`[ `] 上次修改复制位置
+	在ex模式中`换成'
+	修改匹配的括号的时候，最好先%跳转到另一个，修改好了，``返回
+	tpopt/vim-surround 可以用来添加选定文字周围括号，双引等
+
+跳转
+	ctrl-i 向前跳转， 和tab是一样的注意！！！, ctrl-o跳转向后
+	g; g, 用来在改变列表中跳转
+	gi 进入上次插入的地方，然后修改模式进入， 不进入的话用`^
+	gf 跳转指定名字的到对应文件处, 具体路径是set path可以查看，添加
+	:grep :vimgrep /xxx/ g j 
+		后者然后利用cl 显示 cc [count] 跳转， cn [count] 相对跳转到
+			对应的位置
