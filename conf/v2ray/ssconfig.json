@@ -16,7 +16,7 @@
     "settings": {
         "servers":[
             {
-                "address":"66.175.219.81",
+                "address":"",
                 "method": "aes-256-cfb",
                 "ota": true,
                 "password": "03084f3143c3fca3d7483ab4f4bef566",

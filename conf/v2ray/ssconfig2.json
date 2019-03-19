@@ -20,26 +20,64 @@
                 "port": ,
                 "users":  [
                     {
-                        "id":"289838e1-7148-443e-92b1-10cdd858add5",
+                        "id":"b89f5f8c-ec43-4093-a409-ceaea50e550f",
                         "alterId": 64
                     }
                 ]
             }
         ]
+      },
+ "streamSettings":{
+      "network":"mkcp",
+      "kcpSettings": {
+        "mtu": 1350,
+        "tti": 20,
+        "uplinkCapacity": 5,
+        "downlinkCapacity": 100,
+        "congestion": false,
+        "readBufferSize": 1,
+        "writeBufferSize": 1,
+        "header": {
+          "type": "none"
+        }
       }
-   },
+    }
+   }, 
 "outboundDetour": [
     {
       "protocol": "freedom",
       "settings": {},
       "tag": "direct" 
+    },
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "adblock" 
     }
   ],
   "routing": {
-    "strategy": "rules"，
+    "strategy": "rules",
     "settings": {
       "domainStrategy": "IPIfNonMatch",
       "rules": [
+        {
+          "domain": [
+            "tanx.com",
+            "googeadsserving.cn"
+          ],
+          "type": "field",
+          "outboundTag": "adblock"       
+        },
+        {
+          "domain": [
+            "microsoft.com",
+            "jd.com",
+            "youku.com",
+            "baidu.com"
+          ],
+          "type": "field",
+          "outboundTag": "direct"
+        },
         {
           "type": "chinasites",
           "outboundTag": "direct"
@@ -50,5 +88,5 @@
         }
       ]
     }
-  }
+  } 
 }
