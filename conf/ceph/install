@@ -11,3 +11,6 @@ ceph
 		just apt-get install ./*.deb 
 		or before it type dpkg -AR . to record info
 
+	python deps:
+		consul functools ipaddr retry rtslib-fb netifaces python2-pythondialog pexpect requests
+
