@@ -1,5 +1,6 @@
 config network, reset net.ifnames=0 biosdevname=0 to default/grub and update-grub
 install openssh-server
+do squash root's script s6 and s7
 
 kernel use petasan's /proc/config.gz to export
 	make xxxconfig O=
