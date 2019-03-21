@@ -1,0 +1,13 @@
+kernel use petasan's /proc/config.gz to export
+	make xxxconfig O=
+	make O= -j2
+	then make bindeb-pkg -j2
+
+ceph
+	you can do cmake 
+	or just dpkg-buildpackage -jxxx (will build 2 times, because debug package will be built)
+
+	install:
+		just apt-get install ./*.deb 
+		or before it type dpkg -AR . to record info
+
