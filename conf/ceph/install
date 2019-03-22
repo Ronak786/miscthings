@@ -1,12 +1,41 @@
+build:
+	in cmake file list
+		set option with lz4, or with_lz4=on in debian/rules
 config network, reset net.ifnames=0 biosdevname=0 to default/grub and update-grub
 install openssh-server
 
 do squash root's script s6 and s7, but disable console.service and delete aptsource, and install services in it!!
+	netcat-traditional
+	vlan
+	atop
+	sysstat
+	attr
+	javascript-common
+	libapache2-mod-wsgi
+	smartmontools
 	graphite-carbon
+	graphite-api
+	graphite-web
+	ntpdate
 	apache2
 	collectd-core
+	collectd
+	collectd-utils
+	collectl
+	dialog
+	python-django
+	python-epydoc
+	python-rtslib-fb
+	targetcli
+	sdparm
+	fio
 	grafana from website
 	glusterfs-server
+	install consul (static download from website)
+
+config:
+	touch /var/lib/apache2/module/enabled_by_maint/wsgi
+	touch /var/lib/apache2/conf/enabled_by_maint/javascript-common
 
 kernel use petasan's /proc/config.gz to export
 	make xxxconfig O=
