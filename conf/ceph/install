@@ -1,6 +1,12 @@
 config network, reset net.ifnames=0 biosdevname=0 to default/grub and update-grub
 install openssh-server
+
 do squash root's script s6 and s7, but disable console.service and delete aptsource, and install services in it!!
+	graphite-carbon
+	apache2
+	collectd-core
+	grafana from website
+	glusterfs-server
 
 kernel use petasan's /proc/config.gz to export
 	make xxxconfig O=
