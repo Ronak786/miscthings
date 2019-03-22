@@ -1,4 +1,5 @@
 build:
+	in install_dep, comment gcc 5 check
 	in cmake file list
 		set option with lz4, or with_lz4=on in debian/rules
 config network, reset net.ifnames=0 biosdevname=0 to default/grub and update-grub
@@ -22,10 +23,15 @@ do squash root's script s6 and s7, but disable console.service and delete aptsou
 	collectd
 	collectd-utils
 	collectl
+	libcollectdclient1
 	dialog
 	python-django
 	python-epydoc
 	python-rtslib-fb
+	python-simplejson
+	python-tz
+	python-pyparsing
+	python-urwid
 	targetcli
 	sdparm
 	fio
