@@ -11,30 +11,31 @@ do squash root's script s6 and s7, but disable console.service and delete aptsou
 	atop
 	sysstat
 	attr
-	javascript-common
+	apache2
 	libapache2-mod-wsgi
+	javascript-common
 	smartmontools
 	graphite-carbon
 	graphite-api
 	graphite-web
 	ntpdate
-	apache2
 	collectd-core
 	collectd
 	collectd-utils
 	collectl
-	libcollectdclient1
+#	libcollectdclient1
 	dialog
-	python-django
+#	python-django
 	python-epydoc
 	python-rtslib-fb
-	python-simplejson
-	python-tz
+#	python-simplejson
+#	python-tz
 	python-pyparsing
 	python-urwid
 	targetcli
 	sdparm
 	fio
+
 	grafana from website
 	glusterfs-server
 	install consul (static download from website)
