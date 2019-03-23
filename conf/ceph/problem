@@ -9,3 +9,5 @@ glusterfs:
 	modify create command add force to allow create on rootdir
 	gluster vol set gfs-vol  nfs.disable true have multiple
 		label name bug !!!
+
+apache , set envar file's fileopen to max in case of file open too much
