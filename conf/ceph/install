@@ -49,6 +49,7 @@ do squash root's script s6 and s7, but disable console.service and delete aptsou
 #	python-tz
 	python-pyparsing
 	python-urwid
+	retry
 	targetcli
 	sdparm
 	fio
@@ -56,6 +57,9 @@ do squash root's script s6 and s7, but disable console.service and delete aptsou
 	grafana from website
 	glusterfs-server
 	install consul (static download from website)
+
+pip install
+	consul pexpect python2-pythondialog retry
 
 config:
 	touch /var/lib/apache2/module/enabled_by_maint/wsgi
