@@ -1,9 +1,26 @@
+debug:
+	set logger.setlever to debug
 build:
-	in install_dep, comment gcc 5 check
-	in cmake file list
-		set option with lz4, or with_lz4=on in debian/rules
+	ceph:
+		in install_dep, comment gcc 5 check
+		in cmake file list
+			set option with lz4, or with_lz4=on in debian/rules
+		you can do cmake 
+		or just dpkg-buildpackage -jxxx (will build 2 times, because debug package will be built)
+	kernel:
+		kernel use petasan's /proc/config.gz to export
+			make xxxconfig O=
+			make O= -j2
+			then make bindeb-pkg -j2
+			then install kernel
+
 config network, reset net.ifnames=0 biosdevname=0 to default/grub and update-grub
+ stop ufw and networkManager
 install openssh-server
+install pip using
+	first sudo easy_install pip==9.0.1
+	then sudo pip install pip -U
+	remember sudo !!, now pip can be used
 
 do squash root's script s6 and s7, but disable console.service and delete aptsource, and install services in it!!
 	netcat-traditional
@@ -27,7 +44,7 @@ do squash root's script s6 and s7, but disable console.service and delete aptsou
 	dialog
 #	python-django
 	python-epydoc
-	python-rtslib-fb
+	python-rtslib
 #	python-simplejson
 #	python-tz
 	python-pyparsing
@@ -44,20 +61,15 @@ config:
 	touch /var/lib/apache2/module/enabled_by_maint/wsgi
 	touch /var/lib/apache2/conf/enabled_by_maint/javascript-common
 
-kernel use petasan's /proc/config.gz to export
-	make xxxconfig O=
-	make O= -j2
-	then make bindeb-pkg -j2
-	then install kernel
 
-ceph
-	you can do cmake 
-	or just dpkg-buildpackage -jxxx (will build 2 times, because debug package will be built)
+kernel install: install debs
+ceph install:
+	just apt-get install ./*.deb 
+	or before it type dpkg -AR . to record info
 
-	install:
-		just apt-get install ./*.deb 
-		or before it type dpkg -AR . to record info
+petasan debs install
 
-	python deps:
-		consul functools ipaddr retry rtslib-fb netifaces python2-pythondialog pexpect requests
+REMEMBER REMODIFY GRUB FOR KERNEL!!
 
+run  do.sh for ssh and service config
+	if debug, modify build.py's debug level
