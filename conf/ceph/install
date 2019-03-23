@@ -44,7 +44,7 @@ do squash root's script s6 and s7, but disable console.service and delete aptsou
 	dialog
 #	python-django
 	python-epydoc
-	python-rtslib
+	python-rtslib ?? need 2.2 sle version, copy from src iso
 #	python-simplejson
 #	python-tz
 	python-pyparsing

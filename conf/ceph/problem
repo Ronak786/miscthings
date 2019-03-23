@@ -1,0 +1,9 @@
+solved:
+consul version too high
+	need modify connect's arguments (including self!!!)
+
+rbdblock:
+	use iso's rtslib version
+
+glusterfs:
+	modify create command add force to allow create on rootdir
