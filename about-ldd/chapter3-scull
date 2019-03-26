@@ -1,7 +1,81 @@
+techniques:
+	test memory : cp /dev/zero /dev/scull0  use all mem
+				  dd /dev/zero /dev/scull0  use specified mem
+				  
+headers:
+	#include <linux/cdev.h>
+	#include <linux/fs.h>
+	#include <linux/slab.h>  kmalloc/kfree(pass NULL is legal)
+	#include <asm/uaccess.h> copy_*_user funcs
+
 device number:
 	#include <linux/kdev_t.h>
 	MKDEV(major, minor),   MAJOR(dev_t dev) MINOR(dev_t dev)
 
-register: success 0 , otherwise error
+alloc chardev number: success 0 , otherwise error
 	#include <linux/fs.h>
 	register_chrdev_region(dev_t first, uint count, char *name);
+	alloc_chrdev_retion(*first, firstminor, count, char *name); dynamically alloc devnum
+		solution: make a param, if not set devnum, use alloc, other use static register
+
+	unregister_chrdev_region(dev_t first, count);
+
+file_operation: different methods will behave differently when set to null, see ldd Page.57
+	struct module *owner = THIS_MODULE
+	if null:
+		llseek : undefined, so should set to noseek;
+		read : -EINVALID
+		aio_read : == read
+		write: -EINVALID
+		aio_write ??
+			copy_to/from_user:read/write use copy_to/from_user to access user buf, as userbuf will be paged fault,
+				you can use __copy_... funcs if you have checked user pointer isn't invalid.
+				if copy not complete, return bytes remains to be copied, otherwise return 0
+			read/write return bytes success tranferred, and the second call return the last occurred error
+		readdir ??
+		poll : always not block
+		ioctl : -ENOTTY
+		mmap : -ENODEV
+		open : always open success
+			1 assign your own fops according to cdev's ops(or others if needed)
+			  cdev available in inode->i_cdev or file->f_dentry->inode->i_cdev
+			  if cdev embeded in your own struct, use container to get it, save in file->private_data
+			2 check assess mode using  file->f_flags like O_WRONLY and trim your device if needed
+
+		flush : ignore, (do when forked fd is closed use close(), used to wait for operations done)
+		release :(last forked fd close, call this) always success
+			release resource allocated in open() syscall
+			close device if last instance fd
+		fsync: -EINVALID
+		aio_fsync: like fsync
+		fasync: a flag tell FASYNC flag is changing
+		lock : ignore
+		readv: writev:  use read/write instead
+		sendfile sendpage: just ignore
+		getunmappedarea: just ignore
+		check_flag: called when fcntl(F_SETFL...) is called to check
+		dir_notify : called when dir notify called using fcntl
+
+struct file: represent a file descriptor of opening of a file
+		f_mode  read/write like 0777 0666...
+		f_pos  loff_t 64bit
+		f_flags   blocking nonblock rdonly ....... in <linux/fcntl.h>
+		f_ops   above...
+		private_data   init to null before open syscall of module, and should clean to null in release
+		f_dentry:   file->f_dentry->d_inode to access inode
+	
+struct inode:
+		i_rdev    dev num
+		i_cdev		if char dev, pointer to struct cdev
+		get major minor from struct inode:
+			imajor(struct inode *inode);
+			iminor(struct inode *inode);
+
+struct cdev: add after get dev num
+		add:
+			cdev_alloc() -> ptr to cdev
+			cdev_init(cdev, fops);
+			cdev_add(cdev, num, count)   may fail, should check
+
+		del:
+			cdev_del(cdev) then unregister_chrdev_region
