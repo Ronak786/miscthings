@@ -1,0 +1,76 @@
+kenrel build prerequests:
+	Documentation/Changes
+big local var is not recommended, as kernel stack is small and shared by all kernel space, malloc recommended
+
+common makefile of module:
+"""
+ifneq($(KERNELRELEASE),)
+obj-m := hello.o
+else
+#	KERNDIR ?= /lib/modules/$(shell uname -r)/build
+KERNDIR ?= ${KERNDIR}
+PWD := $(shell pwd)
+default:
+	$(MAKE) -C $(KERNDIR) M=$(PWD) modules
+endif
+"""
+
+module version is releated to vermagic.h
+	kernel version releated macros:  UTS_RELEASE "2.6.10"   LINUX_VERSION_CODE 0x02060a   KERNEL_VERSION(major,minor,release)  be used to judge kernel version, and shoud be put in headers to hide detail
+
+
+export symbol:
+	EXPORT_SYMBOL
+	EXPORT_SYMBOL_GPL only module declared as gpl can use this symbol
+
+default include headers:
+	required:
+	<linux/init.h>
+	<linux/module.h>
+
+	optional:
+	<linux/moduleparam.h>  #used to declare param of module
+		module_param(var, type[int,charp...], S_IRUGO[for sysfs]), if string has space, should passed as   var='"xxx xxx"'
+			as ' ' eaten by shell and " " passed to kernel
+		module_param_array(name, type, ptr to number or NULL[overwrited by user specific number], perm)
+			array passed as  1,2,3,4,5
+		
+		permission in <linux/stats>  s_irugo|s_iwugo ... 0 for no show in sysfs
+	<linux/errno.h>  #used to get -ENODEV ...
+
+license: default put at the end of module
+	MODULE_LICENSE if not use, kernel is tainted
+	MODULE_VERSION
+	MODULE_AUTHOR
+	MODULE_DESCRIPTION
+	MODULE_DEVICE_TABLE
+	MODULE_ALISE
+	MODULE_PARM_DESC()  describe param of module
+
+
+init and exit:
+	__init __initdata used to tell kernel after init func is called, these functions can be free and save memory
+	module__init, required, otherwise kernel can not find init function after insmod
+
+	__exit__ only used when configured as module, if builtin, just abandoned(!!!)
+	module_exit, required, otherwise kernel can not be rmmod
+
+release resource when fail:
+	1. use goto, in reverse order
+	2. use a seperate cleanup func, but should check every object's state before doing cleaning on it
+
+	attention:
+		should not export register resources before fully init, 
+		if you register dev, even before init complete, other subsystem will use your function
+
+print_functions:
+	printk(KERN_ERR ...)
+	printk(KERN_CONT ...) every newline is output at beginning of every printk,  this will suspend the \n
+	printk_once() only print once
+	#include <kernel/ratelimite.h>
+	printk_ratelimited(...) no more than 10 times every 5s
+
+techneques:
+	find syscalls: grep sys_
+	find exported symbols: grep EXPORT_SYMBOL
+	find register functions of different drivers: grep register_
