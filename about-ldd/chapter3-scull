@@ -32,6 +32,13 @@ file_operation: different methods will behave differently when set to null, see 
 				you can use __copy_... funcs if you have checked user pointer isn't invalid.
 				if copy not complete, return bytes remains to be copied, otherwise return 0
 			read/write return bytes success tranferred, and the second call return the last occurred error
+			error return -errno, user see -1 and use perror to get errno
+
+			fread will keep reading until error or count is satisfied, 0 means end of file
+
+			implement:
+				every read, you can just return data align to a boundary, this simplify the transfer function!!
+				do not forget to update file size after a overboudary write
 		readdir ??
 		poll : always not block
 		ioctl : -ENOTTY

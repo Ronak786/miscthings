@@ -1,0 +1,1 @@
+cmd_/home/sora/gitbase/miscthings/about-ldd/source/scull/hello.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/sora/gitbase/miscthings/about-ldd/source/scull/hello.ko /home/sora/gitbase/miscthings/about-ldd/source/scull/hello.o /home/sora/gitbase/miscthings/about-ldd/source/scull/hello.mod.o
