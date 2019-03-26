@@ -37,6 +37,14 @@ default include headers:
 		
 		permission in <linux/stats>  s_irugo|s_iwugo ... 0 for no show in sysfs
 	<linux/errno.h>  #used to get -ENODEV ...
+	<kernel/ratelimite.h> for printk_ratelimited
+	<linux/sched.h>   for sleep and schedule functions
+	<linux/version.h>  for version related infos
+
+useful vars:
+	current->comm: command name
+	current->pid:  command pid
+	obj-m: build as module
 
 license: default put at the end of module
 	MODULE_LICENSE if not use, kernel is tainted
@@ -46,10 +54,12 @@ license: default put at the end of module
 	MODULE_DEVICE_TABLE
 	MODULE_ALISE
 	MODULE_PARM_DESC()  describe param of module
+	MODULE_ALISE(name)  another name
 
 
 init and exit:
-	__init __initdata used to tell kernel after init func is called, these functions can be free and save memory
+	__initdata __exitdata used on vars instead of funcs
+	__init  used to tell kernel after init func is called, these functions can be free and save memory
 	module__init, required, otherwise kernel can not find init function after insmod
 
 	__exit__ only used when configured as module, if builtin, just abandoned(!!!)

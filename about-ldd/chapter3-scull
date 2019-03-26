@@ -1,0 +1,7 @@
+device number:
+	#include <linux/kdev_t.h>
+	MKDEV(major, minor),   MAJOR(dev_t dev) MINOR(dev_t dev)
+
+register: success 0 , otherwise error
+	#include <linux/fs.h>
+	register_chrdev_region(dev_t first, uint count, char *name);
