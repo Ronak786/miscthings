@@ -70,6 +70,10 @@ print_functions:
 	#include <kernel/ratelimite.h>
 	printk_ratelimited(...) no more than 10 times every 5s
 
+userpace_module:
+	with help of kernel export file from tmpfs, do other job in usespace
+	eg. libusb project
+
 techneques:
 	find syscalls: grep sys_
 	find exported symbols: grep EXPORT_SYMBOL
