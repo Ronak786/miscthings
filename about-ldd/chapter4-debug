@@ -88,3 +88,45 @@ gdb
 			print *(addr) this will show that addr's file and line
 
 
+
+lock:
+	mutex
+	semaphore:
+		declare_mutex(for mutex)
+		sema_init      
+		down/down_interruptible/down_trylock : most used interruptible,  trylock will only return can or cannot(nonzero)
+		up
+
+	rwsem: read write semaphore
+		down_read uninterruptible
+		down_read_trylock  success return nonzero, will return immediately
+		up_read
+
+		down_write
+		down_write_trylock
+		up_write
+		downgrade_write
+
+	completion: a wait and notify mechanism
+		wait_for_completion
+		wait_for_completion_interruptible
+		complete_all
+		complete
+		complete_and_exit-> wait complete and exit thread
+
+	spinlock: will not sleep, continue waiting until lock is available
+			kernel will disable preempt on current cpu if spinlock is locked,
+			and developer should make sure code in lock is atomic and can not sleep(like copy from user,kmalloc)
+		spin_lock_init
+		spin_lock  will not disable irq, if you make sure irq will not use that spinlock ,use this is better
+		spin_unlock
+		spin_lock_irqsave
+		spin_lock_irqrestore
+
+		usually method:
+			spin_lock_irqsave(&xxx_lock, flags);
+			... critical section here ..
+			spin_unlock_irqrestore(&xxx_lock, flags);
+
+	rw_lock:
+		spinlock rw version, if not much benefit, just use spinlock
