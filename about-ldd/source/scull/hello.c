@@ -223,8 +223,6 @@ static int scull_open (struct inode *inode, struct file *file) {
 }
 
 static int scull_release (struct inode *inode, struct file *file) {
-	char *ptr = NULL;
-	PDEBUG("hehe %d\n", (int)*ptr);
 	PDEBUG("we are in %s\n", __FUNCTION__);
 	return 0;
 }

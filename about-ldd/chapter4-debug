@@ -64,3 +64,27 @@ oops:
 	open kallsym, will see which function ,which instruction failed
 	if you see on data in stack repeated occurred, may be a buffer addr passed
 		across multiple calls
+
+hang:
+	insert schedule() func in driver to detect which place is hanging
+
+sysrq:
+	use /proc/sysrq-trigger  to trigger
+	    /proc/sys/kernel/sysrq
+
+readprofile
+	kernel cmdline: profile=2 , then readprofile
+oprofile
+	have userspace util and shoud config kernel option
+
+LTTng:
+	super powerful  kernel and system tracing tool
+
+gdb
+	gdb   vmlinux  /proc/kcore  
+		see inside a dump of core dynamically, but can not modify
+		
+		commands:
+			print *(addr) this will show that addr's file and line
+
+
