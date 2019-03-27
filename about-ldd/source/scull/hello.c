@@ -6,9 +6,30 @@
 #include <linux/moduleparam.h>
 #include <linux/cdev.h>
 #include <linux/fs.h>
+#include <linux/proc_fs.h>
 #include <asm/uaccess.h>   // copy_*_user funcs
 #include <linux/slab.h>
 #include <linux/sched.h>
+#include <linux/seq_file.h>
+
+#if 0
+#undef PDEBUG             /* undef it, just in case */
+#ifdef SCULL_DEBUG
+#  ifdef __KERNEL__
+     /* This one if debugging is on, and kernel space */
+#    define PDEBUG(fmt, args...) printk( KERN_DEBUG "scull: " fmt, ## args)
+#  else
+     /* This one for user space */
+#    define PDEBUG(fmt, args...) fprintf(stderr, fmt, ## args)
+#  endif
+#else
+#  define PDEBUG(fmt, args...) /* not debugging: nothing */
+#endif
+
+#undef PDEBUGG
+#define PDEBUGG(fmt, args...) /* nothing: it's a placeholder */
+#endif
+#    define PDEBUG(fmt, args...) printk( KERN_DEBUG "scull: " fmt, ## args)
 
 MODULE_AUTHOR("muryliang");
 MODULE_LICENSE("Dual BSD/GPL");
@@ -48,11 +69,13 @@ static void scull_device_cleanup(struct scull_dev*);
 static int scull_setup_cdev(struct scull_dev *dev, int idx);
 static void scull_trim(struct scull_dev *);
 struct scull_qset *scull_follow(struct scull_dev *dev, int n);
+static void scull_create_proc(void);
+static void scull_remove_proc(void);
 
 static loff_t scull_llseek (struct file * file, loff_t pos, int where) {
 	struct scull_dev *dev = file->private_data;
 	loff_t newpos;
-	printk(KERN_ALERT "we are in %s\n", __FUNCTION__);
+	PDEBUG("we are in %s\n", __FUNCTION__);
 
 	switch(where) {
 		case 0:
@@ -82,13 +105,13 @@ static ssize_t scull_read (struct file * file, char __user * buf, size_t size, l
 	ssize_t retval = 0;
 
 	if (mutex_lock_interruptible(&dev->mutex)) {
-		printk(KERN_ALERT "can not lock mutex for pid %d\n", current->pid);
+		PDEBUG("can not lock mutex for pid %d\n", current->pid);
 		return -ERESTARTSYS;
 	}
-	printk(KERN_ALERT "we are in %s\n", __FUNCTION__);
+	PDEBUG("we are in %s\n", __FUNCTION__);
 	// adjust read pos and size
 	if (*pos >= dev->size) {
-		printk(KERN_ALERT "pos >= size %ld\n", dev->size);
+		PDEBUG("pos >= size %ld\n", dev->size);
 		goto out;
 	}
 	//this will limite size read after write
@@ -115,7 +138,7 @@ static ssize_t scull_read (struct file * file, char __user * buf, size_t size, l
 	}
 	*pos += size;
 	retval = size;
-	printk(KERN_ALERT "success read size %ld\n", size);
+	PDEBUG("success read size %ld\n", size);
 
 out:
 	mutex_unlock(&dev->mutex);	
@@ -131,11 +154,11 @@ static ssize_t scull_write (struct file *file, const char __user *buf, size_t si
 	ssize_t retval = -ENOMEM;
 
 	if (mutex_lock_interruptible(&dev->mutex)) {
-		printk(KERN_ALERT "can not lock mutex in write\n");
+		PDEBUG("can not lock mutex in write\n");
 		return -ERESTARTSYS;
 	}
 
-	printk(KERN_ALERT "we are in %s\n", __FUNCTION__);
+	PDEBUG("we are in %s\n", __FUNCTION__);
 
 	item = (long)*pos / itemsize;
 	rest = (long)*pos % itemsize;
@@ -148,7 +171,7 @@ static ssize_t scull_write (struct file *file, const char __user *buf, size_t si
 	if (!dptr->data) {
 		dptr->data = kmalloc(qset * sizeof(char*), GFP_KERNEL);
 		if (!dptr->data) {
-			printk(KERN_ALERT "can not alloc qsets\n");
+			PDEBUG("can not alloc qsets\n");
 			goto out;
 		}
 		memset(dptr->data, 0, qset * sizeof(char*));
@@ -156,7 +179,7 @@ static ssize_t scull_write (struct file *file, const char __user *buf, size_t si
 	if (!dptr->data[s_pos]) {
 		dptr->data[s_pos] = kmalloc(quantum, GFP_KERNEL);
 		if (!dptr->data[s_pos]) {
-			printk(KERN_ALERT "can not alloc in a qset\n");
+			PDEBUG("can not alloc in a qset\n");
 			goto out;
 		}
 	}
@@ -181,14 +204,14 @@ out:
 }
 
 static long scull_ioctl (struct file *file, unsigned int cmd, unsigned long arg) {
-	printk(KERN_ALERT "we are in %s\n", __FUNCTION__);
+	PDEBUG("we are in %s\n", __FUNCTION__);
 	return 0;
 }
 
 static int scull_open (struct inode *inode, struct file *file) {
 	struct scull_dev *dev;
 
-	printk(KERN_ALERT "we are in %s\n", __FUNCTION__);
+	PDEBUG("we are in %s\n", __FUNCTION__);
 	dev = container_of(inode->i_cdev, struct scull_dev, cdev);
 	file->private_data = dev;
 
@@ -200,7 +223,9 @@ static int scull_open (struct inode *inode, struct file *file) {
 }
 
 static int scull_release (struct inode *inode, struct file *file) {
-	printk(KERN_ALERT "we are in %s\n", __FUNCTION__);
+	char *ptr = NULL;
+	PDEBUG("hehe %d\n", (int)*ptr);
+	PDEBUG("we are in %s\n", __FUNCTION__);
 	return 0;
 }
 
@@ -213,51 +238,6 @@ static struct file_operations scull_ops  = {
 	.open = scull_open,
 	.release = scull_release,
 };
-
-static __init int scull_init(void)
-{
-	int result;
-	int i;
-	dev_t dev;
-
-	// alloc dev numbers
-	if (scullmajor) {
-		dev = MKDEV(scullmajor, scullminor);
-		result = register_chrdev_region(dev, scullnr, scullname);
-	} else {
-		result = alloc_chrdev_region(&dev, scullminor, scullnr, scullname);
-		scullmajor = MAJOR(dev);
-	}
-
-	if (result < 0) {
-		printk(KERN_ALERT "scull: can't get major %d\n",
-				scullmajor);
-		return result;
-	}
-	printk(KERN_ALERT "scull: success register %d\n",
-				scullmajor);
-
-	// alloc mem for private data
-	scull_devices = kmalloc(scullnr * sizeof(struct scull_dev) ,GFP_KERNEL);
-	if (!scull_devices) {
-		result = -ENOMEM;
-		scull_cleanup_module();
-		return result;
-	}
-	memset(scull_devices, 0, scullnr * sizeof(struct scull_dev));
-	for (i = 0; i < scullnr; i++) {
-		scull_devices[i].quantum = scull_quantum;
-		scull_devices[i].qset = scull_qset;
-		mutex_init(&scull_devices[i].mutex);
-		if ((result = scull_setup_cdev(&scull_devices[i], i)) < 0) {
-			printk(KERN_ALERT "error init scull devices %d\n", i);
-			return result;
-		}
-	}
-
-	printk(KERN_ALERT "success add cdev struct\n");
-	return 0;
-}
 
 struct scull_qset *scull_follow(struct scull_dev *dev, int n) {
 	struct scull_qset *qs = dev->data;
@@ -287,7 +267,7 @@ void scull_trim(struct scull_dev *dev) {
 	struct scull_qset *next, *dptr;
 	int qset = dev->qset;
 	int i;
-	printk(KERN_ALERT "trim over\n");
+	PDEBUG("trim over\n");
 
 	for (dptr = dev->data; dptr; dptr = next) {
 		if (dptr->data) {
@@ -312,7 +292,7 @@ int scull_setup_cdev(struct scull_dev *dev, int idx) {
 	result = cdev_add(&dev->cdev, devno, 1);
 	if (result < 0) {
 		scull_cleanup_module();
-		printk(KERN_ALERT "init can not add cdev\n");
+		PDEBUG("init can not add cdev\n");
 		return result;
 	}
 	return 0;
@@ -324,7 +304,7 @@ void scull_device_cleanup(struct scull_dev *dev) {
 	for (i = 0; i < scullnr; i++) {
 		cdev_del(&dev->cdev);
 	}
-	printk(KERN_ALERT "deleting cdev over");
+	PDEBUG("deleting cdev over");
 }
 
 void scull_cleanup_module(void) {
@@ -339,10 +319,183 @@ void scull_cleanup_module(void) {
 	unregister_chrdev_region(devno, scullnr);
 }
 
+// return which device we are going to iterate to show
+static void *scull_seq_start(struct seq_file *s, loff_t *pos) {
+	if (*pos >= scullnr)
+		return NULL;
+	return scull_devices + *pos;
+}
+
+static void *scull_seq_next(struct seq_file *s, void *v, loff_t *pos) {
+	(*pos)++;
+	if (*pos >= scullnr)
+		return NULL;
+	return scull_devices + *pos;
+}
+
+static void scull_seq_stop(struct seq_file *s, void *v) {
+	//
+}
+
+static int scull_seq_show(struct seq_file *s, void *v) {
+	struct scull_dev *dev = (struct scull_dev*) v;
+	struct scull_qset *d;
+	int i;
+
+	if (mutex_lock_interruptible(&dev->mutex)) {
+		PDEBUG("can not lock mutex of dev\n");
+		return -ERESTARTSYS;
+	}
+
+	seq_printf(s, "\nDevice %i: qset %i, q %i, sz %li\n",
+			(int) (dev - scull_devices), dev->qset,
+			dev->quantum, dev->size);
+	for (d = dev->data; d; d = d->next) {
+		seq_printf(s, "  item at %p, qset at %p\n", d, d->data);
+		if (d->data && !d->next) { //last qset
+			for (i = 0; i < dev->qset; i++) {
+				if (d->data[i])
+					seq_printf(s, "    % 4i: %8p\n",
+							i, d->data[i]);
+			}
+		}
+	}
+	mutex_unlock(&dev->mutex);
+	return 0;
+}
+
+static struct seq_operations scull_seq_ops = {
+	.start = scull_seq_start,
+	.stop = scull_seq_stop,
+	.next = scull_seq_next,
+	.show = scull_seq_show,
+};
+
+static int scull_proc_open(struct inode *inode, struct file *file) {
+	return seq_open(file, &scull_seq_ops);
+}
+
+static struct file_operations scull_proc_ops = {
+	.owner = THIS_MODULE,
+	.open = scull_proc_open,
+	.read = seq_read,
+	.llseek = seq_lseek,
+	.release = seq_release,
+};
+
+static int scull_read_mem_proc_show(struct seq_file *m, void *v)
+{
+	int i, j;
+	int limit = m->size - 80; /* Don't print more than this */
+
+	for (i = 0; i < scullnr && m->count <= limit; i++) {
+		struct scull_dev *d = &scull_devices[i];
+		struct scull_qset *qs = d->data;
+		if (mutex_lock_interruptible(&d->mutex))
+			return -ERESTARTSYS;
+		seq_printf(m,"\nDevice %i: qset %i, q %i, sz %li\n",
+				i, d->qset, d->quantum, d->size);
+		for (; qs && m->count <= limit; qs = qs->next) { /* scan the list */
+			seq_printf(m, "  item at %p, qset at %p\n",
+					qs, qs->data);
+			if (qs->data && !qs->next) /* dump only the last item */
+				for (j = 0; j < d->qset; j++) {
+					if (qs->data[j])
+						seq_printf(m,
+								"    % 4i: %8p\n",
+								j, qs->data[j]);
+				}
+		}
+		mutex_unlock(&scull_devices[i].mutex);
+	}
+	return 0;
+}
+
+#define DEFINE_PROC_SEQ_FILE(_name) \
+	static int _name##_proc_open(struct inode *inode, struct file *file)\
+	{\
+		return single_open(file, _name##_proc_show, NULL);\
+	}\
+	\
+	static const struct file_operations _name##_proc_fops = {\
+		.open		= _name##_proc_open,\
+		.read		= seq_read,\
+		.llseek		= seq_lseek,\
+		.release	= single_release,\
+	};
+
+DEFINE_PROC_SEQ_FILE(scull_read_mem)
+
+static void scull_create_proc(void)
+{
+	struct proc_dir_entry *entry;
+	proc_create("scullmem", 0 /* default mode */,
+			NULL /* parent dir */, &scull_read_mem_proc_fops);
+	entry = proc_create("scullseq", 0, NULL, &scull_proc_ops);
+	if (!entry) {
+		printk(KERN_WARNING "proc_create scullseq failed\n");
+    }
+}
+
+static void scull_remove_proc(void)
+{
+	/* no problem if it was not registered */
+	remove_proc_entry("scullmem", NULL /* parent dir */);
+	remove_proc_entry("scullseq", NULL);
+}
+
+static __init int scull_init(void)
+{
+	int result;
+	int i;
+	dev_t dev;
+
+	// alloc dev numbers
+	if (scullmajor) {
+		dev = MKDEV(scullmajor, scullminor);
+		result = register_chrdev_region(dev, scullnr, scullname);
+	} else {
+		result = alloc_chrdev_region(&dev, scullminor, scullnr, scullname);
+		scullmajor = MAJOR(dev);
+	}
+
+	if (result < 0) {
+		PDEBUG("scull: can't get major %d\n",
+				scullmajor);
+		return result;
+	}
+	PDEBUG("scull: success register %d\n",
+				scullmajor);
+
+	// alloc mem for private data
+	scull_devices = kmalloc(scullnr * sizeof(struct scull_dev) ,GFP_KERNEL);
+	if (!scull_devices) {
+		result = -ENOMEM;
+		scull_cleanup_module();
+		return result;
+	}
+	memset(scull_devices, 0, scullnr * sizeof(struct scull_dev));
+	for (i = 0; i < scullnr; i++) {
+		scull_devices[i].quantum = scull_quantum;
+		scull_devices[i].qset = scull_qset;
+		mutex_init(&scull_devices[i].mutex);
+		if ((result = scull_setup_cdev(&scull_devices[i], i)) < 0) {
+			PDEBUG("error init scull devices %d\n", i);
+			return result;
+		}
+	}
+
+	scull_create_proc();
+
+	PDEBUG("success add cdev struct\n");
+	return 0;
+}
+
 static __exit void scull_exit(void)
 {
+	scull_remove_proc();
 	scull_cleanup_module();
-	printk(KERN_ALERT "Goodbye, cruel world\n");
+	PDEBUG("Goodbye, cruel world\n");
 }
 
 module_init(scull_init);

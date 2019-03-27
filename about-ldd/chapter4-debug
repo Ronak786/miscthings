@@ -1,0 +1,66 @@
+open debug configs
+	debug_kernel debug_slab debug_pagealloc debug_spinlock debug_spinlock_sleep init_debug
+	debug_info magic_sysrq debug_stackoverflow debug_stack_usage  kallsym
+	ikconfig ikconfig_proc acpi_debug debug_driver scsi_contants input_evbug profiling
+
+kernel log:
+	/proc/sys/kernel/printk  see man 2 syslog
+		echo 8 > xxx  will make all log show on consol
+
+specify other console to get input:
+	bytes[2] = {11, number of tty you want};
+	ioctl(STDIN_FILENO, TIOCLINUX, bytes);  // not work on fedora28, just for tobe work .....................
+
+printk related:
+	if(printk_ratelimite())
+		do  your print .....
+	config /proc/sys/kernel/printk_ratelimit        interval during output of burst number
+			/proc/sys/kenrel/printk_ratelimit_burst how many can output
+
+	printk should append \n for log flush
+
+	print_dev_t(buf, dev_t dev) / format_dev_t(buffer, dev_t dev)
+		used to format device number in an uniform formal
+
+	dynamic_printk
+
+
+proc read function:
+	#include <linux/proc_fs.h>  for proc_create
+	seq functions:
+	1. proc_create(name, file_operations)
+		ops = { 
+			.open = your_open, in youropen, use single_open(struct file*, your show function, NULL);
+			.read, .lseek = seq read, seq_lseek
+			.release = single_release
+		}
+	2. proc_create(name, file_operations)
+		ops = {
+			.open = seq_open
+				in open, use seq_open(struct  file*, your seq_operations)
+			.read = seq_read
+			.llseek = seq_lseek
+			.release = seq_release
+		} 
+		seq_operations = {
+			.start,  just return start place, maybe first time pos is 0 ??, just add it!!
+			.next, 
+			.stop, 
+			.show
+		}
+
+		in seq_show, use seq_printf, seq_putc seq_puts seq_escape seq_path to do print things
+
+ioctl:
+	used as debug interfaces
+
+track strace:
+	use -e specify which syscall to trace
+	use -t tell time, 
+	use -T tell running time of each syscall
+
+oops:
+	open slab debug, will see non inited data as 0xa5a5a5a5, 
+	open kallsym, will see which function ,which instruction failed
+	if you see on data in stack repeated occurred, may be a buffer addr passed
+		across multiple calls
