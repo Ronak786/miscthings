@@ -89,7 +89,7 @@ gdb
 
 
 
-lock:
+lock: make policy outer func acquire lock and call inner __locked_func
 	mutex
 	semaphore:
 		declare_mutex(for mutex)
@@ -122,6 +122,11 @@ lock:
 		spin_unlock
 		spin_lock_irqsave
 		spin_lock_irqrestore
+		spin_lock_bh just disable bottom half soft interrupt
+		spin_lock_irq   if you make sure only you in THIS line of code will disable and enable irq,
+							you may not save irq flags
+		spin_trylock
+		spin_trylock_bh  this two will try, if success ,return nonzero and locked, otherwise zero
 
 		usually method:
 			spin_lock_irqsave(&xxx_lock, flags);
@@ -130,3 +135,8 @@ lock:
 
 	rw_lock:
 		spinlock rw version, if not much benefit, just use spinlock
+
+
+lock-free:
+	loop buffer:  read index, write index...
+	atomic_t operations
