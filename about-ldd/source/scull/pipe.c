@@ -35,10 +35,11 @@ struct scull_pipe {
 static int scullnr = 3;
 static int scull_p_buffer = 1000;
 static dev_t scull_devno;
+static int major;
 
 static struct scull_pipe *scull_devices;
 
-static int scull_p_fasync(int fd, struct file *filp, int mode);
+//static int scull_p_fasync(int fd, struct file *file, int mode);
 static int spacefree(struct scull_pipe *dev);
 
 static int scull_open(struct inode *inode, struct file *file) {
@@ -56,12 +57,12 @@ static int scull_open(struct inode *inode, struct file *file) {
 		}
 	}
 	dev->buffersize = scull_p_buffer;
-	dev->end = dev->buffersize + dev->buffersize;
+	dev->end = dev->buffer + dev->buffersize;
 	dev->rp = dev->wp = dev->buffer;
 	/* use f_mode,not  f_flags: it's cleaner (fs/open.c tells why) */
-	if (filp->f_mode & FMODE_READ)
+	if (file->f_mode & FMODE_READ)
 		dev->nreaders++;
-	if (filp->f_mode & FMODE_WRITE)
+	if (file->f_mode & FMODE_WRITE)
 		dev->nwriters++;
 	mutex_unlock(&dev->mutex);
 
@@ -71,21 +72,22 @@ static int scull_open(struct inode *inode, struct file *file) {
 static int scull_release(struct inode *inode, struct file *file) {
 	struct scull_pipe *dev = file->private_data;
 
-	scull_fasync(-1, file, 0);
+//	scull_fasync(-1, file, 0);
 	mutex_lock(&dev->mutex);
 	if (file->f_mode & FMODE_READ)
 		dev->nreaders--;
 	if (file->f_mode & FMODE_WRITE)
-		dev->nrwrites--;
-	if (file->nreaders + dev->nwriters == 0) {
+		dev->nwriters--;
+	if (dev->nreaders + dev->nwriters == 0) {
 		kfree(dev->buffer);
 		dev->buffer = NULL;
 	}
 	mutex_unlock(&dev->mutex);
+	return 0;
 }
 
 // only read until end, not wrap in one read
-static int scull_read(struct inode *inode, struct file *file, char __user *buf, size_t count) {
+static ssize_t scull_read(struct file *file, char __user *buf, size_t count, loff_t *pos) {
 	struct scull_pipe *dev = file->private_data;
 
 	if (mutex_lock_interruptible(&dev->mutex))
@@ -101,7 +103,7 @@ static int scull_read(struct inode *inode, struct file *file, char __user *buf, 
 				return -ERESTARTSYS;
 		// check should be in mutex
 		if (mutex_lock_interruptible(&dev->mutex))
-			return -ERESTARTSYS
+			return -ERESTARTSYS;
 	}
 
 	if (dev->wp > dev->rp)
@@ -120,7 +122,7 @@ static int scull_read(struct inode *inode, struct file *file, char __user *buf, 
 
 	// wake up writer if has some one
 	wake_up_interruptible(&dev->outq);
-	PDEBUG("%s di read %i bytes\n", current->comm, count);
+	PDEBUG("%s di read %li bytes\n", current->comm, count);
 	return count;
 }
 
@@ -152,7 +154,7 @@ static int scull_getwritespace(struct scull_pipe *dev, struct file *file) {
 }
 
 // only write until end, not wrap in one write
-static int scull_write(struct inode *inode, struct file *file, char __user *buf, size_t count) {
+static ssize_t scull_write(struct file *file, const char __user *buf, size_t count, loff_t *pos) {
 	struct scull_pipe *dev = file->private_data;
 	int result;
 
@@ -167,7 +169,7 @@ static int scull_write(struct inode *inode, struct file *file, char __user *buf,
 		count = min(count, (size_t)(dev->end - dev->wp));
 	else 
 		count = min(count, (size_t)(dev->rp - dev->wp - 1));
-	PDEBUG("going to accept %i bytes to %p from %p\n", (long)count, dev->wp, buf);
+	PDEBUG("going to accept %li bytes to %p from %p\n", (long)count, dev->wp, buf);
 	if (copy_from_user(dev->wp, buf, count)) {
 		mutex_unlock(&dev->mutex);
 		return -EFAULT;
@@ -181,25 +183,80 @@ static int scull_write(struct inode *inode, struct file *file, char __user *buf,
 
 	if (dev->async_queue)
 		kill_fasync(&dev->async_queue, SIGIO, POLL_IN);
-	PDEBUG("%s did write %i bytes\n", current->comm, count);
+	PDEBUG("%s did write %li bytes\n", current->comm, count);
 	return count;
 
 }
 
+static unsigned int scull_p_poll(struct file *filp, poll_table *wait) {
+	struct scull_pipe *dev = filp->private_data;
+	unsigned int mask = 0;
+
+	mutex_lock(&dev->mutex);
+	poll_wait(filp, &dev->inq, wait);
+	poll_wait(filp, &dev->outq, wait);
+	if (dev->rp != dev->wp)
+		mask |= POLLIN | POLLRDNORM; // not empty,can read
+	if (spacefree(dev)) 
+		mask |= POLLOUT | POLLWRNORM; // can write
+	mutex_unlock(&dev->mutex);
+	return mask;
+}
+
 struct file_operations scull_ops = {
+	.owner = THIS_MODULE,
 	.open = scull_open,
 	.read = scull_read,
 	.write = scull_write,
 	.release = scull_release,
+	.poll = scull_poll,
 };
 
 static __init int pipe_init(void) {
-	
-	PDEBUG("begin init pipe\n");
+	int i;	
+	int ret;
+	int devno;
+
+	// register char dev
+	ret = alloc_chrdev_region(&scull_devno, 0, scullnr, "mypipe");
+	if (ret) {
+		PDEBUG("can not get devno dynamically\n");
+		return -EFAULT;
+	}
+
+	scull_devices = kmalloc(scullnr * sizeof(struct scull_pipe), GFP_KERNEL);
+	if (scull_devices == NULL) {
+		PDEBUG("can not alloc device\n");
+		return -ENOMEM;
+	}
+	memset(scull_devices, 0, scullnr * sizeof(struct scull_pipe));
+	for (i = 0; i < scullnr; i++) {
+		init_waitqueue_head(&scull_devices[i].inq);
+		init_waitqueue_head(&scull_devices[i].outq);
+		mutex_init(&scull_devices[i].mutex);
+		cdev_init(&scull_devices[i].cdev, &scull_ops);
+		scull_devices[i].cdev.owner = THIS_MODULE;
+		devno = MKDEV(MAJOR(scull_devno), MINOR(scull_devno) + i);
+		ret = cdev_add (&scull_devices[i].cdev, devno, 1);		
+		if (ret) {
+			PDEBUG("error add cdev\n");
+		}
+	}
+
+	PDEBUG("begin init pipe major %d\n", MAJOR(scull_devno));
+	return 0;
 }
 
-static __exit int pipe_exit(void) {
-	PDEBUG("begin end pipe\n"):
+static __exit void pipe_exit(void) {
+	int i;
+	PDEBUG("begin end pipe\n");
+	for (i = 0; i < scullnr; i++) {
+		cdev_del(&scull_devices[i].cdev);
+		kfree(scull_devices[i].buffer);
+	}
+	kfree(scull_devices);
+	scull_devices = NULL;
+	unregister_chrdev_region(scull_devno, scullnr);
 }
 
 module_init(pipe_init);

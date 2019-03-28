@@ -76,6 +76,7 @@
 #define SCULL_P_BUFFER 4000
 #endif
 
+#if 0
 /*
  * Representation of scull quantum sets.
  */
@@ -174,4 +175,8 @@ long     scull_ioctl(struct file *filp,
 
 #define SCULL_IOC_MAXNR 14
 
+#endif
+
 #endif /* _SCULL_H_ */
+
+

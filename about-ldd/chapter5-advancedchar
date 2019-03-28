@@ -69,10 +69,16 @@ blocking and sleep:
 
 	wait_queue_head : used to hold waiting processes for one event
 	wait_event[_interruptible[_timeout]|_timeout](wait_queue_head, condition) ,(no pointer)
-	wakt_up[_interruptbile](wait_queue_head*)  interruptible version only wake up processes waited interruptible
+	wake_up[_interruptbile](wait_queue_head*)  interruptible version only wake up processes waited interruptible
 		attention:
 			wait queue head can be reused
 			wakup test should be in atomic
+	wake_up_nr
+	wake_up_interrible_nr  used to wake up nr number's excluesive wait process, nr == 0 then wake up all excluesive
+	wake_up_all 
+	wake_up_interrible_all all will be wakeup
+	wake_up_interrible_sync:  all above wake_up will make wakeed_up process being scheduled,(except in atmoic context, eg.
+				spinlock), we can use this to forcely disable this behavior
 
 	wait queue use:
 		condition test Must be done in hold of mutex!!
@@ -112,3 +118,8 @@ blocking and sleep:
 					return -restartsys
 				// now again from loop up check condition
 			}
+
+			attention:
+				in method two, if your resource will be consumed by one reader,
+				you can use prepare_to_wait_exclusive, wake_up will wakeup only one 
+				excusive waiting process and all other non excusive waiting process
