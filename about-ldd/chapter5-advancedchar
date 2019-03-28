@@ -27,6 +27,7 @@ ioctl:
 
 		access_ok(verify_write/read, ptr, _ioc_size(cmd)) check read/write is permitted
 			depending on _ioc_dir(cmd) is ioc_read or write
+				write includes read check
 			commonly not needed, will be used by memory subsystem
 
 
@@ -39,7 +40,7 @@ ioctl:
 			cap_sys_ttyconfig
 			cap_dac_override  ignore rwx permission on file/dir
 
-	copy_funcs:
+	copy_funcs: these funcs will sleep, but kernel handle it, our device may not worry about it 
 		copy_to/from_user
 		__get_user/ __put_user: used for small types like char int long ....
 		put_user/get_user: will use access_ok, above will not use
@@ -53,6 +54,11 @@ ioctl:
 
 fcntl:
 	compatibility used, just like ioctl, but for file instead of for device
+	O_NONBLOCK 
+		kernel check in file->f_flags, if set: read/write -> -EAGAIN, and user should check errno 
+												open: immediately begin init, but return -EAGAIN, then
+													you can do otherthing and openagain, now will opensuccess
+													otherwise open will block which is not what you want
 
 
 blocking and sleep:
@@ -62,3 +68,47 @@ blocking and sleep:
 	before sleep: should check sleep is needed
 
 	wait_queue_head : used to hold waiting processes for one event
+	wait_event[_interruptible[_timeout]|_timeout](wait_queue_head, condition) ,(no pointer)
+	wakt_up[_interruptbile](wait_queue_head*)  interruptible version only wake up processes waited interruptible
+		attention:
+			wait queue head can be reused
+			wakup test should be in atomic
+
+	wait queue use:
+		condition test Must be done in hold of mutex!!
+		one method:
+			declare a wait queue head
+			lock mutex
+			while(condition_not_right) {
+				unlock mutex
+				if (wait_event_interruptible(queue, condition)){
+						singal pending, just return
+				}
+				//after wakeup
+				lock mutex
+			}
+			// now condition fullfilled and mutex locked, do your job....
+		
+		two method:
+			declare a wait queue head
+			while(condition_not_right) {
+				define_wait(yourwait_var)  // this represent your process
+				unlock_mutex
+				if onblock
+					return -again
+				prepare_to_wait(&your queue head, &your_wait_var, TASK_INTERRUPTIBLE); // set state to interruptible
+				if (condition_not_right) // in case condition is set when we are preparing wait
+					schedule()
+					need_explanation:
+						if other thread's wake up happened between if_check and schedule() call,
+							nothing is wrong, because now your process is already in wait queue, so will
+							be wakeuped correctly----schedule() just return and set to running state
+							this check only used to avoid chances you haven't put yourself into queue_head
+							and wake up is comming, in which case you will wait infinitly
+				finish_wait(&queue_head, &your_wait) // remove wait and set state to running
+				if signal_pending(current)
+					return -restartsys
+				if mutex_lock
+					return -restartsys
+				// now again from loop up check condition
+			}

@@ -12,7 +12,8 @@ EXTRA_CFLAGS += -I$(LDDINC)
 endif
 
 ifneq ($(KERNELRELEASE),)
-obj-m := hello.o
+#obj-m := hello.o
+obj-m := sleepy.o
 else
 KERNDIR ?= ${KERNDIR}
 PWD := $(shell pwd)

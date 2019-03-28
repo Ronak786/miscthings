@@ -1,0 +1,1 @@
+cmd_/home/sora/gitbase/miscthings/about-ldd/source/scull/sleepy.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /home/sora/gitbase/miscthings/about-ldd/source/scull/sleepy.ko /home/sora/gitbase/miscthings/about-ldd/source/scull/sleepy.o /home/sora/gitbase/miscthings/about-ldd/source/scull/sleepy.mod.o
