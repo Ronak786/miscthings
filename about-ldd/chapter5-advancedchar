@@ -123,3 +123,17 @@ blocking and sleep:
 				in method two, if your resource will be consumed by one reader,
 				you can use prepare_to_wait_exclusive, wake_up will wakeup only one 
 				excusive waiting process and all other non excusive waiting process
+
+	poll epoll select:
+		requirement:
+			when availiable, return immediately,
+			when not available, if nonblock, return eagain, if block, just block
+
+		io mutiplex, 
+		driver impletemnt  poll method and inside it, add your waitqueue head using poll_wait method,
+		then test your current available status and return mask as POLL_IN|POLL_RDNORM POLLOUT|POLL_WRNORM
+		then return
+
+		after one loop, poll, select will just remove all entry from process and recreate again, epoll
+		will reserver and so more efficient
+
