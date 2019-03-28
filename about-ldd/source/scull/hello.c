@@ -12,7 +12,6 @@
 #include <linux/sched.h>
 #include <linux/seq_file.h>
 
-#if 0
 #undef PDEBUG             /* undef it, just in case */
 #ifdef SCULL_DEBUG
 #  ifdef __KERNEL__
@@ -28,11 +27,56 @@
 
 #undef PDEBUGG
 #define PDEBUGG(fmt, args...) /* nothing: it's a placeholder */
-#endif
-#    define PDEBUG(fmt, args...) printk( KERN_DEBUG "scull: " fmt, ## args)
+
 
 MODULE_AUTHOR("muryliang");
 MODULE_LICENSE("Dual BSD/GPL");
+
+#define SCULL_QUANTUM 4000
+#define SCULL_QSET	  1000
+#define SCULL_P_BUFFER 4000
+/*
+ * Ioctl definitions
+ */
+
+/* Use 'k' as magic number */
+#define SCULL_IOC_MAGIC  'k'
+/* Please use a different 8-bit number in your code */
+
+#define SCULL_IOCRESET    _IO(SCULL_IOC_MAGIC, 0)
+
+/*
+ * S means "Set" through a ptr,
+ * T means "Tell" directly with the argument value
+ * G means "Get": reply by setting through a pointer
+ * Q means "Query": response is on the return value
+ * X means "eXchange": switch G and S atomically
+ * H means "sHift": switch T and Q atomically
+ */
+#define SCULL_IOCSQUANTUM _IOW(SCULL_IOC_MAGIC,  1, int)
+#define SCULL_IOCSQSET    _IOW(SCULL_IOC_MAGIC,  2, int)
+#define SCULL_IOCTQUANTUM _IO(SCULL_IOC_MAGIC,   3)
+#define SCULL_IOCTQSET    _IO(SCULL_IOC_MAGIC,   4)
+#define SCULL_IOCGQUANTUM _IOR(SCULL_IOC_MAGIC,  5, int)
+#define SCULL_IOCGQSET    _IOR(SCULL_IOC_MAGIC,  6, int)
+#define SCULL_IOCQQUANTUM _IO(SCULL_IOC_MAGIC,   7)
+#define SCULL_IOCQQSET    _IO(SCULL_IOC_MAGIC,   8)
+#define SCULL_IOCXQUANTUM _IOWR(SCULL_IOC_MAGIC, 9, int)
+#define SCULL_IOCXQSET    _IOWR(SCULL_IOC_MAGIC,10, int)
+#define SCULL_IOCHQUANTUM _IO(SCULL_IOC_MAGIC,  11)
+#define SCULL_IOCHQSET    _IO(SCULL_IOC_MAGIC,  12)
+
+/*
+ * The other entities only have "Tell" and "Query", because they're
+ * not printed in the book, and there's no need to have all six.
+ * (The previous stuff was only there to show different ways to do it.
+ */
+#define SCULL_P_IOCTSIZE _IO(SCULL_IOC_MAGIC,   13)
+#define SCULL_P_IOCQSIZE _IO(SCULL_IOC_MAGIC,   14)
+/* ... more to come */
+
+#define SCULL_IOC_MAXNR 14
+
 
 struct scull_qset {
 	void **data;
@@ -49,12 +93,14 @@ struct scull_dev {
 	struct cdev cdev;	  /* Char device structure		*/
 };
 
+int scull_p_buffer = SCULL_P_BUFFER;	/* pipe.c */
+
 static int scullmajor = 0; // default dynamic
 static int scullminor = 0;
 static int scullnr = 4;
 static char *scullname = "scull";
-static int scull_quantum = 4000;
-static int scull_qset = 1000;
+static int scull_quantum = SCULL_QUANTUM;
+static int scull_qset = SCULL_QSET;
 //static int num = sizeof(marr)/sizeof(int);
 module_param(scullmajor, int, S_IRUGO);
 module_param(scullminor, int, S_IRUGO);
@@ -204,8 +250,100 @@ out:
 }
 
 static long scull_ioctl (struct file *file, unsigned int cmd, unsigned long arg) {
+	int err = 0, tmp;
+	int retval = 0;
 	PDEBUG("we are in %s\n", __FUNCTION__);
-	return 0;
+
+	if (_IOC_TYPE(cmd) != SCULL_IOC_MAGIC) return -ENOTTY;
+	if (_IOC_NR(cmd) > SCULL_IOC_MAXNR) return -ENOTTY;
+
+	//check read write permission using access_ok
+	if (_IOC_DIR(cmd) & _IOC_READ) {
+		err = !access_ok(VERIFY_WRITE, (void __user*)arg, _IOC_SIZE(cmd));
+	} else if (_IOC_DIR(cmd) & _IOC_WRITE) {
+		err = !access_ok(VERIFY_READ, (void __user*)arg, _IOC_SIZE(cmd));
+	}
+	if (err) return -EFAULT;
+
+	// do switch
+	switch (cmd) {
+		case SCULL_IOCRESET:
+			scull_quantum = SCULL_QUANTUM;
+			scull_qset = SCULL_QSET;
+			break;
+		case SCULL_IOCSQUANTUM:
+			if (!capable(CAP_SYS_ADMIN))
+				return -EPERM;
+			retval = __get_user(scull_quantum, (int __user*)arg);
+			break;
+		case SCULL_IOCTQUANTUM:
+			if (!capable(CAP_SYS_ADMIN))
+				return -EPERM;
+			scull_quantum = arg;
+			break;
+		case SCULL_IOCGQUANTUM: // put into arg
+			retval = __put_user(scull_quantum, (int __user*)arg);
+			break;
+		case SCULL_IOCQQUANTUM: //put as return value
+			return scull_quantum;
+		case SCULL_IOCXQUANTUM:
+			if (! capable(CAP_SYS_ADMIN))
+				return -EPERM;
+			tmp = scull_quantum;
+			retval = __get_user(scull_quantum, (int __user*)arg);
+			if (retval == 0)
+				retval = __put_user(tmp, (int __user*)arg);
+			break;
+		case SCULL_IOCHQUANTUM:
+			if (! capable(CAP_SYS_ADMIN))
+				return -EPERM;
+			tmp = scull_quantum;
+			scull_quantum = arg;
+			return tmp;
+
+		case SCULL_IOCSQSET:
+			if (!capable(CAP_SYS_ADMIN))
+				return -EPERM;
+			retval = __get_user(scull_qset, (int __user*)arg);
+			break;
+		case SCULL_IOCTQSET:
+			if (!capable(CAP_SYS_ADMIN))
+				return -EPERM;
+			scull_qset = arg;
+			break;
+		case SCULL_IOCGQSET: // put into arg
+			retval = __put_user(scull_qset, (int __user*)arg);
+			break;
+		case SCULL_IOCQQSET: //put as return value
+			return scull_qset;
+		case SCULL_IOCXQSET:
+			if (! capable(CAP_SYS_ADMIN))
+				return -EPERM;
+			tmp = scull_qset;
+			retval = __get_user(scull_qset, (int __user*)arg);
+			if (retval == 0)
+				retval = __put_user(tmp, (int __user*)arg);
+			break;
+		case SCULL_IOCHQSET:
+			if (! capable(CAP_SYS_ADMIN))
+				return -EPERM;
+			tmp = scull_qset;
+			scull_qset = arg;
+			return tmp;
+
+	  case SCULL_P_IOCTSIZE:
+			if (! capable(CAP_SYS_ADMIN))
+				return -EPERM;
+			scull_p_buffer = arg;
+			break;
+
+	  case SCULL_P_IOCQSIZE:
+			return scull_p_buffer;
+
+	  default:
+			return -ENOTTY;
+	}
+	return retval;
 }
 
 static int scull_open (struct inode *inode, struct file *file) {

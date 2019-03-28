@@ -1,0 +1,64 @@
+ioctl:
+	kernel linux/fs.h (#include<asm/ioctl.h>)
+	user   linux/ioctl.h(for define ionumber)
+			sys/ioctl.h(for use ioctl syscall)
+	doc: Documentation/ioctl/ioctl-number.txt
+
+	combination:
+		type number direction size
+		direction: in perspective of user
+		combination:
+			_IO(type,nr)
+			_IOR(type,nr,size)
+			_IOW(type,nr,size)
+			_IORW(type,nr,size)
+		parse
+			_IOC_DIR(nr)
+			_IOC_TYPE(nr)
+			_IOC_NR(nr)
+			_IOC_SIZE(nr)
+
+		error should return ENOTTY
+			posix: in appropriape ioctl for device
+
+	check:
+		_ioc_type(cmd)  check magic
+		_ioc_nr(cmd)    check number code within range
+
+		access_ok(verify_write/read, ptr, _ioc_size(cmd)) check read/write is permitted
+			depending on _ioc_dir(cmd) is ioc_read or write
+			commonly not needed, will be used by memory subsystem
+
+
+		if specific ioctl cmd check:
+			include <sys/sched.h>
+			if write into: check capable(CAP_SYS_ADMIN)
+			cap_net_admin
+			cap_sys_module  insmod/rmmod
+			cap_sys_rawio
+			cap_sys_ttyconfig
+			cap_dac_override  ignore rwx permission on file/dir
+
+	copy_funcs:
+		copy_to/from_user
+		__get_user/ __put_user: used for small types like char int long ....
+		put_user/get_user: will use access_ok, above will not use
+
+	kernel used ioctl cmd:  parse before enter your ioctl func
+		fioclex: close when exec
+		fioncloex: opposite of above
+		fioasync: use fcntl instead
+		fionbio: non blocking io: use fcntl instead
+		fioqsize:  query file/dir size, dev file return ENOTTY
+
+fcntl:
+	compatibility used, just like ioctl, but for file instead of for device
+
+
+blocking and sleep:
+	do not sleep when in atomic context:
+		inside spinlock,rcu lock, seqlock ...
+	after wake up: Must check resource is available
+	before sleep: should check sleep is needed
+
+	wait_queue_head : used to hold waiting processes for one event

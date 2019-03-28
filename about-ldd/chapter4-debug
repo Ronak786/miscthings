@@ -140,3 +140,31 @@ lock: make policy outer func acquire lock and call inner __locked_func
 lock-free:
 	loop buffer:  read index, write index...
 	atomic_t operations
+	bit operations:
+		#include <asm/bitops.h>
+		test_and_set/clear_bit:  someone use this as lock, but recommend using spinlock
+	seqlock: must not used to protect structure containing ptr
+			most read, seldom write
+		seqlock_t lock;
+		int number;
+
+		read :
+			do {
+				number =  read_seqbegin(&lock);
+				do your thing ...
+			} while (read_seqretry(&lock, number);  // if number is not the same, retry reading 
+
+		write :
+			write_seqlock[_irqsave|_irq|_bh](&lock)
+			write_sequnlock[_irqsave|_irq|_bh](&lock)
+			write_tryseqlock
+			
+	RCU: most read, seldom write, resource refer using atomic ptr
+		read:
+			rcu_read_lock/unlock  ,just disable irq and read
+		write:
+			modify should complete in one step:
+				allocate a new strucure,
+				replace ptr, now new reader will see new ptr
+				prepare a callback after all cpu core finished schedule, invoking this callback
+					and free the old ptr
