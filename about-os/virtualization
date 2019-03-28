@@ -1,0 +1,15 @@
+cpu:
+	at boot time, set trap table and a timer interrupt, 
+	so we can schedule when syscall is made, or when a timer interrupt occurred,
+		avoiding infinite loop hang the cpu
+	
+	switch_context:
+		first timer interrupt interrupt the user, then trap into kernel, save user register into kernel stack of 
+		that process by kernel switch mode automatically, then in timer handler decide if schedule() should action, 
+		if yes, do context_switch: 
+			save and restore kernel statck and register of each process, then in context switch, then "ret" will
+			return to new process's last executed code
+
+	fork and exec and wait:
+		use fork and extc to make new process,
+		use wait to get finished process's status and clean it in processlist of stopped status
