@@ -137,3 +137,13 @@ blocking and sleep:
 		after one loop, poll, select will just remove all entry from process and recreate again, epoll
 		will reserver and so more efficient
 
+		epoll_mechanism:
+			user create a epoll fd, kernel will sleep on that process wait entry on a single list,
+			then for each fd added, use epoll_ctl to add and will create a wait entry for it and 
+			sleep on that fd's wait queue, set a callback which will be waken up by that fd's wake up
+			event and add itself to global epoll's ready list, then epoll process wakeup and search each
+			one on ready list using driver's poll() func in file_operation and check epollin/epollout message
+			and return userspace,
+
+		userspace example:
+			see man 7 epoll , man 2 epoll_wait for example

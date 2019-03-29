@@ -188,7 +188,7 @@ static ssize_t scull_write(struct file *file, const char __user *buf, size_t cou
 
 }
 
-static unsigned int scull_p_poll(struct file *filp, poll_table *wait) {
+static unsigned int scull_poll(struct file *filp, poll_table *wait) {
 	struct scull_pipe *dev = filp->private_data;
 	unsigned int mask = 0;
 
