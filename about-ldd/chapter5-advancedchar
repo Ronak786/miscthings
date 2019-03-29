@@ -78,7 +78,9 @@ blocking and sleep:
 	wake_up_all 
 	wake_up_interrible_all all will be wakeup
 	wake_up_interrible_sync:  all above wake_up will make wakeed_up process being scheduled,(except in atmoic context, eg.
-				spinlock), we can use this to forcely disable this behavior
+				spinlock), we can use this to forcely disable this behavior, especially when we are going to 
+				return back to userspace(this is just a schedule point, so we need not wakeup func used as a
+				schedule func)
 
 	wait queue use:
 		condition test Must be done in hold of mutex!!
