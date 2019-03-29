@@ -1,0 +1,43 @@
+techniques:
+	read from /proc files, use cat can not determine how much data to read
+		so use dd bs=20  < /proc/your_file is better
+timer:
+	include <linux/sched.h>
+	HZ in userspace always 100, actually number is not hidden and converted in kernel
+		the actually HZ is the timer interrupts in one second, and jiffies will inc by 1
+
+	use jiffies to get jiffies:
+		use jiffies / HZ to get seconds
+		use time[_after|_before][_eq] to compare two jiffies
+		use diff = (long)t2 - (long)t1 to get diff of two jiffies
+
+	or get timespece using
+		current_kernel_time()
+	or get wall time:
+		do_gettimeofday()
+
+	convert from/to struct timespec/timeval to/from jiffies
+		timespec_to_jiffies
+		timeval_to_jiffies
+		jiffies_to_timespec  nanosecond
+		jiffies_to_timeval	 microsecond 10^-6
+		mktime(...) wall time convert to jiffie
+
+	high_resolution_clock:
+		in kernel
+		#include <asm/timex.h>
+		get_cycles(); if no rdtsc, return 0, otherwise, return rdtsc()
+			rdtscll(time)  get clocks
+
+how to wait time:
+	long delay: more than one jiffie
+		1 use a while loop to check jiffie using timebefore and cpu_relax()
+		2 use a while loop to check jiffie using timebefore and schedule() these two both not well, cost too much energy
+		3 use wait_event_interruptbile_timeout, just schedule_timeout() (because no one know that wait_queue)
+		4 set state to TASK_INTERRUPTBILE and use schedule_timeout, set state is required ,otherwise timer not take effect
+	shot delay: 
+		busy wait: ndelay udelay mdelay
+		msleep[_interruptible]  no busy wait
+		ssleep   sleep in second
+
+	
