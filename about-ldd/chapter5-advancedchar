@@ -147,3 +147,41 @@ blocking and sleep:
 
 		userspace example:
 			see man 7 epoll , man 2 epoll_wait for example
+
+	user async:
+		1, set your signal handler for SIGIO
+		2, fcntl(fd, F_SETOWN, getpid()) //set current process as the process getting sigio
+		3, fcntl(fd, F_SETFL, fcntl(fd, F_GETFL) | FASYNC) 
+	kernel async:
+		1 f_setow will set file->f_owner
+		2 when setting fasync using fcntl, driver's fasync method will be called
+			in which you shoud call fasync_helper(args..., your_self's async queue)
+			the fd arg is informed when you use sigaction and SA_SIGINFO is specified in sa_flags
+		3 when data available, offen in write, you call kill_fasync(queue, SIGIO, poll_in), to sendsignal
+		4 in release, use fasync_helper with fd=-1, mode=0
+
+techniques:
+	how to use sigaction:
+	memset a sigaction structure,
+	set sa_handler to your handler
+	set flag to 0 if no use
+	use sigaction(SIGIO, &action, NULL) to register
+
+	how to allow special access of device:
+		1. only once can open: 
+			use atomic variable, and init to 1, then every open
+			dec_and_test, if not zero inc, and return -ebusy
+			every release, inc
+		2. only one user can open:
+			in open, spinlock, if count not 0,testusing uid_eq with current->uid/current->euid or capable(CAP_DAC_OVERRIDE)
+					if count 0, then new user, just record it
+			in release, lock, count--
+		3 blocking open for one user
+			lock , test, if success , just continue set count and user and unlock
+						 if fail, unlock, if nonblock, return again, else wait event for condition test ,then lock and check again
+			in release, lock, count--,unlock if count 0, wakeupinterruptbile_sync()
+		4 open in each different tty:
+			check current->signal->tty for process tty has or not, if not , just return -einval
+			use key = tty_devnum(current->signal->tty); to get corresponding tty device's devnumber,
+			use this as key in a user constructed list to track newly allocated device
+				

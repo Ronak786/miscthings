@@ -41,6 +41,7 @@ static struct scull_pipe *scull_devices;
 
 //static int scull_p_fasync(int fd, struct file *file, int mode);
 static int spacefree(struct scull_pipe *dev);
+static int scull_fasync(int fd, struct file *file, int mode);
 
 static int scull_open(struct inode *inode, struct file *file) {
 	struct scull_pipe *dev;
@@ -72,7 +73,7 @@ static int scull_open(struct inode *inode, struct file *file) {
 static int scull_release(struct inode *inode, struct file *file) {
 	struct scull_pipe *dev = file->private_data;
 
-//	scull_fasync(-1, file, 0);
+	scull_fasync(-1, file, 0);
 	mutex_lock(&dev->mutex);
 	if (file->f_mode & FMODE_READ)
 		dev->nreaders--;
@@ -203,6 +204,12 @@ static unsigned int scull_poll(struct file *filp, poll_table *wait) {
 	return mask;
 }
 
+int scull_fasync(int fd, struct file *file, int mode) {
+	struct scull_pipe *dev = file->private_data;
+	PDEBUG("the fd passin is %d\n", fd);
+	return fasync_helper(fd, file, mode, &dev->async_queue);
+}
+
 struct file_operations scull_ops = {
 	.owner = THIS_MODULE,
 	.open = scull_open,
@@ -210,6 +217,7 @@ struct file_operations scull_ops = {
 	.write = scull_write,
 	.release = scull_release,
 	.poll = scull_poll,
+	.fasync = scull_fasync,
 };
 
 static __init int pipe_init(void) {

@@ -23,7 +23,8 @@ alloc chardev number: success 0 , otherwise error
 file_operation: different methods will behave differently when set to null, see ldd Page.57
 	struct module *owner = THIS_MODULE
 	if null:
-		llseek : undefined, so should set to noseek;
+		llseek : undefined, so should set to no_llseek;
+				and in open, return nonseekable_open
 		read : -EINVALID
 		aio_read : == read
 		write: -EINVALID
