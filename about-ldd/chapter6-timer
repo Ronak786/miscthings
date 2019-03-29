@@ -62,4 +62,43 @@ kernel timer: delay execute, may be in interrupt context instead of user process
 						and should make sure timer will not register itself
 		timer_pending: if is running
 
-tasklet
+tasklet: it is percpu,  CAN NOT sleep
+	just like kernel timer, running on interrupt context, except no timer specified,
+		kernel will run it in soft interrupt context in a "proper" time
+
+	assure:
+		will not later than the next jiffie comes
+		have two level of priority
+		can register itself
+
+	api:
+		tasklet_init
+		tasklet[_hi]_schedule  begin
+		tasklet_disable (event schedule will not run, until enable): will wait if current is running
+		tasklet_disable_nosync  return immediately
+		tasklet_kill will wait if running, and will then remove it, (should disable  adding itself first)
+				
+work queue:
+	create_workqueue (create one on each cpu)
+	create_singlethread_workqueue  (only create one on a cpu)
+
+	DECLARE_WORK() define a work statically
+	INIT_WORK() init a work  first time
+	PREPARE_WORK()  reinit a work after adding into workqueue, will not zero that queu ptr
+
+	queue_work()
+	queue_delayed_work()  used to queue work on that workquque
+	schedule_work()
+	schedule_delayed_work() queue into default workqueue
+
+	cancel_delayed_work() return 1 will not run, return 0 :is running on other cpu
+	used together with  
+		flush_workqueue(), 
+	but flush shared workqueue should use flush_scheduled_work
+
+	destroy_workqueue()  destroy workqueue
+
+
+	NOTE:
+		we can share workqueue with others, and make sure not sleep toomuch time on it,
+		otherwise others will hungry
