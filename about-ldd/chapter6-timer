@@ -41,3 +41,25 @@ how to wait time:
 		ssleep   sleep in second
 
 	
+kernel timer: delay execute, may be in interrupt context instead of user process
+	#include <linux/timer.h>
+	delay execute:
+		use in_atomic() in_interrupt()(include<asm/hardirq.h> to judge if we are in environment sleep or schedule NOT permitted,
+			if in_interrupt() also current should not be used, and in_atomic() including in_interrupt() and
+			spinlock environment;
+
+	NOTE:
+		one timerfunc can add itself into timerlist, and added one will run on the same cpu with adding one
+			for cache effcient
+
+	usage:
+		init_timer
+			set function, expire time(final jiffie value),function data
+		add_timer  : now start
+		del_time   : if you want to cancel, otherwise when timer occurren, it will be removed
+		mod_timer :modify expire time of timer
+		del_timer_sync: used make sure after return, timer not exucuting,, but will sleep and have lock is dangerous,
+						and should make sure timer will not register itself
+		timer_pending: if is running
+
+tasklet
