@@ -69,6 +69,16 @@ memory:
 			we have external waste pieces after allocation. need some policy to find free mem in a list,
 			heap also can be too large when not needed, so segmentation also not too good
 
+	3 paging
+		instead of using variant-sized segment, use fix sized page, physical mem split into page frames,
+			addr first get virtual page number from first N bit as an index into page table, after getting
+			page entry, check permission and other flags, then get page frame number, other 32 - N bits used
+			as offset, so we get physical addr.
+
+		defect:
+			too slow, page table too big, use too much mem, every instruct get and instruct execute use 
+			too much mem access
+
 memory allocation:
 	userspace offen use free list embeded in memory available to be allocated, a head used as list to link
 		between different free chunks, and allocated ones also has a head specify size of chunk for easy 
