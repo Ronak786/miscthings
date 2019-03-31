@@ -45,3 +45,16 @@ scheduler:
 			and monitor needed, which need a proper interval time to set and analysis
 			
 		
+memory:
+	implement for each process:
+		efficient, transparent, protection
+	
+	1 use base and limits regiter(hardware) as MMU
+		once loaded program, set base and limit, each time fetch instrument or fetch data,
+		check limit first and add base to that addr
+		if over limit, hardware will jump to exception which set at boot time
+
+		when context switch, save base and limit, 
+		when move in mem of process, just change base and limit,
+		THIS IS CALLED DYNAMIC ALLOCATION
+		
