@@ -68,3 +68,16 @@ memory:
 		defects:
 			we have external waste pieces after allocation. need some policy to find free mem in a list,
 			heap also can be too large when not needed, so segmentation also not too good
+
+memory allocation:
+	userspace offen use free list embeded in memory available to be allocated, a head used as list to link
+		between different free chunks, and allocated ones also has a head specify size of chunk for easy 
+		free and combine continous free addrs
+	find free chunk:
+		best fit, first fit, worst fit, next fit(continue from last time search point)
+	other methods:
+		slab : used for some multiple same fix sized objects, preinit them, and after free, just store then in
+			inited state for next use, so fast, but need special concern how much needed
+		binary buddy system:
+			every time allocate, split free until next half of 2^bits  is smaller and current leve is bigger, 
+			and easy to combine, just combine up onto the binary tree
