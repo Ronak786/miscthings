@@ -13,3 +13,35 @@ cpu:
 	fork and exec and wait:
 		use fork and extc to make new process,
 		use wait to get finished process's status and clean it in processlist of stopped status
+
+scheduler:
+	1. singlely meature turnaround(finishe) time:
+		each time new task come, measure whose end time is short, run it until end, 
+		but commonly we do not know end time
+	2. roundrobin
+		good to interactive task, good respond time, but bad turnaround time
+
+	3. multiple level priority scheudler: Windows NT
+		every time come, priority is highest, 
+		each one run atmost a specific time, then forcely release cpu, or io-intense task can release itself,
+		if one task runs a specific time on one priority, down it priority to another level
+			each level has different most-run-time
+		every period time boost process to highest again avoiding starvation
+
+
+	4 proportional scheudler:
+		1. using random:
+			each process assign some tickets, each time schedule, get a random number,choose the process to run
+				who has this nuber as ticket, using probability to make sure this is fare
+		2 using stride: this is an inverse of tickets
+			each time after run, add that stride, then next time choose the lowest add-on stride's process to run.
+
+
+	multicore-scheduler:
+		1 must make sure cache coherent using some hardware technique (bus monitor)
+		2 single-queue shedule: 
+			simple implement, but queue operation code need mutex which cost lot
+		3 multiple quue each a cpu core, no lock, but some cpu will starve, so migration of process is need 
+			and monitor needed, which need a proper interval time to set and analysis
+			
+		
