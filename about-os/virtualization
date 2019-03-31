@@ -58,3 +58,13 @@ memory:
 		when move in mem of process, just change base and limit,
 		THIS IS CALLED DYNAMIC ALLOCATION
 		
+	2 segmentation:
+		only one base is too wasteful, as space between heap and stack no use , but must alloc
+		so we can use multiple base and limit for each piece of code, heap, stack
+			eg. we can use first two bit of virtual addr as segment flag, otherbits as offset into that segment,
+			also add protection bits in segment descriptor, add grow direction, then
+			segs can be used by multiple programs
+
+		defects:
+			we have external waste pieces after allocation. need some policy to find free mem in a list,
+			heap also can be too large when not needed, so segmentation also not too good
