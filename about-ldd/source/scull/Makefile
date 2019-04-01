@@ -13,7 +13,7 @@ endif
 
 ifneq ($(KERNELRELEASE),)
 #obj-m := hello.o
-obj-m := timerproc.o
+obj-m := scullc.o
 else
 KERNDIR ?= ${KERNDIR}
 PWD := $(shell pwd)

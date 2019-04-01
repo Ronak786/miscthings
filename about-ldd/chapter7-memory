@@ -1,0 +1,44 @@
+kmalloc: alloc smaller than page-sized mem
+	include <linux/gfp.h>
+	alloc continous
+		alloc mostly be fix size, should no more than 128k?? (for 32bit)
+	GFP_[kernel|user|atomic] (get free page)
+		kernel alloc page for kernel, but can sleep for pageing release
+			used for mem ususally from syscall and kernel use
+			this will search normal and dma region
+		atomic will not sleep, so good in interrupt and atomic envs
+	other can OR flags:
+		__GFP_....
+		__GFP_DMA can used for device dma transfer
+
+slab: alloc small fixed sized mem
+	inlcude<linux/slab.h>
+	kmem_cache_create(...)  :note name should be stored in static ptr
+				can specify ctor and dtor
+	kmem_cache_alloc/_free  : alloc/free from mem cache, flag same as kmalloc
+				will be slightly faster than  kmalloc
+	kmem_cache_destroy() 
+
+	stat:
+		/proc/slabinfo
+
+mempool: reserve some mem avoid alloc fail
+	used for places when alloc fail not permitted
+	will first reserve small number of free mems for use
+
+	mempool_create/destroy(pass in mempool alloc/free func, and wanted_to_manage_pool_ptr)
+		usually func just mempool_alloc/free_slab, so they use kmem_cache_alloc/free to operate
+		pass in one mininal number should be reserved
+	mempool_alloc/free
+
+	use too much mem, should avoid
+
+get free pages: alloc page-sized mem
+	this can be used to adjust page table and offer mmap function(page remap ??)
+	get_zeroed_page()
+	__get_free_page() no zero
+	__get_free_pages(order) continue physical page, of 2^order pages
+
+	free_page()
+	free_pgaes(addr ,order)
+
