@@ -40,3 +40,23 @@ handle irq:
 		return:
 			irq_handled : dev should handle irq
 			irq_none : dev should not handle irq
+
+		will track disable/enable number
+			disable_irq[_nosync]  dislabe irq on all cpu, nosync will not wait, otherwise will wait irq running finish
+			enable_irq
+
+		will not track disable/enable number
+			local_irq_restore
+			local_irq_save  save/restore local cpu's irq
+			local_irq_enable
+			local_irq_disable  disable/enable local cpu's irq
+
+
+bottom half:  taslet:
+	assure will run on the same cpu who schedule it, also other interrupt will happen, so lock is needed
+	multiple schedule will only happen run one time
+
+	workqueue can also be used
+
+shared irq:
+	should pass a private id
