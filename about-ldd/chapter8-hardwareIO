@@ -38,6 +38,7 @@ io memory operatoin:
 	then addr = ioremap(phy_addr)
 	use ioread8/16/32(addr)
 	ioread8_rep () : used to read buffer of count bytes
+	should used with wmb()
 
 	memset_io
 	memcpy_fromio

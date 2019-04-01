@@ -1,0 +1,42 @@
+handle irq:
+	info: include <linux/asm-386/irq.h>
+	request_irq
+		flag: SA_INTERRUPT  handle will disable interrupt/ normally should not use
+			 SA_SHIRQ share
+			 SA_SAMPLE_RANDOM add entropy to random
+	free_irq
+
+	show:
+		/proc/interrupts this only show currently installed interrupts' info
+		/proc/stat | grep intr   show interrupts' info of all from system boot up
+
+	should:
+		install irq handler when open dev
+		free irq when lastly close dev
+
+	probe: use irq_waiting flag
+		mask = probe irq on
+		enable dev irq
+		trigger
+		disable dev irq
+		udelay
+		ret = probe irq off
+		ret > 0 then irq num
+		ret = 0 nothing happened
+		ret < 0 more than one happened
+
+	handler process:
+		entry.S : do common push stack process
+		irq.c(do_IRQ): lock irq avoid other cpu using, respond to interrupt controller
+					call that irq's method
+		if has installed method for this irq, handle_IRQ_event 
+			call your handler
+
+	implement your handler:
+		can not sleep, allock use GFP_ATOMIC ,can not hold semaphore, no use waitevent
+		long time job should use tasklet or work
+		use barrier() properly if two sentence may be optimized but should not
+
+		return:
+			irq_handled : dev should handle irq
+			irq_none : dev should not handle irq
