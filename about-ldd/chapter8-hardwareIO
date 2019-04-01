@@ -1,0 +1,51 @@
+io use:
+	diff cpu arch/version has diff io space or not,
+	dif device use io mapped mem or use io space directly
+
+barrier: used to make sure some op before func() must have been done
+		avoid resort
+	barrier() 
+	[smp_]rmb() read done
+	[smp_]wmb() write done
+	[smp_]mb()	both done
+
+	include<asm/system.h>
+	set_mb()
+	set_[r|w]mb()  set value and do a mb()
+
+request io:
+	/proc/ioports
+	request_region(first, n, name); // used to annouse we are going to use these ports
+	release_region
+	check_region [ deprecated ]
+	
+io operation: see io.h
+	inb outb inw outw
+
+	userspace
+		use ioperm iol to check permission
+		use inb outb ... to do io operations
+
+	pause io:
+		intb_p outb_p ...
+
+
+io memory operatoin:
+	cat /proc/iomem
+	should use io specific function 
+
+	request_mem_region
+	then addr = ioremap(phy_addr)
+	use ioread8/16/32(addr)
+	ioread8_rep () : used to read buffer of count bytes
+
+	memset_io
+	memcpy_fromio
+	memcpy_toio
+
+	old methods:
+		readb/w/l writeb/w/l  without check ,should not use
+
+port remap as mem: need request_region first
+	ioport_map
+	ioport_unmap
