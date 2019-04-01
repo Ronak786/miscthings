@@ -79,6 +79,13 @@ memory:
 			too slow, page table too big, use too much mem, every instruct get and instruct execute use 
 			too much mem access
 
+	4 tlb:
+		just page need lots of mem access, tlb cache virtual page num to physical page num translation,
+		so every fast
+
+	5 page table entry too many:
+		we use some level of page table instead of just one, save space
+
 memory allocation:
 	userspace offen use free list embeded in memory available to be allocated, a head used as list to link
 		between different free chunks, and allocated ones also has a head specify size of chunk for easy 
