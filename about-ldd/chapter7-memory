@@ -42,3 +42,23 @@ get free pages: alloc page-sized mem
 	free_page()
 	free_pgaes(addr ,order)
 
+
+alloc page as structure:
+	struct page * alloc_page_nodes/ alloc_pages/alloc_page
+	__free_page[s]()
+	free_hot/cold_page: if user know page in hot cache or not
+
+vmalloc/vfree: used in insmod (see /proc/ksyms)
+	can not dma, and cost high
+
+	every alloc of one page in these virtual mapped pages must call a alloc_page,
+	and pages are not physical continue, as after alloc, an remap modifying page must do,
+	but kmalloc/alloc_pages return mem just PAGE_OFFSET and continous, noneed remap.
+
+	range VMALLOC_START VMALLOC_END include <asm/pgtable.h>
+
+ioremap, iounmmap: these are io mems ,should use readb.... to access
+	not alloc, just establish new table, for already known physical addr
+
+	should use special funcs for arch compability:
+		readl writel  readb writeb
