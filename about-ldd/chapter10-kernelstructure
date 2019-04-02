@@ -1,0 +1,60 @@
+kernel
+	include linux/types.h
+		u8 u16 u32 u64
+user
+	include linux/types.h
+		__u8 __u16 __u32 __u64
+
+new compiler c99:
+	uint8_t unit32_t ...  more compatible
+
+time:
+	should use HZ / n to think time interval
+
+page
+	PAGE_SIZE PAGE_SHIFT
+	include <asm/page.h>
+	
+	how to allocate:
+		get_order(your_wanted_size)
+
+	user
+		getpagesize()
+
+endian:
+	include <asm/byteorder.h>
+	__LITTLE_ENDIAN
+	__BIG_ENDIAN
+	include <linux/byteorder.h>
+	cpu_to_le32()
+	le32_to_cpu() these can be used to converto le32 from/to cpu byteorder nomatter what real cpu order is
+	
+
+structure fill:
+	 __attribute__ ((packed))  used to get together attribute
+
+error :
+	include <linux/err.h>
+	void *ERR_PTR(error);  convert an error number into a pointer
+	long IS_ERR(void *ptr); check if is error
+	long PTR_ERR(void *ptr); return error number from a pointer ; combine using of above
+
+list:
+	include <linux/list.h>
+	embed in your structure
+
+	INIT_LIST_HEAD(&xxx) or LIST_HEAD(XXX) just declare and define when compile
+	list_add
+	list_add_tail
+	list_del
+	list_del_init(del and init)
+	list_move[_tail]  move list to a specific place
+	list_empty
+	list_splice
+
+	list_entry(listptr, struct outer, field name)
+	list_for_each[_prev|_safe](ptr, &list) : save version will store current to next
+		entry = list_entry(xxx)
+
+	list_for_each_entry[_safe]
+		will return outer space ptr
