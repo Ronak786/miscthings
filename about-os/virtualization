@@ -105,4 +105,7 @@ swap:
 		fifo random, lru, optimal best
 		often use regional-lru, global lru too expensive
 
+	swap provide a virtual mem visual for process
+		but using disk as second cache
+
 dirty bit, reference bit
