@@ -1,0 +1,20 @@
+p1
+admin 10.10.5.211
+scsi-sub 10.10.5.0/24
+scsi-sbu 10.10.6.0/24
+nodebackend1 10.10.5.231
+nodebackend2 10.10.6.231
+
+p2
+admin 10.10.5.212
+scsi-sub 10.10.5.0/24
+scsi-sbu 10.10.6.0/24
+nodebackend1 10.10.5.232
+nodebackend2 10.10.6.232
+
+p2
+admin 10.10.5.213
+scsi-sub 10.10.5.0/24
+scsi-sbu 10.10.6.0/24
+nodebackend1 10.10.5.233
+nodebackend2 10.10.6.233
