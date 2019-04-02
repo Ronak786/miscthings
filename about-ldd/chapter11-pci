@@ -56,6 +56,7 @@ structures:
 	structure pci_dev:
 		include <linux/pci_regs.h>
 		then use pci_read_config_byte... to manipulate macros offset and mask in above header file
+				== dev->bus->ops->read(bus, devfn, where, size, val);
 			base addresses can be prefetchable (optimize by compiler) or unprefetchable (only used 
 			have side effect)
 
@@ -63,7 +64,12 @@ structures:
 			pci_resource_start(dev, barnumber[0-5])
 			pci_resource_end(dev, barnum) return the last availabel addr in that bar
 			pci_resource_flags( return flags)
-				flags in #include <linux/ioports.h>
+				flags in #include <linux/ioport.h> :IORESOURCE_IO IORESOURCE_MEM/[PREFETCH]/READONLY
+
+		get irq:
+			pci_read_config_byte(dev, PCI_INTERRUPT_LINE, &irq);
+			pci_read_config_byte(dev, PCI_INTERRUPT_PIN, &pin); // if 0, no support interrupt
+
 
 register driver:
 	pci_register_driver
