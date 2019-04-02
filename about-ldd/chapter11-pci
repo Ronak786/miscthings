@@ -1,0 +1,40 @@
+tree /sys/bus/pci/devices
+	number format:  [region]:[bus]:[device.num]
+					16         8      5    3bit
+	we can see irq and other things
+
+io mem access
+	seen by all device in one bus
+conf access
+	seen only by that device of all function
+
+after firware init pci, every device hav different region, so can securitly access
+	and get config info from config space
+
+driver use pci id to search device, which get from pci config region
+every func has 256byte in config
+
+
+config register:
+	every dev has at least 256byte info, first 64 byte is fixed format like id ....
+	pci data is little_endian
+
+	vendor:device  used as a signature for dev
+	class:	used as a class of dev, every dev belongs to a class, some driver support a class of dev
+
+	subsystem vendor/deviceid
+		for interface chip
+
+struct pci_device_id array:
+	vendor PCI_ANY_ID to support all dev
+	device PCI_ANY_ID
+	subvendor PCI_ANY_ID
+	subdevice PCI_ANY_ID
+	class PCI_ANY_ID
+	class_mask
+	driver_data
+
+	use PCI_DEVICE(vid, pid) or PCI_DEVICE_CLASS(class, mask) to combine into a structure
+
+	struct array end with a {0,} struct 
+
