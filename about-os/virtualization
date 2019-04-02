@@ -98,3 +98,11 @@ memory allocation:
 		binary buddy system:
 			every time allocate, split free until next half of 2^bits  is smaller and current leve is bigger, 
 			and easy to combine, just combine up onto the binary tree
+
+swap:
+	if free pages <= low watermark, free until to high watermark,
+	policy:
+		fifo random, lru, optimal best
+		often use regional-lru, global lru too expensive
+
+dirty bit, reference bit
