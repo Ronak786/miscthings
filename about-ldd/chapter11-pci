@@ -38,3 +38,31 @@ struct pci_device_id array:
 
 	struct array end with a {0,} struct 
 
+	MODULE_DEVICE_TABLE(type(pci|usb...), your_id_struct)
+		use this to export your id table of your module to userspace, used by hotplug
+
+struct pci_driver:
+		name : module name
+		struct pci_device_id * table
+		probe(dev, id)
+			if error, return minus
+			if success(this dev I want to handle), return 0
+		remove()
+			when dev removed
+		suspend
+		resume
+
+register driver:
+	pci_register_driver
+	pci_unregister_driver
+
+search device manually:
+	pci_get_device(vendor, devid, struct pci_dev *): after using 
+	should use pci_dev_put(dev) to decrease count
+	pci_get_subsys(...) specify subdevid..
+	pci_get_slot(pci_bus*, devfn)  search by bus and devnum & func number
+													 
+	activate:
+		should be done after get device or in probe
+		pci_enable_device()
+
