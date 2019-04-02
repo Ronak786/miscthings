@@ -25,32 +25,45 @@ config register:
 	subsystem vendor/deviceid
 		for interface chip
 
-struct pci_device_id array:
-	vendor PCI_ANY_ID to support all dev
-	device PCI_ANY_ID
-	subvendor PCI_ANY_ID
-	subdevice PCI_ANY_ID
-	class PCI_ANY_ID
-	class_mask
-	driver_data
+structures:
+	struct pci_device_id array:
+		vendor PCI_ANY_ID to support all dev
+		device PCI_ANY_ID
+		subvendor PCI_ANY_ID
+		subdevice PCI_ANY_ID
+		class PCI_ANY_ID
+		class_mask
+		driver_data
 
-	use PCI_DEVICE(vid, pid) or PCI_DEVICE_CLASS(class, mask) to combine into a structure
+		use PCI_DEVICE(vid, pid) or PCI_DEVICE_CLASS(class, mask) to combine into a structure
 
-	struct array end with a {0,} struct 
+		struct array end with a {0,} struct 
 
-	MODULE_DEVICE_TABLE(type(pci|usb...), your_id_struct)
-		use this to export your id table of your module to userspace, used by hotplug
+		MODULE_DEVICE_TABLE(type(pci|usb...), your_id_struct)
+			use this to export your id table of your module to userspace, used by hotplug
 
-struct pci_driver:
-		name : module name
-		struct pci_device_id * table
-		probe(dev, id)
-			if error, return minus
-			if success(this dev I want to handle), return 0
-		remove()
-			when dev removed
-		suspend
-		resume
+	struct pci_driver:
+			name : module name
+			struct pci_device_id * table
+			probe(dev, id)
+				if error, return minus
+				if success(this dev I want to handle), return 0
+			remove()
+				when dev removed
+			suspend
+			resume
+
+	structure pci_dev:
+		include <linux/pci_regs.h>
+		then use pci_read_config_byte... to manipulate macros offset and mask in above header file
+			base addresses can be prefetchable (optimize by compiler) or unprefetchable (only used 
+			have side effect)
+
+		get bar resource:
+			pci_resource_start(dev, barnumber[0-5])
+			pci_resource_end(dev, barnum) return the last availabel addr in that bar
+			pci_resource_flags( return flags)
+				flags in #include <linux/ioports.h>
 
 register driver:
 	pci_register_driver
@@ -65,4 +78,6 @@ search device manually:
 	activate:
 		should be done after get device or in probe
 		pci_enable_device()
+
+
 

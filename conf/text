@@ -18,3 +18,15 @@ scsi-sub 10.10.5.0/24
 scsi-sbu 10.10.6.0/24
 nodebackend1 10.10.5.233
 nodebackend2 10.10.6.233
+
+
+gluster vol create gfs-vol replica 3 10.10.5.231:/opt/petasan/config/gfs-brick  10.10.5.232:/opt/petasan/config/gfs-brick 10.10.5.233:/opt/petasan/config/gfs-brick force
+
+gluster vol set gfs-vol network.ping-timeout 5
+
+gluster vol set gfs-vol nfs.disable true 
+
+systemctl start  petasan-mount-sharedfs
+
+vsphere@htjn5F
+htjn666.888
