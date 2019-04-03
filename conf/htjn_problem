@@ -30,3 +30,7 @@ systemctl start  petasan-mount-sharedfs
 
 vsphere@htjn5F
 htjn666.888
+
+
+==============================PROBLEM=================================
+when install, careful the Time!!!
