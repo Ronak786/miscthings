@@ -50,3 +50,18 @@ config:
 usb request block:
 	#include <linux/usb.h>
 	driver communicate with device
+
+	driver create urb
+			bind to specific endport
+			tell usb core
+			core tell host controller
+			controller finish jobs with device, respond to your driver code with
+				callback func
+			
+	struct urb:
+			usb_device *dev,
+			int pipe,   usb_cndctrl/bulk/int/isocpipe()/usb_rcvctrlpip
+			transflag:
+					URB_SHORT_NOT_OK :read short not permitted
+					iso_asps:
+					no_transfer_dma_map
