@@ -25,3 +25,9 @@ lock:
 		others just wakup you when they unlock
 
 		ntpl in glibc is used this matter
+
+concurrent structures:
+	count number:
+		each thread has local lock, udpate local number, 
+			also a global lock, when local num > a threshhold, add to global num
+		every cpu works good corresponding to threshhold
