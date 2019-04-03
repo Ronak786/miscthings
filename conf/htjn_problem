@@ -36,3 +36,8 @@ wifi htjn666.888
 ==============================PROBLEM=================================
 when install, careful the Time!!!
 stop ntp service, use ntpupdate to udpate time
+
+can not set same section of gluster and management
+	/opt/petasan/scripts/node_start_ips.py  , ignore return false when subend1 ip failed set(already exists)
+	if can not work, using vlan and try
+	
