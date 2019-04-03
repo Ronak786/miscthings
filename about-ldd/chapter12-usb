@@ -1,0 +1,52 @@
+structure:
+	device : many config(one time only one config)
+	config : many interface
+	interface: many setting(switch among)
+	interface: some number of end point
+
+	one usb_device: /sys/devices/pci0000\:00/0000\:00\:1a.0/usb3/
+	one interface : /sys/devices/pci0000\:00/0000\:00\:1a.0/usb3/3-0:1.0
+		usb3 is a roothub, this is a controller, connect usb bus and pci bus , is a  bridge
+			be allocated a number , here is 3
+			bConfigurationValue  this config value can be written into
+		3-0:1.0
+			3 is hub number above, 0 is id of hub port, so 3-0 is our usb_device
+			1 is config's number, 0 is interface's number
+
+hirechery:
+	vfs block ....
+	usb device driver (use function provided by core)
+	usb core driver
+	usb host controller
+
+	driver in hardware (gadget)
+
+endpoint:
+	control  : command info
+	interrupt : fix speed ,small data
+	bulk:	batch of data
+	isochronous: no guarantee of data comming
+
+	struct usb_host_endpoint:
+		have struct usb_endpoint_descriptor
+			endpointaddr(8bit)
+			type
+			maxpackagesize
+			interval(used for interrupt)
+interface:
+		one interface has multiple endpoint and combine into one function
+		one dev has multiple alternating interface settings can switch between
+
+		struct usb_host_interface
+
+		driver need to convert from struct usb_interface to struct usb_device
+
+config:
+		struct usb_host_config: store config
+		struct usb_device: a usb device
+
+
+
+usb request block:
+	#include <linux/usb.h>
+	driver communicate with device
