@@ -44,3 +44,24 @@ stop ntp service, use ntpupdate to udpate time
 2 gluster vol set gfs-vol  nfs.disable true have multiple
 	in usr/lib/python2.7/dist-packages/PetaSAN/core/cluster/sharedfs.py
 	
+3 clock drift allow too small
+	mon_clock_drift_allowed = 2
+
+4 mds install
+	dpkg --ignore-depends=ceph-base -i ceph-mds_12.2.7-1_amd64.deb 
+	dpkg -i ceph-fuse_xxxx.deb
+
+	modify conf, add mds, see gentoo ceph install
+		[mds.p1-0]
+		  host = host1
+		mkdir -p /var/lib/ceph/mds/demo-p1-0
+		ceph -c /etc/ceph/demo.conf auth get-or-create mds.p1-0 mds 'allow' osd 'allow *' mon 'allow rwx' > /var/lib/ceph/mds/demo-p1-0/keyring
+		chown -R ceph:ceph  /var/lib/ceph/mds
+		cp /etc/systemd/system/ceph-osd@.service.d/override /etc/systemd/system/ceph-mds@.service.d
+		systemctl enable ceph-mds@p1-0
+
+	create pools:
+		ceph -c /etc/ceph/demo.conf osd pool create cephfs_metadata 64
+		ceph -c /etc/ceph/demo.conf osd pool create cephfs_data 64
+	ceph fs new cephfs cephfs_metadata cephfs_data
+		
