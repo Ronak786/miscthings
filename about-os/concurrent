@@ -1,0 +1,21 @@
+lock:
+	spinlock: will waste cpu and not release themselves
+		1 test_and_set: return original val
+		2 fetch_and_add: 
+			this can guarantee every waiting process will
+			get a chance to run, not starve
+		3 load:
+			if(last load is you):
+				set success
+			else
+				set fail
+				goto load
+		4 test and exchange new value:
+			if test == expected val
+				change to new val
+			return originalval // either case
+
+	another type:
+		will release
+
+	
