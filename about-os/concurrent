@@ -19,3 +19,9 @@ lock:
 		will release
 
 	
+	userspace better lock method:
+		first using kernel method aotmically set/get one value,
+		if fail, goto sleep, (may be in a queue), 
+		others just wakup you when they unlock
+
+		ntpl in glibc is used this matter
