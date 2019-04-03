@@ -46,6 +46,8 @@ stop ntp service, use ntpupdate to udpate time
 	
 3 clock drift allow too small
 	mon_clock_drift_allowed = 2
+	ntpdate your ip (configure ntp server first)
+	hwclock -w 
 
 4 mds install
 	dpkg --ignore-depends=ceph-base -i ceph-mds_12.2.7-1_amd64.deb 
