@@ -37,7 +37,10 @@ wifi htjn666.888
 when install, careful the Time!!!
 stop ntp service, use ntpupdate to udpate time
 
-can not set same section of gluster and management
+1 can not set same section of gluster and management
 	/opt/petasan/scripts/node_start_ips.py  , ignore return false when subend1 ip failed set(already exists)
 	if can not work, using vlan and try
+
+2 gluster vol set gfs-vol  nfs.disable true have multiple
+	in usr/lib/python2.7/dist-packages/PetaSAN/core/cluster/sharedfs.py
 	
