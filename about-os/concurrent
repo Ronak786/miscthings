@@ -62,3 +62,7 @@ lock bugs:
 		mutial exclusion:
 			just use a loop: first assign to a local var, then compare 
 			to desination val, is success change, go head, else ,do the loop again
+
+	event based io:
+		select poll
+		or use async io and signal as back information to process
