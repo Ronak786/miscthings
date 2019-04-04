@@ -2,22 +2,22 @@ p1
 admin 10.10.5.211
 scsi-sub 10.10.5.0/24
 scsi-sbu 10.10.6.0/24
-nodebackend1 10.10.5.231
-nodebackend2 10.10.6.231
+nodebackend1 10.10.5.211
+nodebackend2 10.10.6.211
 
 p2
 admin 10.10.5.212
 scsi-sub 10.10.5.0/24
 scsi-sbu 10.10.6.0/24
-nodebackend1 10.10.5.232
-nodebackend2 10.10.6.232
+nodebackend1 10.10.5.212
+nodebackend2 10.10.6.212
 
 p2
 admin 10.10.5.213
 scsi-sub 10.10.5.0/24
 scsi-sbu 10.10.6.0/24
-nodebackend1 10.10.5.233
-nodebackend2 10.10.6.233
+nodebackend1 10.10.5.213
+nodebackend2 10.10.6.213
 
 
 gluster vol create gfs-vol replica 3 10.10.5.231:/opt/petasan/config/gfs-brick  10.10.5.232:/opt/petasan/config/gfs-brick 10.10.5.233:/opt/petasan/config/gfs-brick force
@@ -31,6 +31,10 @@ systemctl start  petasan-mount-sharedfs
 10.10.5.10/ui vsphere@htjn5F
 wifi htjn666.888
 192.168.2.141:8080/vgs pass1234
+
+=============================TECHNIQUE===============================
+grep '\--cluster' -R  * 
+	used to send  get ceph api in petasan
 
 
 ==============================PROBLEM=================================
