@@ -31,3 +31,34 @@ concurrent structures:
 		each thread has local lock, udpate local number, 
 			also a global lock, when local num > a threshhold, add to global num
 		every cpu works good corresponding to threshhold
+	link list
+	queue
+	hash
+		all these should lock the most critical region instead of much larger region, which
+			is bad
+	
+producer consumer:
+	should use different signal conditional value to avoid unnecessary wakeup
+		also wake up sequence is import, so pthread_cond_broadcast better than just signal
+		one process up
+
+semaphore:
+	sem_wait() sem_post()
+	can used as mutex or conditional variable
+
+lock bugs:
+	non-deadlock bugs:
+		non-atomic check and set issues
+		order execute issue: when using thread is ahead of init thread,
+			can use conditional variable to avoid
+
+	deadlock bugs:
+		circular wait:
+			should hold lock in order
+		hold and wait:
+			should hold all lock before
+		no premmption:
+			avoided by use trylock instead of just lock and wait
+		mutial exclusion:
+			just use a loop: first assign to a local var, then compare 
+			to desination val, is success change, go head, else ,do the loop again
