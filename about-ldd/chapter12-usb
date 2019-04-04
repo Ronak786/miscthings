@@ -1,3 +1,4 @@
+#include <linux/usb.h>
 structure:
 	device : many config(one time only one config)
 	config : many interface
@@ -64,4 +65,104 @@ usb request block:
 			transflag:
 					URB_SHORT_NOT_OK :read short not permitted
 					iso_asps:
-					no_transfer_dma_map
+					no_transfer_dma_map : will use user setted dma buffer
+					async unlink : unlink return immediately
+					usb_zero_packet :used by some device bulk transfer
+					urb_no_interrupt: no interrupt when transfer clear
+
+			transfer_buffer
+			transfer_dma : used one of these two
+			transfer_buffer_length: 
+				size of one of above two
+			char *setup_packet :
+				used by control urb
+				 setup_dma : like above
+			usb_complete:
+				 a call back from usb driver called by usb core
+			void *context:
+				user defined data
+			actual_length:
+				realy received / send length
+			status:
+				in callback, check success or not
+				isoc transfer should use is_frame_desc to check
+
+				val: 0, 
+					-enoent,  usb_kill_urb()
+					-econnrest, usb_unlink_urb() and transfer_flag to urb_async_Unlnk
+					-einprogress: should not this ,means code has problem
+					-eilseq : crc fail
+					-epipe:
+						usb_clear_hatl() to clear this
+
+			start_frame: isoc transfer
+			interval : interrupt and isoc
+			number_of_packets: isoc
+
+		allocate:
+			usb_alloc_urb
+			usb_free_urb
+
+		init:
+			usb_fill_int/bulk/control_urb
+				set transfer flag your self for control
+			isoc must init yourself
+
+		submit:
+			usb_submit_urb (flag):
+				GFP_ATOMIC:
+					caller in a complete function, interrupt, bottom half, tasklet, timer
+				GFP_NOIO:
+					in block io
+				GFP_KERNEL:
+					others
+
+		return:
+			check submit functions return val
+			and in complete func, check status val
+
+		cancel:
+			usb_kill_urb()
+			usb_unlink_urb() better, pass URB_ASYNC_uNLINK in urb and will return immediately,
+				canbe used in interrupt
+
+transfer without urb:
+	usb_control_msg
+	usb_bulk_msg
+
+get descriptor from usb device:
+	usb_get_descriptor
+	usb_get_string
+	usb_string
+
+
+id :
+	struct usb_device_id:
+		match_flag:
+			decide which below fields be used to match
+		vendor,deviceid,  deviceclass, subclass, protocal,  interfaceclass, subclass, protocal
+
+		use USB_DEVICE_XX MACROS to make id,
+
+		then MODULE_DEVICE_TABLE(usb, table);
+
+struct usb_driver:
+	owner
+	name
+	id_table
+		if want to probe all device, just set one entry with driver_info as 42 and another emtpy one
+	probe
+	disconnect
+		running in usb kernel thread, so sleep is permitted
+
+	register into system:
+		usb_register
+		usb_deregister
+
+	in probe:
+		query interface for endpoint info, init your own struct, use usb_set_infdata(intf, your_dev_struct);//save private date
+		use usb_get_infdate to get it
+
+		usb_register_dev(intf, &usb_class_driver)
+			class driver used to communicate with userspace using file operation 
+		usb_deregister_dev(...)
