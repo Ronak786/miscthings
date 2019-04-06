@@ -1,0 +1,14 @@
+disk operation:
+	interface:
+		status command data register to control
+	internal:
+		disks each has two phase, which has many tracks,
+			which as many sectors
+		disk head seek arond track: seek time
+		wait for sector : roration time
+
+	internal policy:
+		depend on seek and rotation time which is less
+	outer  os policy:
+		elevator algorithm, avoid starve
+		merge request, increase io throughput
