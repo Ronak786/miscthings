@@ -132,3 +132,39 @@ simple filesystem:
 		2 extent format, store pointers to data and length of data,
 			just like cpu segment method in virtualization
 		  xfs and ext4 use this
+
+	dir:
+		directory just special files containing data as
+		its files's inode and name and other things like string length
+	open:
+		superblock read from disk when system boot,
+		so search from '/' 's inode, every inode and data nodewill be 
+			read to find the next inode, finally the specified file's inode,
+
+		when create:
+			bitmap will be read and write to allocate block for new file's
+			inode.
+	write:
+		new inode allocated by bitmap, and update inode and write to 
+		date block
+	read
+		rw to update inode time and  read to datablock
+
+		read/write will also need update memory structure of position
+	close
+		nothing to do
+		no need to fsync()
+	fsync
+		make sure buffered data flushed to disk
+			
+	these are expensive, so modern os have filesystem cache of read and 
+		write, after some seconds then data will be flush, but will suffer
+		losing data, so database sometimes work around this cache
+
+fast file system:
+	introduce rename, symlink
+	most important:
+		block groups, because disk seek cost too much, one groups
+		combines some cylinders, all files in  one directory and its
+		data block allocate in one group as possible, if file too
+		large, the indirect index's put in another group
