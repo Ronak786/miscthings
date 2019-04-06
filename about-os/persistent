@@ -12,3 +12,123 @@ disk operation:
 	outer  os policy:
 		elevator algorithm, avoid starve
 		merge request, increase io throughput
+
+raid:
+	consistent update problem:
+		if raid write is processing and power is down, will inconsistent,
+			so a write ahead log is necessary and usually provided by
+			raid controller, so no performance penalty incurred
+	raid0:
+		raid 0 is strip, one strip is chunks orderly across all disk,
+		small chunk size increase paralism io, but seek and roration
+		time will be the largest one among all disks
+		analysis:
+			let say disk seek time a ms, roraton time bms, transfer
+			speed c mb/s,
+			sequence:
+				then sequence io time  of p MB: a + b + p / c = e,
+				then sequence speed = p / e, 
+				 which will be close to disk speed
+			random:
+				random io  time of q kb(random io usually smal):  (a+b+p)/c = f,
+				random speed = p / f,
+					which will be very small
+
+		generayly raid 0 is very efficient, but not tolerate to error
+
+
+	raid1:
+		mirror disks, 
+		variant:
+			raid10 , first mirror, then stirp , like:
+				0 0 1 1
+				2 2 3 3 
+			raid01, first strip, then mirror as a whole, like:
+				0 1 0 1
+				2 3 2 3
+		fail tolerant :
+			certain for one disk,
+			but is loss in the same mirror group, can to lerate n/2 disks
+
+		analysis:
+			sequence write,  n/2 * s(sequence io speed) need write 2 copies
+			sequence read,   n/2 * s
+				because as ostep said , if we choose read block 0 from
+				disk0, block 1 from disk1, block 2 from disk0, block3 from
+				disk1, then every disk will suffer from seek and rotation
+				instead of truly sequence read, that is just a logical
+				contingous but physicaly seperate read, so only half
+				bandwidth
+			random write, n/2*r (need write two copies)
+			random read, n * r(can read from every disk)
+				across all disks for read, so full speed
+
+	raid4:
+		n-1 disks for io, one for parity, 
+			just use xor for each bit as parity, in real is an even parity check	
+		sequence rw, (n-1)*s (speed)
+		random read, (n-1)*r
+		random write:
+			1, additive method, read all data from other disk, 
+				recompute parity, this is too cost
+			2, substractive method, read just the io disk and parity disk,
+				check if parity bit need flip or not
+			the method2 because parity disk is bottle neck disk for 
+			multiple random writes, so must sequence order when actually
+			perform, so performance is just R/2, R is random read performance
+			of raid0, which is best, 
+			this is called small write problem
+
+		write latency:
+			2T (which is one disk latency)
+			because need two one read and one write on one disk
+
+	raid5:
+		just like raid4, but parity roundrobin into each disk in every stripe,
+		random read alittle better, across all disks,
+		random write (small write) now increase into (n/4)*r 
+			because every write incur two read and two write
+			but will not bottleneck into just one parity disk
+
+	conclusion:
+		if performance, raid 0
+		if random and redundancy is important, raid 1 is better
+		if capacity and reliability and cost is important, raid 5 is better
+			(raid 4 is a subset of raid 5, just implement simpler)
+
+
+
+file and directory:
+	debug:
+		strace  -e trace=open,close,read,write....
+				-f trace_forked
+				-t  report time
+
+	fsync():
+		write always return but data is buffered, so fsync() need 
+		to make sure data is on disk, but also fsync(dir's fd) also
+		needed if file is newly created, so dis's inode is updated
+	rename():
+		guarantee to be aotmic, so usual action of add data to file
+		is : open a tmp file, write into it, fsync(), then rename to
+		the specified name
+
+simple filesystem:
+	disk split into blocks(eg. 4k), some for data store, some for inode
+		store, which record which file's data in which data block,
+		inode table, data table: record which inode, data block is empty
+		or inuse, 
+		super block: record how many inodes , datas block we have,
+			where table and bitmap begin ...
+
+	inode data store:
+		first search using inode index number, calculate from start
+		and calculate the block number ,issue a read of that block,
+		then we have inode info, 
+		1 in which is stat of file and data 
+			pointers, eg. 12 direct and 3 multiple level index, 
+			because most file are small, some are big,
+		  this is ext2,3 's format
+		2 extent format, store pointers to data and length of data,
+			just like cpu segment method in virtualization
+		  xfs and ext4 use this
