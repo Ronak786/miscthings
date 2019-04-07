@@ -237,3 +237,13 @@ nfs:
 		every time close a file , client will write to server the 
 		buffered write data, for other client to get newest data.
 
+afs:
+	once open , download all file data from server and cache in local
+	disk, also register callback along path-to-file each directory,
+	once close file, just flush to server, then server notify from callback
+	to all other clients to fetch new version of data
+
+	when crash:
+		client: grab new version of data from server or check stat for 
+		if local save is uptodata
+		server: notify clients to refetch data again
