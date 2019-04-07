@@ -168,3 +168,72 @@ fast file system:
 		combines some cylinders, all files in  one directory and its
 		data block allocate in one group as possible, if file too
 		large, the indirect index's put in another group
+
+	log:
+		data journal:
+			first wirte into a journal special area, then write into 
+			actually disk filesystem, 
+			good:
+				assure data consistent
+			bad:
+				write two times
+		meta journal:
+			data write to disk first, then write journal, then journal
+			write to disk
+			good:
+				only write one time of data, which is big
+			bad:
+				if crash, data may lost
+
+log-structured fs:
+	used to optimise seek time when write, because os has cache,
+	read is generally cheap
+	this is a append-only system, every write, will write a segment,
+	(one segment may be many writes combined together),so seek time
+	is very small, and new inode, new bitmap also as data in new segment,
+	and keep a checkpoint region at a fix point for latest bitmap places,
+	every time read, just read the latest ones, 
+
+	garbage collection:
+		periodically need check some segments for data block if not live,
+		free them by append new collected live blocks, free old ones for
+		future use
+
+date protection:
+	1 sector lantent:
+		sector just destroyed by disk head, thus return error when read
+		or write, so raid or other methods used to remedy data from other
+		disks
+	2 data corruption:
+		1 mis direct write:
+			include parity check in every sector for data and which disk,
+			which sector
+		2 loss write
+			include check both in disk and in inode, so when read, check
+			if they are the same
+		when to check:
+			check need space, but limited, os check may happed when copying
+			data, so is efficient,  disk check may happen every period of 
+			time when every week for eg.
+
+distribute file system:
+	client talk to server using udp or tcp(with acknowledge)
+	rpc:
+		client send in a stub code,which sent across rpc library,
+		server receive and decompile from stub, then run method,
+		then return
+		often use udp, and do relabile check itself instead of tcp
+
+nfs:
+	use a stateless convention, every open, read write close will
+	contain every info that operation needs by server, so crash
+	only need a client retry(no keeping file descriptor inclient)
+
+	cache:
+		client cache data and have a local attr cache which update
+		every some seconds, every time retrieve data, client will
+		ask attr cache if update to data, if not ,just fetch again
+	write back on close:
+		every time close a file , client will write to server the 
+		buffered write data, for other client to get newest data.
+
