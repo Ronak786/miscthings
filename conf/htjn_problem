@@ -71,3 +71,15 @@ stop ntp service, use ntpupdate to udpate time
 		ceph -c /etc/ceph/demo.conf osd pool create cephfs_data 64
 	ceph fs new cephfs cephfs_metadata cephfs_data
 		
+
+mount feature:
+	if feature not supported very well, will not mount, check kernel's include/linux/ceph/ceph_features.h to see
+		which feature you lost
+		you can set crush type using ceph --cluster demo osd crush tunables hammer(0.94)
+
+
+======================================== test ===============================
+4.4 disable feature of tunable
+client:   933 MB/s wr, 0 op/s rd, 245 op/s wr
+client 4.17 tunable hammer/default 116 MB/s wr, 0 op/s rd, 31 op/s wr
+

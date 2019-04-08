@@ -48,6 +48,7 @@ useful vars:
 
 license: default put at the end of module
 	MODULE_LICENSE if not use, kernel is tainted
+		and no using this, you can't use kernel's gpl symbols, like class_create device_create .....
 	MODULE_VERSION
 	MODULE_AUTHOR
 	MODULE_DESCRIPTION

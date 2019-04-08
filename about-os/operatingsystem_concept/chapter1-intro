@@ -1,0 +1,18 @@
+cpu:
+	single cpu
+	multi cpu
+	multi core : more power save, 
+
+memory:
+	l1 cache per core
+	l2 cache per cpu
+	l3 cache all cpus in one area
+
+io:
+	nvm (nonvolatile memory)
+	hard disk
+
+os:
+	resource management, used to ease user access of hardware
+
+

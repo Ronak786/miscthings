@@ -87,3 +87,13 @@ struct cdev: add after get dev num
 
 		del:
 			cdev_del(cdev) then unregister_chrdev_region
+
+class_create
+device_create
+	above cdev functions only add to system, but not sysfs system,
+	use this two to add your device into sysfs sytem
+
+	use sysfs_create_file 
+		with struct kobj_attribute = __ATTR(xxxxxx) to create your sysfs attr
+		store should return count
+		show use sprintf to print, resize into one page size

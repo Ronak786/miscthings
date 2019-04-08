@@ -1,0 +1,125 @@
+kobject:
+	#include <linux/kobject.h>
+	often included in a user defined structure
+	used to protect an object's reference
+
+	a reference, if 0, can delete
+		usually use container_of(xxx) and kfree
+
+	init:
+		memset to 0
+		kobject_init() set reference to 1
+			this will be done during cdev_init, so you just set name
+		kobject_set_name()
+
+		kobject_add() add object to kset, first need to assign kset ptr in kobject
+			one set means a set of kobj of same type
+		kobject_del()
+			delete from kset
+		kobject_register()
+			combine of kobject_init() and kobject_add()
+		kobject_unregister()
+			combine del and put
+
+	
+	funcs:
+		kobject_get() inc refer
+		kobject_put() dec refer   should check if race condition occurred
+			
+	when get reference:
+		usually:
+			try_module_get(struct module* owner) // get refer of owner
+			kobject_get() // get refer of that kernel obj
+
+kobj_type:(from kset or just from kobject) kset's type is perferred
+	get_ktype() :return this kobject's kobj_type* instead of kset's ktype
+	this in kobject structure, or if this obj in a kset, that kset has  that structure
+	this as :
+		release() : called when obj number is 0 from put function, synchronizely
+		sysfs_ops
+		attributes
+
+kset:
+	kset has its own kobject, which in most case is the parent of 
+		this list's children kobject's parent
+
+	kset_init/add/register/unregister/get/put
+	kset_set_name() : set name of its embeded kobject
+
+	if have parent, kobj created under parent's dir
+	else if have kset, under ket's dir
+	else under /sys
+
+	attrs:
+		sysfs_create_link
+		sysfs_remove_link // create a soft link, to better structure
+		sysfs_create_file
+		sysfs_remove_file
+		sysfs_create_bin_file
+		sysfs_remove_bin_file
+
+		use kobject->kobj_types->attr and sysfs_ops (show, store) to control
+
+
+bus register: have two list: struct device & struct device_driver
+	bus_register()  then under /sys/bus
+
+	bus_unregister() unregister
+	bus_for_each_dev
+	bus_for_each_drv //search the bus
+	BUS_ATTR
+	bus_create_file
+	bus_remove_file
+	
+	bus device register:
+		also need a device represent that bus
+
+	struct device:
+			parent
+			kobj
+			bus_id[] the name of device on bus
+			release:
+				called from kobj's release
+
+	when register device:
+		set bus type and parent device(to bus device) both,
+		set dev name if you want to match that  when calling match
+	when register driver:
+		set bus type
+		register_driver()
+		use dev_set_drvdata() to set up your data
+
+	you can use device_create_file/driver_create_file do your job
+
+	for device:
+		set bustype, parent, release, dev_set_name() to set name of device(maybe used in match)
+	for driver:
+		set driver's bustype, name, then register
+	for bus:
+		register bustype
+		register bus dev
+
+	unregister:
+		device_unregister
+
+		bus_unregister
+
+when bind device and driver:
+	first register driver on bus,
+	then register device on bus,
+	now bus will iterate all driver for that device,
+		if match success, (not return 0), then call that driver's probe
+			if probe fail(return non-zero), return, and bus iterate again
+			if probe success, add a link under sysfs from device to driver
+
+when remove dev:
+	eg. pci, call pci_remove_bus_device
+when add/remove drv:
+	pci_[un]register_driver
+
+
+firmware subsystem:
+	request_firmware:
+		wait and send uevent to userspace,
+		udev catch that and using the path passed in to send firmware data
+		from usersapce into /sys 's path
