@@ -1,0 +1,25 @@
+kmalloc return logical addr: an offset from physical addr
+vmalloc return virtual addr: just virtually continous
+
+struct page:
+	better than just vaddr, because this struct include vaddr if needed,
+	or just no map of that page, then no addr
+	but every physical mem included in one page
+
+virt_to_phys
+struct page *virt_to_page();
+pfn_to_page(int num)
+vaddr * page_address(struct page*); // not good for nonmapped pages
+kmap/kunmap[_atomic]: better than above, will do the map for high mem(those have no
+		direct map)
+
+vma:
+	#include <<asm/pgtable.h> for virt_to_page,
+	virtual memory area: every single area have same permission, see /proc/self/mmap
+
+	remap_pfn_range():
+		if you use this, and just vma->pg_off send to it, then driver do not provide mem,
+		kernel will just use zero page to support you every time open dev a new empty page
+	or you just implement vm_operations_ops
+		and implement your fault, just like ldd, scullp/mmap.c
+		map your page in it

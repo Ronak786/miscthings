@@ -3,9 +3,19 @@ cmd_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := gcc -Wp,-MD,
 source_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := /home/sora/gitbase/miscthings/about-ldd/source/hello/hello.c
 
 deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
-  include/linux/init.h \
-    $(wildcard include/config/broken/rodata.h) \
-    $(wildcard include/config/lto.h) \
+  include/linux/spinlock.h \
+    $(wildcard include/config/smp.h) \
+    $(wildcard include/config/debug/spinlock.h) \
+    $(wildcard include/config/generic/lockbreak.h) \
+    $(wildcard include/config/preempt.h) \
+    $(wildcard include/config/debug/lock/alloc.h) \
+  include/linux/typecheck.h \
+  include/linux/preempt.h \
+    $(wildcard include/config/preempt/count.h) \
+    $(wildcard include/config/debug/preempt.h) \
+    $(wildcard include/config/preempt/tracer.h) \
+    $(wildcard include/config/preempt/notifiers.h) \
+  include/linux/linkage.h \
   include/linux/compiler.h \
     $(wildcard include/config/sparse/rcu/pointer.h) \
     $(wildcard include/config/trace/branch/profiling.h) \
@@ -35,31 +45,23 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
     $(wildcard include/config/x86/32.h) \
   arch/x86/include/uapi/asm/posix_types_64.h \
   include/uapi/asm-generic/posix_types.h \
+  include/linux/stringify.h \
+  include/linux/export.h \
+    $(wildcard include/config/have/underscore/symbol/prefix.h) \
+    $(wildcard include/config/modules.h) \
+    $(wildcard include/config/modversions.h) \
+    $(wildcard include/config/unused/symbols.h) \
+  arch/x86/include/asm/linkage.h \
+    $(wildcard include/config/x86/64.h) \
+    $(wildcard include/config/x86/alignment/16.h) \
+  include/linux/list.h \
+    $(wildcard include/config/debug/list.h) \
   include/linux/types.h \
     $(wildcard include/config/have/uid16.h) \
     $(wildcard include/config/uid16.h) \
     $(wildcard include/config/lbdaf.h) \
     $(wildcard include/config/arch/dma/addr/t/64bit.h) \
     $(wildcard include/config/phys/addr/t/64bit.h) \
-  include/linux/module.h \
-    $(wildcard include/config/modules.h) \
-    $(wildcard include/config/sysfs.h) \
-    $(wildcard include/config/unused/symbols.h) \
-    $(wildcard include/config/module/sig.h) \
-    $(wildcard include/config/modules/tree/lookup.h) \
-    $(wildcard include/config/generic/bug.h) \
-    $(wildcard include/config/kallsyms.h) \
-    $(wildcard include/config/smp.h) \
-    $(wildcard include/config/tracepoints.h) \
-    $(wildcard include/config/tracing.h) \
-    $(wildcard include/config/event/tracing.h) \
-    $(wildcard include/config/ftrace/mcount/record.h) \
-    $(wildcard include/config/livepatch.h) \
-    $(wildcard include/config/module/unload.h) \
-    $(wildcard include/config/constructors.h) \
-    $(wildcard include/config/debug/set/module/ronx.h) \
-  include/linux/list.h \
-    $(wildcard include/config/debug/list.h) \
   include/linux/poison.h \
     $(wildcard include/config/illegal/pointer/value.h) \
   include/uapi/linux/const.h \
@@ -69,15 +71,9 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
     $(wildcard include/config/mmu.h) \
     $(wildcard include/config/prove/locking.h) \
     $(wildcard include/config/panic/timeout.h) \
+    $(wildcard include/config/tracing.h) \
+    $(wildcard include/config/ftrace/mcount/record.h) \
   /usr/lib/gcc/x86_64-redhat-linux/8/include/stdarg.h \
-  include/linux/linkage.h \
-  include/linux/stringify.h \
-  include/linux/export.h \
-    $(wildcard include/config/have/underscore/symbol/prefix.h) \
-    $(wildcard include/config/modversions.h) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/x86/64.h) \
-    $(wildcard include/config/x86/alignment/16.h) \
   include/linux/bitops.h \
   arch/x86/include/asm/bitops.h \
     $(wildcard include/config/x86/cmov.h) \
@@ -140,12 +136,14 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
   include/linux/log2.h \
     $(wildcard include/config/arch/has/ilog2/u32.h) \
     $(wildcard include/config/arch/has/ilog2/u64.h) \
-  include/linux/typecheck.h \
   include/linux/printk.h \
     $(wildcard include/config/message/loglevel/default.h) \
     $(wildcard include/config/early/printk.h) \
     $(wildcard include/config/printk.h) \
     $(wildcard include/config/dynamic/debug.h) \
+  include/linux/init.h \
+    $(wildcard include/config/broken/rodata.h) \
+    $(wildcard include/config/lto.h) \
   include/linux/kern_levels.h \
   include/linux/cache.h \
     $(wildcard include/config/arch/has/cache/line/size.h) \
@@ -163,22 +161,6 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
   arch/x86/include/uapi/asm/errno.h \
   include/uapi/asm-generic/errno.h \
   include/uapi/asm-generic/errno-base.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/arch/uses/gettimeoffset.h) \
-  include/linux/seqlock.h \
-    $(wildcard include/config/debug/lock/alloc.h) \
-  include/linux/spinlock.h \
-    $(wildcard include/config/debug/spinlock.h) \
-    $(wildcard include/config/generic/lockbreak.h) \
-    $(wildcard include/config/preempt.h) \
-  include/linux/preempt.h \
-    $(wildcard include/config/preempt/count.h) \
-    $(wildcard include/config/debug/preempt.h) \
-    $(wildcard include/config/preempt/tracer.h) \
-    $(wildcard include/config/preempt/notifiers.h) \
   arch/x86/include/asm/preempt.h \
   arch/x86/include/asm/percpu.h \
     $(wildcard include/config/x86/64/smp.h) \
@@ -193,6 +175,7 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
     $(wildcard include/config/compat.h) \
     $(wildcard include/config/debug/stack/usage.h) \
   include/linux/bug.h \
+    $(wildcard include/config/generic/bug.h) \
   arch/x86/include/asm/bug.h \
     $(wildcard include/config/debug/bugverbose.h) \
   include/asm-generic/bug.h \
@@ -315,69 +298,51 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
     $(wildcard include/config/inline/write/unlock/irq.h) \
     $(wildcard include/config/inline/read/unlock/irqrestore.h) \
     $(wildcard include/config/inline/write/unlock/irqrestore.h) \
-  include/linux/time64.h \
-  include/uapi/linux/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/multiuser.h) \
-    $(wildcard include/config/user/ns.h) \
-  include/linux/highuid.h \
-  include/linux/kmod.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/highmem.h) \
-    $(wildcard include/config/zone/dma.h) \
-    $(wildcard include/config/zone/dma32.h) \
-    $(wildcard include/config/numa.h) \
-    $(wildcard include/config/deferred/struct/page/init.h) \
-    $(wildcard include/config/pm/sleep.h) \
-    $(wildcard include/config/cma.h) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/debug/vm.h) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/force/max/zoneorder.h) \
-    $(wildcard include/config/memory/isolation.h) \
-    $(wildcard include/config/memcg.h) \
-    $(wildcard include/config/zone/device.h) \
-    $(wildcard include/config/memory/hotplug.h) \
-    $(wildcard include/config/compaction.h) \
-    $(wildcard include/config/flat/node/mem/map.h) \
-    $(wildcard include/config/page/extension.h) \
-    $(wildcard include/config/no/bootmem.h) \
+  arch/x86/include/asm/pgtable.h \
+    $(wildcard include/config/debug/wx.h) \
+    $(wildcard include/config/transparent/hugepage.h) \
+    $(wildcard include/config/have/arch/soft/dirty.h) \
     $(wildcard include/config/numa/balancing.h) \
-    $(wildcard include/config/have/memory/present.h) \
-    $(wildcard include/config/have/memoryless/nodes.h) \
-    $(wildcard include/config/need/node/memmap/size.h) \
-    $(wildcard include/config/have/memblock/node/map.h) \
-    $(wildcard include/config/need/multiple/nodes.h) \
-    $(wildcard include/config/have/arch/early/pfn/to/nid.h) \
-    $(wildcard include/config/sparsemem/extreme.h) \
-    $(wildcard include/config/have/arch/pfn/valid.h) \
-    $(wildcard include/config/holes/in/zone.h) \
-    $(wildcard include/config/arch/has/holes/memorymodel.h) \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
+  arch/x86/include/asm/e820.h \
+    $(wildcard include/config/efi.h) \
+    $(wildcard include/config/hibernation.h) \
   include/linux/numa.h \
     $(wildcard include/config/nodes/shift.h) \
-  include/linux/nodemask.h \
-    $(wildcard include/config/movable/node.h) \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/hugetlb/page.h) \
-    $(wildcard include/config/hugetlb/page/size/variable.h) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/memory_hotplug.h \
+  arch/x86/include/uapi/asm/e820.h \
+    $(wildcard include/config/x86/pmem/legacy.h) \
+    $(wildcard include/config/intel/txt.h) \
+  include/linux/ioport.h \
     $(wildcard include/config/memory/hotremove.h) \
-    $(wildcard include/config/have/arch/nodedata/extension.h) \
-    $(wildcard include/config/have/bootmem/info/node.h) \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/debug/mutexes.h) \
-    $(wildcard include/config/mutex/spin/on/owner.h) \
-  include/linux/osq_lock.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/rwsem/spin/on/owner.h) \
-    $(wildcard include/config/rwsem/generic/spinlock.h) \
-  arch/x86/include/asm/rwsem.h \
-  include/linux/srcu.h \
+  arch/x86/include/asm/x86_init.h \
+  arch/x86/include/uapi/asm/bootparam.h \
+  include/linux/screen_info.h \
+  include/uapi/linux/screen_info.h \
+  include/linux/apm_bios.h \
+  include/uapi/linux/apm_bios.h \
+  include/linux/edd.h \
+  include/uapi/linux/edd.h \
+  arch/x86/include/asm/ist.h \
+  arch/x86/include/uapi/asm/ist.h \
+  include/video/edid.h \
+    $(wildcard include/config/x86.h) \
+  include/uapi/video/edid.h \
+  arch/x86/include/asm/pgtable_64.h \
+  include/linux/mm_types.h \
+    $(wildcard include/config/split/ptlock/cpus.h) \
+    $(wildcard include/config/arch/enable/split/pmd/ptlock.h) \
+    $(wildcard include/config/have/cmpxchg/double.h) \
+    $(wildcard include/config/have/aligned/struct/page.h) \
+    $(wildcard include/config/memcg.h) \
+    $(wildcard include/config/userfaultfd.h) \
+    $(wildcard include/config/numa.h) \
+    $(wildcard include/config/aio.h) \
+    $(wildcard include/config/mmu/notifier.h) \
+    $(wildcard include/config/compaction.h) \
+    $(wildcard include/config/hugetlb/page.h) \
+  include/linux/auxvec.h \
+  include/uapi/linux/auxvec.h \
+  arch/x86/include/uapi/asm/auxvec.h \
+  include/linux/rbtree.h \
   include/linux/rcupdate.h \
     $(wildcard include/config/tiny/rcu.h) \
     $(wildcard include/config/tree/rcu.h) \
@@ -392,11 +357,18 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
     $(wildcard include/config/rcu/boost.h) \
     $(wildcard include/config/rcu/nocb/cpu/all.h) \
     $(wildcard include/config/no/hz/full/sysidle.h) \
+  include/linux/seqlock.h \
   include/linux/completion.h \
+  include/linux/wait.h \
+  include/uapi/linux/wait.h \
   include/linux/debugobjects.h \
     $(wildcard include/config/debug/objects.h) \
     $(wildcard include/config/debug/objects/free.h) \
   include/linux/ktime.h \
+  include/linux/time.h \
+    $(wildcard include/config/arch/uses/gettimeoffset.h) \
+  include/linux/time64.h \
+  include/uapi/linux/time.h \
   include/linux/jiffies.h \
   include/linux/timex.h \
   include/uapi/linux/timex.h \
@@ -411,6 +383,77 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
   include/generated/timeconst.h \
   include/linux/timekeeping.h \
   include/linux/rcutree.h \
+  include/linux/rwsem.h \
+    $(wildcard include/config/rwsem/spin/on/owner.h) \
+    $(wildcard include/config/rwsem/generic/spinlock.h) \
+  include/linux/osq_lock.h \
+  arch/x86/include/asm/rwsem.h \
+  include/linux/uprobes.h \
+    $(wildcard include/config/uprobes.h) \
+  include/linux/page-flags-layout.h \
+  include/generated/bounds.h \
+  arch/x86/include/asm/mmu.h \
+    $(wildcard include/config/modify/ldt/syscall.h) \
+  include/linux/mutex.h \
+    $(wildcard include/config/debug/mutexes.h) \
+    $(wildcard include/config/mutex/spin/on/owner.h) \
+  include/linux/mmdebug.h \
+    $(wildcard include/config/debug/vm.h) \
+  include/asm-generic/pgtable.h \
+    $(wildcard include/config/have/arch/huge/vmap.h) \
+  include/linux/module.h \
+    $(wildcard include/config/sysfs.h) \
+    $(wildcard include/config/module/sig.h) \
+    $(wildcard include/config/modules/tree/lookup.h) \
+    $(wildcard include/config/kallsyms.h) \
+    $(wildcard include/config/tracepoints.h) \
+    $(wildcard include/config/event/tracing.h) \
+    $(wildcard include/config/livepatch.h) \
+    $(wildcard include/config/module/unload.h) \
+    $(wildcard include/config/constructors.h) \
+    $(wildcard include/config/debug/set/module/ronx.h) \
+  include/linux/stat.h \
+  arch/x86/include/uapi/asm/stat.h \
+  include/uapi/linux/stat.h \
+  include/linux/uidgid.h \
+    $(wildcard include/config/multiuser.h) \
+    $(wildcard include/config/user/ns.h) \
+  include/linux/highuid.h \
+  include/linux/kmod.h \
+  include/linux/gfp.h \
+    $(wildcard include/config/highmem.h) \
+    $(wildcard include/config/zone/dma.h) \
+    $(wildcard include/config/zone/dma32.h) \
+    $(wildcard include/config/deferred/struct/page/init.h) \
+    $(wildcard include/config/pm/sleep.h) \
+    $(wildcard include/config/cma.h) \
+  include/linux/mmzone.h \
+    $(wildcard include/config/force/max/zoneorder.h) \
+    $(wildcard include/config/memory/isolation.h) \
+    $(wildcard include/config/zone/device.h) \
+    $(wildcard include/config/memory/hotplug.h) \
+    $(wildcard include/config/flat/node/mem/map.h) \
+    $(wildcard include/config/page/extension.h) \
+    $(wildcard include/config/no/bootmem.h) \
+    $(wildcard include/config/have/memory/present.h) \
+    $(wildcard include/config/have/memoryless/nodes.h) \
+    $(wildcard include/config/need/node/memmap/size.h) \
+    $(wildcard include/config/have/memblock/node/map.h) \
+    $(wildcard include/config/need/multiple/nodes.h) \
+    $(wildcard include/config/have/arch/early/pfn/to/nid.h) \
+    $(wildcard include/config/sparsemem/extreme.h) \
+    $(wildcard include/config/have/arch/pfn/valid.h) \
+    $(wildcard include/config/holes/in/zone.h) \
+    $(wildcard include/config/arch/has/holes/memorymodel.h) \
+  include/linux/nodemask.h \
+    $(wildcard include/config/movable/node.h) \
+  include/linux/pageblock-flags.h \
+    $(wildcard include/config/hugetlb/page/size/variable.h) \
+  include/linux/memory_hotplug.h \
+    $(wildcard include/config/have/arch/nodedata/extension.h) \
+    $(wildcard include/config/have/bootmem/info/node.h) \
+  include/linux/notifier.h \
+  include/linux/srcu.h \
   include/linux/workqueue.h \
     $(wildcard include/config/debug/objects/work.h) \
     $(wildcard include/config/freezer.h) \
@@ -420,7 +463,6 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
     $(wildcard include/config/no/hz/common.h) \
   include/linux/sysctl.h \
     $(wildcard include/config/sysctl.h) \
-  include/linux/rbtree.h \
   include/uapi/linux/sysctl.h \
   arch/x86/include/asm/mmzone.h \
   arch/x86/include/asm/mmzone_64.h \
@@ -433,26 +475,6 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
     $(wildcard include/config/eisa.h) \
     $(wildcard include/config/x86/mpparse.h) \
   arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/e820.h \
-    $(wildcard include/config/efi.h) \
-    $(wildcard include/config/hibernation.h) \
-  arch/x86/include/uapi/asm/e820.h \
-    $(wildcard include/config/x86/pmem/legacy.h) \
-    $(wildcard include/config/intel/txt.h) \
-  include/linux/ioport.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/x86.h) \
-  include/uapi/video/edid.h \
   arch/x86/include/asm/apicdef.h \
   arch/x86/include/asm/apic.h \
     $(wildcard include/config/x86/x2apic.h) \
@@ -475,8 +497,6 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
     $(wildcard include/config/numa/emu.h) \
   arch/x86/include/asm/topology.h \
   include/asm-generic/topology.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/modify/ldt/syscall.h) \
   arch/x86/include/asm/realmode.h \
     $(wildcard include/config/acpi/sleep.h) \
   arch/x86/include/asm/io.h \
@@ -521,22 +541,8 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
     $(wildcard include/config/x86/x32/abi.h) \
   arch/x86/include/asm/user.h \
   arch/x86/include/asm/user_64.h \
-  arch/x86/include/uapi/asm/auxvec.h \
   arch/x86/include/asm/vdso.h \
     $(wildcard include/config/x86/x32.h) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/split/ptlock/cpus.h) \
-    $(wildcard include/config/arch/enable/split/pmd/ptlock.h) \
-    $(wildcard include/config/have/cmpxchg/double.h) \
-    $(wildcard include/config/have/aligned/struct/page.h) \
-    $(wildcard include/config/transparent/hugepage.h) \
-    $(wildcard include/config/userfaultfd.h) \
-    $(wildcard include/config/aio.h) \
-    $(wildcard include/config/mmu/notifier.h) \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/uprobes.h) \
   include/uapi/linux/elf.h \
   include/uapi/linux/elf-em.h \
   include/linux/kobject.h \
@@ -650,6 +656,41 @@ deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o := \
     $(wildcard include/config/intel/iommu.h) \
     $(wildcard include/config/amd/iommu.h) \
   include/linux/pm_wakeup.h \
+  include/linux/mm.h \
+    $(wildcard include/config/ppc.h) \
+    $(wildcard include/config/parisc.h) \
+    $(wildcard include/config/metag.h) \
+    $(wildcard include/config/stack/growsup.h) \
+    $(wildcard include/config/shmem.h) \
+    $(wildcard include/config/debug/vm/rb.h) \
+    $(wildcard include/config/debug/pagealloc.h) \
+    $(wildcard include/config/hugetlbfs.h) \
+  include/linux/debug_locks.h \
+    $(wildcard include/config/debug/locking/api/selftests.h) \
+  include/linux/resource.h \
+  include/uapi/linux/resource.h \
+  arch/x86/include/uapi/asm/resource.h \
+  include/asm-generic/resource.h \
+  include/uapi/asm-generic/resource.h \
+  include/linux/page_ext.h \
+    $(wildcard include/config/idle/page/tracking.h) \
+    $(wildcard include/config/page/owner.h) \
+  include/linux/stacktrace.h \
+    $(wildcard include/config/stacktrace.h) \
+    $(wildcard include/config/user/stacktrace/support.h) \
+  include/linux/page-flags.h \
+    $(wildcard include/config/arch/uses/pg/uncached.h) \
+    $(wildcard include/config/memory/failure.h) \
+    $(wildcard include/config/swap.h) \
+    $(wildcard include/config/ksm.h) \
+  include/linux/huge_mm.h \
+  include/linux/vmstat.h \
+    $(wildcard include/config/vm/event/counters.h) \
+    $(wildcard include/config/debug/tlbflush.h) \
+    $(wildcard include/config/debug/vm/vmacache.h) \
+  include/linux/vm_event_item.h \
+    $(wildcard include/config/memory/balloon.h) \
+    $(wildcard include/config/balloon/compaction.h) \
 
 /home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o: $(deps_/home/sora/gitbase/miscthings/about-ldd/source/hello/hello.o)
 
