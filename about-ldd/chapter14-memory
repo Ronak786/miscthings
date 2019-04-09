@@ -52,3 +52,11 @@ vma:
 		note:
 			pages allcated by vmalloc can not use virt_to_page, should use 
 				vmalloc_to_page !! virt used only in physical fixd offset address!!
+
+	ioremap:
+		also use remap_pfn_range() to map to userspace instead of using vmalloc_to_page
+
+aio:
+	asyncio
+	file_operations:
+		aio_read/aio_write
