@@ -14,12 +14,41 @@ kmap/kunmap[_atomic]: better than above, will do the map for high mem(those have
 		direct map)
 
 vma:
+	for mmap: offset must align pagesize!!
 	#include <<asm/pgtable.h> for virt_to_page,
 	virtual memory area: every single area have same permission, see /proc/self/mmap
 
 	remap_pfn_range():
+	io_remap_page_range():
 		if you use this, and just vma->pg_off send to it, then driver do not provide mem,
 		kernel will just use zero page to support you every time open dev a new empty page
 	or you just implement vm_operations_ops
 		and implement your fault, just like ldd, scullp/mmap.c
 		map your page in it
+
+	map range:
+		vma->vm_start ~ vma->vm_end, offset: vma->vm_pgoff << PAGE_SHIFT, size: vma->vm_size
+
+	simple implementation:
+		remap_pfn_range()
+		vma->vm_ops = your_ops of (open close fault)
+		vm_ops->open()
+
+	vm_operation_ops:
+		fault:	 called when page fault happened
+			usually you allocate a page and call get_page() increment reference,
+				get_page()must call, avoid free page when using
+				if error, should return NOPAGE_SIGBUS
+			then assign to vm_fault->page, then return 0
+			if reutrn vm_fault_error, will cause OOM
+
+		if fault is NULL:
+			a zero page's copy on write will occurred, also when mremap,
+			you will get a fullly zeroed private page
+			if mremap expand excess end of your virtual memory, and you do not have fault func,
+				simply zero page will got
+			so you can set fault to NOPAGE_SIGBUS
+
+		note:
+			pages allcated by vmalloc can not use virt_to_page, should use 
+				vmalloc_to_page !! virt used only in physical fixd offset address!!

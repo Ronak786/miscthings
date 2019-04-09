@@ -75,7 +75,11 @@ stop ntp service, use ntpupdate to udpate time
 mount feature:
 	if feature not supported very well, will not mount, check kernel's include/linux/ceph/ceph_features.h to see
 		which feature you lost
-		you can set crush type using ceph --cluster demo osd crush tunables hammer(0.94)
+		you can set crush type using ceph --cluster demo osd crush tunables hammer(0.94) for 1 << 58
+		for kernel 3.13 : 1 << 48  CEPH_FEATURE_CRUSH_V4 
+						1<< 41 CEPH_FEATURE_CRUSH_TUNABLES3 
+			mon0 10.10.5.211:6789 feature set mismatch, my 4a042aca < server's 40102004a042aca, missing 401020000000000
+
 
 
 ======================================== test ===============================
