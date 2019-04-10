@@ -1,1 +1,25 @@
 blockdev:
+	[un]register_blkdev: get a devnumber of blockdev and an entry in /proc/devices
+
+block_device_operations:
+	open close ioctl: this has HDIO_GETGEO to get disk size
+		lots of ioctl be handled by standard block system
+	media_changed: 
+		if changed media in driver
+	revalidate_disk:
+		after mediachanged, this is called 
+	use add_disk for a gen_disk (including assign devno)
+		then operation will take effect, no classcreate needed
+
+	gendisk:
+		#include <linux/genhd.h>
+		major, firstminor, minors, diskname
+		fops
+		request_queue: use this to perform io
+		capacity: using set_capacity() size_of_disk / KERNEL_SECTOR_SIZE(self defined)
+		private_data: used and passed into your struct request
+
+		use alloc_disk(minors) to alloc: this will set minors field
+			del_gisk() to delete
+		add_disk() : just like cdev_add()
+	io handled by struct request
