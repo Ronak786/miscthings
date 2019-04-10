@@ -83,6 +83,21 @@ mount feature:
 cxgb4 bin from linux:
 	use 1.20.8 instead of 1.17 from chelsio 3.6.3
 
+test kernel from http://yum.oracle.com/repo/OracleLinux/OL7/UEKR4/archive/x86_64/index.html
+	4.1.12-32.1.2.el7uek.x86_64 default mpt3sas must modify bad
+		dracut --add-drivers=mpt2sas --omit-drivers=mpt3sas name.img  version_kernel
+	4.1.12-37.2.1.el7uek.x86_64 default mpt2sas can use		bad
+	4.1.12-94.1.8.el7uek.x86_64  bad ,must manually add mpt3sas bad
+	kernel-uek-4.1.12-103.3.8.el7uek.x86_64.rpm   mpt3sas  bad
+	kernel-uek-4.1.12-112.14.1.el7uek.x86_64.rpm  bad
+	kernel-uek-4.1.12-124.14.1.el7uek.x86_64.rpm bad
+	4.1.12-124.14.3.el7uek.x86_64 bad
+	4.1.12-124.14.5.el7uek.x86_64
+	4.1.12-124.15.1.el7uek.x86_64 good
+	4.1.12-124.16.1.el7uek.x86_64 good
+	4.1.12-124.18.1.el7uek.x86_64   good
+	4.1.12-124.26.3.el7uek.x86_64  no problem
+	4.14.35-1844.3.2.el7uek.x86_64 default mpt2sas can not use, modify ,  good
 
 
 ======================================== test ===============================

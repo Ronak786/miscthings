@@ -1,0 +1,48 @@
+Description of changes:
+
+[4.1.12-124.15.1.el7uek]
+- netfilter: nfnetlink_cthelper: Add missing permission checks (Kevin 
+Cernekee) [Orabug: 27260771] {CVE-2017-17448}
+- netlink: Add netns check on taps (Kevin Cernekee) [Orabug: 27260799] 
+{CVE-2017-17449}
+- KVM: Fix stack-out-of-bounds read in write_mmio (Wanpeng Li) [Orabug: 
+27290606] {CVE-2017-17741} {CVE-2017-17741}
+- xprtrdma: Detect unreachable NFS/RDMA servers more reliably (Chuck 
+Lever) [Orabug: 27587008]
+- sunrpc: Export xprt_force_disconnect() (Chuck Lever) [Orabug: 27587008]
+- sunrpc: Allow xprt->ops->timer method to sleep (Chuck Lever) [Orabug: 
+27587008]
+- KVM: nVMX: fix guest CR4 loading when emulating L2 to L1 exit 
+(Haozhong Zhang) [Orabug: 27720128]
+- x86/microcode: probe CPU features on microcode update (Ankur Arora) 
+[Orabug: 27878230]
+- x86/microcode: microcode_write() should not reference boot_cpu_data 
+(Ankur Arora) [Orabug: 27878230]
+- x86/cpufeatures: use cpu_data in init_scattered_cpuid_flags() (Ankur 
+Arora) [Orabug: 27878230]
+- mm/pagewalk.c: report holes in hugetlb ranges (Jann Horn) [Orabug: 
+27913118] {CVE-2017-16994}
+- KEYS: don't let add_key() update an uninstantiated key (David Howells) 
+[Orabug: 27913330] {CVE-2017-15299}
+- drm/vmwgfx: NULL pointer dereference in vmw_surface_define_ioctl() 
+(Murray McAllister) [Orabug: 27913367] {CVE-2017-7294}
+- vmscan: Support multiple kswapd threads per node (Buddy Lumpkin) 
+[Orabug: 27913411]
+- tcp: don't use F-RTO on non-recurring timeouts (Yuchung Cheng) 
+[Orabug: 27901860]
+- net/rds: ib: Release correct number of frags (Håkon Bugge) [Orabug: 
+27924161]
+- crypto: rng - Remove old low-level rng interface (Herbert Xu) 
+[Orabug: 27926676] {CVE-2017-15116}
+- crypto: drbg - Convert to new rng interface (Herbert Xu) [Orabug: 
+27926676] {CVE-2017-15116}
+- crypto: ansi_cprng - Convert to new rng interface (Herbert Xu) 
+[Orabug: 27926676] {CVE-2017-15116}
+- crypto: krng - Convert to new rng interface (Herbert Xu) [Orabug: 
+27926676] {CVE-2017-15116}
+- RDS: Heap OOB write in rds_message_alloc_sgs() (Mohamed Ghannam) 
+[Orabug: 27934066] {CVE-2018-5332}
+- net: Fix double free and memory corruption in get_net_ns_by_id() (Eric 
+W. Biederman) [Orabug: 27934789] {CVE-2017-15129}
+
+

@@ -23,3 +23,35 @@ block_device_operations:
 			del_gisk() to delete
 		add_disk() : just like cdev_add()
 	io handled by struct request
+		init: queue = blk_init_queue(queue, spin_lock);
+				gendidsk->queue = queue
+			after init queue: use blk_queue_logical_block_size(dev->queue, hardsect_size);
+				to tell kernel your block dev's true sector size
+			set_capacity(gendisk, size_of_sector);
+				set size of disk according to kernel's 512byte sector size	
+
+		block_operation_ops:
+			open: inode->i_bdev->bd_disk ==> your gendisk
+
+		ioctl:
+			driver/block/ioctl.c
+			HDIO_GETGEO return sector stat
+
+	request:
+		use a method in blk_init_queue() to register your func into your queue
+		in request function, you are in a spinlock , so do not sleep
+
+		request called in a non process enviromment when kernel think it is good to
+			run request on queue after collecting much of them
+
+		blk_fetch_request(queue): get next unhandled request(will not dequeue)
+				if error , __blk_end_request_cur(req, errno)
+
+				next transferdata:
+					start sector: blk_rq_pos(req)
+					sectors :blk_rq_cur_sectors(req)
+					databuffer: bio_data(req)
+					direction: rq_data_dir(req) write or not
+
+				__blk_end_request_cur(req, ret) ret 0 success
+					then blk_fetch_request(queue) for next
