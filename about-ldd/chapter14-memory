@@ -60,3 +60,27 @@ aio:
 	asyncio
 	file_operations:
 		aio_read/aio_write
+
+dma:
+	#include <linux/dma-mapping.h>
+	coherent buffer:
+		dma_alloc_coherent()
+		dma_free_conherent()
+		dma_pool_create/alloc()
+		dma_pool_free/destroy() used to create a pool for size less than one page alloc(coherent alloc will use
+				at least one page)
+
+	stream type: recommended
+		dma_map_single() map your buffer and return bus addr, pass into your device
+		dma_unmap_single()
+		dma_sync_single_for_cpu() temporarily get mapped buffer from dev
+		dma_sync_single_for_device() temporarily return mapped buffer to dev
+		dma_[un]map_page() :process with struct page, (from get_user_page())
+
+	scatter-gether:
+		#include <linux/scatterlist.h>
+		dma_map_sg
+		dma_unmap_sg
+		sg_dma_len
+		sg_dma_address
+		dma_sync_sg_for_cpu/device

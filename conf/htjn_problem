@@ -80,6 +80,9 @@ mount feature:
 						1<< 41 CEPH_FEATURE_CRUSH_TUNABLES3 
 			mon0 10.10.5.211:6789 feature set mismatch, my 4a042aca < server's 40102004a042aca, missing 401020000000000
 
+cxgb4 bin from linux:
+	use 1.20.8 instead of 1.17 from chelsio 3.6.3
+
 
 
 ======================================== test ===============================
@@ -90,3 +93,4 @@ client 4.17 tunable hammer/default 116 MB/s wr, 0 op/s rd, 31 op/s wr
 
 tshark:
 	tshark -i enp9s0 -f 'host 192.168.2.0/24' -w /tmp/capture4.pcap
+
