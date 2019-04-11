@@ -1,5 +1,5 @@
 use this tool:
-	kpatch -s srcdir -v vmlinuxfile   patchfile
+	first compile kpatch from current kernel , then install it
+	kpatch -s srcdir(from srcrpm) -v vmlinuxfile(from kernel-debuginfoxxxxx   patchfile
 		to create a hot fix patch using ftrace as a module
-	kpatch -k version install xxxxx
 	systemctl start kpatch ; every time boot up, will auto load into them
