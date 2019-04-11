@@ -1,0 +1,4 @@
+segment:
+	descriptor an index and privilege and global/local flag into gdt or ldt(linux use gdt and a common ldt for all tasks)
+	this is redundant with page, so now kernel code/data user code/data using 4 segments with addr range of all space,
+	only diff in privilege, stack segment also chagned when mode switch between kernel/user
