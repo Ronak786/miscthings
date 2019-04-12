@@ -1,0 +1,17 @@
+user->ttycore->tty line displine->tty driver->hardware
+cat /proc/tty/drivers
+	currently used tty drivers
+ls /sys/class/tty
+	currently in system tty devs
+
+
+tty driver:
+	struct tty_driver * = alloc_tty_driver(numbers of devs)
+	set cflags 
+	tty_set_operations
+	then tty_register_driver()
+	tty_unregister_driver()
+
+tty device:
+	tty_register_device()
+	tty_unregister_device()
