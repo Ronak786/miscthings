@@ -44,7 +44,9 @@ block_device_operations:
 		request called in a non process enviromment when kernel think it is good to
 			run request on queue after collecting much of them
 
+		1 : do with request
 		blk_fetch_request(queue): get next unhandled request(will not dequeue)
+			(this will end the request and free it)
 				if error , __blk_end_request_cur(req, errno)
 
 				next transferdata:
@@ -55,3 +57,46 @@ block_device_operations:
 
 				__blk_end_request_cur(req, ret) ret 0 success
 					then blk_fetch_request(queue) for next
+
+		finally :blk_cleanup_queue
+
+		2 : do with bio in request each:
+			blk_fetch_request()
+			__rq_for_each_bio() for each bio
+			bio_for_each_segment() for each segment in bio(one segment is one bio_vec array member in bio)
+			__bio_kmap_atomic()
+			__bio_unkmap_atomic()
+			
+			after loop:
+				__blk_end_request_all
+
+			dma:
+				blk_rq_map_sg() to map scatter-gether from request yourselves
+
+		finally :blk_cleanup_queue
+
+		3 : with your own make request: so do not reorder request
+			queue = blk_alloc_queue();
+			blk_queue_make_request()
+			then request func will handle bio directly,
+			and you must call bio_endio() for each bio
+
+		finally : blk_put_queue
+			
+				
+
+		blk_init_queue:
+			init a request queue, and you can set your private data into queue
+		blk_cleanup_queue:
+			return queue to os, free mem
+			
+		blk_queue_ordered(queue, flag):
+			tell queue that we sensitive to order, do not reorder them
+		blk_barrier_rq() check if order flag is set on this request
+		blk_noretry_request() :if true, do not retry  if fail, just ignore this request
+
+	bio:
+		a request is a bio, which has many bio_vec, according to different pages,
+			but contingous in physical hard disk, so combine together by io scheduler
+
+	

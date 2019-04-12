@@ -1,0 +1,19 @@
+struct net_device
+	include <linux/netdevice.h>
+	netdv = alloc_netdev(sizeof(privdata), name, type, init_func())
+			alloc_etherdev() => more specific init, use ethet_setup() as init func
+
+		use net_priv() get your private data structure
+
+		init will be done auto by kernel before register_netdev():
+			in init, we can use ether_setup()
+
+	register_netdev()
+		now work....
+
+	unregister_netdev()
+	free_netdev()
+
+	netdev_ops:
+		open:
+			when activate interface, request irq and other resources, start event

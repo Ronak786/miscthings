@@ -1,0 +1,5 @@
+every process has  a task_struct
+	has a thread_info and kernel stack combined together 8k page frames(2)
+		so current is easy as *(esp mask 8k) (task_struct is first field in thread_info)
+	all thread share resources, has a thread group id which getpid() return,
+	the specific process id  of each lightweighted process is its truly thread id
