@@ -17,3 +17,25 @@ struct net_device
 	netdev_ops:
 		open:
 			when activate interface, request irq and other resources, start event
+			1 read hw addr from dev and assign
+			2 do netif_start_queue() to start transmit queue
+		close:
+			netif_stop_queue()
+			netif_wake_queue to wakeup again
+			netif_tx_disable() used from outside of transmit func()
+
+		.ndo_start_xmit:
+			start transmit data
+			every data in struct sk_buff, already capsulated in an ip package,
+				you just need to wrap them into ether package
+
+			after transmit you should dev_kfree_skb by YOURSELF
+				and return 0
+
+			if timeout:
+				set timeout in init func in watchtimeout,
+				and set timeout handler func in timeoutfunc
+
+		receive:
+			first allocate a skb: dev_alloc_skb()(this in interrupt and atomic, so safe)
+			netif_rx() to transmit that skb (it will free it)
