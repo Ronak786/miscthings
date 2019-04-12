@@ -2,3 +2,21 @@ segment:
 	descriptor an index and privilege and global/local flag into gdt or ldt(linux use gdt and a common ldt for all tasks)
 	this is redundant with page, so now kernel code/data user code/data using 4 segments with addr range of all space,
 	only diff in privilege, stack segment also chagned when mode switch between kernel/user
+
+mem:
+	mem has hole used by bios and other hardware mapped places, so when setup, first query bios for 
+	kernel available mems, then manage them
+
+page:
+	mem split into pages, first pgdt static in kernel data segment, and initialized to 8M both at lower
+	identity map and higher kernel linear addr map, then use cr3 cr4 to open paging.
+	after that, map other pages, also fix map pages of bios data at higher mem,
+
+pae:
+	make pgdt to 4 entries, each have 9 bit of pmd, 9bit of pte, 12 bit of physical(each page size is 4k)
+	each load of cr3(pgdtr pointer  1 of 16) manage 4G mem, so one process only have 4G linear addr,
+	while kernel has 64G mem can use(addr space of linear still 32)
+
+cache:
+	cache line, oneline have a special tag for only one physical addr, then subindex of a k-set associate,
+	then offset in cache line data,
