@@ -10,8 +10,23 @@ tty driver:
 	set cflags 
 	tty_set_operations
 	then tty_register_driver()
+	tty_unregister_device()
 	tty_unregister_driver()
 
 tty device:
-	tty_register_device()
-	tty_unregister_device()
+//	tty_register_device()
+//	tty_unregister_device()
+	struct tty_serial dev;
+	tty_port_init(dev->port);
+	tty_port_register_device(&tiny_table[i]->port, tiny_t    ty_driver, i, NULL)
+	tty_port_init
+	tty_port_destroy()
+
+	open:
+		tty_port_open(ttyserial->port, tty_struct,file)
+	close
+		tty_port_close(port);
+	write:
+		write into tty
+	write_root:
+		return how much left can be used for written
