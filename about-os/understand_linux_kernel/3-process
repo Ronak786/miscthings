@@ -3,3 +3,77 @@ every process has  a task_struct
 		so current is easy as *(esp mask 8k) (task_struct is first field in thread_info)
 	all thread share resources, has a thread group id which getpid() return,
 	the specific process id  of each lightweighted process is its truly thread id
+
+list:
+	kernel double link list, has a dumb head when init_list,
+hash_list:
+	a hash array with each member a list head
+
+process list:
+	use for_each_process() to iterate, the head is 
+	init_task, which is the process 0 and will not participate into
+	process schedule
+
+runnable process list: a run queue
+	used to select the best to be run on current cpu
+	describ in detail in chapter 7 later
+	brief:
+		an array of list, each identified one priority
+		so scheduler can be done within O(1)
+		each cpu has its own runqueue
+		use a bitmap check which list has member or not
+
+zombie stopped termited state
+	no need of special list, they are referred by pid
+interruptible, un_interripible state
+	use waitqueue to track more meaningful, see below
+
+process relations:
+	ptr to  chidlren,
+	ptr to parent(this sometimes can be prace debug process)
+	ptr to real parent
+	ptr to sibling
+
+	in a struct task, we have an array of 4pid types
+	pid, threadgroupid, processgroupid, sessionid
+
+	these must be fetch quickly instead of traverse the process list,
+	so use special hash lists for them.
+	every pid type in an array, each member is a hashlist of on pid type,
+		each hash list entry in a pid type chaining a list of 
+		pids in that entry, every is a struct piddata(it is in task struct's
+		pid array member), which has a pid number, a listentry which link
+		to the above hashlist, a pid_list which link process whose pid of 
+		this type is this pid number
+
+	macros:
+	we can use  do_each_task_pid() while_each_task_pid() attach_pid()
+				detach_pid() next_thread() to get your special infos
+
+wait queue:
+	a wait_queue_head consists of a spinlock and list which will link
+		wait_queues
+	a wait_queue has a flag(exclusive or not), a task ptr, a wakeup func
+		func:
+			if init_wait_entry() then func is just a wakeup func which
+			wakeup process from list,
+			use define_wait() then another func will not only wakeup,
+			but also remove from queue_head.
+	sleep_on() :
+		this just make a wait object, put on queue head, then release
+		cpu, not good(can not check condition)
+		the timeout version will set a timer for timeout wakeup
+	prepare_to_wait():
+		do what sleep on will do to waitqueue,  set interruptible state,
+		then you should check condition yourself, then schedule(),
+		then call finish_wait() : to set to RUN state and remove from
+		queue(redundent to wakequeue's func's function)
+	prepare_to_wait_exclusive():
+		set flag to 1 in queue, so only one of this type will be waked,
+		but all nonexclusive type will waked
+	wait_event:
+		combine all above function together
+
+	wakeup:
+		wakeup_exclusive() and ... will call wakeup function of each
+		wakequeue member in that head
