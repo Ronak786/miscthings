@@ -77,3 +77,52 @@ wait queue:
 	wakeup:
 		wakeup_exclusive() and ... will call wakeup function of each
 		wakequeue member in that head
+
+
+resource management:
+	rlimits are an array of struct current->signal->rlim {rlim_cur, rlim_max}, the cur can be changed up to max, but only root has permission to expand max
+
+context switch:	
+	older kernel use tss as hardware autosave register and swtich, but now
+	linux use software switch:
+	registers stored in current->thread_struct, 
+	tss one cpu has a segment, and always represent current process's
+		some state when userspace want to access and check
+
+	step:
+		1 switch page directory
+		2 switch registers in hardware dependent way:
+			this func has 3 params: prev, next, last
+			last means the process switch from, because
+			when switch from a to b, then b to c, c to a,
+			when restore a's context, it will forget c,
+			only remember last time switch to b on its kernel stack
+			(different in switch function accually)
+			the c will be saved in eax of a's context, so a
+			can read that out
+			1. save prev and next into eax, edx
+			2 pushfl, push ebp
+			3 save esp into prev's thread_struct
+			4 load next's esp from thread_struct
+			5 save the next run place of prev into 
+				prev's thread_struct->eip
+
+			6 now push into stack current eip, call func __switch_to()
+			7 this is the line after __switch_to() the 
+				flow resume will run:
+				pop ebp
+				popfl
+				mov eax, last : now last is the last process running
+
+			in __switch_to() :
+				save fpu
+				save esp0 into tss
+				reload gdt's thread local storeg segment for current
+				thread
+				save fs gs into prev
+				restore fs, gs from next
+				update iobitmap in tss
+				mov edi, eax
+					now eax stores the prev process
+					which continue to step 7 above
+				now ret so continue the flow
