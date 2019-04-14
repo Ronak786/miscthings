@@ -126,3 +126,137 @@ context switch:
 					now eax stores the prev process
 					which continue to step 7 above
 				now ret so continue the flow
+
+		fpu save and restore:
+			fpu and mmx use same set of register
+			fpu is older coprecessor, but now integrated into cpu,
+			mmx is for simd
+			xmm[2] for stream  simd, use different set of register
+
+			lazy restore:
+				in current->thread's status , we have a fpu inuse flag,
+				every time is in use first time, set this, then
+				during a context switch, will save registers into 
+				current->thread's i387 struct, and clear in use bit,
+				set cr0's TS bit,
+				when later second process need use fpu, the TS invoke 
+				exception and the lazy restore from current process's 
+				thread->i387 take effect and clear TS , set in use bit
+
+				when kernel mode want to use fpu while user mode using
+				them, same procesure occurred
+
+
+create process:
+	clone fork vfork: all call sys_clone with different flags do jobs
+	clone: for lightweiht process, so libc set a fn ptr to return 
+		addr and call sys_clone(), share memory and signal and fs.
+	fork: set sigchild signal flag, clear all other, and use copy on
+		write
+	vfork: set clone_vm and clone_vfork, suspend parent until
+		child first run and exec
+
+	clone will pass in syscall the child stack user addr and current
+		register status for copy_process to save into kernel stack
+		of new process
+
+	sys_clone() call do_fork() to complete its job:
+	do_fork():
+		from pidmap_array alloc pid,  set ptrace if debugger 
+		want to trace child
+		call copy_process() to get a new task struct and all
+			parent resource copied, reset return value to 
+			pid for parent, 0 for child, and set registers 
+			in kernel stack and ip to ret_from_fork();
+		if child task stopped by clone_stopped flag, 
+			put to stop state, signal parent which will be received by
+			debugger
+		else call wakeup and put into parent\s runqueue, if 
+			no share vm ,before parent to first run(vfork), else
+			after parent
+
+		if vfork, insert parent into waitqueue before child run
+		return child pid( the do_fork() is the parent process, so
+				return pid, child is yet another process descriptor
+				which will be scheduled to run while this return 
+				happened or other time depening above steps)
+	copy_process() (in do_fork())
+		save fpu on kernel stack, 
+		alloc taskstruct and struct thread_info(kernel stack) for
+			new process,check rlimits and add some user state count
+			like process numbers and threadnumbers count
+			also /proc/sys/kernel/threads-max,(max num of threads 
+			kernel can have(some ratio of physical mem size)
+		set up signal related and mm, fs related structures from
+			parent, 
+		use copy_thread() to set kernel stack(esp, eip, eax to0)
+		turn off syscall trace flag(so not to strace info)
+		initialize tsk->exit_signal to -1, only except we are
+			not in thread creation, only the last thread should
+			signal parent of the thread group
+		init paret. scheudule related structure
+		return task struct
+	
+	after do fork:
+		scheduler decide to run child, so in context switch,
+		load esp and eip(which is ret_from_fork(), which will
+		complete change by reload register ), then return to 
+		usermode and continue from fork, decided by return pid
+
+	
+kernel thread:
+	kernel thread created from kernel_thread() from do_fork() with
+			CLONE_VM CLONE_UNTRACED set, so share mem descriptor 
+			because only use kernel addr, no need userspace
+		the regs passed to kthread_thread() will be used by do_fork()
+		to set thread esp and eip, which will set to the function you
+		passin
+	process 0 :
+		the default process running idle() always, init using init_task
+		init_mem() .... enable mulcpu on other cpus, allcate process0 
+		on them ,and create thread process1 in startkernel
+	process 1:
+		the init process, will call /sbin/init and as the root of your
+		os userspace
+	keventd: handle kevent workqueue
+	kswapd: handle swap process
+	pdflush: handle page cache dirty flush
+	ksoftirqd: handle softirq tasklet handle
+
+exit process:release other than taskstruct, signal others if needed
+				set state zombie if needed, otherwise just relase task struct
+	1 do_group_exit(): exit the thread group processes, done by exit()
+		the gorup exit flag and if not set, set it and notify other
+		process in same group to do the do_exit()
+		do do_exit() itself
+	2 _exit(): only exit one lightweight process, done by pthreasd_exit()
+		do_exit itself
+
+	do_exit():
+		set pf_exiting flag
+		remove mm fs namespace ,fies .. structure reference from task
+		set exit_code()
+		do exit_notify():
+			fix parent child relationship, all child of current process
+			become child of other process in same threadgroup or init
+			(so fork two times can detach from parent)
+			if exit_signal() not null, send signal to parent
+			else only send if traced
+
+			if noneed send signal, state to EXIT_DEAD,and release task
+				no descriptor after this
+			else EXIT_ZOMBIE,
+			set flag PF_DEAD
+		invoke schedule() which will switch to another process, mark
+			current as non live
+
+	wait:release resource only taskstruct related
+		remove process from trace list if has, 
+		cancel any signal and timer
+		unhash pid in all 4 pid lists
+		if leader threadgroup is zombie, signal to the leaders parent
+		to notify exit
+		sched_exit() fix parent's timeslice
+		put_task_struct()
+			decrease usage struct and taskstruct and thread struct
+	
