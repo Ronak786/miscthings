@@ -1,0 +1,42 @@
+interrupts: caused by outside device, mostly async
+exception: caused by internal instrument executing, mostly sync
+
+pic: programmable interrupt controller:
+	8259a: each irq line connect one dev, when occurred interrupt,
+		pic save line number in it, assert cput pin, then cpu can
+		handle and know which number
+		used for uniprocessor
+	apic:
+		local apic embeded in each smp cpu
+		io apic connect to dev and on a bus to all local apic,
+			io apic has a route table, 
+			can staticly decide which cpu to send interrupt,
+			or depend on process priority current running on 
+			cpu the decide the lowest one to send, priority
+			set by linux
+			if same priority, use round-robin
+
+	outer interrupt n ==> interrupt vector n+32 in idt table(each 8bytes)
+	inner exception and nmi and fault use lower 32 numbers
+		each exception has one handle for it
+
+	cpu use IDT use handle all interrupts, int it , we have
+		trap gate (for exceptions)
+		interrupt gate( for interrupts)
+	when interrupt happen:
+		every instrument executed after, check interrupt and exception,
+		if happened, search idt for gate, in idt is segment descriptor
+		of gdt,  so search that,  and check priority
+
+		if priority change happened, store and get another kernel stack
+		from tss, save old one on new stack, 
+		if it is a fault, save cs ip as the fault instrument so can 
+		execute again,
+		store cs ip flags on stack
+		save error code
+		run exception handler,
+
+		restore cs ip eflags, return status of error code
+		if priority change, restore stack
+		check es fs gs  ds, if containe kernel segment, clear them
+		for security issue
