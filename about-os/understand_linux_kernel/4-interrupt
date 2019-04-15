@@ -40,3 +40,21 @@ pic: programmable interrupt controller:
 		if priority change, restore stack
 		check es fs gs  ds, if containe kernel segment, clear them
 		for security issue
+
+nest:
+	interrupt can be nested, and should not block
+
+initialize:
+	int setup_irq() set up 256 of dummy irqs
+	and in trap_init() set up specific for each exception, 
+		outside interrupt are set in each driver
+		set done by descriptor set in idt pointer to gdt's index
+		int 8 (double fault) is special, not depend on stack which may be correupt,
+			just jump to a special tss segment
+
+exception handler:
+	mostly push into stack error code and the do_handler_name() func and 
+	call error_cmd func and call the handler, which mostly will just set correspongding 
+	process's signal status, 
+	when return ,process run again and check signal pending and do with that
+		this is immediately which different from interrupt which far from process
