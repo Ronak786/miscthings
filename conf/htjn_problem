@@ -99,6 +99,10 @@ test kernel from http://yum.oracle.com/repo/OracleLinux/OL7/UEKR4/archive/x86_64
 	4.1.12-124.26.3.el7uek.x86_64  no problem
 	4.14.35-1844.3.2.el7uek.x86_64 default mpt2sas can not use, modify ,  good
 
+kpatch:
+	kpatch-build  -s /root/rpmbuild/BUILD/kernel-3.10.0-514.el7/linux-3.10.0-514.el7.x86_64/ -v /usr/lib/debug/lib/modules/3.10.0-514.el7.x86_64/vmlinux   /tmp/list
+	require: kernel-debuginfo rpm, src rpm
+
 
 ======================================== test ===============================
 4.4 disable feature of tunable
