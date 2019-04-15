@@ -245,3 +245,13 @@ softirq and tasklet:
 
 return from exception and irq:
 	thread_info's flag has reschedule request, sigpending... other flags to check when return
+	seperated return to kkernel, returnn to userspace
+	check cs from stack:
+	return to kernel:
+		check preempt_count, if 0, do schedule check
+							else, pop registers and iret to interrupted process
+		in schedule check:
+			if no schedule request or in local irq disable status, just pop register and return
+			else reschedule another process, after back, locak irq, check again ,if need, contine schedule ...
+	return to userspace
+			if need schedule, do schedule, then resume current progress
