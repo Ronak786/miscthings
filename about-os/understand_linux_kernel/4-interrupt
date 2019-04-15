@@ -45,6 +45,7 @@ nest:
 	interrupt can be nested, and should not block
 
 initialize:
+	in arch/i386/kernel/entry.S
 	int setup_irq() set up 256 of dummy irqs
 	and in trap_init() set up specific for each exception, 
 		outside interrupt are set in each driver
@@ -147,9 +148,100 @@ interrupt handling:
 					irq_exit() decrease count and check softirq is waiting
 					ret_from_intr()
 				__do_irq:
+					acknowledge interrupt and set pending status,
+					then in a loop set inprogress status and  handle_irq_events
+					end interrupt (notify apic or pic)
+					
+					note: usually interrupt is disabled by acknowledge when handle interrupt,
+						but board may behavior errorly or other cpu is handling same interrupt,
+						so pending should be checked multiple times to handle serially interrupts
+						on just one handler
+				handle_irq_events:
+					for each action, run it, if all action return 0, add count to unexpected interrupts
+					if SA_INTERRUPT flag not set, enable interrupt
+
+				if dynamic handle:
+					in init func: request_irq, 
+					int exit func: free_irq
 					
 					
 						
 
 	timer interrupt: timer related
 	interprocessor interrupt
+		send and receive by apic, used to tell other cores to do some function, do reshedule, do cacheinvalidation
+		send_IPI_all() ...
+
+preempt_count:
+	increased when enter_irq(),so schedule not possible, until self called schedule to release cpu
+	in thread_info [0-7] preempt_count( 0 means can preempt) [8-15] soft irq count, [16-27] hardirq count,
+				28 PREEMPT_ALIVE flag, nonzero all means can not preempt
+
+softirq and tasklet:
+	irq_stat array: softirq_pending used to decide on current cpu pending softirqs, use local_softirq_pending() to check
+	softirq are jobs done at some checkpoint, or in ksoftirqd, but all should be in interrupt context,
+		(ksoftirqd will disable irq), and can not sleep, but can be interrupted 
+		softirq is reenterent and can be call multiple cores together
+		softirq_vec[] has 6 members of softirq_action
+	tasklet are two member  in softirq, driver developers should use this instead of softirq
+		tasklet can only be run on one cpu,(use cache advantage), and schedule tasklet only run on the cpu
+			schedule it
+
+	handle softirq:
+		raise_softirq(): pend it
+			store flags and disable irq
+			mark pending in pending mark,
+			if in_interrupt() (softirq disabled or raise_softirq is running), nothing to do
+			else wakeup_softirq() to wakeup ksoftirqd
+			restore irq flags
+
+		someplaces for check softirq should run(): and do_softirq() is called
+			local_bh_enable()
+			do_IRQ()->irq_exit()
+			timer interrupt
+			ipi interrupt 
+			ksoftirqd/n is waken
+
+		do_softirq():
+			if in_interrupt() -> is running another instance or disabled, just return
+			disable irq and change stack 
+			__do_softirq()
+			enable and restore stack
+		__do_softirq()
+			local_bh_disable() to increaset softirq count in preempt_count
+			get bitmap pending list
+			disable irq 
+			clear bitmap
+			enable irq
+			for each pending in bitmap, call irq func
+			disable irq
+			copy bitmap ....  do this a fix iteration times,
+			if still has pending jobs,  call wakeup_softirq to the ksoftiqrd to handle it, then substract softirq count
+		ksofrirqd:
+			have low priority, keep scheduleing and wakeup disable irq, run do_softirq; enable irq
+
+		tasklet:
+			schedule:
+				schedule_tasklet() : will pend to the tasklet list for that cpu
+				and raise_softirq_irqoff
+			run:
+				if running on other cpu(flag schedule_run is set), reinsert into list for next run
+				else set run flag
+				if  disabled, clear run flag, reinsert and activate again
+				clear tasklet_sched flag and run it
+
+	workqueue: can sleep
+		each queue have on each cpu one thread,one cpu_workqueue struct containing a worklist,
+			use insert_queue, remove_queue to maintain flush_workqueue() (only work queued before this call
+					made sure to finish when this call is returned)
+		default workqueue:
+			schedule_[delayed_]work()
+			flush_scheduled_work()
+
+	work:
+		has a pending for exist check in queue,  a timer for delayed work(just in timer handler insert into queue)
+		work thread resume may in a different cpu, so may run work on different cpus
+
+
+return from exception and irq:
+	thread_info's flag has reschedule request, sigpending... other flags to check when return
