@@ -100,6 +100,56 @@ interrupt handling:
 				irq: /proc/irq/num directory
 				next: next link
 				name
+			irq_stat:
+				array of cpunumbers, each cpu's irq status(soft pending.. apic count, nmi count)
+
+			distribute irqs among cpus:
+			apic:
+				setup_io_apic_irqs(): used to set interrupt route table for faily delieve interrupt among all cpus
+				setup_local_apic(): set priority register to a fix value, so round-robin
+			kirqd:
+				if apic can not work well for some cpu
+				if use do_irq_balance() to handle /proc/irq/n/smp_affinity by using set_ioapic_affinity_irq()
+					for some cpu some irq number to make balance
+
+			mutiple kernel stacks:
+				if thread_info is 8kb page, exception stack hard irq stack softirq stack are the same and 
+					use this page
+				if is 4kb, then exception stack is currnet->thread_union's recorded stack
+								hardiqr, softirq are in cpu arrays of hardirq_array, softirq_array
+								each cpu has one of these, so stack share on all process running on one cpu
+								and each cpu has a thread_info struct(not a process thread_info but same struct)
+
+			how interrupt handled:
+				after init_IRQ(), then interrupt occurred, see above "when interrupt happen:", after
+					save cs ip ss sp  eflags .., 
+				all handler first: 
+					push $n-256 ;; all interrupt num is minus, save positive for syscalls
+					jmp common_interrupt
+				common_interrupt:
+					SAVE_ALL ;; save all other regs interrupt will use, save user data stack into  ds, es
+					mov esp, eax ;; now save stack top
+					call do_IRQ  ;; do truly irq job
+					jmp ret_from_intr
+
+				do_IRQ:
+					irq_enter()  increase interrupt count for nest 
+					if thread size is 4kb
+						use esp get current interrupted process's thread_info
+						pick out from hardirq_array your cpus hard stack
+						if compare same ,nest irq, so just continue next step;
+						else switch to hard stack, set current thread_info and 
+							current esp into hard stack's thread_info(& mask 4k)
+							and load hardirq stack(now stack changed ,current macro
+									also work well)
+					invoke __do_irq() for with regs and irqnum as parm
+					switch back irq stack for nest irq and exception if  needed(above if statement)
+					irq_exit() decrease count and check softirq is waiting
+					ret_from_intr()
+				__do_irq:
+					
+					
+						
 
 	timer interrupt: timer related
 	interprocessor interrupt
