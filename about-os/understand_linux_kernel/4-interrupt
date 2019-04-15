@@ -56,5 +56,50 @@ exception handler:
 	mostly push into stack error code and the do_handler_name() func and 
 	call error_cmd func and call the handler, which mostly will just set correspongding 
 	process's signal status, 
-	when return ,process run again and check signal pending and do with that
+	when return ,ret_from_exception() , process run again and check signal pending and do with that
 		this is immediately which different from interrupt which far from process
+
+interrupt handling:
+	io interrupt: device related
+		share: every time interrupt come, search each func on same request line 
+		dynamic alloc: every time only one dev attach onit ,but others can also do with it 
+			when this dev detach
+
+		only critical work and update of data struct should be done here, copy  issue should 
+			in tasklet
+
+		common procedure:
+			save irq value and regs, send acknowledge to pic, run handler, terminate to ret_from_intr()
+
+		interruptvectors:
+			128 used to syscall tranditaionally, others >= 32 can assign arbitraly
+			in linux ibm pc: interval timer be  irq0, slave pic be irq2
+			0-19 nonamskable
+			20-31 intel reserved
+			32-127 external interrupt
+			128 syscall
+			128-238 external interrupt
+			239 240 254 255 local apic related
+			251-253 interprocessor interrut
+			241-250 linux reserved
+
+			how to get interrupt:
+				1 by hardware jumper
+				2 by some probe method
+				3 by auto config bus such as pci
+
+			init_IRQ() will set up interrupts dummyed in setup_idt()
+
+			in irq_desc array, we have a irq_desc_t in each entry, 
+				each corresponding to one interrupt line, have a handler for hardware ops(enable ,disable, ack, close..)
+				and a list of software handler, and other status(inprogress, disable, pending), count, lock depth
+			in irq_action:
+				handler: routine 
+				flag: shirq or, interrupt(shoud disable while handling)
+				dev_id:private data
+				irq: /proc/irq/num directory
+				next: next link
+				name
+
+	timer interrupt: timer related
+	interprocessor interrupt
