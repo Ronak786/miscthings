@@ -23,4 +23,11 @@ spin lock:
 
 rw lock:
 	read ,write use same integer, different bit range to represent
+semaphore
+rwsemaphore
+rcu
+seqlock
+completion
+local_irq_save disable interrupt on local cpu, but concurrent may happend on different cpu in interrupt
+local_bh_disable : disable softirq on local cpu
 	
