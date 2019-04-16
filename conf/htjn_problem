@@ -108,6 +108,7 @@ kpatch:
 time sync:
 	chrony, use this!!!, config is chrony.conf
 
+system sysctl optimal is in gentoo wiki last line!!!
 manually:
 	https://wiki.gentoo.org/wiki/Ceph/Guide for 12.2.11 version install manually
 deploy:
