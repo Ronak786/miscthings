@@ -104,8 +104,18 @@ kpatch:
 	require: kernel-debuginfo rpm, src rpm
 
 
+======================================== ceph install ================================
 time sync:
 	chrony, use this!!!, config is chrony.conf
+
+manually:
+	https://wiki.gentoo.org/wiki/Ceph/Guide for 12.2.11 version install manually
+deploy:
+	http://www.yangguanjun.com/2018/04/06/ceph-deploy-latest-luminous/
+need: chrony enable
+		lvm2 enable for ceph-volume  detect when startup
+option:
+	ceph osd set noout ; forbit reboot too long inducing out and pg migrate for small test clusters
 
 ======================================== test ===============================
 4.4 disable feature of tunable

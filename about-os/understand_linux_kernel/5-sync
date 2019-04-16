@@ -31,3 +31,10 @@ completion
 local_irq_save disable interrupt on local cpu, but concurrent may happend on different cpu in interrupt
 local_bh_disable : disable softirq on local cpu
 	
+some concurrent enviromments:
+	in exception: semaphore
+	in softirq: use disable_local_bh for (tasklet, but for softirq, additionally use spinlock because
+			softirq can run sametime on multiple cores)
+	in interrupt: use spinlock if multiple core and multiple interrupt handler will handle that struct
+				otherwise just nothing, because same interrupt only do once at one time
+	both exception and interrupt: spinlock needed, or semaphore(but interrupt should use loop + downtrylock)
