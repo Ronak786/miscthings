@@ -1,0 +1,26 @@
+preempt:
+	when in an kernel exception(like syscall), func may be preempted by another function,
+	checkpoint usually in interrupt
+nonpreempt:
+	even if higher priority process wakeup, only when return to user or self relax cpu will
+	cause process switch
+
+per-cpuvar:
+	every var for each cpu, and every area align to cache line start, so do not invalidate each other.
+	should preempt disable when access, so use get_cpu_var()
+	but interrupt also can corrupt it?
+	useful to cpu specific data process
+
+aotmic:
+	use lock prefix to make sure other cpu can not access before next instrument executed
+mem barrier:
+	used to make sure instrument before must be done before instrument after this barrier
+spin lock:
+	inside spinlock, will disable preempt, disable irq also if you needed
+	when waiting:
+		can be preempted
+		keep checking loop
+
+rw lock:
+	read ,write use same integer, different bit range to represent
+	
