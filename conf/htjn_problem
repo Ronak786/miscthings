@@ -104,6 +104,9 @@ kpatch:
 	require: kernel-debuginfo rpm, src rpm
 
 
+time sync:
+	chrony, use this!!!, config is chrony.conf
+
 ======================================== test ===============================
 4.4 disable feature of tunable
 client:   933 MB/s wr, 0 op/s rd, 245 op/s wr
