@@ -118,6 +118,14 @@ need: chrony enable
 option:
 	ceph osd set noout ; forbit reboot too long inducing out and pg migrate for small test clusters
 
+
+========================================= source config ======================================
+a dir has all debs(of multiple level if you want
+nginx to export that dir
+if no Release, then use https://medium.com/sqooba/create-your-own-custom-and-authenticated-apt-repository-1e4a4cf0b864
+	to create or just use deb [allow-insecure=yes] to ignore
+use dpkg-scanpackages to creat Package file for index
+
 ======================================== test ===============================
 4.4 disable feature of tunable
 client:   933 MB/s wr, 0 op/s rd, 245 op/s wr
