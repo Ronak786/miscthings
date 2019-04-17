@@ -36,3 +36,31 @@ kernel timeinit:
 		use select_timer() to select best time and fill timer_keeping(some mark and delay function set)
 			set cur_time
 		set interrupt of irq0 for it, when occurred, will disable irq
+
+for multicore: global time interrupt used to update global statistic, local  timer from apic used
+	to do cpu spedific statistic
+
+interrupt occurred:
+	for uniprocessor:
+		fetch xtimerlock, use timerkeeping related method update jiffies to compensate to lost interrupts
+			record count 
+		call do_interrupt
+			increase jiffies
+			update_times()
+			update_process_time()
+			profile_tick() do profile statistic info collect
+			adjxtime()'s time drift handle
+	for multicore : local interrupts  number 239
+		apic_timer_init calibrate time for interrupt inteval and set it to local apic
+		update_timer: called by global interrupt, update jiffies, calculate system load:
+			this means how many TASK_RUNNING in current system
+		update_process_timer(): called by local interrupt
+			used to update current process's running time
+			and cpu-related statistic 
+			wake TIMER_SOFTIRQtasklet
+			check schedule_tick() for current process if schedule needed
+				(may then check in ret_from_intr() to schedule)
+			profile_tick(): check which mem is used by esp from stack saved, used by
+							read profile and oprofile
+	nmi watchdog:
+		done to check apic_timer_irqs if same in two watchdog interrupt, then something wrong, kill process
