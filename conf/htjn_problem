@@ -108,6 +108,8 @@ kpatch:
 time sync:
 	chrony, use this!!!, config is chrony.conf
 
+config:
+	https://access.redhat.com/documentation/en-us/red_hat_ceph_storage/1.2.3/html-single/ceph_configuration_guide/index
 system sysctl optimal is in gentoo wiki last line!!!
 manually:
 	https://wiki.gentoo.org/wiki/Ceph/Guide for 12.2.11 version install manually
@@ -123,6 +125,12 @@ need: chrony enable
 		lvm2 enable for ceph-volume  detect when startup
 option:
 	ceph osd set noout ; forbit reboot too long inducing out and pg migrate for small test clusters
+
+remove:
+	ceph osd out osd.1
+	ceph osd rm osd.1
+	ceph osd crush rm osd.1
+	ceph auth del osd.1
 
 
 ========================================= source config ======================================
