@@ -120,6 +120,8 @@ option:
 
 
 ========================================= source config ======================================
+sw apt:
+	202.141.160.113:8081
 a dir has all debs(of multiple level if you want
 nginx to export that dir
 if no Release, then use https://medium.com/sqooba/create-your-own-custom-and-authenticated-apt-repository-1e4a4cf0b864
