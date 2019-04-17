@@ -1,0 +1,38 @@
+linux timers:
+	rtc: used to get wall time, from startup and from userspace clock() syscall
+		at irq8
+	pit : programmasble interval timer, used to program to issue timer at fixed time interval(16bit)
+			at irq0 
+	tsc: rdtsc get more accurate tick
+	hpet: high precision event timer:( issue timer at irq0(preferable than pit, handle software timer)
+	apic local timer: only used to issue timer for local cpu(more preferable for cpu specific timer work if exists)
+			sometimes mayby buggy
+	acpi power manage timer: some fix timer issue, less preferable than hpet
+
+in multicore:
+	global event use global timer
+	local event use apic local timer
+
+time_keeping struct:
+	the cur_time used to select best timer for system when boot, usually hpet is preferable
+			then apci, tsc, pic
+	struct:				delay
+		timer_hpet		hpet
+		timer_pmtmr		tsc
+		timer_tsc		tsc
+		timer_pic		tight loop
+		timer_none
+
+jiffie: update every timer interrupt
+		the 32bit version will wrap in 5 min after boot, to check buggy code
+		64bit not atomic, use seqlock to read
+xtime: used by gettimeofday to get current utc time,
+
+kernel timeinit:
+	in time_init():
+		initialize xtime from rtc, 
+		initialize wall_to_monothonic(used to add to xtime) for monothonic time request from kernel
+		enable hpet if exists(query bios provided memmap), else use pit
+		use select_timer() to select best time and fill timer_keeping(some mark and delay function set)
+			set cur_time
+		set interrupt of irq0 for it, when occurred, will disable irq
