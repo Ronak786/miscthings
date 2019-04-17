@@ -127,6 +127,7 @@ nginx to export that dir
 if no Release, then use https://medium.com/sqooba/create-your-own-custom-and-authenticated-apt-repository-1e4a4cf0b864
 	to create or just use deb [allow-insecure=yes] to ignore
 use dpkg-scanpackages to creat Package file for index
+	dpkg-scanpackages  ../../pool/main/  /dev/null > main/binary-sw_64/Packages
 
 ======================================== test ===============================
 4.4 disable feature of tunable
