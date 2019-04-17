@@ -64,3 +64,13 @@ interrupt occurred:
 							read profile and oprofile
 	nmi watchdog:
 		done to check apic_timer_irqs if same in two watchdog interrupt, then something wrong, kill process
+
+software timer:
+	struct timer_list:
+		init_timer() to init it
+		add_timer() to add to global list(bound to local cpu to run)
+		mod_timer() to update expire time of already on cpu and add_timer is being called()
+			use this to modify already expired timer
+		del_timer() can delete timer even not on that cpu
+		del_time_sync() use this if timer will reacitivate itself
+		del_singleshort_timer_sync() use this if timer will not reacitivate itself
