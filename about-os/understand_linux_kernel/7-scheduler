@@ -1,0 +1,10 @@
+schedule:
+	relatime time: fifo, rr
+	normal :
+policy:
+	n(1): multiple list of each priority
+
+priority:
+	static priority is 140 to 100(highest), dynamic used by scheudler calculated from static one,
+	interactive and blocked ones has higher priority, so response time is short, but run duration
+	should not too long in case of same priority

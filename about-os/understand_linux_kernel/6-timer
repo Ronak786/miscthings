@@ -74,3 +74,9 @@ software timer:
 		del_timer() can delete timer even not on that cpu
 		del_time_sync() use this if timer will reacitivate itself
 		del_singleshort_timer_sync() use this if timer will not reacitivate itself
+	timer_base:
+		a array of list, first member is a list of 256 recent tick of list of processes
+		then next 6bit, then next 6bit, the last members's last entry is other longer processes
+
+delay:
+	used as timer_keepering's delay function, a tight loop calibrated at boot time
