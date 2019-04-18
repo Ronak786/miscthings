@@ -180,3 +180,6 @@ client 4.17 tunable hammer/default 116 MB/s wr, 0 op/s rd, 31 op/s wr
 tshark:
 	tshark -i enp9s0 -f 'host 192.168.2.0/24' -w /tmp/capture4.pcap
 
+
+==========================================  build deb ceph ================================
+apt install curl libcurl4-openssl-dev  libkeyutils-dev keyutils libldap2-dev libaio1-dev python-sphinx python3-sphinx 
