@@ -1,0 +1,65 @@
+kernel reserve page for bios and other use, rest use is dynamic alloc for kernel, user, swap....
+
+mem_map:
+	an array of struct page manage pages
+	virt_to_page() from vaddr to struct
+	pfn_to_page() from index to struct
+
+struct page:
+	count: count number of page using
+	flag: page status, dirty,clean lock, error ....
+
+numa:
+	pgdat_list : a list of pg_data_t( have zone info of each node)
+	pg_data_t:
+		have swap process related struct
+		have page number,range,position related struct
+		node index
+	each node: multiple zone 
+
+mem zone:
+	zone_dma : first 16MB, usd for isa dma
+	zone_normal: below 896MB, along with zone_dma, use linear mapping to kernel upper addr space
+	zone_highmem: rest , in 32bit, contain page frames not able to linear mapping, but 64bit this is empty
+zone struct:
+	has page frame related and reclaim related struct
+	page_zone(): from struct page get zone index info
+		use node's zone_list to get zone index for allocate
+	allocate from zonedma only if zonenormal has no mem
+
+	reserve mems:
+		according to total kernel mmaped mem, will be used by alloc atomic
+	
+	allocator:
+		each zone managed by each buddy system in zone, and have small number of page cached in percpucache
+		alloc_pages() -> struct page
+		__get_free_pages() -> linear addr
+		get_zero_page()
+		__get_dma_pages()
+
+		__free_pages() ->struct page
+		free_pages() -> linear addr
+		__GFP_DMA __GFP_HIGHMEM used to specify which zone to use
+		zonelist:
+			correspoinding zones's fall back zone if mem request not satisfied on that specified zone
+			zone_high->zone_normal->zone_dma
+
+high mem: (32 bit)
+	over 896M, only can allocate by alloc_pages() because have no linear addr
+	last 128M in kernel space used to map into highmem, use struct page to tarce
+
+	permanent map: (may sleep)
+		use kmap kunmap() to map into kernel's reserved page table pkmap_page_table, entries of count LAST_PKMAP
+			the virtual addr is already fixed, start from PKMAP_BASE, pkmap_count array store which index is free
+			or not(0 free, 1 not flush tlb yet, > 1 used)
+			another hash table page_address_htable hash struct page with page_address_map struct contain the page struct
+
+		page_address() return linear addr by looking into above hash table or just low mem return
+		kmap() will map page struct get from alloc_pages()(from highmem) and map that pagestruct into
+			reserved permanent table entry, using kmap high(which will sleep if no table entry available)
+
+	temporary map:(not sleep)
+		kmap_atomic()->will disable preempt
+		kmap_unatomic()->will enable preempt
+		fix number(13 for every cpu) of page frames used to map, will make pte and use fix_to_virt() to return
+			to you the linearaddr you need
