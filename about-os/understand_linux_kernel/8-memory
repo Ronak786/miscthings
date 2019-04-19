@@ -66,3 +66,19 @@ high mem: (32 bit)
 
 buddy system:
 	split mem into 11 lists 1-1024 contiguous page frames
+	each array memnber is a free list, first page frame's private field contain the order allocated
+
+	__rmqueue():
+		allocate order pages, if not enough, iterate up and split that order out
+	__free_pages_bulk():
+		free pages and merge iterate up
+	
+	per cpu cache:
+		caches per cpu for hot and cold single page,
+		both has high low watermark to return/get page bulks from buddy system
+		buffered_rmqueue()
+			first try cache hot/cold(if _COLD flag set) to get, if less than low watermark, request from buddy first
+		free_hot_page()
+			first if higher than watermark, return bulk to buddy, then add page into hot
+		free_cold_page()
+			never return to cold cache, just hot
