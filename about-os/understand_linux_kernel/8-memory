@@ -82,3 +82,14 @@ buddy system:
 			first if higher than watermark, return bulk to buddy, then add page into hot
 		free_cold_page()
 			never return to cold cache, just hot
+
+zone allocator
+	iterate multiple times a loop(or similar one):
+		check watermark ok, use buffered_rmqueue, if get, return page
+		else lower watermark, recycle pages, loop again
+
+	__alloc_pages():
+		first scan and try allocate
+		else call kswapd and try again with a lower limit
+		keep trying -> wait block -> wait filesystem mem kill
+
