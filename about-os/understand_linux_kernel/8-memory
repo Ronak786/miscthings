@@ -63,3 +63,6 @@ high mem: (32 bit)
 		kmap_unatomic()->will enable preempt
 		fix number(13 for every cpu) of page frames used to map, will make pte and use fix_to_virt() to return
 			to you the linearaddr you need
+
+buddy system:
+	split mem into 11 lists 1-1024 contiguous page frames
