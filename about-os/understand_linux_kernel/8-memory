@@ -93,3 +93,28 @@ zone allocator
 		else call kswapd and try again with a lower limit
 		keep trying -> wait block -> wait filesystem mem kill
 
+
+memory area access
+	slab: used to allocate special type of frequently used data struct
+			and kmalloc's 2^n power order size of mem
+		pro: 
+			do not dirtify hardware cache
+
+	each type of allocator is a kmem_cache_t:
+		has a list of slabs, each slab has a start addr and how many used and how many free
+
+		see /proc/slabinfo
+		general cache: inited by kmem_cache_init()
+			the kmem_cache_t descriptor pool
+			kmalloc used 2^5 ~ 2 ^ 17 sized pool
+		special cache:
+			allocated and insert into cache_chain list
+
+	use kmem_getpages and kmem_freepages() to get and free once a slab allocator
+		every time allocate a slab needed(new request of mem needed), cache_grow() to 
+			call kmem_getpages() and alloc_slabmgmt() get slab descriptor, then every page
+			save in lru next and prev the slab and kmem ptr, then cache_init_objs() to ctor
+
+		when free objs too many: slab_destroy()
+		object descriptor: used to point to next free index in slab
+		cache line alignment: align cache line according to flag to kmem_cache
