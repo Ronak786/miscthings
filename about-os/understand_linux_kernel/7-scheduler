@@ -1,3 +1,4 @@
+NOT READING VERY GOOD, NEED A THIRD TIME READ!!
 schedule:
 	relatime time: fifo, rr
 	normal :
@@ -8,3 +9,18 @@ priority:
 	static priority is 140 to 100(highest), dynamic used by scheudler calculated from static one,
 	interactive and blocked ones has higher priority, so response time is short, but run duration
 	should not too long in case of same priority
+
+	real-timepriority used for readtime processes to be scheduled first before normal processes,
+		but the time for run determined by its static and dynamic priority
+
+queue:
+	every cpu has active and expired queue, processes timeout its time slice and not interactive
+		or expire proceess too long will then put into expire queue
+
+schedule:
+	positive: process call schedule(), so will search queue for a run process
+	passive: set need reschedule flag in thread_info, so will check when timer interrupt return(user or kernel)
+
+domain:
+	rebalance and migration kernel thread in each runqueue will take responsibility for balance 
+	processes on each cpu for load balance
