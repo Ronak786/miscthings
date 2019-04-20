@@ -1,0 +1,38 @@
+endl pro to \n:
+	endl will append a flush, so will output immediately
+
+io format:
+#include <iomanip>
+	setw(): used to set width of stream for next output
+		cout << setw(20) << "what";
+			and will right align
+
+filestream:
+	#include <fstream>
+	#include <string>
+	string line;
+	ifstream fs("filename")
+	fs.is_open()
+	while (getline(fs, line)) {
+	}
+	fs.close()
+
+	ofstream("filename", ios::flags)
+	if (ofs.is_open())
+		ofs << xxxxxx ;
+	ofs.close();
+
+std out in:
+	cout << "xxxx";
+	cin >> vars;
+	getline(cin, line);
+
+	cons:
+		cin will be interrupted by space
+
+streamstring:
+	#include <sstream>
+	streamstring(string) >> (int)val
+		note: c++ can directly construct an object this way
+
+	
