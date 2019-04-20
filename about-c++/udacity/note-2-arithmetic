@@ -1,0 +1,3 @@
+#include <cmath>
+	std::pow(base, exponent)
+	M_PI : just use, the pi

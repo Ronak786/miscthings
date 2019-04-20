@@ -30,9 +30,35 @@ std out in:
 	cons:
 		cin will be interrupted by space
 
-streamstring:
+	hanle ignore():
+		when get input, use cin.ignore(number, match_chr);
+		to ignore number characters or until match_chr is
+		matched, used to eat up until \n
+
+stringstream:
 	#include <sstream>
 	streamstring(string) >> (int)val
+	or stringstream ss; ss.str(xxxx);
 		note: c++ can directly construct an object this way
+
+	handle fail:
+		while (ss >> var || !ss.eof()) {
+			if (ss.fail()) {
+				ss.clear();
+				string dummy;
+				ss >> dummy; // skip error string
+				continue;
+			}
+		}
+		eof check should in outer loop and
+			eof will set along with fail
+			Only when read fail at end then
+				the eof will set, so just read
+				then last word of file will not
+				result in eof being set
+			usually only read will reach end, and
+				read attend that place means read
+				will return fail, so fail and eof
+				both set
 
 	
