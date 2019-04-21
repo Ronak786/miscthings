@@ -1,0 +1,2 @@
+array param in func:
+	pass pointer, pass  int var[size], pass int var[]

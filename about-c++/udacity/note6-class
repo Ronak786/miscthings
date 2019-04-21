@@ -1,0 +1,22 @@
+class aaa {
+	public:
+		void func();
+};
+
+//define:
+void aaa::func() {
+}
+
+ctor, dtor:
+classname::classname()
+classname::~classname()
+
+this ( current object's pointer)
+
+Overload:
+	as member func:
+	operator:
+		int operator + (var name) {
+		}
+	as class func:
+		int operator + (var name, var name) {}
