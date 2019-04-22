@@ -1,3 +1,5 @@
+too complicated, need second read, like note7
+
 kernel reserve page for bios and other use, rest use is dynamic alloc for kernel, user, swap....
 
 mem_map:
@@ -118,3 +120,22 @@ memory area access
 		when free objs too many: slab_destroy()
 		object descriptor: used to point to next free index in slab
 		cache line alignment: align cache line according to flag to kmem_cache
+
+mempool:
+	used to pre_reserve some mem, you provide allocator,(usually slab)
+vmalloc:
+	region after kernel high and before fix map
+	one region for one time map
+
+process address space:
+	use mm_struct
+	vma region used to manage regions.
+		only non annonious map will call that file's vm_operations, if that not exist,
+			will just annonious map it
+	copy on write:
+	deman page:
+	bad addr kenrel:
+	bad addr userspace:
+		all recognized in page fault interrupt service by the fault linear addr to compare 
+			to process's mem regions
+
