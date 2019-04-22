@@ -131,6 +131,7 @@ remove:
 	ceph osd rm osd.1
 	ceph osd crush rm osd.1
 	ceph auth del osd.1
+	export num=4; ceph osd down osd.${num}; ceph osd out osd.${num} ; ceph osd crush rm osd.${num} ; ceph auth del osd.${num} ; ceph osd rm osd.${num}
 
 rm pool dynamicaly:
 	ceph tell mon.\* injectargs '--mon-allow-pool-delete=true'
