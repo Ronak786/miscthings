@@ -184,3 +184,5 @@ tshark:
 
 ==========================================  build deb ceph ================================
 apt install curl libcurl4-openssl-dev  libkeyutils-dev keyutils libldap2-dev libaio1-dev python-sphinx python3-sphinx 
+
+nohup dpkg-buildpackage -j8 -nc -uc -us  -b  > ../build.log &
