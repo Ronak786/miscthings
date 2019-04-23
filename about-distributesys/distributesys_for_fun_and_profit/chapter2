@@ -24,6 +24,11 @@ abstraction : system model:
 		async:
 			no assume
 
+	partition:
+		nework partition: partly time network not work
+			some clients may still can access
+		node partition: partly node failure
+
 	two impossible results:
 		flp:
 			in a nodes-can-crash, network-never-fail system model, no algorithm can make sure
@@ -37,11 +42,11 @@ abstraction : system model:
 
 			CA(consostency + availability) :  strict protocal, two-stage commit(system will fail, operate will not)
 				no nodes can fail, once network or node fail, stop accept write immediately
+				not partition-aware, use two-step commit, used in dbs
 			CP(consostency + partition tolerance) : majority protocal, paxos(operate will fail but system will continue)
 				f nodes can fail, while another f+1 is live
 				single copy, only majority part can provide service, while minor part failed
+				consider network partition, choose majority partition, like paxos, raft
+
+				once partition occurred: strong consensus or high availability must be selected
 			AP(availability + partition tolerance):  dynamo
-
-
-			
-		
