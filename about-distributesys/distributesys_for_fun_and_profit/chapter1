@@ -1,0 +1,21 @@
+scalability: handle growing of work in a capable manager or its ability to be enlarged to accomodate that growth
+	size: more faster linearly(more power)
+	geographic: reduce response time
+	administrative: not increase cost of admin
+
+performance: within fix resource do more useful work
+	short response
+	high throughput
+	low utilization
+
+latency: time bwtween things happed and things show
+availability: proportional time system is in work
+fault tolerance: can tolerate expected fault and handle it
+
+prevents:
+	as number enlarges, increase failure, communication cost, latency
+	gain more performance by exposing more detail of this system, but lack abstraction
+
+techniques:
+	partition: more about locality optimize, releated data in one partition
+	replication: replicate to avoid failure
