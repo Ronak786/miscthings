@@ -1,0 +1,23 @@
+order:
+	total order 全序
+		good , but time sync on different systems is difficult
+	partial order 偏序
+
+time:
+	time is source of order, we can attach time to object to represent order
+
+	time not always sync on all nodes, sync itself will cost if using global lock
+
+	depend on accuracy time sync:
+		facebook Cassandra
+		Google Sapnner
+	local clock:
+		only local events can be ordered
+	no clock:
+		use time just as a point, interval concepts use internal counter and communication to replace
+		so latency affect time calculate
+			linkedlin's Voldemort
+			BAsho 's Riak
+
+	time can be used to keep global consistency
+		used to detect high latency or failure

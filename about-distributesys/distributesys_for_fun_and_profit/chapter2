@@ -49,4 +49,19 @@ abstraction : system model:
 				consider network partition, choose majority partition, like paxos, raft
 
 				once partition occurred: strong consensus or high availability must be selected
+					strong consistency may contribute to more latency
+				weak consistency can live with availability
 			AP(availability + partition tolerance):  dynamo
+
+
+	strong consistency: CAP
+		linearsiable consistency
+			all operation according to global time order
+		sequencial consistency
+			operation according to each node's order, perspective of client if.
+	weak consistency: CRUD
+		client centric :
+			client will never see older version after write(usually done with local cache)
+			eventually consistency:
+				within sometime after write will inconsistent among nodes, but eventually consistent
+				usually last-write-win, read-the-lastest-back  , related heavily on time
