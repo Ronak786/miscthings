@@ -1,0 +1,47 @@
+abstraction make us get a top bound of how system will work, 
+	but will resultinto some error while omitting some details
+
+in distribute system:
+	run concurrently
+	communicate on network, may message loss
+	no share mem and lock
+	knowledge local
+	recovery fail  local
+	have delay
+	clock not consensus
+
+abstraction : system model:
+	an assumed  enviromment model
+		have what capability, how may fail
+	nodes can fail by crashing, and can recovery from crash
+
+	nodes link:
+		may be unreliable and unordered
+		but do not concern link may be Byzantine fault tolerance. or one way link
+
+		sync
+			assume upper bound of reply time
+		async:
+			no assume
+
+	two impossible results:
+		flp:
+			in a nodes-can-crash, network-never-fail system model, no algorithm can make sure
+			system is in consensus, we must give up safety or liveness
+		cap:
+			cnosistency : all see same data same time
+			availability: node failure, continue provide service
+			partition tolerance: network or node  failure, continue to operate
+
+			therium state that only two of three can be realized
+
+			CA(consostency + availability) :  strict protocal, two-stage commit(system will fail, operate will not)
+				no nodes can fail, once network or node fail, stop accept write immediately
+			CP(consostency + partition tolerance) : majority protocal, paxos(operate will fail but system will continue)
+				f nodes can fail, while another f+1 is live
+				single copy, only majority part can provide service, while minor part failed
+			AP(availability + partition tolerance):  dynamo
+
+
+			
+		
