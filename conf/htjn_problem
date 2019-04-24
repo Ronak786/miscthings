@@ -140,6 +140,8 @@ remove:
 rm pool dynamicaly:
 	ceph tell mon.\* injectargs '--mon-allow-pool-delete=true'
 	ceph osd pool rm test-pool test-pool --yes-i-really-really-mean-it
+	ceph daemon mon.n2 config show | grep bluestore_cache  to catch config
+	ceph tell osd.* config set bluestore_cache_size_hdd 3221225472 to set config
 enable app:
 ceph osd pool application enable <pool-name> <app-name>', where <app-name> is 'cephfs', 'rbd', 'rgw', or freeform for
 custom applications
