@@ -103,6 +103,10 @@ kpatch:
 	kpatch-build  -s /root/rpmbuild/BUILD/kernel-3.10.0-514.el7/linux-3.10.0-514.el7.x86_64/ -v /usr/lib/debug/lib/modules/3.10.0-514.el7.x86_64/vmlinux   /tmp/list
 	require: kernel-debuginfo rpm, src rpm
 
+in sw64:
+	bluestore.cc should use -O0 to avoid optimize problem ,and .got toobig, split into two files
+	lru_cache.cc should use gcc flag -mieee to avoid underflow problem
+
 
 ======================================== ceph install ================================
 time sync:
@@ -131,7 +135,7 @@ remove:
 	ceph osd rm osd.1
 	ceph osd crush rm osd.1
 	ceph auth del osd.1
-	export num=4; ceph osd down osd.${num}; ceph osd out osd.${num} ; ceph osd crush rm osd.${num} ; ceph auth del osd.${num} ; ceph osd rm osd.${num}
+	export num=4; ceph osd out osd.${num} ;ceph osd down osd.${num};  ceph osd crush rm osd.${num} ; ceph auth del osd.${num} ; ceph osd rm osd.${num}
 
 rm pool dynamicaly:
 	ceph tell mon.\* injectargs '--mon-allow-pool-delete=true'
@@ -161,6 +165,10 @@ END {
  printf("SUM :\t"); for (i in poollist) printf("%s\t",sumpool[i]); printf("|\n");
 }'
 
+remove
+ceph-deploy purge
+ceph-deploy purgedata
+apt list | grep '12.2.7' | cut -d '/' -f 1 | xargs -n 100 apt purge -y
 
 ========================================= source config ======================================
 sw apt:

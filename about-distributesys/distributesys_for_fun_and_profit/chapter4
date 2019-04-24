@@ -1,0 +1,29 @@
+primary backup:
+	sync:
+		first commit to primary, wait it to get response from other nodes for consensus, thenreturn
+	async:
+		not wait, just return, a weak consensus, if network partition occurred
+
+	practise:
+		2pc(two phase commit):
+			first maintainer ask  ok to commit to all others, return ok
+			then do commit/roll back on all nodes
+			cons:
+				may block if network partition or node block
+
+raft(easier paxos): majority vote
+	on a network partition, majority part continue to work, minority part stop working
+
+	roles:
+		only one is leader, others are followers to monitor leader
+		one proposer/leader, others are accptors/voters
+
+	epoch:
+		every node has a epoch number, partitioned node has smaller number,
+		every operation done after a leader election and decide a bigger epoch
+		electrion:
+			if proposal value v chosen, higher value declined
+
+	paxos
+	zab: zookeeper 's method
+	raft: easier than paxos, and same assurance
