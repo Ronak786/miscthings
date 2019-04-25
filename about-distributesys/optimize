@@ -1,0 +1,2 @@
+iostat -x 
+	check write_kb/s, check cpu userspace percentage, check iowait time
