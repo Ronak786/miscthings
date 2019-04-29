@@ -38,6 +38,7 @@ grep '\--cluster' -R  *
 
 
 ==============================PROBLEM=================================
+parted -s /dev/nvme0n1  mklabel gpt mkpart primary 1M 25G  mkpart primary 25G 30G  mkpart primary 30G 55G mkpart primary 55G 60G mkpart primary 60G 85G mkpart primary 85G 90G
 when install, careful the Time!!!
 stop ntp service, use ntpupdate to udpate time
 
@@ -106,6 +107,9 @@ kpatch:
 in sw64:
 	bluestore.cc should use -O0 to avoid optimize problem ,and .got toobig, split into two files
 	lru_cache.cc should use gcc flag -mieee to avoid underflow problem
+
+bcache:
+	need a new bcache module from htsw's bcache.ko, should change name from vgacc to bcache
 
 
 ======================================== ceph install ================================
