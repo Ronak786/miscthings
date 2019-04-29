@@ -111,6 +111,9 @@ in sw64:
 bcache:
 	need a new bcache module from htsw's bcache.ko, should change name from vgacc to bcache
 
+htsw vgs:
+/usr/local/vgs/tomcat/webapps/vgs/view/login.html   uncommented all js code for authencate
+
 
 ======================================== ceph install ================================
 time sync:
