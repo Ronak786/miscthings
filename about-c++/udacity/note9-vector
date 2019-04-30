@@ -1,0 +1,17 @@
+vector<int> aa;
+vector<int>::iterator it;
+for (it = aa.begin(); it != aa.end(); ++it) to iterate
+	data is *it
+
+assign(begin(), end())
+assign(number, val)
+	used to copy and override the vector
+push_back(val)
+
+insert(iterator_before_position, val)
+	need reset interator after every insert!!
+
+clear
+erase(itera)
+erase(iterarange, range)
+pop_back() remove value

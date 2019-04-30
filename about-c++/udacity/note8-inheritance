@@ -1,0 +1,34 @@
+public : access parent's non private member, outside also can access public members of base
+protected: base's member only can be accessed by child, not by outside
+private: outside and child can not access
+	base's function only can be used by  base::func(xxxx)
+
+ctor:
+	child() :base(xxx)  to call(no call ,then default one will be called)
+
+inherit:
+	ctor, dtor, assignment, friend, priv members all can not be inherited
+
+2 类被继承后方法属性变化
+private 属性不能够被继承。
+使用private继承， 父类的protected和public属性在子类中变为private；
+使用protected继承，父类的protected和public属性在子类中变为protected；
+使用public继承， 父类的protected和public属性不发生改变;
+
+3 private继承和public继承的适用情况
+C++将public继承视为is-a关系。private继承则并不意味着is-a关系，private继承意味着implemented-in-terms-of（根据某物实现出）。private继承意味着只有实现部分被继承，接口部分被略去。private继承在软件设计层面上没有意义，其意义只在于软件实现层面。
+
+private继承：
+
+1）编译器不会自动将一个子类对象转换为一个父类对象，而public继承会；
+
+2）子类中由父类继承而来的成员（protected和public）都变为private。
+
+implemented-in-terms-of也可以由复合实现。在应用域，复合意味着has-a；在实现域，复合意味着is-implemented-in-terms-of。尽可能使用复合实现这种关系，必要时（涉及protected成员或virtual函数时）才使用private继承。
+
+	
+
+virtual:
+	can be implemented in child differently
+	pure virtual 
+	can be used by base class's ptr to refer 

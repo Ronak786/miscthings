@@ -1,0 +1,23 @@
+template <typename T> T func(T var) {}
+template <typename T, typename U> T func(T var, U var2) {}
+	then you can pass in various type for template
+	if type matched in parameter by compiler , you can directly call func(xxx,xxx)
+	otherwise you should call func<type1,type2>(xxx,xxx)
+
+template in class:
+	template <class T>
+	class xxx {
+		T var;
+	};
+
+	func: all member functions defined outside should do this
+		template <class T>
+		void classname<T>::func(xxxx) {}
+
+specialzed template class type:
+	template <> class mycontainer <char> { ... };
+template <class T = char, int N=10> class xxx {};
+	can set constant used in template, can set default value
+	use  xxx<> to get default value
+	
+
