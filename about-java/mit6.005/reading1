@@ -84,3 +84,19 @@ interface:
 		so we can hide detail impl class name completely
 
 equality:
+	== default
+	instanceof() used only in equals()
+	implement:
+		if (!(aa instanceof bb)) return false;
+		test(convertedobj, thisobj);
+
+	overwrite hashcode() default use memaddress,
+		you can use obj.hashcode() to combine field's
+		hashcode
+
+	for mutable types like list, use default equals method,
+		because add item in list will change its hashcode
+
+	autobox:
+		equals() will return true if same value boxed,
+		== will return false if not refer to same reference
