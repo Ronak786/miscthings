@@ -1,3 +1,5 @@
+debug:
+	https://www.vogella.com/tutorials/EclipseDebugging/article.html
 window->preferenct->java->install jre
 	argument: -ea (enable assert)
 
