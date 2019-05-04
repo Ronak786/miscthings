@@ -1,0 +1,86 @@
+java static checking
+list<integeter> name= new ArrayList<Integer>()
+	List is an interface, ArrayList is impelmentation
+
+principles
+1 don't replicate code
+2 comment:
+	before method: 
+		/**
+		  * xxxx
+		  * @param xxx
+		  * @return xxx
+		  */
+	before some special code:
+		// xxxx
+3 fail fast as possible
+4 avoid magic, use enum or constant instead
+5 name convertion:
+	methodsLikeThis
+	variablesLikeThis
+	ClassNameThis
+	CONSTANTS_LIKE_THIS
+	packages.like.this
+6 use consistent space indent
+7 don't use global variables, results should return instead
+	of printing
+
+test:
+1 for boundary
+2 for overflow, underflow
+3 for subdomain value ranges, like positive, negative
+4 coverage:
+	statement coverage
+	branch coverage
+	path coverage
+	use eclipse's eclemma to get coverage graphics
+		use runas->coverage to run and see path coverred
+5 unit test for each method's input and output
+  intergal test for all methods' connection
+6 automate test and add test case for new imported code
+
+specification:
+	use doc comment to set require for input and output
+	null is not recommended, you can use 
+	func(@NonNull List<T> list1) to indicate null is not permitted and compiler will check
+	test should according to precondition
+
+exception:
+	checked
+		required to be handled or throws
+		inherit except class
+	unchecked:
+		runtime exception, error, not requiretd to handle
+	exception will not be optimized, so careful use it
+
+stronger specs:
+	with weaker precondition, and stronger postcondition,
+		so will always satisfiy previous request
+
+debug:
+	assert:
+	@Test(expected=AssertionError.class)
+	func() {
+		assert false;
+	} // this will throw an error and is expected
+		should assert arg requirement and return val
+			and cover cases
+
+	vars only in region require it, no global
+
+adt:
+	creator: constructor, factory method
+	observer: get method(retrieve)
+	producter: create another object
+	mutator: set add method
+	use self defined adt to replace arguments
+		with precondition, so precondition is inclusive
+
+interface:
+	public interface xxx {}
+		then implements it
+
+	in java8 , interface can have static method,
+		so we can hide detail impl class name completely
+
+equality:

@@ -1,0 +1,9 @@
+window->preferenct->java->install jre
+	argument: -ea (enable assert)
+
+tips:
+	right click vars and refactor->rename to rename var
+shortcut:
+ctrl-shift-o: organize imports
+ctrl-/ : toggle comment
+ctrl-shift-r/ctrl-shift-t: search class quickly
