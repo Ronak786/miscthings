@@ -1,0 +1,8 @@
+java.util.xxxx   eclipse auto import 
+Pattern = Pattern.compile("xxxx");
+Matcher = pattern.matcher(string input);
+while(matcher.found) {
+	matcher.group(); // wholy matched pattern
+	matcher.start();
+	matcher.end() ; //index
+}

@@ -203,3 +203,9 @@ tshark:
 apt install curl libcurl4-openssl-dev  libkeyutils-dev keyutils libldap2-dev libaio1-dev python-sphinx python3-sphinx 
 
 nohup dpkg-buildpackage -j8 -nc -uc -us  -b  > ../build.log &
+
+
+
+==========================================  web related ===================================
+hava node statistics: opt/petasan/scripts/node_stats.py
+throughput: storage-appliance/usr/lib/python2.7/dist-packages/PetaSAN/backend/cluster/benchmark.py
