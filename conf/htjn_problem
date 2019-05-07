@@ -212,3 +212,9 @@ throughput: storage-appliance/usr/lib/python2.7/dist-packages/PetaSAN/backend/cl
 
 ========================================== wireshark ======================================
 wireshark -k -i <(ssh root@remote-server "tcpdump -s 0 -U -n -w - -i eth1 not port 22")
+
+========================================== how data get ===================================
+1 from scripts/node stats.py, all about node stats:  directly send to carbon(graphite) by nc periodicly
+2 from collectd, about ceph data, in opt/petasan/scripts/stats-setup.sh, and plugins copied into /usr/lib/collectd/plugins
+3 graphite: carbon listen on 2003 used to get data from 1 and 2,  whisper-fetch used to reterieve data 
+	and send them to grafana
