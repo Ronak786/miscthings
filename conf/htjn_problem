@@ -218,3 +218,4 @@ wireshark -k -i <(ssh root@remote-server "tcpdump -s 0 -U -n -w - -i eth1 not po
 2 from collectd, about ceph data, in opt/petasan/scripts/stats-setup.sh, and plugins copied into /usr/lib/collectd/plugins
 3 graphite: carbon listen on 2003 used to get data from 1 and 2,  whisper-fetch used to reterieve data 
 	and send them to grafana
+see https://stackoverflow.com/questions/25651902/is-it-possible-to-query-data-from-whisper-graphite-db-from-console
