@@ -1,0 +1,6 @@
+full qualified name all have a "."  at end !!!!
+query root server : dig . ns
+
+dig @dnsserver  your-query-name
+dig +domain=query_domain_name   your-query-name
+norecursive: dig +norecurs xxx
