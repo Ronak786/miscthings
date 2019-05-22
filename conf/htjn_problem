@@ -219,3 +219,12 @@ wireshark -k -i <(ssh root@remote-server "tcpdump -s 0 -U -n -w - -i eth1 not po
 3 graphite: carbon listen on 2003 used to get data from 1 and 2,  whisper-fetch used to reterieve data 
 	and send them to grafana
 see https://stackoverflow.com/questions/25651902/is-it-possible-to-query-data-from-whisper-graphite-db-from-console
+
+
+============================= config ip forward for inner network =====================
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE   (eth0 is out for internet, eth1 is in for subnet)
+iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+then on subnet machine , set ip route add default via current_host

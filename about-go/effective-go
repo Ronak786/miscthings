@@ -1,2 +1,29 @@
 value method can be invoked by pointer or value
 poniter method only can invoded by pointer
+
+fmt:
+	a ...int  : parameter as list of ints
+		pass to next func:  afunc(a...)
+
+append:
+	append a slice to a slice:
+		append(x, y...)
+
+const:
+	realize enum:
+		const {
+			a float64 = iota // 0
+			b = 10 * iota // 10 * 1
+			c  // 10 * 2
+			d  // 10 * 3
+			e
+			f
+		}
+
+init:
+	first import 
+	second all var initialized
+	third func init() {}
+
+interface:
+	objects implement interface's method, and some function will do on those interfaces
