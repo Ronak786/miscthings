@@ -228,3 +228,6 @@ iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
 iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 then on subnet machine , set ip route add default via current_host
+
+============================= performance ==============================
+https://www.linuxidc.com/wap.aspx?nid=95687&p=2&cid=6&sp=777
