@@ -231,3 +231,6 @@ then on subnet machine , set ip route add default via current_host
 
 ============================= performance ==============================
 https://www.linuxidc.com/wap.aspx?nid=95687&p=2&cid=6&sp=777
+write/read congestion   in cache device set to 0
+for i in `seq 0 7` ; do echo 0 > bdev${i}/writeback_percent; done   set cache preserve dirty ratio
+for i in `seq 0 7` ; do echo 200 > bdev${i}/writeback_rate; done  for write back rate  ;  just test 1!!!
