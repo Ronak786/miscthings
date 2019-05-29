@@ -327,8 +327,8 @@ int main(int ac, char *av[]) {
 			}
 		}
 	} else if (!strcmp("-str", av[1])) {
-		if (ac != 4) {
-			Log("need index state\n");
+		if (ac != 3) {
+			Log("need index\n");
 		} else {
 			int index = atoi(av[2]);
 			unsigned char key = 0xf;
@@ -363,7 +363,7 @@ int main(int ac, char *av[]) {
 			}
 		}
 	} else if (!strcmp("-ssw", av[1])) {
-		if (ac != 5) {
+		if (ac != 4) {
 			Log("need index pst\n");
 		} else {
 			unsigned char privkey[33] = 
@@ -396,7 +396,7 @@ int main(int ac, char *av[]) {
 			}
 		}
 	} else if (!strcmp("-sew", av[1])) {
-		if (ac != 5) {
+		if (ac != 4) {
 			Log("need index pst\n");
 		} else {
 			unsigned char privkey[33] = 
