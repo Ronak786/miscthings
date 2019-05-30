@@ -76,7 +76,7 @@ int plInit() {
 	info->mapLen = PLLEN;
 	info->fd = fd;
 	info->pid = getpid();
-	Log("init completed for process %d\n", (int)info->pid);
+//	Log("init completed for process %d\n", (int)info->pid);
 	return (int)info;
 }
 
@@ -124,7 +124,6 @@ int genRand(int fd, int len, unsigned char *pbRand) {
 	// --should test this range of code !!--
 	*/
 	memcpy(pbRand, info->mapBase + WNGOFF, len);
-	Log("read random completed\n");
 	return 0;
 }
 
@@ -143,7 +142,7 @@ int getSessionKey(int fd,int index,unsigned char *key) {
 	}
 
 	int offset = index * SESSIONUNIT;
-	Log("offset is %d\n", offset);
+	Log("offset is %x %x\n", offset, SESSIONOFF + offset);
 	/*
 	for (int i = 0; i < SESSIONUNIT / WORD; i++, uintptr++) {
 		*uintptr = *(unsigned int*)(info->mapBase + SESSIONOFF + offset + i * WORD);
@@ -151,7 +150,6 @@ int getSessionKey(int fd,int index,unsigned char *key) {
 	}
 	*/
 	memcpy(key, info->mapBase + SESSIONOFF + offset, SESSIONUNIT);
-	Log("read complete\n");
 	return 0;
 }
 
@@ -169,7 +167,7 @@ int setSessionKey(int fd,int index,unsigned char *key){
 		Fatal(-1, "buffer passed in is NULL\n");
 	}
 	int offset = index * SESSIONUNIT;
-	Log("offset is %d\n", offset);
+	Log("offset is %x %x\n", offset, SESSIONOFF + offset);
 	/*
 	for (int i = 0; i < SESSIONUNIT / WORD; i++, uintptr++) {
 	*(unsigned int*)(info->mapBase + SESSIONOFF + offset + i * WORD) = *uintptr;
@@ -177,7 +175,6 @@ int setSessionKey(int fd,int index,unsigned char *key){
 	}
 	*/
 	memcpy(info->mapBase + SESSIONOFF + offset, key, SESSIONUNIT);
-	Log("write completed\n");
 	return 0;
 }
 
@@ -195,6 +192,7 @@ int getSessionKeySt(int fd,int index,unsigned char *pst){
 		Fatal(-1, "buffer passed in is NULL\n");
 	}
 	int offset = index * SESSIONSTUNIT;
+	Log("offset is %x %x\n", offset, SESSIONSTOFF + offset);
 	/*
 	for (int i = 0; i < SESSIONSTUNIT / WORD; i++, uintptr++) {
 		*uintptr = *(unsigned int*)(info->mapBase + SESSIONSTOFF + offset + i * WORD);
@@ -203,7 +201,6 @@ int getSessionKeySt(int fd,int index,unsigned char *pst){
 	*/
 	// care of edian problem
 	*pst = *(unsigned int*)(info->mapBase + SESSIONSTOFF + offset);
-	Log("read complete\n");
 	return 0;
 }
 
@@ -220,6 +217,7 @@ int setSessionKeySt(int fd,int index,unsigned char st) {
 	}
 	
 	int offset = index * SESSIONSTUNIT;
+	Log("offset is %x %x\n", offset, SESSIONSTOFF + offset);
 	/*
 	for (int i = 0; i < SESSIONSTUNIT / WORD; i++, uintptr++) {
 		*(unsigned int*)(info->mapBase + SESSIONSTOFF + offset + i * WORD) = *uintptr;
@@ -228,7 +226,6 @@ int setSessionKeySt(int fd,int index,unsigned char st) {
 	*/
 	// copy 4byte at least
 	memcpy(info->mapBase + SESSIONSTOFF + offset, uintptr, SESSIONSTUNIT);
-	Log("write completed\n");
 	return 0;
 }
 
@@ -260,6 +257,7 @@ int getPriKeyAuthInfo(int fd,int index,int keyindex,unsigned char  *pinfo) {
 	unsigned int whichint = keyindex / 32;
 	unsigned int whichbitinint = keyindex % 32;
 	unsigned char readbuf[PRIVKEYAUTHUNIT];
+	Log("offset is %x %x %x\n", offset, PRIVKEYAUTHOFF + offset + whichint * 4, whichbitinint);
 	/*
 	// only read the least char of least int  of total 4-int
 	memcpy(readbuf, info->mapBase + PRIVKEYAUTHOFF + offset, PRIVKEYAUTHUNIT);
@@ -267,7 +265,6 @@ int getPriKeyAuthInfo(int fd,int index,int keyindex,unsigned char  *pinfo) {
 	*/
 	*pinfo = !!(*(unsigned int*)(info->mapBase + PRIVKEYAUTHOFF + offset + whichint * 4) 
 				& (1 << whichbitinint));
-	Log("read completed\n");
 	return 0;
 }
 
@@ -292,14 +289,16 @@ int setPriKeyAuthInfo(int fd,int index,int keyindex,unsigned char  cinfo) {
 	if (keyindex >= 128) {
 		Fatal(-1, "keyindex out of range [0-127]\n");
 	}
-	unsigned int offset = keyindex * PRIVKEYAUTHUNIT;
+	unsigned int offset = index * PRIVKEYAUTHUNIT;
 	unsigned int whichint = keyindex / 32;
 	unsigned int whichbitinint = keyindex % 32;
+	Log("offset is %x %x %x\n", offset, PRIVKEYAUTHOFF + offset + whichint * 4, whichbitinint);
 
 	// set must align 4-byte boundary
-	*(unsigned int*)(info->mapBase + PRIVKEYAUTHOFF + offset + whichint * 4) |= 
-			cinfo << whichbitinint;
-	Log("write completed\n");
+	*(unsigned int*)(info->mapBase + PRIVKEYAUTHOFF + offset + whichint * 4) &= 
+			~(1 << whichbitinint);  // clear 0
+	*(unsigned int*)(info->mapBase + PRIVKEYAUTHOFF + offset + whichint * 4) |=
+			cinfo << whichbitinint;  // set 0 or 1
 	return 0;
 }
 
@@ -328,10 +327,10 @@ int getSm2SignKey(int fd,int index,unsigned char *pst,unsigned char *prikey,unsi
 		Fatal(-1, "buffer passed in NULL\n");
 	}
 	int offset = index * SM2SIGNUNIT;
+	Log("offset is %x %x \n", offset, SM2SIGNOFF + offset);
 	*pst = *(unsigned int*)(info->mapBase + SM2SIGNOFF + offset); // get state
 	memcpy(prikey, info->mapBase + SM2SIGNOFF + offset + 4, 32); // get prikey
 	memcpy(pubkey, info->mapBase + SM2SIGNOFF + offset + 36, 64); // get pubkey
-	Log("read completed\n");
 	return 0;
 }
 
@@ -359,10 +358,10 @@ int setSm2SignKey(int fd,int index,unsigned char st,unsigned char *prikey,unsign
 		Fatal(-1, "buffer passed in NULL\n");
 	}
 	int offset = index * SM2SIGNUNIT;
+	Log("offset is %x %x \n", offset, SM2SIGNOFF + offset);
 	*(unsigned int*)(info->mapBase + SM2SIGNOFF + offset) = (unsigned int)st; // set state
 	memcpy(info->mapBase + SM2SIGNOFF + offset + 4, prikey, 32); // set prikey
 	memcpy(info->mapBase + SM2SIGNOFF + offset + 36, pubkey, 64); // set pubkey
-	Log("write completed\n");
 	return 0;
 }
 
@@ -389,10 +388,10 @@ int getSm2EnKey(int fd,int index,unsigned char *pst,unsigned char *prikey,unsign
 		Fatal(-1, "buffer passed in NULL\n");
 	}
 	int offset = index * SM2ENKEYUNIT;
+	Log("offset is %x %x \n", offset, SM2ENKEYOFF + offset);
 	*pst = *(unsigned int*)(info->mapBase + SM2ENKEYOFF + offset); // get state
 	memcpy(prikey, info->mapBase + SM2ENKEYOFF + offset + 4, 32); // get prikey
 	memcpy(pubkey, info->mapBase + SM2ENKEYOFF + offset + 36, 64); // get pubkey
-	Log("read completed\n");
 	return 0;
 }
 
@@ -420,10 +419,10 @@ int setSm2EnKey(int fd,int index,unsigned char st,unsigned char *prikey,unsigned
 		Fatal(-1, "buffer passed in NULL\n");
 	}
 	int offset = index * SM2ENKEYUNIT;
+	Log("offset is %x %x \n", offset, SM2ENKEYOFF + offset);
 	*(unsigned int*)(info->mapBase + SM2ENKEYOFF + offset) = (unsigned int)st; // set state
 	memcpy(info->mapBase + SM2ENKEYOFF + offset + 4, prikey, 32); // set prikey
 	memcpy(info->mapBase + SM2ENKEYOFF + offset + 36, pubkey, 64); // set pubkey
-	Log("write completed\n");
 	return 0;
 }
 
