@@ -143,11 +143,13 @@ int getSessionKey(int fd,int index,unsigned char *key) {
 
 	int offset = index * SESSIONUNIT;
 	Log("offset is %x %x\n", offset, SESSIONOFF + offset);
+	/*
 	for (int i = 0; i < SESSIONUNIT / WORD; i++, uintptr++) {
 		*uintptr = *(unsigned int*)(info->mapBase + SESSIONOFF + offset + i * WORD);
 
 	}
-//	memcpy(key, info->mapBase + SESSIONOFF + offset, SESSIONUNIT);
+	*/
+	memcpy(key, info->mapBase + SESSIONOFF + offset, SESSIONUNIT);
 	return 0;
 }
 
